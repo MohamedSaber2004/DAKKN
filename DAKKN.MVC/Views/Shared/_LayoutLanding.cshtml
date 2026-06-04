@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" id="html-root">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - DAKKN</title>
+    <meta name="description" content="@(ViewData["Description"] ?? "Premium vinyl stickers engineered for extremes – UV-resistant, waterproof, and built to last.")" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+
+    <!-- Tailwind via CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <!-- Tailwind Custom Configuration -->
+    <script src="~/js/tailwind.config.js" asp-append-version="true"></script>
+
+    <!-- Custom Landing Stylesheet -->
+    <link rel="stylesheet" href="~/css/landing.css" asp-append-version="true" />
+
+    @await RenderSectionAsync("HeadStyles", required: false)
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col antialiased overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
+
+    @RenderBody()
+
+    <!-- Custom Landing Script for i18n & translations -->
+    <script src="~/js/landing.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="DAKKN.Application/DAKKN.Application.csproj" />
+  <Project Path="DAKKN.Domain/DAKKN.Domain.csproj" />
+  <Project Path="DAKKN.Infrastructure/DAKKN.Infrastructure.csproj" />
+  <Project Path="DAKKN.MVC/DAKKN.Appearence.csproj" />
+  <Project Path="DAKKN.Persistence/DAKKN.Persistence.csproj" />
+</Solution>
