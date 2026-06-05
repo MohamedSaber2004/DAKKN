@@ -8,6 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.23" />
+    <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DAKKN.Application\DAKKN.Application.csproj" />
+    <ProjectReference Include="..\DAKKN.Infrastructure\DAKKN.Infrastructure.csproj" />
+    <ProjectReference Include="..\DAKKN.Persistence\DAKKN.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

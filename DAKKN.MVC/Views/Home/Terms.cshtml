@@ -7,16 +7,16 @@
 <!-- Top Nav -->
 <nav class="fixed top-0 w-full z-50 flex justify-between items-center px-4 md:px-16 h-16 md:h-20 bg-surface/75 dark:bg-surface-container/75 backdrop-blur-md border-b border-outline-variant/10 shadow-sm navbar-animate">
     <div class="flex items-center gap-4 md:gap-6">
-        <a href="/" class="font-sans text-xl md:text-2xl font-extrabold tracking-tight text-primary logo-glow cursor-pointer" data-i18n="brand">DAKKN</a>
+        <a href="/" class="font-sans text-xl md:text-2xl font-extrabold tracking-tight text-primary logo-glow cursor-pointer" data-i18n="brand">@Localizer["brand"]</a>
         <div class="hidden lg:flex items-center gap-1">
-            <a href="/#shop" class="nav-link-premium nav-icon-link"><span class="material-symbols-outlined text-[17px]">local_fire_department</span><span data-i18n="nav_shop">Shop</span></a>
-            <a href="/#categories" class="nav-link-premium nav-icon-link"><span class="material-symbols-outlined text-[17px]">grid_view</span><span data-i18n="nav_categories">Categories</span></a>
-            <a href="/#all-products" class="nav-link-premium nav-icon-link"><span class="material-symbols-outlined text-[17px]">inventory_2</span><span data-i18n="nav_all_products">Products</span></a>
-            <a href="/Home/Contact" class="nav-link-premium nav-icon-link"><span class="material-symbols-outlined text-[17px]">support_agent</span><span data-i18n="f_contact">Contact</span></a>
+            <a href="/#shop" class="nav-link-premium nav-icon-link"><span class="material-symbols-outlined text-[17px]">local_fire_department</span><span data-i18n="nav_shop">@Localizer["nav_shop"]</span></a>
+            <a href="/#categories" class="nav-link-premium nav-icon-link"><span class="material-symbols-outlined text-[17px]">grid_view</span><span data-i18n="nav_categories">@Localizer["nav_categories"]</span></a>
+            <a href="/#all-products" class="nav-link-premium nav-icon-link"><span class="material-symbols-outlined text-[17px]">inventory_2</span><span data-i18n="nav_all_products">@Localizer["nav_all_products"]</span></a>
+            <a href="/Home/Contact" class="nav-link-premium nav-icon-link"><span class="material-symbols-outlined text-[17px]">support_agent</span><span data-i18n="f_contact">@Localizer["f_contact"]</span></a>
         </div>
     </div>
     <div class="flex items-center gap-1 md:gap-3">
-        <button id="lang-toggle-btn" onclick="toggleLang()" class="lang-pill-premium text-[11px] md:text-[13px] px-3 md:px-4 py-1.5 md:py-2" data-i18n="lang_toggle">العربية</button>
+        <button id="lang-toggle-btn" onclick="toggleLang()" class="lang-pill-premium text-[11px] md:text-[13px] px-3 md:px-4 py-1.5 md:py-2" data-i18n="lang_toggle">@Localizer["lang_toggle"]</button>
     </div>
 </nav>
 
@@ -34,15 +34,15 @@
         <div class="relative z-10 max-w-3xl mx-auto text-center">
             <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-container-high border border-outline-variant/30 w-fit shadow-sm mx-auto mb-6">
                 <span class="material-symbols-outlined text-tertiary text-lg">description</span>
-                <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider" data-i18n="terms_hero_badge">Legal</span>
+                <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider" data-i18n="terms_hero_badge">@Localizer["terms_hero_badge"]</span>
             </div>
-            <h1 class="text-4xl md:text-5xl font-extrabold text-on-surface mb-4 tracking-tight" data-i18n="terms_hero_h1">Terms &amp; Conditions</h1>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-on-surface mb-4 tracking-tight" data-i18n="terms_hero_h1">@Localizer["terms_hero_h1"]</h1>
             <p class="text-base text-on-surface-variant leading-relaxed max-w-xl mx-auto" data-i18n="terms_hero_p">
-                Please read these terms carefully before using our website or purchasing from DAKKN. By placing an order, you agree to these terms.
+                @Localizer["terms_hero_p"]
             </p>
             <div class="mt-6 flex items-center justify-center gap-2 text-xs text-on-surface-variant/70 font-semibold">
                 <span class="material-symbols-outlined text-sm text-primary/60">update</span>
-                <span data-i18n="terms_last_updated">Last updated: January 1, 2025</span>
+                <span data-i18n="terms_last_updated">@Localizer["terms_last_updated"]</span>
             </div>
         </div>
     </section>

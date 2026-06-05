@@ -6,4 +6,14 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DAKKN.Application\DAKKN.Application.csproj" />
+    <ProjectReference Include="..\DAKKN.Persistence\DAKKN.Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Repositories\Implementations\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
 </Project>

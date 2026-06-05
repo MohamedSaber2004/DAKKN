@@ -1,9 +1,9 @@
-let currentLang = 'en';
+let currentLang = 'ar';
 let currentTranslations = {};
 
 async function fetchTranslations(lang) {
     try {
-        const response = await fetch(`/js/i18n/${lang}.json`);
+        const response = await fetch(`/Home/GetTranslations?lang=${lang}`);
         if (!response.ok) {
             throw new Error(`Failed to load translation file: ${response.statusText}`);
         }
@@ -14,47 +14,75 @@ async function fetchTranslations(lang) {
     }
 }
 
-async function applyLang(lang) {
+function setCookie(name, value, days) {
+    let expires = "";
+    if (days) {
+        const date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+function getCookie(name) {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+}
+
+async function applyLang(lang, force = false) {
+    const root = document.getElementById('html-root');
+    const isAlreadyCorrect = root && root.getAttribute('lang') === lang;
+
     currentLang = lang;
     const s = await fetchTranslations(lang);
     if (!s) return;
 
-    const root = document.getElementById('html-root');
     if (root) {
         root.setAttribute('lang', s.lang);
         root.setAttribute('dir', s.dir);
     }
 
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        const translation = s[key] ?? key;
-        const target = el.getAttribute('data-i18n-target');
+    // Only walk the DOM if the language changed or if forced
+    if (force || !isAlreadyCorrect) {
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            const translation = s[key] ?? key;
+            const target = el.getAttribute('data-i18n-target');
 
-        if (target === 'title') {
-            document.title = translation;
-        } else if (target === 'description') {
-            const meta = document.querySelector('meta[name="description"]');
-            if (meta) meta.setAttribute('content', translation);
+            if (target === 'title') {
+                document.title = translation;
+            } else if (target === 'description') {
+                const meta = document.querySelector('meta[name="description"]');
+                if (meta) meta.setAttribute('content', translation);
+            }
+
+            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                el.placeholder = translation;
+            } else {
+                el.textContent = translation;
+            }
+        });
+
+        document.querySelectorAll('[data-i18n-html]').forEach(el => {
+            const key = el.getAttribute('data-i18n-html');
+            el.innerHTML = s[key] ?? key;
+        });
+
+        const langToggleBtn = document.getElementById('lang-toggle-btn');
+        if (langToggleBtn) {
+            langToggleBtn.textContent = s.lang_toggle;
         }
-
-        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-            el.placeholder = translation;
-        } else {
-            el.textContent = translation;
-        }
-    });
-
-    document.querySelectorAll('[data-i18n-html]').forEach(el => {
-        const key = el.getAttribute('data-i18n-html');
-        el.innerHTML = s[key] ?? key;
-    });
-
-    const langToggleBtn = document.getElementById('lang-toggle-btn');
-    if (langToggleBtn) {
-        langToggleBtn.textContent = s.lang_toggle;
     }
 
     localStorage.setItem('dakkn_lang', lang);
+    // Set ASP.NET Core Culture Cookie: c=ar|uic=ar
+    setCookie(".AspNetCore.Culture", `c=${lang}|uic=${lang}`, 365);
 
     currentTranslations = s;
     if (typeof renderAllProducts === 'function') {
@@ -67,7 +95,7 @@ async function applyLang(lang) {
 }
 
 function toggleLang() {
-    applyLang(currentLang === 'en' ? 'ar' : 'en');
+    applyLang(currentLang === 'en' ? 'ar' : 'en', true);
 }
 
 function getHeaderOffset() {
@@ -198,7 +226,22 @@ function initScrollSpy() {
 }
 /* ── Boot ────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
-    const saved = localStorage.getItem('dakkn_lang') ?? 'en';
+    // Priority: Cookie -> LocalStorage -> Default 'ar'
+    const cookieValue = getCookie(".AspNetCore.Culture");
+    let saved = 'ar';
+
+    if (cookieValue) {
+        // Extract 'ar' or 'en' from 'c=ar|uic=ar'
+        const match = cookieValue.match(/c=([a-z]{2})/);
+        if (match) {
+            saved = match[1];
+        } else {
+            saved = localStorage.getItem('dakkn_lang') ?? 'ar';
+        }
+    } else {
+        saved = localStorage.getItem('dakkn_lang') ?? 'ar';
+    }
+
     applyLang(saved);
 
     initScrollAnimations();

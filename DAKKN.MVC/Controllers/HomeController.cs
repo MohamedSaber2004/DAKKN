@@ -1,3 +1,4 @@
+using DAKKN.Application.Localization;
 using DAKKN.MVC.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -16,6 +17,13 @@ namespace DAKKN.MVC.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+
+        [HttpGet]
+        public IActionResult GetTranslations(string lang)
+        {
+            var translations = JsonLocalizationProvider.GetTranslations(lang);
+            return Json(translations);
         }
 
         public IActionResult Privacy()
