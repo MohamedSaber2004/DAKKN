@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using DAKKN.Application;
 using DAKKN.Application.Localization;
 using DAKKN.Infrastructure;
@@ -46,20 +47,80 @@ namespace DAKKN.MVC
             builder.Services.AddSingleton<IStringLocalizerFactory, JsonStringLocalizerFactory>();
             builder.Services.AddLocalization();
 
+            builder.Services.AddApiVersioning(options =>
+            {
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.AssumeDefaultVersionWhenUnspecified = true;
+                options.ReportApiVersions = true;
+            }).AddMvc();
+
             builder.Services.AddControllersWithViews()
                 .AddViewLocalization()
                 .AddDataAnnotationsLocalization();
 
             var app = builder.Build();
 
+            if(!app.Environment.IsDevelopment())
+            {
+                app.UseHsts();
+            }
+
+            app.UseHttpsRedirection();
+
+            app.UseXContentTypeOptions();
+
+            app.UseXfo(xfo => xfo.Deny());
+
+            app.UseXXssProtection(options => options.EnabledWithBlockMode());
+
+            app.UseReferrerPolicy(opts => opts.NoReferrer());
+
+            app.UseCsp(opts => opts
+                .ScriptSources(s => s
+                    .Self()
+                    .CustomSources(
+                        "https://cdn.tailwindcss.com",
+                        "https://fonts.googleapis.com",
+                        "https://cdnjs.cloudflare.com"
+                    )
+                    .UnsafeInline()
+                )
+                .StyleSources(s => s
+                    .Self()
+                    .CustomSources(
+                        "https://fonts.googleapis.com",
+                        "https://fonts.gstatic.com",
+                        "https://cdn.tailwindcss.com"
+                    )
+                    .UnsafeInline() 
+                )
+                .FontSources(s => s
+                    .Self()
+                    .CustomSources(
+                        "https://fonts.gstatic.com",
+                        "https://fonts.googleapis.com"
+                    )
+                )
+                .ImageSources(s => s
+                    .Self()
+                    .CustomSources(
+                        "https://lh3.googleusercontent.com",
+                        "data:"
+                    )
+                )
+                .ConnectSources(s => s
+                    .Self()
+                )
+                .FrameSources(s => s.None())
+                .ObjectSources(s => s.None())
+            );
+
             var supportedCultures = new[] { "en", "ar" };
             var localizationOptions = new RequestLocalizationOptions()
-                .SetDefaultCulture(supportedCultures[1]) // Default to Arabic
+                .SetDefaultCulture(supportedCultures[1])
                 .AddSupportedCultures(supportedCultures)
                 .AddSupportedUICultures(supportedCultures);
 
-            // Remove AcceptLanguageHeaderRequestCultureProvider to force Arabic as default 
-            // even if browser language is English
             localizationOptions.RequestCultureProviders.Remove(
                 localizationOptions.RequestCultureProviders.OfType<AcceptLanguageHeaderRequestCultureProvider>().First()
             );
@@ -69,10 +130,8 @@ namespace DAKKN.MVC
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();

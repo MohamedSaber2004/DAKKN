@@ -3,7 +3,7 @@ let currentTranslations = {};
 
 async function fetchTranslations(lang) {
     try {
-        const response = await fetch(`/Home/GetTranslations?lang=${lang}`);
+        const response = await fetch(`/api/v1/translations?lang=${lang}`);
         if (!response.ok) {
             throw new Error(`Failed to load translation file: ${response.statusText}`);
         }
