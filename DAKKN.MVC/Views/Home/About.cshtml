@@ -1,0 +1,382 @@
+﻿@{
+    Layout = "_LayoutLanding";
+    ViewData["Title"] = "About Us - DAKKN";
+    ViewData["Description"] = "Learn the story behind DAKKN — built from a passion for quality, engineered for creators who refuse to settle.";
+}
+
+<span class="hidden" data-i18n="about_title" data-i18n-target="title"></span>
+<span class="hidden" data-i18n="about_description" data-i18n-target="description"></span>
+
+<!-- Top Navbar (reused from Index) -->
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-4 md:px-16 h-16 md:h-20 bg-surface/75 dark:bg-surface-container/75 backdrop-blur-md border-b border-outline-variant/10 shadow-sm navbar-animate">
+    <div class="flex items-center gap-4 md:gap-6">
+        <a href="/" class="font-sans text-xl md:text-2xl font-extrabold tracking-tight text-primary logo-glow cursor-pointer" data-i18n="brand">DAKKN</a>
+        <div class="hidden lg:flex items-center gap-1">
+            <a href="/#shop" class="nav-link-premium nav-icon-link" data-section="shop">
+                <span class="material-symbols-outlined text-[17px]">local_fire_department</span>
+                <span data-i18n="nav_shop">Shop</span>
+            </a>
+            <a href="/#categories" class="nav-link-premium nav-icon-link" data-section="categories">
+                <span class="material-symbols-outlined text-[17px]">grid_view</span>
+                <span data-i18n="nav_categories">Categories</span>
+            </a>
+            <a href="/#all-products" class="nav-link-premium nav-icon-link">
+                <span class="material-symbols-outlined text-[17px]">inventory_2</span>
+                <span data-i18n="nav_all_products">Products</span>
+            </a>
+            <a href="/Home/About" class="nav-link-premium nav-icon-link active">
+                <span class="material-symbols-outlined text-[17px]">groups</span>
+                <span data-i18n="nav_about">About</span>
+            </a>
+            <a href="/#contact" class="nav-link-premium nav-icon-link">
+                <span class="material-symbols-outlined text-[17px]">support_agent</span>
+                <span data-i18n="nav_support">Support</span>
+            </a>
+        </div>
+    </div>
+    <div class="flex items-center gap-1 md:gap-3">
+        <button aria-label="person" class="navbar-icon-btn scale-90 md:scale-100" title="Account">
+            <span class="material-symbols-outlined text-[24px]">person</span>
+        </button>
+        <button aria-label="shopping_cart" class="navbar-icon-btn relative scale-90 md:scale-100" title="Cart">
+            <span class="material-symbols-outlined text-[24px]">shopping_cart</span>
+            <span class="absolute top-1.5 right-1.5 rtl:right-auto rtl:left-1.5 w-2 h-2 bg-tertiary-container rounded-full"></span>
+        </button>
+        <button id="lang-toggle-btn" onclick="toggleLang()" class="lang-pill-premium text-[11px] md:text-[13px] px-3 md:px-4 py-1.5 md:py-2">
+            العربية
+        </button>
+    </div>
+</nav>
+
+<main class="flex-grow pt-20">
+
+    <!-- ① HERO BANNER -->
+    <section class="relative min-h-[55vh] flex items-center justify-center px-4 md:px-16 py-16 md:py-24 overflow-hidden bg-cyan-50">
+        <!-- Ambient blobs -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+            <div class="deco-blob animate-blob-1 bg-primary/20 w-[500px] h-[500px] -top-32 -left-32 rtl:-left-auto rtl:-right-32"></div>
+            <div class="deco-blob animate-blob-2 bg-tertiary-container/25 w-[400px] h-[400px] -bottom-20 right-0"></div>
+            <div class="deco-ring w-[280px] h-[280px] top-12 right-1/4 opacity-50"></div>
+            <div class="deco-ring-solid w-[450px] h-[450px] -bottom-40 -left-20 opacity-30"></div>
+            <div class="deco-dots-grid top-16 right-16 opacity-50"></div>
+            <div class="deco-shape-diamond top-1/3 left-16 rtl:left-auto rtl:right-16" style="animation-delay:1.5s"></div>
+            <div class="deco-shape-square bottom-1/3 right-24 rtl:right-auto rtl:left-24" style="animation-delay:3s"></div>
+        </div>
+
+        <div class="relative z-10 max-w-3xl mx-auto text-center flex flex-col items-center gap-5">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-container-high border border-outline-variant/30 w-fit shadow-sm scroll-animate visible">
+                <span class="w-2.5 h-2.5 rounded-full bg-tertiary animate-pulse"></span>
+                <span data-i18n="about_badge" class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Our Story</span>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-extrabold text-on-surface leading-tight tracking-tight scroll-animate visible">
+                <span data-i18n="about_hero_h1a">Crafted with</span>
+                <span class="text-primary" data-i18n="about_hero_h1b"> Purpose</span><span data-i18n="about_hero_h1c">,</span><br />
+                <span data-i18n="about_hero_h1d">Built for</span>
+                <span class="text-tertiary" data-i18n="about_hero_h1e"> Creators</span>.
+            </h1>
+            <p data-i18n="about_hero_p" class="text-base md:text-lg text-on-surface-variant max-w-xl leading-relaxed scroll-animate">
+                DAKKN was born from a simple frustration — great art deserved better stickers. So we built them from scratch, one layer at a time.
+            </p>
+            <div class="flex flex-wrap justify-center gap-3 pt-2 scroll-animate delay-200">
+                <a href="#our-mission" class="bg-primary hover:bg-primary-container text-on-primary font-semibold px-7 py-3.5 rounded-xl transition-all shadow-[0_4px_14px_0_rgba(8,145,178,0.35)] hover:shadow-none hover:-translate-y-0.5 duration-200 text-sm">
+                    <span data-i18n="about_cta_mission">Our Mission</span>
+                </a>
+                <a href="/#shop" class="border border-primary/30 text-primary hover:bg-primary/5 font-semibold px-7 py-3.5 rounded-xl transition-all duration-200 text-sm">
+                    <span data-i18n="btn_shop">Shop Best Sellers</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ② STATS STRIP -->
+    <section class="bg-white border-t border-b border-outline-variant/10 py-10 px-4 md:px-16">
+        <div class="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-0 md:divide-x divide-outline-variant/20" data-stagger>
+            <div class="flex flex-col items-center gap-1 scroll-animate delay-100">
+                <span class="text-4xl md:text-5xl font-black text-primary font-sans">10K+</span>
+                <span data-i18n="stat1" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider text-center">Creators Served</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 scroll-animate delay-200">
+                <span class="text-4xl md:text-5xl font-black text-primary font-sans">5</span>
+                <span data-i18n="stat2" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider text-center">Layers Per Sticker</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 scroll-animate delay-300">
+                <span class="text-4xl md:text-5xl font-black text-primary font-sans">5yr</span>
+                <span data-i18n="stat3" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider text-center">Outdoor Durability</span>
+            </div>
+            <div class="flex flex-col items-center gap-1 scroll-animate delay-400">
+                <span class="text-4xl md:text-5xl font-black text-primary font-sans">6</span>
+                <span data-i18n="stat4" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider text-center">Finish Types</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ③ ORIGIN STORY -->
+    <section id="our-mission" class="relative overflow-hidden py-16 md:py-28 px-4 md:px-16 bg-cyan-50 border-t border-outline-variant/10">
+        <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+            <div class="deco-blob animate-blob-3 bg-secondary-container/15 w-[350px] h-[350px] -top-12 -right-12"></div>
+            <div class="deco-dots-grid bottom-16 left-8 opacity-40"></div>
+        </div>
+        <div class="relative z-10 max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-20 items-center">
+            <!-- Left: story text -->
+            <div class="flex flex-col gap-6 scroll-animate-left">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-container-high border border-outline-variant/30 w-fit">
+                    <span class="material-symbols-outlined text-primary text-[18px]">auto_stories</span>
+                    <span data-i18n="about_story_badge" class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">The Origin</span>
+                </div>
+                <h2 data-i18n="about_story_h2" class="text-3xl md:text-4xl font-extrabold text-on-surface leading-snug">
+                    A passion project that refused to stay small.
+                </h2>
+                <p data-i18n="about_story_p1" class="text-sm md:text-base text-on-surface-variant leading-relaxed">
+                    DAKKN started in a small workshop in 2019, frustrated by stickers that peeled, faded, and failed. Our founders — a pair of product designers and a materials engineer — spent two years perfecting a 5-layer vinyl formula that could survive everything from dishwashers to snowboard runs.
+                </p>
+                <p data-i18n="about_story_p2" class="text-sm md:text-base text-on-surface-variant leading-relaxed">
+                    What started as a personal project quickly found its audience: artists, brands, and creators who refused to compromise. Today, DAKKN ships to thousands of customers across Egypt and beyond.
+                </p>
+                <div class="flex items-center gap-4 pt-2">
+                    <div class="w-12 h-12 rounded-xl bg-primary/15 border border-primary/25 flex items-center justify-center text-primary flex-shrink-0">
+                        <span class="material-symbols-outlined text-2xl">pin_drop</span>
+                    </div>
+                    <div>
+                        <p data-i18n="about_hq_label" class="text-xs font-bold text-primary uppercase tracking-wider">Headquarters</p>
+                        <p data-i18n="about_hq_val" class="text-sm font-semibold text-on-surface">Damietta, Egypt</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: visual stack -->
+            <div class="relative flex items-center justify-center scroll-animate-right">
+                <div class="absolute w-full h-full bg-[radial-gradient(circle_at_center,rgba(8,145,178,0.08),transparent_70%)] z-0 blur-3xl"></div>
+                <div class="relative z-10 grid grid-cols-2 gap-4 w-full max-w-md">
+                    <div class="glass-panel rounded-2xl p-5 flex flex-col gap-3 col-span-2 shadow-md">
+                        <span class="material-symbols-outlined text-primary text-3xl">emoji_objects</span>
+                        <h3 data-i18n="about_vision_h" class="font-extrabold text-on-surface text-base">Our Vision</h3>
+                        <p data-i18n="about_vision_p" class="text-xs text-on-surface-variant leading-relaxed">To become the most trusted sticker manufacturer in the MENA region — where quality is the default, not the premium.</p>
+                    </div>
+                    <div class="glass-panel rounded-2xl p-5 flex flex-col gap-3 shadow-md">
+                        <span class="material-symbols-outlined text-tertiary text-2xl">target</span>
+                        <h3 data-i18n="about_mission_h" class="font-extrabold text-on-surface text-sm">Mission</h3>
+                        <p data-i18n="about_mission_p" class="text-xs text-on-surface-variant leading-relaxed">Make industrial-grade vinyl stickers accessible to every creator.</p>
+                    </div>
+                    <div class="glass-panel rounded-2xl p-5 flex flex-col gap-3 shadow-md">
+                        <span class="material-symbols-outlined text-secondary text-2xl">handshake</span>
+                        <h3 data-i18n="about_promise_h" class="font-extrabold text-on-surface text-sm">Promise</h3>
+                        <p data-i18n="about_promise_p" class="text-xs text-on-surface-variant leading-relaxed">Every order ships with our 100% satisfaction guarantee.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ④ MANUFACTURING PROCESS TIMELINE -->
+    <section class="relative overflow-hidden py-16 md:py-28 px-4 md:px-16 bg-white border-t border-outline-variant/10">
+        <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+            <div class="deco-shape-diamond top-20 right-20 rtl:right-auto rtl:left-20 opacity-70" style="animation-delay:2s"></div>
+            <div class="deco-ring-solid w-[400px] h-[400px] -bottom-40 left-1/3 opacity-25"></div>
+        </div>
+        <div class="relative z-10 max-w-3xl mx-auto text-center mb-16 scroll-animate">
+            <h2 data-i18n="process_h2" class="text-3xl md:text-4xl font-extrabold text-on-surface mb-4">How We Build Every Sticker</h2>
+            <p data-i18n="process_p" class="text-base text-on-surface-variant leading-relaxed">Five precise layers. Zero shortcuts.</p>
+        </div>
+
+        <div class="relative z-10 max-w-4xl mx-auto">
+            <!-- Vertical connector line -->
+            <div class="absolute left-6 ltr:left-6 rtl:right-6 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary/40 via-primary/20 to-transparent hidden md:block"></div>
+
+            <div class="flex flex-col gap-10" data-stagger>
+                <!-- Step 1 -->
+                <div class="flex flex-col md:flex-row gap-5 md:gap-8 items-start scroll-animate delay-100">
+                    <div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary text-on-primary font-black text-lg flex items-center justify-center shadow-lg shadow-primary/25 relative z-10">01</div>
+                    <div class="glass-panel rounded-2xl p-6 flex-grow flex flex-col md:flex-row gap-5 items-start shadow-sm">
+                        <span class="material-symbols-outlined text-primary text-3xl flex-shrink-0">brush</span>
+                        <div>
+                            <h3 data-i18n="step1_h" class="font-extrabold text-on-surface text-base mb-1">Design & Pre-press</h3>
+                            <p data-i18n="step1_p" class="text-sm text-on-surface-variant leading-relaxed">Your artwork is color-profiled and pre-press optimized for our 8-color printing system, ensuring pixel-perfect reproduction.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Step 2 -->
+                <div class="flex flex-col md:flex-row gap-5 md:gap-8 items-start scroll-animate delay-200">
+                    <div class="flex-shrink-0 w-12 h-12 rounded-full bg-secondary text-on-secondary font-black text-lg flex items-center justify-center shadow-lg shadow-secondary/25 relative z-10">02</div>
+                    <div class="glass-panel rounded-2xl p-6 flex-grow flex flex-col md:flex-row gap-5 items-start shadow-sm">
+                        <span class="material-symbols-outlined text-secondary text-3xl flex-shrink-0">layers</span>
+                        <div>
+                            <h3 data-i18n="step2_h" class="font-extrabold text-on-surface text-base mb-1">5-Layer Lamination</h3>
+                            <p data-i18n="step2_p" class="text-sm text-on-surface-variant leading-relaxed">Adhesive base → carrier liner → print layer → UV-resistant ink → scratch-resistant laminate. Each layer bonded under pressure and heat.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Step 3 -->
+                <div class="flex flex-col md:flex-row gap-5 md:gap-8 items-start scroll-animate delay-300">
+                    <div class="flex-shrink-0 w-12 h-12 rounded-full bg-tertiary text-on-tertiary font-black text-lg flex items-center justify-center shadow-lg shadow-tertiary/25 relative z-10">03</div>
+                    <div class="glass-panel rounded-2xl p-6 flex-grow flex flex-col md:flex-row gap-5 items-start shadow-sm">
+                        <span class="material-symbols-outlined text-tertiary text-3xl flex-shrink-0">content_cut</span>
+                        <div>
+                            <h3 data-i18n="step3_h" class="font-extrabold text-on-surface text-base mb-1">Precision Die-Cutting</h3>
+                            <p data-i18n="step3_p" class="text-sm text-on-surface-variant leading-relaxed">CNC-guided cutting tables trace your design contour to within 0.1mm accuracy. Every edge is clean, every kiss-cut perfect.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Step 4 -->
+                <div class="flex flex-col md:flex-row gap-5 md:gap-8 items-start scroll-animate delay-400">
+                    <div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary text-on-primary font-black text-lg flex items-center justify-center shadow-lg shadow-primary/25 relative z-10">04</div>
+                    <div class="glass-panel rounded-2xl p-6 flex-grow flex flex-col md:flex-row gap-5 items-start shadow-sm">
+                        <span class="material-symbols-outlined text-primary text-3xl flex-shrink-0">fact_check</span>
+                        <div>
+                            <h3 data-i18n="step4_h" class="font-extrabold text-on-surface text-base mb-1">Quality Control</h3>
+                            <p data-i18n="step4_p" class="text-sm text-on-surface-variant leading-relaxed">Every batch is inspected under UV lighting for color accuracy, edge quality, and adhesive integrity. Defective units never ship.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Step 5 -->
+                <div class="flex flex-col md:flex-row gap-5 md:gap-8 items-start scroll-animate delay-500">
+                    <div class="flex-shrink-0 w-12 h-12 rounded-full bg-secondary text-on-secondary font-black text-lg flex items-center justify-center shadow-lg shadow-secondary/25 relative z-10">05</div>
+                    <div class="glass-panel rounded-2xl p-6 flex-grow flex flex-col md:flex-row gap-5 items-start shadow-sm">
+                        <span class="material-symbols-outlined text-secondary text-3xl flex-shrink-0">local_shipping</span>
+                        <div>
+                            <h3 data-i18n="step5_h" class="font-extrabold text-on-surface text-base mb-1">Packaged & Shipped</h3>
+                            <p data-i18n="step5_p" class="text-sm text-on-surface-variant leading-relaxed">Orders are packed in rigid-backed mailers to prevent bending, and shipped with tracking within 24–48 hours of confirmation.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ⑤ CORE VALUES -->
+    <section class="relative overflow-hidden py-16 md:py-28 px-4 md:px-16 bg-cyan-50 border-t border-outline-variant/10">
+        <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+            <div class="deco-blob animate-blob-2 bg-primary/10 w-[300px] h-[300px] top-0 right-0"></div>
+            <div class="deco-ring w-[240px] h-[240px] bottom-12 left-1/4 opacity-40"></div>
+        </div>
+        <div class="relative z-10 max-w-3xl mx-auto text-center mb-16 scroll-animate">
+            <h2 data-i18n="values_h2" class="text-3xl md:text-4xl font-extrabold text-on-surface mb-4">What We Stand For</h2>
+            <p data-i18n="values_p" class="text-base text-on-surface-variant leading-relaxed">The principles baked into every decision we make.</p>
+        </div>
+        <div class="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto" data-stagger>
+            <div class="glass-panel p-7 rounded-2xl flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 shadow-sm scroll-animate delay-100">
+                <div class="w-11 h-11 rounded-xl bg-primary/15 border border-primary/25 flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined text-xl">verified</span>
+                </div>
+                <h3 data-i18n="val1_h" class="font-extrabold text-on-surface">Uncompromising Quality</h3>
+                <p data-i18n="val1_p" class="text-sm text-on-surface-variant leading-relaxed">We test every material against dozens of alternatives before it touches a product. Good enough is never good enough.</p>
+            </div>
+            <div class="glass-panel p-7 rounded-2xl flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 shadow-sm scroll-animate delay-200">
+                <div class="w-11 h-11 rounded-xl bg-tertiary-container/30 border border-tertiary/25 flex items-center justify-center text-tertiary">
+                    <span class="material-symbols-outlined text-xl">diversity_3</span>
+                </div>
+                <h3 data-i18n="val2_h" class="font-extrabold text-on-surface">Creator-First Mindset</h3>
+                <p data-i18n="val2_p" class="text-sm text-on-surface-variant leading-relaxed">Artists, brands, and makers aren't just customers — they're co-pilots. Their feedback drives every product iteration.</p>
+            </div>
+            <div class="glass-panel p-7 rounded-2xl flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 shadow-sm scroll-animate delay-300">
+                <div class="w-11 h-11 rounded-xl bg-secondary-container/30 border border-secondary/25 flex items-center justify-center text-secondary">
+                    <span class="material-symbols-outlined text-xl">eco</span>
+                </div>
+                <h3 data-i18n="val3_h" class="font-extrabold text-on-surface">Responsible Manufacturing</h3>
+                <p data-i18n="val3_p" class="text-sm text-on-surface-variant leading-relaxed">We minimize waste through precise sheet utilization and use water-based inks wherever process allows.</p>
+            </div>
+            <div class="glass-panel p-7 rounded-2xl flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 shadow-sm scroll-animate delay-100">
+                <div class="w-11 h-11 rounded-xl bg-primary/15 border border-primary/25 flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined text-xl">bolt</span>
+                </div>
+                <h3 data-i18n="val4_h" class="font-extrabold text-on-surface">Speed Without Sacrifice</h3>
+                <p data-i18n="val4_p" class="text-sm text-on-surface-variant leading-relaxed">Fast turnaround is a feature — not a corner-cut. Our production lines are optimized to ship within 24 hours.</p>
+            </div>
+            <div class="glass-panel p-7 rounded-2xl flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 shadow-sm scroll-animate delay-200">
+                <div class="w-11 h-11 rounded-xl bg-tertiary-container/30 border border-tertiary/25 flex items-center justify-center text-tertiary">
+                    <span class="material-symbols-outlined text-xl">lock_open</span>
+                </div>
+                <h3 data-i18n="val5_h" class="font-extrabold text-on-surface">Radical Transparency</h3>
+                <p data-i18n="val5_p" class="text-sm text-on-surface-variant leading-relaxed">No hidden costs. No vague lead times. You always know exactly what you're getting and when to expect it.</p>
+            </div>
+            <div class="glass-panel p-7 rounded-2xl flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 shadow-sm scroll-animate delay-300">
+                <div class="w-11 h-11 rounded-xl bg-secondary-container/30 border border-secondary/25 flex items-center justify-center text-secondary">
+                    <span class="material-symbols-outlined text-xl">star</span>
+                </div>
+                <h3 data-i18n="val6_h" class="font-extrabold text-on-surface">Lasting Impressions</h3>
+                <p data-i18n="val6_p" class="text-sm text-on-surface-variant leading-relaxed">Our stickers outlive the surfaces they're on. We design for 5+ years because your art deserves to stay exactly as you intended.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ⑥ TEAM -->
+    <section class="relative overflow-hidden py-16 md:py-28 px-4 md:px-16 bg-white border-t border-outline-variant/10">
+        <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+            <div class="deco-blob animate-blob-1 bg-primary/10 w-[320px] h-[320px] -top-10 left-1/3"></div>
+            <div class="deco-dots-grid top-10 right-10 opacity-40"></div>
+        </div>
+        <div class="relative z-10 max-w-3xl mx-auto text-center mb-16 scroll-animate">
+            <h2 data-i18n="team_h2" class="text-3xl md:text-4xl font-extrabold text-on-surface mb-4">The People Behind DAKKN</h2>
+            <p data-i18n="team_p" class="text-base text-on-surface-variant leading-relaxed">Small team. Big standards.</p>
+        </div>
+        <div class="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto" data-stagger>
+            <!-- Member 1 -->
+            <div class="glass-panel p-7 rounded-2xl flex flex-col items-center text-center gap-4 hover:-translate-y-1 transition-transform duration-300 shadow-sm scroll-animate delay-100">
+                <div class="w-20 h-20 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 border-2 border-primary/20 flex items-center justify-center text-primary">
+                    <span class="material-symbols-outlined text-4xl">person</span>
+                </div>
+                <div>
+                    <h3 data-i18n="team1_name" class="font-extrabold text-on-surface text-base">Karim Hassan</h3>
+                    <p data-i18n="team1_role" class="text-xs font-bold text-primary uppercase tracking-wider mt-0.5">Co-founder & CEO</p>
+                </div>
+                <p data-i18n="team1_bio" class="text-xs text-on-surface-variant leading-relaxed">Product designer turned entrepreneur. Obsessed with the gap between beautiful art and terrible sticker quality.</p>
+            </div>
+            <!-- Member 2 -->
+            <div class="glass-panel p-7 rounded-2xl flex flex-col items-center text-center gap-4 hover:-translate-y-1 transition-transform duration-300 shadow-sm scroll-animate delay-200">
+                <div class="w-20 h-20 rounded-full bg-gradient-to-br from-tertiary/30 to-tertiary/10 border-2 border-tertiary/20 flex items-center justify-center text-tertiary">
+                    <span class="material-symbols-outlined text-4xl">engineering</span>
+                </div>
+                <div>
+                    <h3 data-i18n="team2_name" class="font-extrabold text-on-surface text-base">Nour El-Din</h3>
+                    <p data-i18n="team2_role" class="text-xs font-bold text-tertiary uppercase tracking-wider mt-0.5">Co-founder & Materials Engineer</p>
+                </div>
+                <p data-i18n="team2_bio" class="text-xs text-on-surface-variant leading-relaxed">Materials science graduate who spent two years testing vinyl compounds before landing on the perfect 5-layer formula.</p>
+            </div>
+            <!-- Member 3 -->
+            <div class="glass-panel p-7 rounded-2xl flex flex-col items-center text-center gap-4 hover:-translate-y-1 transition-transform duration-300 shadow-sm scroll-animate delay-300">
+                <div class="w-20 h-20 rounded-full bg-gradient-to-br from-secondary/30 to-secondary/10 border-2 border-secondary/20 flex items-center justify-center text-secondary">
+                    <span class="material-symbols-outlined text-4xl">palette</span>
+                </div>
+                <div>
+                    <h3 data-i18n="team3_name" class="font-extrabold text-on-surface text-base">Salma Youssef</h3>
+                    <p data-i18n="team3_role" class="text-xs font-bold text-secondary uppercase tracking-wider mt-0.5">Head of Creative</p>
+                </div>
+                <p data-i18n="team3_bio" class="text-xs text-on-surface-variant leading-relaxed">Illustrator and print specialist who bridges the world of digital art and physical manufacturing with an eye for color accuracy.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ⑦ CTA BANNER -->
+    <section class="relative overflow-hidden py-16 md:py-20 px-4 md:px-16 bg-primary">
+        <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+            <div class="absolute w-[600px] h-[600px] rounded-full bg-white/5 -top-40 -right-40 blur-3xl"></div>
+            <div class="deco-ring w-[300px] h-[300px] bottom-0 left-1/4 opacity-20"></div>
+        </div>
+        <div class="relative z-10 max-w-3xl mx-auto text-center flex flex-col items-center gap-6">
+            <h2 data-i18n="cta_h2" class="text-3xl md:text-4xl font-extrabold text-on-primary leading-tight">Ready to make something that lasts?</h2>
+            <p data-i18n="cta_p" class="text-sm md:text-base text-on-primary/80 max-w-lg leading-relaxed">
+                Browse our catalog or reach out for a custom bulk order. Either way — we've got you covered.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-3">
+                <a href="/#shop" class="bg-white text-primary font-bold px-8 py-3.5 rounded-xl hover:bg-primary-container transition-colors duration-200 text-sm shadow-lg">
+                    <span data-i18n="btn_shop">Shop Best Sellers</span>
+                </a>
+                <a href="/#contact" class="border-2 border-white/40 text-on-primary font-bold px-8 py-3.5 rounded-xl hover:bg-white/10 transition-colors duration-200 text-sm">
+                    <span data-i18n="cta_contact">Contact Us</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<!-- Footer (reused from Index) -->
+<footer class="relative w-full py-12 px-4 md:px-16 grid grid-cols-1 md:grid-cols-12 gap-8 bg-white border-t border-outline-variant/10">
+    <div class="md:col-span-5 flex flex-col gap-4">
+        <span data-i18n="brand" class="text-2xl font-black text-on-surface">DAKKN</span>
+        <p data-i18n="footer_copy" class="text-xs text-on-surface-variant">© 2024 DAKKN Manufacturing. All rights reserved.</p>
+    </div>
+    <div class="md:col-span-7 flex flex-wrap gap-6 md:justify-end items-center">
+        <a data-i18n="f_privacy" class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors duration-200" asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
+        <a data-i18n="f_terms" class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors duration-200" asp-controller="Home" asp-action="Terms">Terms</a>
+    </div>
+</footer>

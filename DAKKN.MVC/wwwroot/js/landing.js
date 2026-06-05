@@ -27,10 +27,20 @@ async function applyLang(lang) {
 
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
+        const translation = s[key] ?? key;
+        const target = el.getAttribute('data-i18n-target');
+
+        if (target === 'title') {
+            document.title = translation;
+        } else if (target === 'description') {
+            const meta = document.querySelector('meta[name="description"]');
+            if (meta) meta.setAttribute('content', translation);
+        }
+
         if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-            el.placeholder = s[key] ?? key;
+            el.placeholder = translation;
         } else {
-            el.textContent = s[key] ?? key;
+            el.textContent = translation;
         }
     });
 
