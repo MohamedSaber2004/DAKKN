@@ -515,6 +515,8 @@
   "admin_quick_actions": "Quick Actions",
   "admin_recent_orders": "Recent Orders",
   "admin_view_all": "View All",
+  "admin_orders_mgmt": "Orders Management",
+  "admin_users_mgmt": "User Management",
   "admin_ship_orders": "Ship Orders",
   "admin_marketing": "Marketing Campaign",
   "admin_coupons": "Coupons",

@@ -29,12 +29,29 @@
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #bcc9c8; border-radius: 10px; }
+        
+        .admin-logo-container {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .admin-logo-container:hover {
+            transform: scale(1.1) rotate(5deg);
+            filter: drop-shadow(0 0 12px rgba(0, 106, 104, 0.3));
+        }
+        .admin-logo-img {
+            transition: all 0.4s ease;
+        }
+        .admin-logo-container:hover .admin-logo-img {
+            filter: brightness(1.1);
+        }
     </style>
 </head>
 <body class="text-text-primary h-screen overflow-hidden flex">
     <!-- SideNavBar -->
     <aside class="hidden md:flex flex-col docked ltr:left-0 ltr:border-r rtl:right-0 rtl:border-l h-screen w-64 border-border bg-surface shadow-medium z-40 relative flex-shrink-0">
-        <div class="p-lg border-b border-border flex flex-col items-center justify-center gap-sm">
+        <div class="p-lg border-b border-border flex flex-col items-center justify-center gap-sm group cursor-pointer">
+            <div class="admin-logo-container">
+                <img src="/images/logo.png" alt="DAKKN Logo" class="h-16 admin-logo-img" />
+            </div>
             <h1 class="font-h2 text-h2 font-bold text-primary">@Localizer["brand"]</h1>
             <p class="font-body text-body text-text-secondary">@Localizer["admin_dashboard"]</p>
         </div>
@@ -78,7 +95,9 @@
         <header class="flex justify-between items-center w-full px-lg py-md z-30 bg-surface/80 backdrop-blur-md flex-shrink-0">
             <div class="flex items-center gap-md md:hidden">
                 <span class="material-symbols-outlined text-primary cursor-pointer text-2xl">menu</span>
-                <h2 class="font-h3 text-h3 font-black text-primary">@Localizer["brand"] Admin</h2>
+                <div class="admin-logo-container">
+                    <img src="/images/logo.png" alt="DAKKN Logo" class="h-10 admin-logo-img" />
+                </div>
             </div>
             <div class="hidden md:block">
                 <h2 class="font-h3 text-h3 font-bold text-text-primary">@ViewData["Title"]</h2>
