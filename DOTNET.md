@@ -31,11 +31,14 @@ This project uses **Tailwind CSS** and **Stitch** for design-to-code workflows.
 - **Interactive UI**: Use Tailwind's state variants (`hover:`, `focus:`, `group-hover:`, `dark:`).
 
 ### 2.4 Localization (i18n)
-- **JSON-Based**: Use the existing JS-based i18n system in `wwwroot/js/i18n/`.
-- **Implementation**: 
-    - Every user-facing string must have a key in `en.json` and `ar.json`.
-    - Use `data-i18n="key_name"` on HTML elements.
-    - For dynamic content in JS, use the `currentTranslations` object.
+- **JSON-Based Source**: The primary source for all translations is the JSON files in `DAKKN.Application/Localization/Resources/`.
+- **Implementation in Razor**: 
+    - **Mandatory**: Use `@Localizer["key_name"]` for all user-facing strings in `.cshtml` views.
+    - **Injection**: Use `@inject IStringLocalizer<Messages> Localizer` at the top of the view (or in `_ViewImports.cshtml`).
+    - **Avoid**: Do not use `data-i18n` attributes for static text; prefer server-side rendering with `@Localizer`.
+- **Implementation in JavaScript**:
+    - For dynamic content or UI elements managed exclusively by JS, use the `currentTranslations` object.
+    - Switching languages should trigger a page reload to ensure server-side `@Localizer` updates.
 
 ### 2.5 JavaScript & Client-Side Logic
 - **`landing.js`**: Central script for i18n, scroll animations, and slider engines.
