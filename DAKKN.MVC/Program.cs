@@ -42,6 +42,7 @@ namespace DAKKN.MVC
 
             builder.Host.UseSerilog();
 
+
             builder.Services.AddApplication();
             builder.Services.AddPersistence();
             builder.Services.AddInfrastructure();
