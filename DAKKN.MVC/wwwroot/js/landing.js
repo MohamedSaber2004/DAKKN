@@ -278,6 +278,84 @@ document.addEventListener('DOMContentLoaded', () => {
     if (typeof renderAllProducts === 'function') {
         renderAllProducts();
     }
+
+    // ── OTP Box Auto-Advance ─────────────────────────────
+    (function initOtpBoxes() {
+        const boxes = [...document.querySelectorAll('#otp-box-group input')];
+        if (!boxes.length) return;
+
+        boxes.forEach((box, idx) => {
+            box.addEventListener('input', e => {
+                const val = e.target.value.replace(/\D/g, '');
+                e.target.value = val.slice(-1);            // keep only last digit
+                if (val && idx < boxes.length - 1) boxes[idx + 1].focus();
+            });
+
+            box.addEventListener('keydown', e => {
+                if (e.key === 'Backspace' && !box.value && idx > 0) {
+                    boxes[idx - 1].focus();
+                    boxes[idx - 1].value = '';
+                }
+                if (e.key === 'ArrowLeft'  && idx > 0) boxes[idx - 1].focus();
+                if (e.key === 'ArrowRight' && idx < boxes.length - 1) boxes[idx + 1].focus();
+            });
+
+            // Handle paste on first box — distribute digits
+            box.addEventListener('paste', e => {
+                if (idx !== 0) return;
+                const text = (e.clipboardData || window.clipboardData).getData('text');
+                const digits = text.replace(/\D/g, '').slice(0, 6);
+                digits.split('').forEach((d, i) => { if (boxes[i]) boxes[i].value = d; });
+                const last = Math.min(digits.length, boxes.length - 1);
+                boxes[last].focus();
+                e.preventDefault();
+            });
+        });
+
+        // Auto-focus first box on load
+        boxes[0]?.focus();
+    })();
+
+    // ── Password Show / Hide ──────────────────────────────
+    (function initPasswordToggles() {
+        document.querySelectorAll('[data-pw-toggle]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const wrapper  = btn.closest('.relative');
+                const input    = wrapper?.querySelector('[data-pw-field]');
+                const eyeOpen  = btn.querySelector('[data-eye-open]');
+                const eyeClosed= btn.querySelector('[data-eye-closed]');
+                if (!input) return;
+
+                const isHidden = input.type === 'password';
+                input.type = isHidden ? 'text' : 'password';
+                eyeOpen?.classList.toggle('hidden', isHidden);
+                eyeClosed?.classList.toggle('hidden', !isHidden);
+            });
+        });
+    })();
+
+    // ── OTP Expiry Countdown (10-minute visual timer) ─────
+    (function initOtpCountdown() {
+        const el = document.getElementById('otp-countdown');
+        if (!el) return;
+
+        let remaining = 10 * 60;  // 600 seconds
+
+        const tick = () => {
+            const m = String(Math.floor(remaining / 60)).padStart(2, '0');
+            const s = String(remaining % 60).padStart(2, '0');
+            el.textContent = `${m}:${s}`;
+
+            if (remaining-- <= 0) {
+                clearInterval(timer);
+                el.textContent = '00:00';
+                el.classList.add('text-red-500');
+            }
+        };
+
+        tick();
+        const timer = setInterval(tick, 1000);
+    })();
 });
 
 /* ── Categories Slider Engine ───────────────────────────── */

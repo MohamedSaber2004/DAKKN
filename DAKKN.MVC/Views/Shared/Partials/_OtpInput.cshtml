@@ -1,0 +1,21 @@
+@model DAKKN.MVC.ViewModels.Auth.OtpViewModel
+
+<div class="flex gap-2.5 justify-center mb-8" dir="ltr" id="otp-box-group">
+    @foreach (var i in Enumerable.Range(1, 6))
+    {
+        <input type="text"
+               name="Digit@(i)"
+               id="otp-digit-@(i)"
+               maxlength="1"
+               inputmode="numeric"
+               pattern="[0-9]"
+               autocomplete="@(i == 1 ? "one-time-code" : "off")"
+               class="w-12 h-14 text-center text-2xl font-black rounded-2xl
+                      border-2 border-[var(--color-border)]
+                      bg-[var(--color-input-bg)]
+                      text-[var(--color-text-primary)]
+                      focus:border-[var(--color-primary)]
+                      focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20
+                      transition-all caret-transparent" />
+    }
+</div>

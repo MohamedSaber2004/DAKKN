@@ -51,13 +51,24 @@ tailwind.config = {
                 "error-container":        "#FEE2E2",
                 "on-error":               "#FFFFFF",
                 "on-error-container":     "#991B1B",
+
+                /* ── Auth Specific (StickerVault / Stitch) ───────── */
+                "auth-surface":           "#FFFFFF",
+                "auth-bg":                "#F8FAFB",
+                "auth-primary":           "#006a68",
+                "auth-text-primary":      "#1A1A1A",
+                "auth-text-secondary":    "#6B7280",
             },
             borderRadius: {
-                DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", "2xl": "1rem", full: "9999px"
+                DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", "2xl": "1rem", "3xl": "1.5rem", full: "9999px"
             },
             fontFamily: {
-                sans:    ["Inter",  "Cairo", "sans-serif"],
-                arabic:  ["Cairo",  "sans-serif"],
+                sans:    ["Inter", "Plus Jakarta Sans", "Cairo", "sans-serif"],
+                arabic:  ["Cairo", "sans-serif"],
+                display: ["Plus Jakarta Sans", "Inter", "sans-serif"],
+            },
+            boxShadow: {
+                'auth': '0 20px 40px rgba(0,0,0,0.12)',
             }
         }
     }
