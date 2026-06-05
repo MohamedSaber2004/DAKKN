@@ -49,6 +49,17 @@ namespace DAKKN.MVC
             builder.Services.AddSingleton<IStringLocalizerFactory, JsonStringLocalizerFactory>();
             builder.Services.AddLocalization();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                    builder =>
+                    {
+                        builder.AllowAnyOrigin()
+                               .AllowAnyMethod()
+                               .AllowAnyHeader();
+                    });
+            });
+
             builder.Services.AddApiVersioning(options =>
             {
                 options.DefaultApiVersion = new ApiVersion(1, 0);
@@ -82,6 +93,9 @@ namespace DAKKN.MVC
             app.UseXfo(xfo => xfo.Deny());
             app.UseXXssProtection(options => options.EnabledWithBlockMode());
             app.UseReferrerPolicy(opts => opts.NoReferrer());
+
+            app.UseStaticFiles();
+
             app.UseNoCacheHttpHeaders();
 
             if (app.Environment.IsDevelopment())
@@ -97,7 +111,8 @@ namespace DAKKN.MVC
                         .Self()
                         .CustomSources(
                             "https://fonts.googleapis.com",
-                            "https://fonts.gstatic.com"
+                            "https://fonts.gstatic.com",
+                            "https://cdn.tailwindcss.com"  
                         )
                         .UnsafeInline()
                     )
@@ -120,16 +135,18 @@ namespace DAKKN.MVC
                         .Self()
                         .CustomSources(
                             "https://cdn.tailwindcss.com",
-                            "https://localhost:44308",
-                            "https://localhost:7036",
-                            "http://localhost:5218"
+                            "localhost:*",
+                            "http://localhost:*",
+                            "https://localhost:*",
+                            "ws://localhost:*",
+                            "wss://localhost:*"
                         )
                     )
                     .FrameSources(s => s.None())
                     .ObjectSources(s => s.None())
                 );
             }
-            else if(app.Environment.IsProduction())
+            else
             {
                 app.UseCsp(opts => opts
                     .ScriptSources(s => s
@@ -143,7 +160,7 @@ namespace DAKKN.MVC
                         .CustomSources(
                             "https://fonts.googleapis.com",
                             "https://fonts.gstatic.com",
-                            "https://cdn.tailwindcss.com"
+                            "https://cdn.tailwindcss.com" 
                         )
                         .UnsafeInline()
                     )
@@ -161,7 +178,10 @@ namespace DAKKN.MVC
                             "data:"
                         )
                     )
-                    .ConnectSources(s => s.Self())
+                    .ConnectSources(s => s
+                        .Self()
+                        .CustomSources("https://cdn.tailwindcss.com")
+                    )
                     .FrameSources(s => s.None())
                     .ObjectSources(s => s.None())
                 );
@@ -181,10 +201,11 @@ namespace DAKKN.MVC
 
             app.UseRequestLocalization(localizationOptions);
 
-            app.UseStaticFiles();
-
             app.UseRouting();
 
+            app.UseCors("AllowAll");
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllers();
