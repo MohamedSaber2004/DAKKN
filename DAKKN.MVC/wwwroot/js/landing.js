@@ -68,7 +68,11 @@ async function applyLang(lang, reload = false) {
         }
     }
 
-    if (!Object.keys(currentTranslations).length) {
+    // Use pre-injected translations if available, otherwise fetch
+    if (window.currentTranslations && Object.keys(window.currentTranslations).length) {
+        currentTranslations = window.currentTranslations;
+        if (typeof renderAllProducts === 'function') renderAllProducts();
+    } else if (!Object.keys(currentTranslations).length) {
         const s = await fetchTranslations(lang || current);
         if (s) {
             currentTranslations = s;
@@ -77,8 +81,23 @@ async function applyLang(lang, reload = false) {
     }
 }
 
+// Utility to hide preloader once everything is ready
+function hidePreloader() {
+    const preloader = document.getElementById('dakkn-preloader');
+    if (preloader) {
+        preloader.style.opacity = '0';
+        preloader.style.transition = 'opacity 0.4s ease';
+        setTimeout(() => {
+            preloader.remove();
+            document.documentElement.removeAttribute('data-dakkn-loading');
+        }, 400);
+    } else {
+        document.documentElement.removeAttribute('data-dakkn-loading');
+    }
+}
+
 /* ── Boot ────────────────────────────────────────────────── */
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     // Determine target language: Cookie > LocalStorage > Page Lang
     const cookieValue = getCookie(".AspNetCore.Culture");
     let saved = null;
@@ -102,7 +121,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Initialize dynamic components with current language
-    applyLang(current);
+    await applyLang(current);
+
+    // Wait for fonts (Icons) to be ready to avoid icon text flickering
+    if (document.fonts) {
+        try {
+            await document.fonts.ready;
+        } catch (e) {
+            console.warn('Font loading failed, showing UI anyway.');
+        }
+    }
+
+    // Everything is ready, hide preloader
+    hidePreloader();
 
     // Standard Landing UI Initializations
     if (typeof initScrollAnimations === 'function') initScrollAnimations();
