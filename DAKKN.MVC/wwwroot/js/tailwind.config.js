@@ -3,9 +3,16 @@ tailwind.config = {
     theme: {
         extend: {
             colors: {
-                /* ── Sky-blue / Cyan primary ────────────────────── */
-                primary:                  "#0891B2",   /* cyan-600  */
-                "primary-container":      "#CFFAFE",   /* cyan-100  */
+                /* ── Sky-blue / Cyan primary (Original) ─────────── */
+                "primary-old":            "#0891B2",   
+
+                /* ── New Brand Palette ──────────────────────────── */
+                primary:                  "#0E908C",   /* New primary teal */
+                decorative:               "#69D2CF",   /* Soft decorative teal */
+                "background-light":       "#FFFFFF",
+                "background-dark":        "#121212",
+
+                "primary-container":      "#CFFAFE",
                 "primary-fixed":          "#E0F7FA",
                 "primary-fixed-dim":      "#A5F3FC",
                 "on-primary":             "#FFFFFF",
@@ -60,12 +67,12 @@ tailwind.config = {
                 "auth-text-secondary":    "#6B7280",
             },
             borderRadius: {
-                DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", "2xl": "1rem", "3xl": "1.5rem", full: "9999px"
+                DEFAULT: "0.75rem", lg: "0.5rem", xl: "0.75rem", "2xl": "1rem", "3xl": "1.5rem", full: "9999px"
             },
             fontFamily: {
                 sans:    ["Inter", "Plus Jakarta Sans", "Cairo", "sans-serif"],
                 arabic:  ["Cairo", "sans-serif"],
-                display: ["Plus Jakarta Sans", "Inter", "sans-serif"],
+                display: ["'IBM Plex Sans Arabic'", "sans-serif"],
             },
             boxShadow: {
                 'auth': '0 20px 40px rgba(0,0,0,0.12)',

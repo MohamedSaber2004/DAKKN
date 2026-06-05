@@ -13,7 +13,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
 
     <!-- Tailwind via CDN -->
@@ -23,6 +23,15 @@
 
     <!-- Custom Landing Stylesheet -->
     <link rel="stylesheet" href="~/css/landing.css" asp-append-version="true" />
+
+    <style>
+        body {
+            font-family: 'IBM Plex Sans Arabic', 'Cairo', sans-serif;
+        }
+        [dir="ltr"] body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
 
     @await RenderSectionAsync("HeadStyles", required: false)
 </head>
