@@ -505,6 +505,7 @@ function renderAllProducts() {
                 ? `${p.price} ج.م` 
                 : `${p.price} EGP`;
             const localizedAddCart = currentTranslations.add_cart || "Add to cart";
+            const addedToCartMsg = currentTranslations['alert.added_to_cart'] || (currentLang === 'ar' ? 'تم الإضافة للسلة' : 'Added to cart');
 
             return `
                 <div class="product-card glass-panel p-5 rounded-2xl flex flex-col gap-4 scroll-animate visible" style="opacity: 1; transform: none;">
@@ -517,7 +518,7 @@ function renderAllProducts() {
                     </div>
                     <div class="flex items-center justify-between mt-auto pt-2">
                         <span class="text-xl font-bold text-primary font-sans">${localizedPrice}</span>
-                        <button onclick="alert('Added to cart / تم الإضافة للسلة')" class="px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-xs font-bold transition-all duration-200">
+                        <button onclick="alert('${addedToCartMsg}')" class="px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-xs font-bold transition-all duration-200">
                             ${localizedAddCart}
                         </button>
                     </div>

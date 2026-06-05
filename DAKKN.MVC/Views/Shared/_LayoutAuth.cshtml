@@ -1,9 +1,14 @@
+@inject IStringLocalizer<Messages> Localizer
+@{
+    var culture = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("en") ? "en" : "ar";
+    var dir = culture == "ar" ? "rtl" : "ltr";
+}
 <!DOCTYPE html>
-<html lang="en" dir="ltr" id="html-root">
+<html lang="@culture" dir="@dir" id="html-root">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] — DAKKN</title>
+    <title>@ViewData["Title"] — @Localizer["brand"]</title>
 
     @* Fonts & Icons *@
     <link rel="preconnect" href="https://fonts.googleapis.com" />

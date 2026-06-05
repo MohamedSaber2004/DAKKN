@@ -1,7 +1,8 @@
+@inject IStringLocalizer<Messages> Localizer
 @model DAKKN.MVC.ViewModels.Auth.OtpViewModel
 @{
     Layout = "_LayoutAuth";
-    ViewData["Title"] = "Verify Code";
+    ViewData["Title"] = Localizer["otp.title"];
 }
 
 @await Html.PartialAsync("Partials/_AuthAlert")
@@ -9,13 +10,13 @@
 @if (TempData["DevOtp"] is string devOtp)
 {
     <div class="bg-tertiary/10 border border-tertiary/30 text-tertiary rounded-2xl px-4 py-3 mb-6 text-sm text-center font-mono scroll-animate visible">
-        DEV — OTP: <strong class="text-base">@devOtp</strong>
+        <span data-i18n="dev_otp_label">@Localizer["dev_otp_label"]</span> <strong class="text-base">@devOtp</strong>
     </div>
 }
 
 <div class="mb-8 text-center">
-    <h1 class="text-3xl font-black text-[var(--color-text-primary)] mb-2" data-i18n="otp.title"></h1>
-    <p class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-1" data-i18n="otp.subtitle"></p>
+    <h1 class="text-3xl font-black text-[var(--color-text-primary)] mb-2" data-i18n="otp.title">@Localizer["otp.title"]</h1>
+    <p class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-1" data-i18n="otp.subtitle">@Localizer["otp.subtitle"]</p>
     <p class="text-sm font-black text-[var(--color-primary)]">@Model.Email</p>
 </div>
 
@@ -28,26 +29,26 @@
 
     <button type="submit"
             class="h-[56px] w-full rounded-2xl bg-[var(--color-primary)] text-white font-bold text-base flex items-center justify-center gap-2 shadow-lg shadow-[var(--color-primary)]/20 hover:bg-[var(--color-primary-hover)] hover:-translate-y-0.5 active:scale-[0.98] transition-all group">
-        <span data-i18n="otp.submit"></span>
+        <span data-i18n="otp.submit">@Localizer["otp.submit"]</span>
         <span class="material-symbols-outlined text-[20px] group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform">verified_user</span>
     </button>
 </form>
 
 <div class="mt-8 text-center">
     <p class="text-xs text-[var(--color-text-muted)] font-bold uppercase tracking-widest mb-4">
-        <span data-i18n="otp.expires"></span>
+        <span data-i18n="otp.expires">@Localizer["otp.expires"]</span>
         <span id="otp-countdown" class="font-mono text-[var(--color-primary)] ms-1">10:00</span>
     </p>
 
     <div class="flex flex-col items-center gap-3">
-        <span class="text-sm text-[var(--color-text-muted)] font-medium" data-i18n="otp.no_code"></span>
+        <span class="text-sm text-[var(--color-text-muted)] font-medium" data-i18n="otp.no_code">@Localizer["otp.no_code"]</span>
         <form method="post" asp-action="ResendOtp" asp-controller="Auth">
             @Html.AntiForgeryToken()
             <input type="hidden" name="email" value="@Model.Email" />
             <input type="hidden" name="purpose" value="@Model.Purpose" />
             <button type="submit"
                     class="text-sm font-black text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors underline underline-offset-4"
-                    data-i18n="otp.resend">
+                    data-i18n="otp.resend">@Localizer["otp.resend"]
             </button>
         </form>
     </div>

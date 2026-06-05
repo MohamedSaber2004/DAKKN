@@ -1,6 +1,8 @@
 @inject IStringLocalizer<Messages> Localizer
 @{
     Layout = "_LayoutAdmin";
+    var culture = System.Globalization.CultureInfo.CurrentUICulture.Name;
+    var isRtl = culture.StartsWith("ar");
 }
 
 <!-- Page Header -->
@@ -13,7 +15,7 @@
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md mb-xl">
     <!-- Metric 1 -->
     <div class="bg-surface rounded-2xl p-md shadow-medium hover:shadow-large transition-shadow duration-300 relative overflow-hidden group">
-        <div class="absolute top-0 right-0 w-16 h-16 bg-primary-light/20 rounded-bl-full -z-0"></div>
+        <div class="absolute top-0 ltr:right-0 rtl:left-0 w-16 h-16 bg-primary-light/20 rounded-bl-full -z-0"></div>
         <div class="flex justify-between items-start mb-md relative z-10">
             <div class="w-12 h-12 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center">
                 <span class="material-symbols-outlined filled-icon">payments</span>
@@ -22,12 +24,12 @@
         </div>
         <div class="relative z-10">
             <p class="font-body text-body text-text-secondary mb-xs">@Localizer["admin_total_sales"]</p>
-            <h3 class="font-h3 text-h3 text-text-primary">EGP 24,500</h3>
+            <h3 class="font-h3 text-h3 text-text-primary">@Localizer["egp"] 24,500</h3>
         </div>
     </div>
     <!-- Metric 2 -->
     <div class="bg-surface rounded-2xl p-md shadow-medium hover:shadow-large transition-shadow duration-300 relative overflow-hidden group">
-        <div class="absolute top-0 right-0 w-16 h-16 bg-accent-orange/20 rounded-bl-full -z-0"></div>
+        <div class="absolute top-0 ltr:right-0 rtl:left-0 w-16 h-16 bg-accent-orange/20 rounded-bl-full -z-0"></div>
         <div class="flex justify-between items-start mb-md relative z-10">
             <div class="w-12 h-12 rounded-full bg-accent-orange/20 text-accent-orange flex items-center justify-center">
                 <span class="material-symbols-outlined filled-icon">shopping_bag</span>
@@ -41,7 +43,7 @@
     </div>
     <!-- Metric 3 -->
     <div class="bg-surface rounded-2xl p-md shadow-medium hover:shadow-large transition-shadow duration-300 relative overflow-hidden group">
-        <div class="absolute top-0 right-0 w-16 h-16 bg-accent-purple/20 rounded-bl-full -z-0"></div>
+        <div class="absolute top-0 ltr:right-0 rtl:left-0 w-16 h-16 bg-accent-purple/20 rounded-bl-full -z-0"></div>
         <div class="flex justify-between items-start mb-md relative z-10">
             <div class="w-12 h-12 rounded-full bg-accent-purple/20 text-accent-purple flex items-center justify-center">
                 <span class="material-symbols-outlined filled-icon">sell</span>
@@ -55,7 +57,7 @@
     </div>
     <!-- Metric 4 -->
     <div class="bg-surface rounded-2xl p-md shadow-medium hover:shadow-large transition-shadow duration-300 relative overflow-hidden group">
-        <div class="absolute top-0 right-0 w-16 h-16 bg-accent-pink/20 rounded-bl-full -z-0"></div>
+        <div class="absolute top-0 ltr:right-0 rtl:left-0 w-16 h-16 bg-accent-pink/20 rounded-bl-full -z-0"></div>
         <div class="flex justify-between items-start mb-md relative z-10">
             <div class="w-12 h-12 rounded-full bg-accent-pink/20 text-accent-pink flex items-center justify-center">
                 <span class="material-symbols-outlined filled-icon">group_add</span>
@@ -76,14 +78,14 @@
         <div class="flex justify-between items-center mb-md">
             <h4 class="font-h4 text-h4 text-text-primary">@Localizer["admin_sales_analysis"]</h4>
             <select class="bg-surface-container border-none rounded-full font-body text-body px-4 py-1 focus:ring-2 focus:ring-primary outline-none">
-                <option>هذا الأسبوع</option>
-                <option>هذا الشهر</option>
+                <option>@Localizer["admin_week"]</option>
+                <option>@Localizer["admin_month"]</option>
             </select>
         </div>
         <!-- Faux Chart Representation -->
         <div class="h-64 flex items-end justify-between gap-2 mt-lg relative">
             <!-- Y-axis labels -->
-            <div class="absolute right-0 top-0 h-full flex flex-col justify-between text-caption text-text-secondary pb-8">
+            <div class="absolute ltr:right-0 rtl:left-0 top-0 h-full flex flex-col justify-between text-caption text-text-secondary pb-8">
                 <span>500</span>
                 <span>250</span>
                 <span>0</span>
@@ -92,7 +94,7 @@
             <div class="absolute inset-0 border-b border-surface-container mb-8"></div>
             <div class="absolute inset-0 border-b border-surface-container mt-28 mb-8"></div>
             <!-- Bars -->
-            <div class="w-1/12 bg-primary-container rounded-t-lg h-[40%] hover:bg-primary transition-colors cursor-pointer relative group mr-8 z-10">
+            <div class="w-1/12 bg-primary-container rounded-t-lg h-[40%] hover:bg-primary transition-colors cursor-pointer relative group ltr:mr-8 rtl:ml-8 z-10">
                 <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-surface text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">120</div>
             </div>
             <div class="w-1/12 bg-primary-container rounded-t-lg h-[60%] hover:bg-primary transition-colors cursor-pointer relative group z-10">
@@ -115,14 +117,14 @@
             </div>
         </div>
         <!-- X-axis labels -->
-        <div class="flex justify-between mt-2 mr-8 text-caption text-text-secondary">
-            <span>السبت</span>
-            <span>الأحد</span>
-            <span>الإثنين</span>
-            <span>الثلاثاء</span>
-            <span class="text-primary font-bold">اليوم</span>
-            <span>الخميس</span>
-            <span>الجمعة</span>
+        <div class="flex justify-between mt-2 ltr:mr-8 rtl:ml-8 text-caption text-text-secondary">
+            <span>@Localizer["admin_sat"]</span>
+            <span>@Localizer["admin_sun"]</span>
+            <span>@Localizer["admin_mon"]</span>
+            <span>@Localizer["admin_tue"]</span>
+            <span class="text-primary font-bold">@Localizer["admin_today"]</span>
+            <span>@Localizer["admin_thu"]</span>
+            <span>@Localizer["admin_fri"]</span>
         </div>
     </div>
     <!-- Right Column: Quick Actions & Recent -->
@@ -137,15 +139,15 @@
                 </button>
                 <button class="bg-surface-container hover:bg-accent-orange/20 text-on-surface hover:text-accent-orange rounded-xl p-md flex flex-col items-center justify-center gap-2 transition-colors duration-200 shadow-small hover:shadow-medium">
                     <span class="material-symbols-outlined text-3xl">local_shipping</span>
-                    <span class="font-body-lg text-body text-center">شحن الطلبات</span>
+                    <span class="font-body-lg text-body text-center">@Localizer["admin_ship_orders"]</span>
                 </button>
                 <button class="bg-surface-container hover:bg-accent-purple/20 text-on-surface hover:text-accent-purple rounded-xl p-md flex flex-col items-center justify-center gap-2 transition-colors duration-200 shadow-small hover:shadow-medium">
                     <span class="material-symbols-outlined text-3xl">campaign</span>
-                    <span class="font-body-lg text-body text-center">حملة تسويقية</span>
+                    <span class="font-body-lg text-body text-center">@Localizer["admin_marketing"]</span>
                 </button>
                 <button class="bg-surface-container hover:bg-accent-pink/20 text-on-surface hover:text-accent-pink rounded-xl p-md flex flex-col items-center justify-center gap-2 transition-colors duration-200 shadow-small hover:shadow-medium">
                     <span class="material-symbols-outlined text-3xl">diamond</span>
-                    <span class="font-body-lg text-body text-center">كوبونات</span>
+                    <span class="font-body-lg text-body text-center">@Localizer["admin_coupons"]</span>
                 </button>
             </div>
         </div>
@@ -162,10 +164,10 @@
                         <span class="material-symbols-outlined">inventory_2</span>
                     </div>
                     <div class="flex-1">
-                        <p class="font-body-lg text-body-lg text-text-primary leading-tight">طلب #1024</p>
-                        <p class="font-caption text-caption text-text-secondary">منذ 15 دقيقة</p>
+                        <p class="font-body-lg text-body-lg text-text-primary leading-tight">@Localizer["admin_order_no"]1024</p>
+                        <p class="font-caption text-caption text-text-secondary">@Localizer["admin_time_ago", "15m"]</p>
                     </div>
-                    <span class="font-body text-body font-bold text-primary">EGP 120</span>
+                    <span class="font-body text-body font-bold text-primary">@Localizer["egp"] 120</span>
                 </div>
                 <!-- Order Item -->
                 <div class="flex items-center gap-sm p-sm rounded-lg hover:bg-surface-container transition-colors">
@@ -173,10 +175,10 @@
                         <span class="material-symbols-outlined">inventory_2</span>
                     </div>
                     <div class="flex-1">
-                        <p class="font-body-lg text-body-lg text-text-primary leading-tight">طلب #1023</p>
-                        <p class="font-caption text-caption text-text-secondary">منذ ساعتين</p>
+                        <p class="font-body-lg text-body-lg text-text-primary leading-tight">@Localizer["admin_order_no"]1023</p>
+                        <p class="font-caption text-caption text-text-secondary">@Localizer["admin_time_ago", "2h"]</p>
                     </div>
-                    <span class="font-body text-body font-bold text-primary">EGP 350</span>
+                    <span class="font-body text-body font-bold text-primary">@Localizer["egp"] 350</span>
                 </div>
             </div>
         </div>

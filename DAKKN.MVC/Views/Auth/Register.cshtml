@@ -1,37 +1,38 @@
+@inject IStringLocalizer<Messages> Localizer
 @model DAKKN.MVC.ViewModels.Auth.RegisterViewModel
 @{
     Layout = "_LayoutAuth";
-    ViewData["Title"] = "Register";
+    ViewData["Title"] = Localizer["auth.register.title"];
 }
 
 @await Html.PartialAsync("Partials/_AuthAlert")
 
 <div class="mb-6">
-    <h1 class="text-3xl font-black text-[var(--color-text-primary)] mb-2" data-i18n="auth.register.title"></h1>
-    <p class="text-sm text-[var(--color-text-muted)] leading-relaxed" data-i18n="auth.register.subtitle"></p>
+    <h1 class="text-3xl font-black text-[var(--color-text-primary)] mb-2" data-i18n="auth.register.title">@Localizer["auth.register.title"]</h1>
+    <p class="text-sm text-[var(--color-text-muted)] leading-relaxed" data-i18n="auth.register.subtitle">@Localizer["auth.register.subtitle"]</p>
 </div>
 
 <form method="post" asp-action="Register" asp-controller="Auth" class="flex flex-col gap-5" novalidate>
     @Html.AntiForgeryToken()
 
     <div class="flex flex-col gap-1.5">
-        <label asp-for="FullName" class="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider ms-1" data-i18n="auth.register.name"></label>
+        <label asp-for="FullName" class="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider ms-1" data-i18n="auth.register.name">@Localizer["auth.register.name"]</label>
         <div class="relative group">
             <span class="material-symbols-outlined absolute start-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] group-focus-within:text-[var(--color-primary)] transition-colors">person</span>
             <input asp-for="FullName" type="text" autocomplete="name"
                    class="w-full h-[52px] rounded-2xl border border-[var(--color-border)] bg-[var(--color-input-bg)] ps-12 pe-4 text-[var(--color-text-primary)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/10 outline-none transition-all placeholder:text-[var(--color-text-muted)]/50" 
-                   placeholder="Your full name" required />
+                   placeholder="@Localizer["auth.register.name_ph"]" required />
         </div>
         <span asp-validation-for="FullName" class="text-[10px] font-bold text-red-500 mt-1 ms-1 block"></span>
     </div>
 
     <div class="flex flex-col gap-1.5">
-        <label asp-for="Email" class="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider ms-1" data-i18n="auth.login.email"></label>
+        <label asp-for="Email" class="text-xs font-bold text-[var(--color-text-muted)] uppercase tracking-wider ms-1" data-i18n="auth.login.email">@Localizer["auth.login.email"]</label>
         <div class="relative group">
             <span class="material-symbols-outlined absolute start-4 top-1/2 -translate-y-1/2 text-[var(--color-text-muted)] group-focus-within:text-[var(--color-primary)] transition-colors">mail</span>
             <input asp-for="Email" type="email" autocomplete="email"
                    class="w-full h-[52px] rounded-2xl border border-[var(--color-border)] bg-[var(--color-input-bg)] ps-12 pe-4 text-[var(--color-text-primary)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]/10 outline-none transition-all placeholder:text-[var(--color-text-muted)]/50" 
-                   placeholder="your@email.com" required />
+                   placeholder="@Localizer["auth.login.email_ph"]" required />
         </div>
         <span asp-validation-for="Email" class="text-[10px] font-bold text-red-500 mt-1 ms-1 block"></span>
     </div>
@@ -42,19 +43,19 @@
 
     <button type="submit"
             class="h-[56px] mt-4 rounded-2xl bg-[var(--color-primary)] text-white font-bold text-base flex items-center justify-center gap-2 shadow-lg shadow-[var(--color-primary)]/20 hover:bg-[var(--color-primary-hover)] hover:-translate-y-0.5 active:scale-[0.98] transition-all group">
-        <span data-i18n="auth.register.submit"></span>
-        <span class="material-symbols-outlined text-[20px] group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform">arrow_forward</span>
+        <span data-i18n="auth.register.submit">@Localizer["auth.register.submit"]</span>
+        <span class="material-symbols-outlined text-[20px] group-hover:translate-x-1 rtl:group-hover:-translate-x-1 rtl:rotate-180 transition-transform">arrow_forward</span>
     </button>
 </form>
 
 <div class="flex items-center gap-4 my-8">
     <div class="h-px bg-[var(--color-border)]/50 flex-1"></div>
-    <span class="text-[10px] font-black text-[var(--color-text-muted)] uppercase tracking-[0.2em]" data-i18n="auth.login.or_social"></span>
+    <span class="text-[10px] font-black text-[var(--color-text-muted)] uppercase tracking-[0.2em]" data-i18n="auth.login.or_social">@Localizer["auth.login.or_social"]</span>
     <div class="h-px bg-[var(--color-border)]/50 flex-1"></div>
 </div>
 
 <div class="flex gap-4">
-    <button class="flex-1 h-[52px] rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] flex items-center justify-center hover:bg-[var(--color-input-bg)] hover:border-[var(--color-primary)]/30 transition-all hover:-translate-y-0.5" type="button">
+    <button class="flex-1 h-[52px] rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] flex items-center justify-center hover:bg-[var(--color-input-bg)] hover:border-[var(--color-primary)]/30 transition-all hover:-translate-y-0.5" type="button" title="Google">
         <svg class="w-6 h-6" viewBox="0 0 24 24">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-3.3 3.28-8.09 3.28-8.09z" fill="#4285F4"/>
             <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -62,7 +63,7 @@
             <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
         </svg>
     </button>
-    <button class="flex-1 h-[52px] rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] flex items-center justify-center hover:bg-[var(--color-input-bg)] hover:border-[var(--color-primary)]/30 transition-all hover:-translate-y-0.5" type="button">
+    <button class="flex-1 h-[52px] rounded-2xl border border-[var(--color-border)] bg-[var(--color-surface)] flex items-center justify-center hover:bg-[var(--color-input-bg)] hover:border-[var(--color-primary)]/30 transition-all hover:-translate-y-0.5" type="button" title="Apple">
         <svg class="w-6 h-6 dark:fill-white" viewBox="0 0 24 24" fill="currentColor">
             <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.46-2.09-.48-3.24 0-1.44.56-2.01.44-3.05-.4C4.65 17.13 4.25 11.58 6.84 9.04c1.3-1.27 2.97-1.47 4.1-1.39 1.13.12 2.21.57 3.04.57s1.84-.44 2.89-.44c1.11.13 2.19.53 2.84 1.39-2.31 1.34-1.94 4.54.4 5.57-.5 1.25-1.13 2.5-2.06 3.55zM12.03 7.44c-.11-1.99 1.33-3.8 3.19-4.22.25 2.13-1.74 4.09-3.19 4.22z"/>
         </svg>
@@ -70,8 +71,8 @@
 </div>
 
 <p class="mt-10 text-center text-sm font-medium text-[var(--color-text-muted)]">
-    <span data-i18n="auth.register.has_account"></span>
+    <span data-i18n="auth.register.has_account">@Localizer["auth.register.has_account"]</span>
     <a asp-action="Login" asp-controller="Auth"
        class="text-[var(--color-primary)] font-black hover:underline underline-offset-4 decoration-2 ms-1"
-       data-i18n="auth.register.login"></a>
+       data-i18n="auth.register.login">@Localizer["auth.register.login"]</a>
 </p>

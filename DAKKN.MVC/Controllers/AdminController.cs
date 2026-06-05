@@ -43,7 +43,7 @@ public class AdminController : Controller
     public IActionResult Settings()
     {
         ViewData["Title"] = "الإعدادات";
-        return View("Placeholder", "الإعدادات");
+        return View();
     }
 
     public IActionResult AddProduct()
