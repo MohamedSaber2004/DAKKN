@@ -19,13 +19,6 @@ namespace DAKKN.MVC.Controllers
             return View();
         }
 
-        [HttpGet]
-        public IActionResult GetTranslations(string lang)
-        {
-            var translations = JsonLocalizationProvider.GetTranslations(lang);
-            return Json(translations);
-        }
-
         public IActionResult Privacy()
         {
             return View();
