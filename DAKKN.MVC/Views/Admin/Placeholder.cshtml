@@ -1,0 +1,13 @@
+@model string
+@inject IStringLocalizer<Messages> Localizer
+@{
+    Layout = "_LayoutAdmin";
+}
+
+<div class="flex flex-col items-center justify-center h-[60vh] gap-md">
+    <div class="w-24 h-24 rounded-full bg-surface-container flex items-center justify-center text-primary-dark">
+        <span class="material-symbols-outlined text-5xl">construction</span>
+    </div>
+    <h2 class="font-h2 text-h2 text-text-primary">@Model</h2>
+    <p class="font-body-lg text-body-lg text-text-secondary">@Localizer["admin_placeholder_msg"]</p>
+</div>

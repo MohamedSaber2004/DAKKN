@@ -4,72 +4,123 @@ tailwind.config = {
         extend: {
             colors: {
                 /* ── Sky-blue / Cyan primary ────────────────────── */
-                primary:                  "#0891B2",   /* cyan-600  */
-                "primary-container":      "#CFFAFE",   /* cyan-100  */
-                "primary-fixed":          "#E0F7FA",
-                "primary-fixed-dim":      "#A5F3FC",
-                "on-primary":             "#FFFFFF",
-                "on-primary-container":   "#164E63",
-                "inverse-primary":        "#67E8F9",
+                primary: "#006a68",
+                "primary-container": "#69d2cf",
+                "primary-fixed": "#8cf4f0",
+                "primary-fixed-dim": "#6ed7d4",
+                "primary-light": "#A6ECE9",
+                "primary-dark": "#45B8B5",
+                "on-primary": "#ffffff",
+                "on-primary-container": "#005957",
+                "on-primary-fixed": "#00201f",
+                "on-primary-fixed-variant": "#00504e",
+                "inverse-primary": "#6ed7d4",
 
                 /* ── Warm secondary ──────────────────────────────── */
-                secondary:                "#0E7490",   /* cyan-700  */
-                "secondary-container":    "#E0F2FE",
-                "on-secondary":           "#FFFFFF",
-                "on-secondary-container": "#0C4A6E",
+                secondary: "#725c00",
+                "secondary-container": "#fed74c",
+                "secondary-fixed": "#ffe07e",
+                "secondary-fixed-dim": "#e9c339",
+                "on-secondary": "#ffffff",
+                "on-secondary-container": "#735d00",
+                "on-secondary-fixed": "#231b00",
+                "on-secondary-fixed-variant": "#564500",
 
                 /* ── Warm amber tertiary ────────────────────────── */
-                tertiary:                 "#B45309",   /* amber-700 */
-                "tertiary-container":     "#FEF3C7",   /* amber-100 */
-                "on-tertiary":            "#FFFFFF",
-                "on-tertiary-container":  "#78350F",
-                "tertiary-fixed":         "#FDE68A",
+                tertiary: "#8b501a",
+                "tertiary-container": "#ffb072",
+                "tertiary-fixed": "#ffdcc4",
+                "tertiary-fixed-dim": "#ffb780",
+                "on-tertiary": "#ffffff",
+                "on-tertiary-container": "#79410b",
+                "on-tertiary-fixed": "#2f1400",
+                "on-tertiary-fixed-variant": "#6e3902",
 
-                /* ── Creamy / sky surfaces ───────────────────────── */
-                surface:                  "#FFFFFF",
-                "surface-dim":            "#DCF0F5",
-                "surface-bright":         "#FEFCF8",   /* warm ivory */
-                "surface-variant":        "#D8EFF4",
-                "surface-container-lowest":"#FFFFFF",
-                "surface-container-low":  "#FFF9F4",   /* warm cream */
-                "surface-container":      "#EFF9FB",   /* sky tint   */
-                "surface-container-high": "#DDF2F6",
-                "surface-container-highest":"#CCE9EF",
+                /* ── Surfaces ───────────────────────── */
+                surface: "#FFFFFF",
+                "surface-dim": "#d6dbda",
+                "surface-bright": "#f6faf9",
+                "surface-variant": "#dfe3e2",
+                "surface-container-lowest": "#ffffff",
+                "surface-container-low": "#f0f5f3",
+                "surface-container": "#eaefee",
+                "surface-container-high": "#e4e9e8",
+                "surface-container-highest": "#dfe3e2",
+                "surface-tint": "#006a68",
 
                 /* ── Text ────────────────────────────────────────── */
-                "on-surface":             "#0A2030",
-                "on-surface-variant":     "#3A5A62",
-                background:               "#FFFCF8",   /* warm ivory background */
-                "on-background":          "#0A2030",
-                outline:                  "#5F8A96",
-                "outline-variant":        "#A8CDD6",
-                "inverse-surface":        "#1A3840",
-                "inverse-on-surface":     "#E4F3F7",
+                "on-surface": "#171d1c",
+                "on-surface-variant": "#3d4948",
+                background: "#F8FAFB",
+                "on-background": "#171d1c",
+                outline: "#6d7979",
+                "outline-variant": "#bcc9c8",
+                "inverse-surface": "#2c3131",
+                "inverse-on-surface": "#edf2f1",
+                "text-primary": "#1A1A1A",
+                "text-secondary": "#6B7280",
 
                 /* ── Error ───────────────────────────────────────── */
-                error:                    "#DC2626",
-                "error-container":        "#FEE2E2",
-                "on-error":               "#FFFFFF",
-                "on-error-container":     "#991B1B",
+                error: "#ba1a1a",
+                "error-container": "#ffdad6",
+                "on-error": "#ffffff",
+                "on-error-container": "#93000a",
 
-                /* ── Auth Specific (StickerVault / Stitch) ───────── */
-                "auth-surface":           "#FFFFFF",
-                "auth-bg":                "#F8FAFB",
-                "auth-primary":           "#006a68",
-                "auth-text-primary":      "#1A1A1A",
-                "auth-text-secondary":    "#6B7280",
+                /* ── Accents ──────────────────────────────────────── */
+                "accent-orange": "#FF9F45",
+                "accent-pink": "#FF7EB6",
+                "accent-purple": "#9C7DFF",
+
+                /* ── Layout ───────────────────────────────────────── */
+                "border": "#E8EDF0",
             },
             borderRadius: {
-                DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", "2xl": "1rem", "3xl": "1.5rem", full: "9999px"
+                DEFAULT: "0.25rem",
+                lg: "0.5rem",
+                xl: "0.75rem",
+                "2xl": "1.5rem",
+                full: "9999px"
+            },
+            spacing: {
+                "xs": "4px",
+                "sm": "8px",
+                "md": "16px",
+                "lg": "24px",
+                "xl": "32px",
+                "2xl": "48px",
+                "3xl": "64px",
+                "gutter": "16px",
+                "margin-mobile": "20px",
             },
             fontFamily: {
-                sans:    ["Inter", "Plus Jakarta Sans", "Cairo", "sans-serif"],
-                arabic:  ["Cairo", "sans-serif"],
-                display: ["Plus Jakarta Sans", "Inter", "sans-serif"],
+                sans: ["Cairo", "Inter", "sans-serif"],
+                display: ["Cairo", "sans-serif"],
+                body: ["Cairo", "sans-serif"],
+                caption: ["Cairo", "sans-serif"],
+                h1: ["Cairo", "sans-serif"],
+                h2: ["Cairo", "sans-serif"],
+                h3: ["Cairo", "sans-serif"],
+                h4: ["Cairo", "sans-serif"],
+            },
+            fontSize: {
+                "caption": ["12px", { "lineHeight": "1.4", "fontWeight": "400" }],
+                "body": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                "body-lg": ["16px", { "lineHeight": "1.5", "fontWeight": "500" }],
+                "h4": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                "h3": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                "h2": ["30px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                "h2-mobile": ["26px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                "h1": ["36px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                "h1-mobile": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                "display": ["48px", { "lineHeight": "1.2", "fontWeight": "700" }],
             },
             boxShadow: {
+                'small': '0 4px 12px rgba(0,0,0,0.05)',
+                'medium': '0 8px 24px rgba(0,0,0,0.08)',
+                'large': '0 20px 40px rgba(0,0,0,0.12)',
                 'auth': '0 20px 40px rgba(0,0,0,0.12)',
             }
         }
     }
 };
+

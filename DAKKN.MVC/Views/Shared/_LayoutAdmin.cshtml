@@ -1,0 +1,120 @@
+@inject IStringLocalizer<Messages> Localizer
+@{
+    var culture = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("en") ? "en" : "ar";
+    var dir = culture == "ar" ? "rtl" : "ltr";
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
+<!DOCTYPE html>
+<html lang="@culture" dir="@dir">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>@ViewData["Title"] - @Localizer["brand"] Admin</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+    <!-- Tailwind via CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Tailwind Custom Configuration -->
+    <script src="~/js/tailwind.config.js" asp-append-version="true"></script>
+
+    <style>
+        body { font-family: 'Cairo', sans-serif; background-color: #F8FAFB; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .filled-icon { font-variation-settings: 'FILL' 1; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #bcc9c8; border-radius: 10px; }
+    </style>
+</head>
+<body class="text-text-primary h-screen overflow-hidden flex">
+    <!-- SideNavBar -->
+    <aside class="hidden md:flex flex-col docked right-0 h-screen w-64 border-l border-border bg-surface shadow-medium z-40 relative flex-shrink-0">
+        <div class="p-lg border-b border-border flex flex-col items-center justify-center gap-sm">
+            <h1 class="font-h2 text-h2 font-bold text-primary">@Localizer["brand"]</h1>
+            <p class="font-body text-body text-text-secondary">@Localizer["admin_dashboard"]</p>
+        </div>
+        <nav class="flex-1 overflow-y-auto custom-scrollbar py-md px-sm flex flex-col gap-sm">
+            <a asp-controller="Admin" asp-action="Index" class="flex items-center gap-md @(currentAction == "Index" ? "bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") rounded-xl px-4 py-3 scale-100 hover:scale-103 transition-all duration-200">
+                <span class="material-symbols-outlined @(currentAction == "Index" ? "filled-icon" : "")">dashboard</span>
+                <span class="font-body-lg text-body-lg">@Localizer["admin_overview"]</span>
+            </a>
+            <a asp-controller="Admin" asp-action="Users" class="flex items-center gap-md @(currentAction == "Users" ? "bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl">
+                <span class="material-symbols-outlined @(currentAction == "Users" ? "filled-icon" : "")">group</span>
+                <span class="font-body-lg text-body-lg">@Localizer["admin_users"]</span>
+            </a>
+            <a asp-controller="Admin" asp-action="Orders" class="flex items-center gap-md @(currentAction == "Orders" ? "bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl">
+                <span class="material-symbols-outlined @(currentAction == "Orders" ? "filled-icon" : "")">shopping_cart</span>
+                <span class="font-body-lg text-body-lg">@Localizer["admin_orders"]</span>
+            </a>
+            <a asp-controller="Admin" asp-action="Inventory" class="flex items-center gap-md @(currentAction == "Inventory" ? "bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl">
+                <span class="material-symbols-outlined @(currentAction == "Inventory" ? "filled-icon" : "")">inventory_2</span>
+                <span class="font-body-lg text-body-lg">@Localizer["admin_inventory"]</span>
+            </a>
+            <a asp-controller="Admin" asp-action="Support" class="flex items-center gap-md @(currentAction == "Support" ? "bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl">
+                <span class="material-symbols-outlined @(currentAction == "Support" ? "filled-icon" : "")">support_agent</span>
+                <span class="font-body-lg text-body-lg">@Localizer["admin_support"]</span>
+            </a>
+            <a asp-controller="Admin" asp-action="Settings" class="flex items-center gap-md @(currentAction == "Settings" ? "bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl mt-auto">
+                <span class="material-symbols-outlined @(currentAction == "Settings" ? "filled-icon" : "")">settings</span>
+                <span class="font-body-lg text-body-lg">@Localizer["admin_settings"]</span>
+            </a>
+        </nav>
+        <div class="p-md border-t border-border">
+            <a asp-controller="Admin" asp-action="AddProduct" class="w-full bg-primary text-on-primary h-[52px] rounded-[18px] shadow-small font-body-lg text-body-lg flex items-center justify-center gap-sm hover:scale-105 transition-transform duration-200">
+                <span class="material-symbols-outlined">add</span>
+                @Localizer["admin_add_product"]
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden">
+        <!-- TopNavBar -->
+        <header class="flex justify-between items-center w-full px-lg py-md z-30 bg-surface/80 backdrop-blur-md flex-shrink-0">
+            <div class="flex items-center gap-md md:hidden">
+                <span class="material-symbols-outlined text-primary cursor-pointer text-2xl">menu</span>
+                <h2 class="font-h3 text-h3 font-black text-primary">@Localizer["brand"] Admin</h2>
+            </div>
+            <div class="hidden md:block">
+                <h2 class="font-h3 text-h3 font-bold text-text-primary">@ViewData["Title"]</h2>
+            </div>
+            <div class="flex items-center gap-lg">
+                <div class="relative hidden sm:block">
+                    <input class="bg-surface-container rounded-full py-2 px-4 pl-10 pr-4 text-body font-body border-none focus:ring-2 focus:ring-primary outline-none w-64" placeholder="@Localizer["admin_search"]" type="text">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary">search</span>
+                </div>
+                <div class="flex items-center gap-sm">
+                    <button class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary transition-colors hover:bg-surface-container">
+                        <span class="material-symbols-outlined">notifications</span>
+                    </button>
+                    <button class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary transition-colors hover:bg-surface-container">
+                        <span class="material-symbols-outlined">translate</span>
+                    </button>
+                    <button class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary transition-colors hover:bg-surface-container">
+                        <span class="material-symbols-outlined">dark_mode</span>
+                    </button>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-primary-container overflow-hidden cursor-pointer shadow-small">
+                    <img alt="Admin Avatar" class="w-full h-full object-cover" src="https://ui-avatars.com/api/?name=Admin&background=69d2cf&color=005957">
+                </div>
+            </div>
+        </header>
+
+        <!-- Scrollable Canvas -->
+        <div class="flex-1 overflow-y-auto p-margin-mobile md:p-xl custom-scrollbar">
+            @RenderBody()
+            <!-- Spacer for bottom scrolling -->
+            <div class="h-xl"></div>
+        </div>
+    </main>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
