@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using DAKKN.Appearence.Services;
 using DAKKN.Application;
+using DAKKN.Application.Common.Interfaces;
 using DAKKN.Application.Localization;
 using DAKKN.Infrastructure;
 using DAKKN.Persistence;
@@ -46,10 +47,12 @@ namespace DAKKN.MVC
 
             builder.Host.UseSerilog();
 
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
             builder.Services.AddApplication(builder.Configuration);
-            builder.Services.AddPersistence();
-            builder.Services.AddInfrastructure();
+            builder.Services.AddPersistence(builder.Configuration);
+            builder.Services.AddInfrastructure(builder.Configuration, builder.Environment);
 
             builder.Services.AddSingleton<IStringLocalizerFactory, JsonStringLocalizerFactory>();
             builder.Services.AddLocalization();

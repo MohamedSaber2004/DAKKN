@@ -8,5 +8,11 @@
         {
             public const string Get = Base + "/translations";
         }
+
+        public static class Attachments
+        {
+            public const string Base = ApiRoutes.Base + "/attachments";
+            public const string Upload = "";
+        }
     }
 }

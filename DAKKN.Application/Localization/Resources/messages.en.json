@@ -498,5 +498,8 @@
   "alert.confirm_required":             "Please confirm your password.",
   "alert.passwords_mismatch":           "Passwords do not match.",
   "alert.name_required":                "Full name is required.",
-  "alert.generic_error":                "An unexpected error occurred."
+  "alert.generic_error":                "An unexpected error occurred.",
+  "attachment": {
+    "not_found": "Attachment not found"
+  }
 }

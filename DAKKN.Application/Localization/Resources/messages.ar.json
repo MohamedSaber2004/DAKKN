@@ -498,5 +498,8 @@
   "alert.confirm_required":             "يرجى تأكيد كلمة المرور.",
   "alert.passwords_mismatch":           "كلمات المرور غير متطابقة.",
   "alert.name_required":                "الاسم الكامل مطلوب.",
-  "alert.generic_error":                "حدث خطأ غير متوقع."
+  "alert.generic_error":                "حدث خطأ غير متوقع.",
+  "attachment": {
+    "not_found": "المرفق غير موجود"
   }
+ }
