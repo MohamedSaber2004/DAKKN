@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
+using DAKKN.Application.Localization;
 using DAKKN.MVC.ViewModels.Admin;
 
 namespace DAKKN.MVC.Controllers
@@ -8,25 +10,66 @@ namespace DAKKN.MVC.Controllers
     // [Authorize(Roles = "Admin")]   // wire up once real auth is implemented
     public class AdminController : Controller
     {
+        private readonly IStringLocalizer<Messages> _localizer;
+
+        public AdminController(IStringLocalizer<Messages> localizer)
+        {
+            _localizer = localizer;
+        }
+
         [HttpGet("")]
         [HttpGet("dashboard")]
         public IActionResult Dashboard()
         {
-            ViewData["Title"] = "نظرة عامة";
+            ViewData["Title"] = _localizer["admin_overview"];
             return View();
         }
 
         [HttpGet("users")]
         public IActionResult Users()
         {
-            ViewData["Title"] = "المستخدمون";
-            return View("Placeholder", "المستخدمون");
+            ViewData["Title"] = _localizer["admin_users"];
+
+            var mockUsers = new List<UserListItemViewModel>
+            {
+                new UserListItemViewModel { 
+                    Id = "USR-101", Name = "أحمد محمد", Email = "ahmed@example.com", Phone = "01012345678", 
+                    JoinDate = DateTime.Now.AddMonths(-5), Role = UserRole.Customer, Status = UserStatus.Active,
+                    AvatarUrl = "https://ui-avatars.com/api/?name=Ahmed+Mohamed&background=random"
+                },
+                new UserListItemViewModel { 
+                    Id = "USR-102", Name = "سارة أحمد", Email = "sara@example.com", Phone = "01187654321", 
+                    JoinDate = DateTime.Now.AddMonths(-3), Role = UserRole.Designer, Status = UserStatus.Active,
+                    AvatarUrl = "https://ui-avatars.com/api/?name=Sara+Ahmed&background=random"
+                },
+                new UserListItemViewModel { 
+                    Id = "USR-103", Name = "محمود علي", Email = "mahmoud@example.com", Phone = "01234567890", 
+                    JoinDate = DateTime.Now.AddMonths(-8), Role = UserRole.Admin, Status = UserStatus.Active,
+                    AvatarUrl = "https://ui-avatars.com/api/?name=Mahmoud+Ali&background=random"
+                },
+                new UserListItemViewModel { 
+                    Id = "USR-104", Name = "ياسين خالد", Email = "yassin@example.com", Phone = "01599887766", 
+                    JoinDate = DateTime.Now.AddMonths(-1), Role = UserRole.Customer, Status = UserStatus.Blocked,
+                    AvatarUrl = "https://ui-avatars.com/api/?name=Yassin+Khaled&background=random"
+                }
+            };
+
+            var viewModel = new UserManagementViewModel
+            {
+                Users = mockUsers,
+                TotalUsers = 1280,
+                ActiveUsers = 1245,
+                DesignersCount = 12,
+                BlockedUsers = 23
+            };
+
+            return View(viewModel);
         }
 
         [HttpGet("orders")]
         public IActionResult Orders()
         {
-            ViewData["Title"] = "الطلبات";
+            ViewData["Title"] = _localizer["admin_orders"];
             
             var mockOrders = new List<OrderListItemViewModel>
             {
@@ -51,7 +94,7 @@ namespace DAKKN.MVC.Controllers
         [HttpGet("order-details/{id}")]
         public IActionResult OrderDetails(string id)
         {
-            ViewData["Title"] = "تفاصيل الطلب";
+            ViewData["Title"] = _localizer["admin_order_details"];
             
             var viewModel = new OrderDetailsViewModel
             {
@@ -112,14 +155,40 @@ namespace DAKKN.MVC.Controllers
         [HttpGet("inventory")]
         public IActionResult Inventory()
         {
-            ViewData["Title"] = "المخزون";
-            return View("Placeholder", "المخزون");
+            ViewData["Title"] = _localizer["admin_inventory"];
+
+            var mockProducts = new List<InventoryProductViewModel>
+            {
+                new InventoryProductViewModel { 
+                    Id = "PRD-001", Name = "كاسيت ريترو", Category = "Anime", Price = 70, StockLevel = 150, Sku = "STK-RETR-01",
+                    ImageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuBdJqwUIJElF6yKiAthjzqbJT3oybHZLiBv1kJqmbuD5er1OlaDE6e1hoP4RbXI68dtTm9QrVrdOu4_L3gIbRZzTfdPkJLIImwJgtfFOblkSv-zMbSFfD_U6GblKhzSYn6aZ6UMAQTaHHAv7ja5lVj5JQ_0eA60WnQU6Tdn8_-P_aPc-MlDlgr3RCXgvrDq7VwR6wWvaxjG5_se3JpJkYk1JpuDc-70Yt9bnuSg2R_zVgHYwNGlkw_-8bAWpGARNWW3NW7GDdgZKL8"
+                },
+                new InventoryProductViewModel { 
+                    Id = "PRD-002", Name = "جمجمة نيون", Category = "Gaming", Price = 80, StockLevel = 5, Sku = "STK-NEON-02",
+                    ImageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuAYqCGBR3sHhdqe1mdJisODxn5Q3mYWRwLi66x75IT4A9Yxij9GP1QnCZjiAUbcOSFgViSTcKrRe02xppzY4S8p2-kPQOJMDgqlv2RT4QI2eFpHWZBASZagZoaX61ZEZKFfuufofS4xvl9pMujFf1iGLw_v3AvaaNeVwVJhlVSUwYUZoFpvIHFOFBAgAYLevbS7VwjTYNJ_NDmU3Mf3ggAVKxNHE7vl2mY5kv_zNm-ME8QUmPaEUO243hcgumpk5LD8o9Gl1101g10"
+                },
+                new InventoryProductViewModel { 
+                    Id = "PRD-003", Name = "قلب بكسل", Category = "Gaming", Price = 60, StockLevel = 85, Sku = "STK-PIXL-03",
+                    ImageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuBdJqwUIJElF6yKiAthjzqbJT3oybHZLiBv1kJqmbuD5er1OlaDE6e1hoP4RbXI68dtTm9QrVrdOu4_L3gIbRZzTfdPkJLIImwJgtfFOblkSv-zMbSFfD_U6GblKhzSYn6aZ6UMAQTaHHAv7ja5lVj5JQ_0eA60WnQU6Tdn8_-P_aPc-MlDlgr3RCXgvrDq7VwR6wWvaxjG5_se3JpJkYk1JpuDc-70Yt9bnuSg2R_zVgHYwNGlkw_-8bAWpGARNWW3NW7GDdgZKL8"
+                }
+            };
+
+            var viewModel = new InventoryViewModel
+            {
+                Products = mockProducts,
+                TotalProducts = 1248,
+                LowStockAlerts = 23,
+                CategoriesCount = 14,
+                TotalStockValue = "85,400 ج.م"
+            };
+
+            return View(viewModel);
         }
 
         [HttpGet("support")]
         public IActionResult Support()
         {
-            ViewData["Title"] = "الدعم";
+            ViewData["Title"] = _localizer["admin_support"];
             
             var mockTickets = new List<SupportTicketViewModel>
             {
@@ -169,15 +238,16 @@ namespace DAKKN.MVC.Controllers
         [HttpGet("settings")]
         public IActionResult Settings()
         {
-            ViewData["Title"] = "الإعدادات";
+            ViewData["Title"] = _localizer["admin_settings"];
             return View();
         }
 
         [HttpGet("add-product")]
         public IActionResult AddProduct()
         {
-            ViewData["Title"] = "إضافة منتج";
-            return View("Placeholder", "إضافة منتج جديد");
+            ViewData["Title"] = _localizer["admin_add_product"];
+            var viewModel = new AddProductViewModel();
+            return View(viewModel);
         }
     }
 }

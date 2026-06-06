@@ -1,0 +1,169 @@
+@model DAKKN.MVC.ViewModels.Admin.AddProductViewModel
+@inject IStringLocalizer<Messages> Localizer
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = Localizer["admin_add_product"];
+}
+
+<div class="max-w-5xl mx-auto pb-12">
+    <form asp-action="AddProduct" method="post" class="space-y-8">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+                <h3 class="text-2xl font-black text-admin-primary">@Localizer["admin_product_new_title"]</h3>
+                <p class="text-sm text-admin-secondary">@Localizer["admin_product_new_subtitle"]</p>
+            </div>
+            <div class="flex gap-3 w-full md:w-auto">
+                <button type="button" class="flex-1 md:flex-none px-6 py-2.5 bg-admin-page border border-admin-border text-admin-secondary rounded-xl text-sm font-bold hover:bg-surface-container transition-all">
+                    @Localizer["admin_cancel"]
+                </button>
+                <button type="submit" class="flex-1 md:flex-none px-6 py-2.5 bg-primary text-on-primary rounded-xl text-sm font-bold shadow-small hover:scale-103 active:scale-95 transition-all">
+                    @Localizer["admin_product_save"]
+                </button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column: Main Info -->
+            <div class="lg:col-span-2 space-y-8">
+                <!-- 1. General Information -->
+                <div class="admin-card p-8 space-y-6">
+                    <h4 class="text-lg font-bold text-admin-primary flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">info</span>
+                        @Localizer["admin_product_sec_general"]
+                    </h4>
+                    
+                    <div class="space-y-4">
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_product_name"]</label>
+                            <input asp-for="Name" type="text" placeholder="@Localizer["admin_product_name_ph"]" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all" />
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_product_desc"]</label>
+                            <textarea asp-for="Description" rows="5" placeholder="@Localizer["admin_product_desc_ph"]" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all resize-none"></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_product_category"]</label>
+                                <select asp-for="Category" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-primary text-admin-primary cursor-pointer">
+                                    <option value="">@Localizer["admin_product_cat_select"]</option>
+                                    @foreach (var cat in Model.AvailableCategories)
+                                    {
+                                        <option value="@cat">@Localizer[$"cat_{cat.ToLower()}"]</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_product_tags"]</label>
+                                <input asp-for="Tags" type="text" placeholder="@Localizer["admin_product_tags_ph"]" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Media Upload -->
+                <div class="admin-card p-8 space-y-6">
+                    <h4 class="text-lg font-bold text-admin-primary flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">image</span>
+                        @Localizer["admin_product_sec_media"]
+                    </h4>
+                    
+                    <div class="border-2 border-dashed border-admin-border rounded-2xl p-12 flex flex-col items-center justify-center gap-4 bg-admin-page/30 hover:bg-admin-page/50 transition-all cursor-pointer group">
+                        <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined text-3xl">cloud_upload</span>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-sm font-bold text-admin-primary">@Localizer["admin_product_media_title"]</p>
+                            <p class="text-xs text-admin-secondary mt-1">@Localizer["admin_product_media_subtitle"]</p>
+                        </div>
+                        <button type="button" class="px-6 py-2 bg-white text-admin-primary border border-admin-border rounded-xl text-xs font-bold shadow-small">
+                            @Localizer["admin_product_media_browse"]
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 3. Pricing & Inventory -->
+                <div class="admin-card p-8 space-y-6">
+                    <h4 class="text-lg font-bold text-admin-primary flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">payments</span>
+                        @Localizer["admin_product_sec_pricing"]
+                    </h4>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_product_price"]</label>
+                            <div class="relative">
+                                <input asp-for="Price" type="number" step="0.01" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 ltr:pr-12 rtl:pl-12 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all" />
+                                <span class="absolute ltr:right-4 rtl:left-4 top-1/2 -translate-y-1/2 text-xs font-bold text-admin-secondary">@Localizer["egp"]</span>
+                            </div>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_product_sku"]</label>
+                            <input asp-for="Sku" type="text" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all" />
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_product_qty"]</label>
+                            <div class="flex items-center">
+                                <button type="button" class="w-12 h-12 flex items-center justify-center bg-admin-page border border-admin-border rounded-r-xl border-r-0 text-admin-secondary hover:text-primary transition-colors">-</button>
+                                <input asp-for="Quantity" type="number" class="w-full h-12 bg-admin-page border border-admin-border text-center outline-none focus:ring-0 text-admin-primary font-bold" />
+                                <button type="button" class="w-12 h-12 flex items-center justify-center bg-admin-page border border-admin-border rounded-l-xl border-l-0 text-admin-secondary hover:text-primary transition-colors">+</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between p-4 bg-admin-page/50 rounded-xl border border-admin-border">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                                <span class="material-symbols-outlined text-xl">sync</span>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-admin-primary">@Localizer["admin_product_inventory_track"]</p>
+                                <p class="text-[11px] text-admin-secondary">@Localizer["admin_product_inventory_track_desc"]</p>
+                            </div>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" asp-for="TrackInventory" class="sr-only peer">
+                            <div class="w-11 h-6 bg-admin-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:ltr:left-[2px] after:rtl:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Settings & Attributes -->
+            <div class="space-y-8">
+                <!-- 4. Material Options -->
+                <div class="admin-card p-8 space-y-6">
+                    <h4 class="text-lg font-bold text-admin-primary">@Localizer["admin_product_sec_material"]</h4>
+                    <div class="space-y-3">
+                        @foreach (var material in Model.AvailableMaterials)
+                        {
+                            <label class="flex items-center gap-3 p-3 rounded-xl border border-admin-border hover:border-primary/50 cursor-pointer transition-all">
+                                <input type="checkbox" name="SelectedMaterials" value="@material" class="rounded border-admin-border text-primary focus:ring-primary w-5 h-5" />
+                                <span class="text-sm font-medium text-admin-primary">@Localizer[$"mat_{material.ToLower()}"]</span>
+                            </label>
+                        }
+                    </div>
+                </div>
+
+                <!-- 5. Size Options -->
+                <div class="admin-card p-8 space-y-6">
+                    <h4 class="text-lg font-bold text-admin-primary">@Localizer["admin_product_sec_size"]</h4>
+                    <div class="grid grid-cols-2 gap-3">
+                        @foreach (var size in Model.AvailableSizes)
+                        {
+                            <label class="flex items-center justify-center p-3 rounded-xl border border-admin-border hover:border-primary/50 cursor-pointer transition-all has-[:checked]:bg-primary/5 has-[:checked]:border-primary">
+                                <input type="checkbox" name="SelectedSizes" value="@size" class="sr-only" />
+                                <span class="text-sm font-bold text-admin-primary">@size</span>
+                            </label>
+                        }
+                        <button type="button" class="col-span-2 py-3 rounded-xl border border-dashed border-admin-border text-xs font-bold text-admin-secondary hover:text-primary hover:border-primary transition-all flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined text-sm">add</span>
+                            @Localizer["admin_product_size_add"]
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
