@@ -55,7 +55,15 @@ namespace DAKKN.MVC
 
             builder.Services.AddOutputCache(options =>
             {
-                options.AddBasePolicy(builder => builder.Expire(TimeSpan.FromMinutes(10)));
+                options.AddBasePolicy(policy => 
+                {
+                    policy.Expire(TimeSpan.FromMinutes(10));
+                    policy.VaryByValue((context, ct) => 
+                    {
+                        var culture = context.Request.Cookies[".AspNetCore.Culture"] ?? "default";
+                        return ValueTask.FromResult(new KeyValuePair<string, string>("culture", culture));
+                    });
+                });
             });
 
             builder.Services.Configure<ForwardedHeadersOptions>(options =>
