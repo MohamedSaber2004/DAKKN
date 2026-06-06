@@ -754,5 +754,14 @@
   "admin_lang_en_sub": "United States",
   "admin_lang_ar": "Arabic",
   "admin_lang_ar_sub": "Middle East",
-  "admin_security_desc": "Manage your password, two-factor authentication, and login sessions."
+  "admin_security_desc": "Manage your password, two-factor authentication, and login sessions.",
+  "Product_Products": "Products",
+  "Product_BestSeller": "Best Seller",
+  "Currency_EGP": "EGP",
+  "Product_Reviews": "Reviews",
+  "Product_FinishEffect": "Finish Effect",
+  "Product_Size": "Size",
+  "Product_Quantity": "Quantity",
+  "Product_BulkSavings": "Save 10% on orders of 50+",
+  "Product_AddToCart": "Add to Cart"
   }

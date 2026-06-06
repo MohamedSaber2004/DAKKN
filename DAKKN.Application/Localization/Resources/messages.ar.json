@@ -769,5 +769,14 @@
   "admin_lang_en_sub": "الولايات المتحدة",
   "admin_lang_ar": "العربية",
   "admin_lang_ar_sub": "الشرق الأوسط",
-  "admin_security_desc": "إدارة كلمة المرور، والمصادقة الثنائية، وجلسات تسجيل الدخول."
+  "admin_security_desc": "إدارة كلمة المرور، والمصادقة الثنائية، وجلسات تسجيل الدخول.",
+  "Product_Products": "المنتجات",
+  "Product_BestSeller": "الأكثر مبيعاً",
+  "Currency_EGP": "ج.م",
+  "Product_Reviews": "مراجعة",
+  "Product_FinishEffect": "نوع اللمسة النهائية",
+  "Product_Size": "الحجم",
+  "Product_Quantity": "الكمية",
+  "Product_BulkSavings": "وفر 10% عند طلب 50 قطعة فأكثر",
+  "Product_AddToCart": "أضف إلى السلة"
   }

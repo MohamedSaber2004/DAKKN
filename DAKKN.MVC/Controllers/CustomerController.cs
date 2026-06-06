@@ -1,3 +1,5 @@
+using DAKKN.Application.Interfaces;
+using DAKKN.MVC.ViewModels.Customer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -5,12 +7,13 @@ namespace DAKKN.MVC.Controllers
 {
     [Authorize]
     [Route("customer")]
-    public class CustomerController : Controller
+    public class CustomerController(IProductService productService, IDashboardService dashboardService) : Controller
     {
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             ViewData["Title"] = "Customer Dashboard";
-            return View();
+            var dashboardData = await dashboardService.GetCustomerDashboardDataAsync(Guid.Empty); // Using empty Guid for mock
+            return View(new CustomerDashboardViewModel { Dashboard = dashboardData });
         }
 
         [HttpGet("products")]
@@ -18,6 +21,16 @@ namespace DAKKN.MVC.Controllers
         {
             ViewData["Title"] = "Browse Stickers";
             return View();
+        }
+
+        [HttpGet("product/{id}")]
+        public async Task<IActionResult> ProductDetails(Guid id)
+        {
+            var product = await productService.GetProductByIdAsync(id);
+            if (product == null) return NotFound();
+
+            ViewData["Title"] = product.Name;
+            return View(new ProductDetailsViewModel { Product = product });
         }
 
         [HttpGet("orders")]

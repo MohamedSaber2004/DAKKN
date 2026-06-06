@@ -34,16 +34,20 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-lg">
         <!-- Product Card 1 -->
         <div class="product-card group bg-surface dark:bg-inverse-surface rounded-[32px] border border-border dark:border-outline/10 overflow-hidden shadow-small hover:shadow-large transition-all duration-500 hover:-translate-y-2">
-            <div class="aspect-square relative overflow-hidden bg-white/5">
-                <img src="https://lh3.googleusercontent.com/aida/AP1WRLvk0o2fHlsgnzmZ9xrrRAnUTq9hl5CW063LX44OhYiXj0ZAadSE46fIAmtHQKBEzfk8NKsMl6AwohhVGiDgxsbst33TGFkDW68Y9_d3C1Cvf-mtviXqQYHM-Aqnsunu3Q6Yy2-9A5mXcsO80D173UvbE44Odz0GI41kQbHK_cLtDiruHCKTT15snGH5XT7Y6MLMfFd4rUCTY71ZJwiOba19bKW0Du2pMXYtJtF-I-h5V-wypv1z0Vztp_M" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                <div class="absolute top-4 left-4 bg-primary/90 backdrop-blur-md text-on-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Best Seller</div>
-                <button class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/90 backdrop-blur-md shadow-medium flex items-center justify-center text-text-secondary hover:text-error transition-all opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0">
-                    <span class="material-symbols-outlined text-xl">favorite</span>
-                </button>
-            </div>
+            <a asp-action="ProductDetails" asp-route-id="f4d6c75f-2643-4ffc-8199-e94a91d8b617" class="block">
+                <div class="aspect-square relative overflow-hidden bg-white/5">
+                    <img src="https://lh3.googleusercontent.com/aida/AP1WRLvk0o2fHlsgnzmZ9xrrRAnUTq9hl5CW063LX44OhYiXj0ZAadSE46fIAmtHQKBEzfk8NKsMl6AwohhVGiDgxsbst33TGFkDW68Y9_d3C1Cvf-mtviXqQYHM-Aqnsunu3Q6Yy2-9A5mXcsO80D173UvbE44Odz0GI41kQbHK_cLtDiruHCKTT15snGH5XT7Y6MLMfFd4rUCTY71ZJwiOba19bKW0Du2pMXYtJtF-I-h5V-wypv1z0Vztp_M" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    <div class="absolute top-4 left-4 bg-primary/90 backdrop-blur-md text-on-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">Best Seller</div>
+                    <button class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/90 backdrop-blur-md shadow-medium flex items-center justify-center text-text-secondary hover:text-error transition-all opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0">
+                        <span class="material-symbols-outlined text-xl">favorite</span>
+                    </button>
+                </div>
+            </a>
             <div class="p-lg">
                 <div class="flex justify-between items-start mb-xs">
-                    <h3 class="font-bold text-lg group-hover:text-primary transition-colors">Retro Cassette</h3>
+                    <a asp-action="ProductDetails" asp-route-id="f4d6c75f-2643-4ffc-8199-e94a91d8b617">
+                        <h3 class="font-bold text-lg group-hover:text-primary transition-colors">Retro Cassette</h3>
+                    </a>
                     <span class="font-bold text-primary">70 EGP</span>
                 </div>
                 <p class="text-xs text-text-secondary font-medium uppercase tracking-wider mb-lg">Holographic Vinyl</p>

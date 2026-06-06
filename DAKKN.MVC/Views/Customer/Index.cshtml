@@ -5,7 +5,7 @@
 <div class="max-w-7xl mx-auto px-lg py-xl">
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-lg mb-xl">
         <div>
-            <h1 class="font-h1 text-h1 font-bold text-text-primary dark:text-inverse-on-surface">Welcome back, @User.Identity.Name! 👋</h1>
+            <h1 class="font-h1 text-h1 font-bold text-text-primary dark:text-inverse-on-surface">Welcome back, @(User.Identity?.Name ?? "User")! 👋</h1>
             <p class="text-text-secondary dark:text-outline-variant mt-2">Manage your collection, track orders, and discover new stickers.</p>
         </div>
         <a asp-controller="Customer" asp-action="Products" class="bg-primary text-on-primary px-xl py-md rounded-full font-bold shadow-medium hover:scale-105 transition-all">

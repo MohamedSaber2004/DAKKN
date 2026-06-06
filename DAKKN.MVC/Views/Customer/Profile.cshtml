@@ -25,7 +25,7 @@
             <div class="flex items-center gap-lg">
                 <div class="relative group">
                     <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-surface dark:border-inverse-surface shadow-small">
-                        <img alt="User Avatar" class="w-full h-full object-cover" src="https://ui-avatars.com/api/?name=@User.Identity.Name&background=69d2cf&color=005957&size=200">
+                        <img alt="User Avatar" class="w-full h-full object-cover" src="https://ui-avatars.com/api/?name=@(User.Identity?.Name ?? "User")&background=69d2cf&color=005957&size=200">
                     </div>
                     <button class="absolute bottom-0 right-0 w-8 h-8 bg-surface dark:bg-surface-container-high rounded-full shadow-md flex items-center justify-center text-primary dark:text-primary-light hover:scale-110 transition-transform border border-border dark:border-outline/20" type="button">
                         <span class="material-symbols-outlined text-[18px]">edit</span>
@@ -42,11 +42,11 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
                 <div class="space-y-2">
                     <label class="block font-bold text-sm text-outline uppercase tracking-wider px-1">@Localizer["admin_first_name"]</label>
-                    <input class="w-full px-4 py-3 bg-surface-container dark:bg-inverse-surface-container rounded-2xl border border-border dark:border-outline/20 focus:ring-2 focus:ring-primary outline-none transition-all" type="text" value="@User.Identity.Name.Split(' ')[0]">
+                    <input class="w-full px-4 py-3 bg-surface-container dark:bg-inverse-surface-container rounded-2xl border border-border dark:border-outline/20 focus:ring-2 focus:ring-primary outline-none transition-all" type="text" value="@(User.Identity?.Name?.Split(' ')[0] ?? "")">
                 </div>
                 <div class="space-y-2">
                     <label class="block font-bold text-sm text-outline uppercase tracking-wider px-1">@Localizer["admin_last_name"]</label>
-                    <input class="w-full px-4 py-3 bg-surface-container dark:bg-inverse-surface-container rounded-2xl border border-border dark:border-outline/20 focus:ring-2 focus:ring-primary outline-none transition-all" type="text" value="@(User.Identity.Name.Contains(" ") ? User.Identity.Name.Split(' ')[1] : "")">
+                    <input class="w-full px-4 py-3 bg-surface-container dark:bg-inverse-surface-container rounded-2xl border border-border dark:border-outline/20 focus:ring-2 focus:ring-primary outline-none transition-all" type="text" value="@(User.Identity?.Name?.Contains(" ") == true ? User.Identity?.Name?.Split(' ')[1] : "")">
                 </div>
                 <div class="space-y-2 md:col-span-2">
                     <label class="block font-bold text-sm text-outline uppercase tracking-wider px-1">@Localizer["auth.login.email"]</label>

@@ -1,20 +1,23 @@
+@using DAKKN.MVC.ViewModels.Customer
+@model ProductDetailsViewModel
 @{
     Layout = "_LayoutCustomer";
+    var product = Model.Product;
 }
 
 <div class="max-w-7xl mx-auto px-lg py-xl">
     <!-- Breadcrumbs -->
     <nav class="flex items-center gap-2 text-sm text-text-secondary mb-xl">
-        <a asp-action="Products" class="hover:text-primary transition-colors">Products</a>
+        <a asp-action="Products" class="hover:text-primary transition-colors">@Localizer["Product_Products"]</a>
         <span class="material-symbols-outlined text-xs">chevron_right</span>
-        <span class="text-text-primary dark:text-inverse-on-surface font-bold">Retro Cassette</span>
+        <span class="text-text-primary dark:text-inverse-on-surface font-bold">@product.Name</span>
     </nav>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-2xl">
         <!-- Image Gallery -->
         <div class="space-y-lg">
             <div class="aspect-square rounded-[48px] bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 overflow-hidden shadow-large group relative">
-                <img src="https://lh3.googleusercontent.com/aida/AP1WRLvk0o2fHlsgnzmZ9xrrRAnUTq9hl5CW063LX44OhYiXj0ZAadSE46fIAmtHQKBEzfk8NKsMl6AwohhVGiDgxsbst33TGFkDW68Y9_d3C1Cvf-mtviXqQYHM-Aqnsunu3Q6Yy2-9A5mXcsO80D173UvbE44Odz0GI41kQbHK_cLtDiruHCKTT15snGH5XT7Y6MLMfFd4rUCTY71ZJwiOba19bKW0Du2pMXYtJtF-I-h5V-wypv1z0Vztp_M" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                <img src="@product.ImageUrls.FirstOrDefault()" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="@product.Name">
                 <div class="absolute top-8 right-8 flex flex-col gap-sm">
                     <button class="w-12 h-12 rounded-full bg-surface/90 backdrop-blur-md shadow-medium flex items-center justify-center text-text-secondary hover:text-error transition-all">
                         <span class="material-symbols-outlined">favorite</span>
@@ -25,9 +28,10 @@
                 </div>
             </div>
             <div class="grid grid-cols-4 gap-md">
-                @for(int i = 0; i < 4; i++) {
+                @foreach (var imageUrl in product.ImageUrls)
+                {
                     <div class="aspect-square rounded-2xl bg-surface-container dark:bg-inverse-surface border-2 border-primary overflow-hidden cursor-pointer hover:opacity-80 transition-all">
-                        <img src="https://lh3.googleusercontent.com/aida/AP1WRLvk0o2fHlsgnzmZ9xrrRAnUTq9hl5CW063LX44OhYiXj0ZAadSE46fIAmtHQKBEzfk8NKsMl6AwohhVGiDgxsbst33TGFkDW68Y9_d3C1Cvf-mtviXqQYHM-Aqnsunu3Q6Yy2-9A5mXcsO80D173UvbE44Odz0GI41kQbHK_cLtDiruHCKTT15snGH5XT7Y6MLMfFd4rUCTY71ZJwiOba19bKW0Du2pMXYtJtF-I-h5V-wypv1z0Vztp_M" class="w-full h-full object-cover">
+                        <img src="@imageUrl" class="w-full h-full object-cover" alt="@product.Name">
                     </div>
                 }
             </div>
@@ -36,50 +40,62 @@
         <!-- Product Info -->
         <div class="flex flex-col">
             <div class="mb-xl pb-xl border-b border-border dark:border-outline/10">
-                <span class="bg-primary/10 text-primary px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-md inline-block">Best Seller</span>
-                <h1 class="font-h1 text-h1 font-bold mb-sm">Retro Cassette</h1>
+                <span class="bg-primary/10 text-primary px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-md inline-block">@Localizer["Product_BestSeller"]</span>
+                <h1 class="font-h1 text-h1 font-bold mb-sm">@product.Name</h1>
                 <div class="flex items-center gap-xl">
-                    <span class="text-3xl font-bold text-primary">70 EGP</span>
+                    <span class="text-3xl font-bold text-primary">@product.Price @Localizer["Currency_EGP"]</span>
                     <div class="flex items-center gap-1 text-yellow-500">
                         <span class="material-symbols-outlined text-lg filled-icon">star</span>
-                        <span class="font-bold">4.9</span>
-                        <span class="text-text-secondary text-sm font-medium ml-1">(120 Reviews)</span>
+                        <span class="font-bold">@product.Rating</span>
+                        <span class="text-text-secondary text-sm font-medium ml-1">(@product.ReviewCount @Localizer["Product_Reviews"])</span>
                     </div>
                 </div>
                 <p class="text-text-secondary dark:text-outline-variant mt-lg leading-relaxed">
-                    Nostalgic 80s cassette tape design with a modern holographic finish. Engineered with 5-layer industrial vinyl for extreme durability.
+                    @product.Description
                 </p>
             </div>
 
             <!-- Configuration -->
             <div class="space-y-xl mb-2xl">
-                <div>
-                    <h4 class="font-bold text-sm uppercase tracking-widest text-outline mb-md">Finish Effect</h4>
-                    <div class="flex flex-wrap gap-md">
-                        <button class="px-xl py-3 rounded-2xl border-2 border-primary bg-primary/5 text-primary font-bold transition-all">Holographic</button>
-                        <button class="px-xl py-3 rounded-2xl border-2 border-border dark:border-outline/10 text-text-secondary hover:border-primary/50 font-bold transition-all">Matte Vinyl</button>
-                        <button class="px-xl py-3 rounded-2xl border-2 border-border dark:border-outline/10 text-text-secondary hover:border-primary/50 font-bold transition-all">Glossy</button>
+                @if (product.FinishOptions.Any())
+                {
+                    <div>
+                        <h4 class="font-bold text-sm uppercase tracking-widest text-outline mb-md">@Localizer["Product_FinishEffect"]</h4>
+                        <div class="flex flex-wrap gap-md">
+                            @foreach (var finish in product.FinishOptions)
+                            {
+                                <button class="px-xl py-3 rounded-2xl border-2 @(finish == product.FinishOptions[0] ? "border-primary bg-primary/5 text-primary" : "border-border dark:border-outline/10 text-text-secondary hover:border-primary/50") font-bold transition-all">
+                                    @finish
+                                </button>
+                            }
+                        </div>
                     </div>
-                </div>
+                }
+
+                @if (product.SizeOptions.Any())
+                {
+                    <div>
+                        <h4 class="font-bold text-sm uppercase tracking-widest text-outline mb-md">@Localizer["Product_Size"]</h4>
+                        <div class="flex flex-wrap gap-md">
+                            @foreach (var size in product.SizeOptions)
+                            {
+                                <button class="w-16 h-16 rounded-2xl border-2 @(size == product.SizeOptions[0] ? "border-primary bg-primary/5 text-primary" : "border-border dark:border-outline/10 text-text-secondary") flex items-center justify-center font-bold">
+                                    @size
+                                </button>
+                            }
+                        </div>
+                    </div>
+                }
 
                 <div>
-                    <h4 class="font-bold text-sm uppercase tracking-widest text-outline mb-md">Size</h4>
-                    <div class="flex flex-wrap gap-md">
-                        <button class="w-16 h-16 rounded-2xl border-2 border-primary bg-primary/5 text-primary flex items-center justify-center font-bold">3"</button>
-                        <button class="w-16 h-16 rounded-2xl border-2 border-border dark:border-outline/10 text-text-secondary flex items-center justify-center font-bold">4"</button>
-                        <button class="w-16 h-16 rounded-2xl border-2 border-border dark:border-outline/10 text-text-secondary flex items-center justify-center font-bold">5"</button>
-                    </div>
-                </div>
-
-                <div>
-                    <h4 class="font-bold text-sm uppercase tracking-widest text-outline mb-md">Quantity</h4>
+                    <h4 class="font-bold text-sm uppercase tracking-widest text-outline mb-md">@Localizer["Product_Quantity"]</h4>
                     <div class="flex items-center gap-md">
                         <div class="flex items-center bg-surface-container dark:bg-inverse-surface rounded-2xl border border-border dark:border-outline/10 p-1">
                             <button class="w-10 h-10 rounded-xl hover:bg-white/5 flex items-center justify-center"><span class="material-symbols-outlined">remove</span></button>
                             <input type="number" value="1" class="w-12 bg-transparent border-none text-center font-bold focus:ring-0">
                             <button class="w-10 h-10 rounded-xl hover:bg-white/5 flex items-center justify-center"><span class="material-symbols-outlined">add</span></button>
                         </div>
-                        <p class="text-xs text-text-secondary">Save 10% on orders of 50+</p>
+                        <p class="text-xs text-text-secondary">@Localizer["Product_BulkSavings"]</p>
                     </div>
                 </div>
             </div>
@@ -88,7 +104,7 @@
             <div class="flex gap-lg mt-auto">
                 <button class="flex-1 bg-primary text-on-primary h-16 rounded-3xl font-bold text-lg shadow-large hover:scale-103 transition-all flex items-center justify-center gap-3">
                     <span class="material-symbols-outlined">shopping_cart</span>
-                    Add to Cart
+                    @Localizer["Product_AddToCart"]
                 </button>
                 <button class="w-16 h-16 rounded-3xl border-2 border-border dark:border-outline/10 flex items-center justify-center text-text-secondary hover:text-primary transition-all">
                     <span class="material-symbols-outlined">local_shipping</span>
@@ -99,32 +115,17 @@
 
     <!-- Features Grid (Trust builder) -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-lg mt-3xl pt-2xl border-t border-border dark:border-outline/10">
-        <div class="flex items-center gap-lg">
-            <div class="w-14 h-14 rounded-full bg-primary/10 text-primary flex items-center justify-center">
-                <span class="material-symbols-outlined">water_drop</span>
+        @foreach (var feature in product.Features)
+        {
+            <div class="flex items-center gap-lg">
+                <div class="w-14 h-14 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                    <span class="material-symbols-outlined">@feature.Icon</span>
+                </div>
+                <div>
+                    <h4 class="font-bold">@feature.Title</h4>
+                    <p class="text-sm text-text-secondary">@feature.Description</p>
+                </div>
             </div>
-            <div>
-                <h4 class="font-bold">100% Waterproof</h4>
-                <p class="text-sm text-text-secondary">Dishwasher safe and weather proof.</p>
-            </div>
-        </div>
-        <div class="flex items-center gap-lg">
-            <div class="w-14 h-14 rounded-full bg-secondary/10 text-secondary flex items-center justify-center">
-                <span class="material-symbols-outlined">wb_sunny</span>
-            </div>
-            <div>
-                <h4 class="font-bold">UV Resistant</h4>
-                <p class="text-sm text-text-secondary">Vibrant colors for 5+ years outdoors.</p>
-            </div>
-        </div>
-        <div class="flex items-center gap-lg">
-            <div class="w-14 h-14 rounded-full bg-tertiary/10 text-tertiary flex items-center justify-center">
-                <span class="material-symbols-outlined">verified</span>
-            </div>
-            <div>
-                <h4 class="font-bold">5-Layer Quality</h4>
-                <p class="text-sm text-text-secondary">Premium industrial vinyl construction.</p>
-            </div>
-        </div>
+        }
     </div>
 </div>
