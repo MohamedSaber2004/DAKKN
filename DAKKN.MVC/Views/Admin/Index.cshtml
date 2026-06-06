@@ -13,11 +13,11 @@
 </div>
 
 <!-- Metrics Grid -->
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md mb-xl">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 p-2">
     <!-- Metric 1 -->
-    <div class="bg-surface dark:bg-inverse-surface rounded-2xl p-md shadow-medium hover:shadow-large transition-shadow duration-300 relative overflow-hidden group">
+    <div class="bg-surface dark:bg-inverse-surface rounded-2xl p-6 shadow-medium hover:shadow-large transition-shadow duration-300 relative overflow-hidden group">
         <div class="absolute top-0 start-0 w-16 h-16 bg-primary-light/20 rounded-ee-full -z-0"></div>
-        <div class="flex justify-between items-start mb-md relative z-10">
+        <div class="flex justify-between items-start mb-4 relative z-10">
             <div
                 class="w-12 h-12 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center">
                 <span class="material-symbols-outlined filled-icon">payments</span>
@@ -26,14 +26,14 @@
             class="bg-surface dark:bg-surface-container-high text-text-secondary font-caption text-caption px-2 py-1 rounded-full">+15%</span>
         </div>
         <div class="relative z-10">
-            <p class="font-body text-body text-text-secondary mb-xs">@Localizer["admin_total_sales"]</p>
+            <p class="font-body text-body text-text-secondary mb-1">@Localizer["admin_total_sales"]</p>
             <h3 class="font-h3 text-h3 text-text-primary">@Localizer["egp"] 24,500</h3>
         </div>
     </div>
     <!-- Metric 2 -->
-    <div class="bg-surface dark:bg-inverse-surface rounded-2xl p-md shadow-medium hover:shadow-large transition-shadow duration-300 relative overflow-hidden group">
+    <div class="bg-surface dark:bg-inverse-surface rounded-2xl p-6 shadow-medium hover:shadow-large transition-shadow duration-300 relative overflow-hidden group">
         <div class="absolute top-0 start-0 w-16 h-16 bg-accent-orange/20 rounded-ee-full -z-0"></div>
-        <div class="flex justify-between items-start mb-md relative z-10">
+        <div class="flex justify-between items-start mb-4 relative z-10">
             <div class="w-12 h-12 rounded-full bg-accent-orange/20 text-accent-orange flex items-center justify-center">
                 <span class="material-symbols-outlined filled-icon">shopping_bag</span>
             </div>
@@ -41,14 +41,14 @@
             class="bg-surface dark:bg-surface-container-high text-text-secondary font-caption text-caption px-2 py-1 rounded-full">+8%</span>
         </div>
         <div class="relative z-10">
-            <p class="font-body text-body text-text-secondary mb-xs">@Localizer["admin_new_orders"]</p>
+            <p class="font-body text-body text-text-secondary mb-1">@Localizer["admin_new_orders"]</p>
             <h3 class="font-h3 text-h3 text-text-primary">142</h3>
         </div>
     </div>
     <!-- Metric 3 -->
-    <div class="bg-surface dark:bg-inverse-surface rounded-2xl p-md shadow-medium hover:shadow-large transition-shadow duration-300 relative overflow-hidden group">
+    <div class="bg-surface dark:bg-inverse-surface rounded-2xl p-6 shadow-medium hover:shadow-large transition-shadow duration-300 relative overflow-hidden group">
         <div class="absolute top-0 start-0 w-16 h-16 bg-accent-purple/20 rounded-ee-full -z-0"></div>
-        <div class="flex justify-between items-start mb-md relative z-10">
+        <div class="flex justify-between items-start mb-4 relative z-10">
             <div class="w-12 h-12 rounded-full bg-accent-purple/20 text-accent-purple flex items-center justify-center">
                 <span class="material-symbols-outlined filled-icon">sell</span>
             </div>
@@ -56,14 +56,14 @@
             class="bg-surface dark:bg-surface-container-high text-text-secondary font-caption text-caption px-2 py-1 rounded-full">-2%</span>
         </div>
         <div class="relative z-10">
-            <p class="font-body text-body text-text-secondary mb-xs">@Localizer["admin_stickers_sold"]</p>
+            <p class="font-body text-body text-text-secondary mb-1">@Localizer["admin_stickers_sold"]</p>
             <h3 class="font-h3 text-h3 text-text-primary">850</h3>
         </div>
     </div>
     <!-- Metric 4 -->
-    <div class="bg-surface dark:bg-inverse-surface rounded-2xl p-md shadow-medium hover:shadow-large transition-shadow duration-300 relative overflow-hidden group">
+    <div class="bg-surface dark:bg-inverse-surface rounded-2xl p-6 shadow-medium hover:shadow-large transition-shadow duration-300 relative overflow-hidden group">
         <div class="absolute top-0 start-0 w-16 h-16 bg-accent-pink/20 rounded-ee-full -z-0"></div>
-        <div class="flex justify-between items-start mb-md relative z-10">
+        <div class="flex justify-between items-start mb-4 relative z-10">
             <div class="w-12 h-12 rounded-full bg-accent-pink/20 text-accent-pink flex items-center justify-center">
                 <span class="material-symbols-outlined filled-icon">group_add</span>
             </div>
@@ -71,7 +71,7 @@
             class="bg-surface dark:bg-surface-container-high text-text-secondary font-caption text-caption px-2 py-1 rounded-full">+22%</span>
         </div>
         <div class="relative z-10">
-            <p class="font-body text-body text-text-secondary mb-xs">@Localizer["admin_new_customers"]</p>
+            <p class="font-body text-body text-text-secondary mb-1">@Localizer["admin_new_customers"]</p>
             <h3 class="font-h3 text-h3 text-text-primary">64</h3>
         </div>
     </div>
@@ -89,72 +89,79 @@
                 <option>@Localizer["admin_month"]</option>
             </select>
         </div>
-        <!-- Faux Chart Representation -->
-        <div class="h-64 flex items-end justify-between gap-2 mt-lg relative">
-            <!-- Y-axis labels -->
-            <div
-                class="absolute ltr:right-0 rtl:left-0 top-0 h-full flex flex-col justify-between text-caption text-text-secondary pb-8">
-                <span>500</span>
-                <span>250</span>
-                <span>0</span>
-            </div>
-            <!-- Grid lines -->
-            <div class="absolute inset-0 border-b border-surface-container mb-8"></div>
-            <div class="absolute inset-0 border-b border-surface-container mt-28 mb-8"></div>
-            <!-- Bars -->
-            <div
-                class="w-1/12 bg-primary-container rounded-t-lg h-[40%] hover:bg-primary transition-colors cursor-pointer relative group ltr:mr-8 rtl:ml-8 z-10">
-                <div
-                    class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-surface text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                    120</div>
+        <!-- Sales Chart -->
+        <div class="h-64 flex flex-col mt-lg relative">
+            <div class="flex-1 flex items-end justify-between px-10 relative">
+                <!-- Y-axis labels -->
+                <div class="absolute ltr:left-0 rtl:right-0 top-0 h-full flex flex-col justify-between text-[10px] font-bold text-text-secondary pb-8">
+                    <span>500</span>
+                    <span>250</span>
+                    <span>0</span>
                 </div>
-                <div
-                    class="w-1/12 bg-primary-container rounded-t-lg h-[60%] hover:bg-primary transition-colors cursor-pointer relative group z-10">
-                    <div
-                        class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-surface text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                        250</div>
-                    </div>
-                    <div
-                        class="w-1/12 bg-primary-container rounded-t-lg h-[30%] hover:bg-primary transition-colors cursor-pointer relative group z-10">
-                        <div
-                            class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-surface text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                            90</div>
-                        </div>
-                        <div
-                            class="w-1/12 bg-primary-container rounded-t-lg h-[80%] hover:bg-primary transition-colors cursor-pointer relative group z-10">
-                            <div
-                                class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-surface text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                                400</div>
-                            </div>
-                            <div class="w-1/12 bg-primary rounded-t-lg h-[100%] cursor-pointer relative group z-10">
-                                <div
-                                    class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-surface text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                                    500</div>
-                                </div>
-                                <div
-                                    class="w-1/12 bg-primary-container rounded-t-lg h-[50%] hover:bg-primary transition-colors cursor-pointer relative group z-10">
-                                    <div
-                                        class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-surface text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                                        210</div>
-                                    </div>
-                                    <div
-                                        class="w-1/12 bg-primary-container rounded-t-lg h-[70%] hover:bg-primary transition-colors cursor-pointer relative group z-10">
-                                        <div
-                                            class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface text-surface text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-                                            350</div>
-                                        </div>
-                                    </div>
-                                    <!-- X-axis labels -->
-                                    <div class="flex justify-between mt-2 ltr:mr-8 rtl:ml-8 text-caption text-text-secondary">
-                                        <span>@Localizer["admin_sat"]</span>
-                                        <span>@Localizer["admin_sun"]</span>
-                                        <span>@Localizer["admin_mon"]</span>
-                                        <span>@Localizer["admin_tue"]</span>
-                                        <span class="text-primary font-bold">@Localizer["admin_today"]</span>
-                                        <span>@Localizer["admin_thu"]</span>
-                                        <span>@Localizer["admin_fri"]</span>
-                                    </div>
-                                </div>
+                
+                <!-- Grid lines -->
+                <div class="absolute inset-x-0 bottom-8 border-b border-surface-container-high/50"></div>
+                <div class="absolute inset-x-0 top-1/2 -translate-y-4 border-b border-surface-container-high/30 border-dashed"></div>
+
+                <!-- Bars container -->
+                <div id="chart-bars" class="flex-1 flex items-end justify-around h-full pb-8">
+                    <!-- Weekly/Monthly bars will be injected here by JS -->
+                </div>
+            </div>
+            
+            <!-- X-axis labels -->
+            <div id="chart-labels" class="flex justify-around px-10 text-caption font-bold text-text-secondary mt-2">
+                <!-- Labels will be injected here by JS -->
+            </div>
+        </div>
+
+        <script>
+            const i18n = {
+                admin_sat: "@Localizer["admin_sat"]",
+                admin_sun: "@Localizer["admin_sun"]",
+                admin_mon: "@Localizer["admin_mon"]",
+                admin_tue: "@Localizer["admin_tue"]",
+                admin_wed: "@Localizer["admin_wed"]",
+                admin_thu: "@Localizer["admin_thu"]",
+                admin_fri: "@Localizer["admin_fri"]",
+                admin_week: "@Localizer["admin_week"]"
+            };
+
+            const salesData = {
+                weekly: {
+                    labels: ["admin_sat", "admin_sun", "admin_mon", "admin_tue", "admin_wed", "admin_thu", "admin_fri"],
+                    values: [120, 250, 90, 400, 500, 210, 350]
+                },
+                monthly: {
+                    labels: ["admin_week", "admin_week", "admin_week", "admin_week"],
+                    values: [1500, 2200, 1800, 3100]
+                }
+            };
+
+            function renderChart(type) {
+                const container = document.getElementById('chart-bars');
+                const labelContainer = document.getElementById('chart-labels');
+                container.innerHTML = '';
+                labelContainer.innerHTML = '';
+                
+                const data = salesData[type];
+                const maxVal = Math.max(...data.values);
+
+                data.values.forEach((val, i) => {
+                    const height = (val / maxVal) * 100;
+                    container.innerHTML += `
+                        <div class="w-8 bg-primary-container dark:bg-primary rounded-t-lg transition-all duration-500 hover:scale-x-110 cursor-pointer relative group" style="height: ${height}%">
+                             <div class="absolute -top-8 left-1/2 -translate-x-1/2 bg-inverse-surface dark:bg-surface-container-high text-surface dark:text-inverse-on-surface text-[10px] py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap z-20">${val}</div>
+                        </div>`;
+                    labelContainer.innerHTML += `<span class="text-text-secondary dark:text-outline-variant font-caption">${i18n[data.labels[i]] || ''}</span>`;
+                });
+            }
+
+            document.querySelector('select').addEventListener('change', (e) => {
+                renderChart(e.target.value === '@Localizer["admin_month"]' ? 'monthly' : 'weekly');
+            });
+            renderChart('weekly');
+        </script>
                                 <!-- Right Column: Quick Actions & Recent -->
                                 <div class="flex flex-col gap-md">
                                     <!-- Quick Actions -->

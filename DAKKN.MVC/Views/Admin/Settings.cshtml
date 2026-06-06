@@ -7,37 +7,27 @@
 <div class="max-w-6xl mx-auto flex flex-col md:flex-row gap-lg">
     <!-- Internal Settings Nav -->
     <div class="w-full md:w-64 flex-shrink-0">
-        <h3 class="font-h4 text-h4 mb-md text-on-background">إعدادات الحساب</h3>
+        <h3 class="font-h4 text-h4 mb-md text-on-background dark:text-inverse-on-surface">@Localizer["admin_settings"]</h3>
         <nav class="flex flex-row md:flex-col gap-xs overflow-x-auto pb-4 md:pb-0">
-            <a class="flex items-center gap-sm px-4 py-3 bg-surface rounded-xl shadow-small border-l-4 border-primary text-primary font-body-lg text-body-lg font-bold whitespace-nowrap" href="#">
+            <a class="flex items-center gap-sm px-4 py-3 bg-surface dark:bg-inverse-surface rounded-xl shadow-small border-l-4 border-primary text-primary dark:text-primary-light font-body-lg text-body-lg font-bold whitespace-nowrap" href="#">
                 <span class="material-symbols-outlined filled-icon">person</span>
-                الملف الشخصي
+                @Localizer["admin_profile"]
             </a>
-            <a class="flex items-center gap-sm px-4 py-3 rounded-xl text-text-secondary hover:bg-surface-container transition-colors font-body-lg text-body-lg whitespace-nowrap" href="#">
+            <a class="flex items-center gap-sm px-4 py-3 rounded-xl text-text-secondary dark:text-outline-variant hover:bg-surface-container dark:hover:bg-surface-container-high transition-colors font-body-lg text-body-lg whitespace-nowrap" href="#">
                 <span class="material-symbols-outlined">security</span>
-                الأمان وكلمة المرور
+                @Localizer["admin_security"]
             </a>
-            <a class="flex items-center gap-sm px-4 py-3 rounded-xl text-text-secondary hover:bg-surface-container transition-colors font-body-lg text-body-lg whitespace-nowrap" href="#">
-                <span class="material-symbols-outlined">notifications_active</span>
-                الإشعارات
-            </a>
-            <a class="flex items-center gap-sm px-4 py-3 rounded-xl text-text-secondary hover:bg-surface-container transition-colors font-body-lg text-body-lg whitespace-nowrap" href="#">
-                <span class="material-symbols-outlined">language</span>
-                اللغة والمنطقة
-            </a>
-        </nav>
-    </div>
-
+...
     <!-- Settings Canvas -->
-    <div class="flex-1 bg-surface rounded-2xl p-lg shadow-medium">
-        <div class="flex justify-between items-start mb-lg border-b border-border pb-md">
+    <div class="flex-1 bg-surface dark:bg-inverse-surface rounded-2xl p-lg shadow-medium">
+        <div class="flex justify-between items-start mb-lg border-b border-border dark:border-outline/20 pb-md">
             <div>
-                <h2 class="font-h3 text-h3 text-on-background">المعلومات الأساسية</h2>
-                <p class="font-body text-body text-text-secondary mt-1">قم بتحديث صورة ملفك الشخصي وتفاصيلك الشخصية.</p>
+                <h2 class="font-h3 text-h3 text-on-background dark:text-inverse-on-surface">@Localizer["admin_basic_info"]</h2>
+                <p class="font-body text-body text-text-secondary dark:text-outline-variant mt-1">@Localizer["admin_basic_info_desc"]</p>
             </div>
-            <span class="inline-flex items-center gap-1 px-3 py-1 bg-primary-container/30 text-on-primary-container rounded-full font-caption text-caption font-bold">
+            <span class="inline-flex items-center gap-1 px-3 py-1 bg-primary-container/30 text-on-primary-container dark:bg-primary/20 dark:text-primary-light rounded-full font-caption text-caption font-bold">
                 <span class="w-2 h-2 rounded-full bg-primary"></span>
-                نشط
+                @Localizer["admin_active"]
             </span>
         </div>
 
@@ -45,19 +35,19 @@
             <!-- Avatar Section -->
             <div class="flex items-center gap-lg">
                 <div class="relative group">
-                    <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-surface shadow-small">
+                    <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-surface dark:border-inverse-surface shadow-small">
                         <img alt="صورة المشرف الحالية" class="w-full h-full object-cover" src="https://ui-avatars.com/api/?name=Admin&background=69d2cf&color=005957&size=200">
                     </div>
-                    <button class="absolute bottom-0 right-0 w-8 h-8 bg-surface rounded-full shadow-md flex items-center justify-center text-primary hover:scale-110 transition-transform border border-border" type="button">
+                    <button class="absolute bottom-0 right-0 w-8 h-8 bg-surface dark:bg-surface-container-high rounded-full shadow-md flex items-center justify-center text-primary dark:text-primary-light hover:scale-110 transition-transform border border-border dark:border-outline/20" type="button">
                         <span class="material-symbols-outlined text-[18px]">edit</span>
                     </button>
                 </div>
                 <div>
-                    <h4 class="font-body-lg text-body-lg font-bold text-on-background">صورة الملف الشخصي</h4>
-                    <p class="font-caption text-caption text-text-secondary mb-2">JPG, GIF أو PNG. الحد الأقصى للحجم 8MB.</p>
+                    <h4 class="font-body-lg text-body-lg font-bold text-on-background dark:text-inverse-on-surface">@Localizer["admin_profile_pic"]</h4>
+                    <p class="font-caption text-caption text-text-secondary dark:text-outline-variant mb-2">JPG, GIF أو PNG. @Localizer["admin_max_size"] 8MB.</p>
                     <div class="flex gap-sm">
-                        <button class="px-4 py-2 bg-surface border-2 border-primary text-primary rounded-xl font-body text-body font-bold hover:bg-primary/5 transition-colors" type="button">تغيير الصورة</button>
-                        <button class="px-4 py-2 text-error font-body text-body hover:bg-error/5 rounded-xl transition-colors" type="button">إزالة</button>
+                        <button class="px-4 py-2 bg-surface dark:bg-surface-container-high border-2 border-primary text-primary dark:border-primary-light dark:text-primary-light rounded-xl font-body text-body font-bold hover:bg-primary/5 transition-colors" type="button">@Localizer["admin_change"]</button>
+                        <button class="px-4 py-2 text-error dark:text-error-light font-body text-body hover:bg-error/5 rounded-xl transition-colors" type="button">@Localizer["admin_remove"]</button>
                     </div>
                 </div>
             </div>
@@ -65,27 +55,27 @@
             <!-- Form Grid -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
                 <div class="space-y-2">
-                    <label class="block font-body-lg text-body-lg text-on-background">الاسم الأول</label>
-                    <input class="w-full px-4 py-3 bg-surface rounded-[18px] border border-border focus:border-primary focus:ring-1 focus:ring-primary font-body text-body text-on-background transition-colors" type="text" value="أحمد">
+                    <label class="block font-body-lg text-body-lg text-on-background dark:text-inverse-on-surface">@Localizer["admin_first_name"]</label>
+                    <input class="w-full px-4 py-3 bg-surface dark:bg-surface-container-high rounded-[18px] border border-border dark:border-outline/20 focus:border-primary focus:ring-1 focus:ring-primary font-body text-body text-on-background dark:text-inverse-on-surface transition-colors" type="text" value="أحمد">
                 </div>
                 <div class="space-y-2">
-                    <label class="block font-body-lg text-body-lg text-on-background">اسم العائلة</label>
-                    <input class="w-full px-4 py-3 bg-surface rounded-[18px] border border-border focus:border-primary focus:ring-1 focus:ring-primary font-body text-body text-on-background transition-colors" type="text" value="محمود">
+                    <label class="block font-body-lg text-body-lg text-on-background dark:text-inverse-on-surface">@Localizer["admin_last_name"]</label>
+                    <input class="w-full px-4 py-3 bg-surface dark:bg-surface-container-high rounded-[18px] border border-border dark:border-outline/20 focus:border-primary focus:ring-1 focus:ring-primary font-body text-body text-on-background dark:text-inverse-on-surface transition-colors" type="text" value="محمود">
                 </div>
                 <div class="space-y-2 md:col-span-2">
-                    <label class="block font-body-lg text-body-lg text-on-background">البريد الإلكتروني</label>
+                    <label class="block font-body-lg text-body-lg text-on-background dark:text-inverse-on-surface">@Localizer["auth.login.email"]</label>
                     <div class="relative">
-                        <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-text-secondary">mail</span>
-                        <input class="w-full pr-12 pl-4 py-3 bg-surface rounded-[18px] border border-border focus:border-primary focus:ring-1 focus:ring-primary font-body text-body text-on-background transition-colors" type="email" value="admin@dakkn.com">
+                        <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-text-secondary dark:text-outline">mail</span>
+                        <input class="w-full pr-12 pl-4 py-3 bg-surface dark:bg-surface-container-high rounded-[18px] border border-border dark:border-outline/20 focus:border-primary focus:ring-1 focus:ring-primary font-body text-body text-on-background dark:text-inverse-on-surface transition-colors" type="email" value="admin@dakkn.com">
                     </div>
                 </div>
                 <div class="space-y-2">
-                    <label class="block font-body-lg text-body-lg text-on-background">الدور الوظيفي</label>
-                    <input class="w-full px-4 py-3 bg-surface-container-low rounded-[18px] border border-border font-body text-body text-text-secondary cursor-not-allowed opacity-70" disabled="" type="text" value="مدير النظام">
+                    <label class="block font-body-lg text-body-lg text-on-background dark:text-inverse-on-surface">@Localizer["admin_role"]</label>
+                    <input class="w-full px-4 py-3 bg-surface-container-low dark:bg-inverse-surface-container rounded-[18px] border border-border dark:border-outline/20 font-body text-body text-text-secondary dark:text-outline-variant cursor-not-allowed opacity-70" disabled="" type="text" value="مدير النظام">
                 </div>
                 <div class="space-y-2">
-                    <label class="block font-body-lg text-body-lg text-on-background">المنطقة الزمنية</label>
-                    <select class="w-full px-4 py-3 bg-surface rounded-[18px] border border-border focus:border-primary focus:ring-1 focus:ring-primary font-body text-body text-on-background transition-colors appearance-none">
+                    <label class="block font-body-lg text-body-lg text-on-background dark:text-inverse-on-surface">@Localizer["admin_timezone"]</label>
+                    <select class="w-full px-4 py-3 bg-surface dark:bg-surface-container-high rounded-[18px] border border-border dark:border-outline/20 focus:border-primary focus:ring-1 focus:ring-primary font-body text-body text-on-background dark:text-inverse-on-surface transition-colors appearance-none">
                         <option>(GMT+03:00) توقيت الرياض</option>
                         <option>(GMT+02:00) توقيت القاهرة</option>
                         <option>(GMT+04:00) توقيت دبي</option>
@@ -95,11 +85,11 @@
 
             <!-- Bio Section -->
             <div class="space-y-2">
-                <label class="block font-body-lg text-body-lg text-on-background flex justify-between">
-                    <span>نبذة قصيرة</span>
-                    <span class="text-text-secondary text-caption font-caption">275/500 حرف</span>
+                <label class="block font-body-lg text-body-lg text-on-background dark:text-inverse-on-surface flex justify-between">
+                    <span>@Localizer["admin_bio"]</span>
+                    <span class="text-text-secondary dark:text-outline-variant text-caption font-caption">275/500 @Localizer["admin_chars"]</span>
                 </label>
-                <textarea class="w-full px-4 py-3 bg-surface rounded-[18px] border border-border focus:border-primary focus:ring-1 focus:ring-primary font-body text-body text-on-background transition-colors resize-none" rows="4">مسؤول عن إدارة المحتوى وتجربة المستخدم في منصة دكّن. مهتم بتصميم الواجهات وتحسين أداء المتاجر الإلكترونية.</textarea>
+                <textarea class="w-full px-4 py-3 bg-surface dark:bg-surface-container-high rounded-[18px] border border-border dark:border-outline/20 focus:border-primary focus:ring-1 focus:ring-primary font-body text-body text-on-background dark:text-inverse-on-surface transition-colors resize-none" rows="4">مسؤول عن إدارة المحتوى وتجربة المستخدم في منصة دكّن. مهتم بتصميم الواجهات وتحسين أداء المتاجر الإلكترونية.</textarea>
             </div>
         </form>
     </div>
