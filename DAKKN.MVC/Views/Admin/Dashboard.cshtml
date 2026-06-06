@@ -98,18 +98,25 @@
         <div class="admin-card p-6 space-y-6 flex flex-col">
             <h3 class="text-lg font-bold text-admin-primary">@Localizer["admin_quick_actions"]</h3>
             <div class="grid grid-cols-1 gap-4 flex-grow">
-                <div class="action-tile flex items-center gap-4">
-                    <div class="icon"><span class="material-symbols-outlined">add_shopping_cart</span></div>
-                    <span class="text-sm font-bold text-admin-primary">@Localizer["admin_action_add_order"]</span>
-                </div>
-                <div class="action-tile flex items-center gap-4">
-                    <div class="icon"><span class="material-symbols-outlined">person_add</span></div>
-                    <span class="text-sm font-bold text-admin-primary">@Localizer["admin_action_add_advertiser"]</span>
-                </div>
-                <div class="action-tile flex items-center gap-4">
-                    <div class="icon"><span class="material-symbols-outlined">manage_accounts</span></div>
-                    <span class="text-sm font-bold text-admin-primary">@Localizer["admin_action_manage_users"]</span>
-                </div>
+                <a asp-action="AddProduct" class="action-tile flex items-center gap-4 group cursor-pointer">
+                    <div class="icon group-hover:bg-primary group-hover:text-white transition-all"><span class="material-symbols-outlined">add_box</span></div>
+                    <span class="text-sm font-bold text-admin-primary group-hover:text-primary transition-colors">@Localizer["admin_add_product"]</span>
+                </a>
+                <a asp-action="Orders" class="action-tile flex items-center gap-4 group cursor-pointer">
+                    <div class="icon group-hover:bg-secondary group-hover:text-white transition-all"><span class="material-symbols-outlined">shopping_cart_checkout</span></div>
+                    <span class="text-sm font-bold text-admin-primary group-hover:text-secondary transition-colors">@Localizer["admin_orders"]</span>
+                </a>
+                <a asp-action="Support" class="action-tile flex items-center gap-4 group cursor-pointer">
+                    <div class="icon group-hover:bg-tertiary group-hover:text-white transition-all"><span class="material-symbols-outlined">support_agent</span></div>
+                    <span class="text-sm font-bold text-admin-primary group-hover:text-tertiary transition-colors">@Localizer["admin_support"]</span>
+                </a>
+                <a asp-action="Inventory" class="action-tile flex items-center gap-4 group cursor-pointer">
+                    <div class="icon group-hover:bg-red-500 group-hover:text-white transition-all"><span class="material-symbols-outlined">inventory_2</span></div>
+                    <div class="flex flex-col">
+                        <span class="text-sm font-bold text-admin-primary group-hover:text-red-500 transition-colors">@Localizer["admin_inventory"]</span>
+                        <span class="text-[10px] font-bold text-red-500">@Localizer["admin_inventory_low_stock"]</span>
+                    </div>
+                </a>
             </div>
         </div>
     </div>
