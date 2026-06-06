@@ -78,9 +78,13 @@
     </style>
 
     <script>
+        // High-priority theme application to prevent light-mode flash
         (function() {
-            const theme = localStorage.getItem('dakkn_theme');
-            if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            const savedTheme = localStorage.getItem('dakkn_theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const isDark = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
+            
+            if (isDark) {
                 document.documentElement.classList.add('dark');
             } else {
                 document.documentElement.classList.remove('dark');
@@ -88,19 +92,10 @@
 
             // Initialize Sidebar State
             const isCollapsed = localStorage.getItem('dakkn_sidebar_collapsed') === 'true';
-            const windowWidth = window.innerWidth;
-            if (isCollapsed || windowWidth < 1280) {
+            if (isCollapsed || window.innerWidth < 1280) {
                 document.documentElement.classList.add('sidebar-is-collapsed');
             }
         })();
-
-        function toggleTheme() {
-            const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('dakkn_theme', isDark ? 'dark' : 'light');
-            
-            // Dispatch event for components that need to react to theme changes
-            window.dispatchEvent(new CustomEvent('dakkn-theme-change', { detail: { isDark } }));
-        }
 
         window.csrfToken = "@Html.AntiForgeryToken()".match(/value="([^"]+)"/)[1];
 
@@ -114,7 +109,7 @@
                     document.documentElement.removeAttribute('data-dakkn-loading');
                 }, 400);
             }
-        }, 2000); // 2 second timeout
+        }, 2000);
     </script>
 </head>
 <body class="text-text-primary dark:text-inverse-on-surface h-screen overflow-hidden flex bg-background dark:bg-dark-page transition-colors duration-300">
@@ -227,36 +222,15 @@
         function updateSidebarIcon(isCollapsed) {
             const icon = document.getElementById('sidebar-toggle-icon');
             if (icon) {
-                // menu_open points 'away' from the sidebar when it's open, menu shows it can be opened
                 icon.textContent = isCollapsed ? 'menu' : 'menu_open';
-            }
-        }
-
-        // Dark Mode Logic
-        function toggleDarkMode() {
-            const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('dakkn_theme', isDark ? 'dark' : 'light');
-            updateDarkModeIcon(isDark);
-        }
-
-        function updateDarkModeIcon(isDark) {
-            const icon = document.getElementById('dark-mode-icon');
-            if (icon) {
-                icon.textContent = isDark ? 'light_mode' : 'dark_mode';
             }
         }
 
         // Initialize State on Load
         (function() {
-            const savedTheme = localStorage.getItem('dakkn_theme');
-            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const isDark = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
-            updateDarkModeIcon(isDark);
-
             const isCollapsed = document.documentElement.classList.contains('sidebar-is-collapsed');
             updateSidebarIcon(isCollapsed);
 
-            // Handle Resize Auto-shrink
             window.addEventListener('resize', () => {
                 if (window.innerWidth < 1280) {
                     if (!document.documentElement.classList.contains('sidebar-is-collapsed')) {

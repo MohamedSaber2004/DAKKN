@@ -92,13 +92,13 @@
                     </button>
                     <button onclick="setTheme('dark')" class="theme-card group p-lg rounded-2xl border-2 transition-all text-left rtl:text-right bg-[#1A1C1E] border-border dark:border-outline/20 hover:border-primary/50" id="theme-card-dark">
                         <div class="flex items-center justify-between mb-md">
-                            <span class="material-symbols-outlined text-4xl text-primary-light">dark_mode</span>
+                            <span class="material-symbols-outlined text-4xl text-white">dark_mode</span>
                             <div class="w-6 h-6 rounded-full border-2 border-border dark:border-outline group-[.active]:border-primary group-[.active]:bg-primary flex items-center justify-center transition-colors">
                                 <span class="material-symbols-outlined text-white text-xs opacity-0 group-[.active]:opacity-100">check</span>
                             </div>
                         </div>
                         <h5 class="font-bold text-white">@Localizer["admin_theme_dark"]</h5>
-                        <p class="text-xs text-outline-variant">@Localizer["admin_theme_dark_desc"]</p>
+                        <p class="text-xs text-white/70">@Localizer["admin_theme_dark_desc"]</p>
                     </button>
                 </div>
             </div>
@@ -142,7 +142,11 @@
     <script>
         function setTheme(theme) {
             const isDark = theme === 'dark';
-            document.documentElement.classList.toggle('dark', isDark);
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
             localStorage.setItem('dakkn_theme', theme);
             updateThemeCards(theme);
         }
@@ -161,8 +165,11 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('dakkn_theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-            updateThemeCards(savedTheme);
+            const savedTheme = localStorage.getItem('dakkn_theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const themeToApply = savedTheme === 'dark' || (savedTheme !== 'light' && systemPrefersDark) ? 'dark' : 'light';
+            
+            updateThemeCards(themeToApply);
         });
     </script>
 }
