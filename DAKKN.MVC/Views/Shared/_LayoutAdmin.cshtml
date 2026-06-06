@@ -142,10 +142,13 @@
         // Language Toggle Logic
         function toggleLang() {
             const currentLang = document.documentElement.lang || 'ar';
-            const newLang = currentLang === 'ar' ? 'en' : 'ar';
+            const newLang = currentLang.startsWith('en') ? 'ar' : 'en';
             
-            // Correct ASP.NET Core culture cookie format: c=en|u=en
-            const cookieValue = `c=${newLang}|u=${newLang}`;
+            // Persist language choice in localStorage (sync with landing.js)
+            localStorage.setItem('dakkn_lang', newLang);
+
+            // Correct ASP.NET Core culture cookie format: c=en|uic=en
+            const cookieValue = `c=${newLang}|uic=${newLang}`;
             document.cookie = `.AspNetCore.Culture=${cookieValue};path=/;max-age=31536000;SameSite=Lax`;
             
             window.location.reload();
@@ -154,7 +157,7 @@
         // Dark Mode Logic
         function toggleDarkMode() {
             const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            localStorage.setItem('dakkn_theme', isDark ? 'dark' : 'light');
             updateDarkModeIcon(isDark);
         }
 
@@ -167,7 +170,7 @@
 
         // Initialize Theme on Load
         (function() {
-            const savedTheme = localStorage.getItem('theme');
+            const savedTheme = localStorage.getItem('dakkn_theme');
             const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             const isDark = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
             

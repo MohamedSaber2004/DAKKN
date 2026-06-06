@@ -77,6 +77,14 @@ tailwind.config = {
                 /* ── Layout ───────────────────────────────────────── */
                 "border": "#E8EDF0",
             },
+            spacing: {
+                "xs": "0.25rem",
+                "sm": "0.5rem",
+                "md": "1rem",
+                "lg": "1.5rem",
+                "xl": "2.5rem",
+                "margin-mobile": "1.25rem",
+            },
             borderRadius: {
                 DEFAULT: "0.75rem", lg: "0.5rem", xl: "0.75rem", "2xl": "1rem", "3xl": "1.5rem", full: "9999px"
             },

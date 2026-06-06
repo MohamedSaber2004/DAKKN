@@ -162,64 +162,68 @@
             });
             renderChart('weekly');
         </script>
-                                <!-- Right Column: Quick Actions & Recent -->
-                                <div class="flex flex-col gap-md">
-                                    <!-- Quick Actions -->
-                                    <div class="bg-surface dark:bg-inverse-surface rounded-[24px] p-lg shadow-medium">
-                                        <h4 class="font-h4 text-h4 text-text-primary mb-md">@Localizer["admin_quick_actions"]</h4>
-                                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-sm">
-                                            <button
-                                                class="bg-surface dark:bg-surface-container-high hover:bg-primary-container text-on-surface hover:text-on-primary-container rounded-xl p-md flex flex-col items-center justify-center gap-2 transition-colors duration-200 shadow-small hover:shadow-medium">
-                                                <span class="material-symbols-outlined text-3xl">add_photo_alternate</span>
-                                                <span class="font-body-lg text-body text-center">@Localizer["admin_add_product"]</span>
-                                            </button>
-                                            <button
-                                                class="bg-surface dark:bg-surface-container-high hover:bg-accent-orange/20 text-on-surface hover:text-accent-orange rounded-xl p-md flex flex-col items-center justify-center gap-2 transition-colors duration-200 shadow-small hover:shadow-medium">
-                                                <span class="material-symbols-outlined text-3xl">orders</span>
-                                                <span class="font-body-lg text-body text-center">@Localizer["admin_orders_mgmt"]</span>
-                                            </button>
-                                            <button
-                                                class="bg-surface dark:bg-surface-container-high hover:bg-accent-purple/20 text-on-surface hover:text-accent-purple rounded-xl p-md flex flex-col items-center justify-center gap-2 transition-colors duration-200 shadow-small hover:shadow-medium">
-                                                <span class="material-symbols-outlined text-3xl">manage_accounts</span>
-                                                <span class="font-body-lg text-body text-center">@Localizer["admin_users_mgmt"]</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <!-- Recent Activity -->
-                                    <div class="bg-surface dark:bg-inverse-surface rounded-[24px] p-md shadow-medium flex-1">
-                                        <div class="flex justify-between items-center mb-md">
-                                            <h4 class="font-h4 text-h4 text-text-primary">@Localizer["admin_recent_orders"]</h4>
-                                            <a asp-controller="Admin" asp-action="Orders"
-                                               class="text-primary font-body text-body hover:underline">@Localizer["admin_view_all"]</a>
-                                        </div>
-                                        <div class="flex flex-col gap-sm">
-                                            <!-- Order Item -->
-                                            <div class="flex items-center gap-sm p-sm rounded-lg hover:bg-surface dark:bg-surface-container-high transition-colors">
-                                                <div
-                                                    class="w-10 h-10 rounded-full bg-accent-orange/20 flex items-center justify-center text-accent-orange shrink-0">
-                                                    <span class="material-symbols-outlined">inventory_2</span>
-                                                </div>
-                                                <div class="flex-1">
-                                                    <p class="font-body-lg text-body-lg text-text-primary leading-tight">
-                                                        @Localizer["admin_order_no"]1024</p>
-                                                        <p class="font-caption text-caption text-text-secondary">@Localizer["admin_time_ago", "15m"]</p>
-                                                    </div>
-                                                    <span class="font-body text-body font-bold text-primary">@Localizer["egp"] 120</span>
-                                                </div>
-                                                <!-- Order Item -->
-                                                <div class="flex items-center gap-sm p-sm rounded-lg hover:bg-surface dark:bg-surface-container-high transition-colors">
-                                                    <div
-                                                        class="w-10 h-10 rounded-full bg-accent-purple/20 flex items-center justify-center text-accent-purple shrink-0">
-                                                        <span class="material-symbols-outlined">inventory_2</span>
-                                                    </div>
-                                                    <div class="flex-1">
-                                                        <p class="font-body-lg text-body-lg text-text-primary leading-tight">
-                                                            @Localizer["admin_order_no"]1023</p>
-                                                            <p class="font-caption text-caption text-text-secondary">@Localizer["admin_time_ago", "2h"]</p>
-                                                        </div>
-                                                        <span class="font-body text-body font-bold text-primary">@Localizer["egp"] 350</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+    </div>
+
+    <!-- Right Column: Quick Actions & Recent -->
+    <div class="flex flex-col gap-md">
+        <!-- Quick Actions -->
+        <div class="bg-surface dark:bg-inverse-surface rounded-[24px] p-lg shadow-medium">
+            <h4 class="font-h4 text-h4 text-text-primary mb-md">@Localizer["admin_quick_actions"]</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-sm">
+                <button
+                    class="bg-surface dark:bg-surface-container-high hover:bg-primary-container text-on-surface hover:text-on-primary-container rounded-xl p-md flex flex-col items-center justify-center gap-2 transition-colors duration-200 shadow-small hover:shadow-medium">
+                    <span class="material-symbols-outlined text-3xl">add_photo_alternate</span>
+                    <span class="font-body-lg text-body text-center">@Localizer["admin_add_product"]</span>
+                </button>
+                <button
+                    class="bg-surface dark:bg-surface-container-high hover:bg-accent-orange/20 text-on-surface hover:text-accent-orange rounded-xl p-md flex flex-col items-center justify-center gap-2 transition-colors duration-200 shadow-small hover:shadow-medium">
+                    <span class="material-symbols-outlined text-3xl">orders</span>
+                    <span class="font-body-lg text-body text-center">@Localizer["admin_orders_mgmt"]</span>
+                </button>
+                <button
+                    class="bg-surface dark:bg-surface-container-high hover:bg-accent-purple/20 text-on-surface hover:text-accent-purple rounded-xl p-md flex flex-col items-center justify-center gap-2 transition-colors duration-200 shadow-small hover:shadow-medium">
+                    <span class="material-symbols-outlined text-3xl">manage_accounts</span>
+                    <span class="font-body-lg text-body text-center">@Localizer["admin_users_mgmt"]</span>
+                </button>
+            </div>
+        </div>
+        <!-- Recent Activity -->
+        <div class="bg-surface dark:bg-inverse-surface rounded-[24px] p-md shadow-medium flex-1">
+            <div class="flex justify-between items-center mb-md">
+                <h4 class="font-h4 text-h4 text-text-primary">@Localizer["admin_recent_orders"]</h4>
+                <a asp-controller="Admin" asp-action="Orders"
+                   class="text-primary font-body text-body hover:underline">@Localizer["admin_view_all"]</a>
+            </div>
+            <div class="flex flex-col gap-sm">
+                <!-- Order Item -->
+                <div class="flex items-center gap-sm p-sm rounded-lg hover:bg-surface dark:bg-surface-container-high transition-colors">
+                    <div
+                        class="w-10 h-10 rounded-full bg-accent-orange/20 flex items-center justify-center text-accent-orange shrink-0">
+                        <span class="material-symbols-outlined">inventory_2</span>
+                    </div>
+                    <div class="flex-1">
+                        <p class="font-body-lg text-body-lg text-text-primary leading-tight">
+                            @Localizer["admin_order_no"]1024</p>
+                            <p class="font-caption text-caption text-text-secondary">@Localizer["admin_time_ago", "15m"]</p>
+                        </div>
+                        <span class="font-body text-body font-bold text-primary">@Localizer["egp"] 120</span>
+                    </div>
+                    <!-- Order Item -->
+                    <div class="flex items-center gap-sm p-sm rounded-lg hover:bg-surface dark:bg-surface-container-high transition-colors">
+                        <div
+                            class="w-10 h-10 rounded-full bg-accent-purple/20 flex items-center justify-center text-accent-purple shrink-0">
+                            <span class="material-symbols-outlined">inventory_2</span>
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-body-lg text-body-lg text-text-primary leading-tight">
+                                @Localizer["admin_order_no"]1023</p>
+                                <p class="font-caption text-caption text-text-secondary">@Localizer["admin_time_ago", "2h"]</p>
+                            </div>
+                            <span class="font-body text-body font-bold text-primary">@Localizer["egp"] 350</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
