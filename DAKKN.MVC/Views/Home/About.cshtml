@@ -1,49 +1,46 @@
-﻿@{
+@{
     Layout = "_LayoutLanding";
-    ViewData["Title"] = "About Us - DAKKN";
-    ViewData["Description"] = "Learn the story behind DAKKN — built from a passion for quality, engineered for creators who refuse to settle.";
+    ViewData["Title"] = Localizer["about_title"];
+    ViewData["Description"] = Localizer["about_description"];
 }
-
-<span class="hidden" data-i18n="about_title" data-i18n-target="title">@Localizer["about_title"]</span>
-<span class="hidden" data-i18n="about_description" data-i18n-target="description">@Localizer["about_description"]</span>
 
 <!-- Top Navbar (reused from Index) -->
 <nav class="fixed top-0 w-full z-50 flex justify-between items-center px-4 md:px-16 h-16 md:h-20 bg-surface/75 dark:bg-surface-container/75 backdrop-blur-md border-b border-outline-variant/10 shadow-sm navbar-animate">
     <div class="flex items-center gap-4 md:gap-6">
-        <a href="/" class="font-sans text-xl md:text-2xl font-extrabold tracking-tight text-primary logo-glow cursor-pointer" data-i18n="brand">@Localizer["brand"]</a>
+        <a href="/" class="font-sans text-xl md:text-2xl font-extrabold tracking-tight text-primary logo-glow cursor-pointer">@Localizer["brand"]</a>
         <div class="hidden lg:flex items-center gap-1">
             <a href="/#shop" class="nav-link-premium nav-icon-link" data-section="shop">
                 <span class="material-symbols-outlined text-[17px]">local_fire_department</span>
-                <span data-i18n="nav_shop">@Localizer["nav_shop"]</span>
+                <span>@Localizer["nav_shop"]</span>
             </a>
             <a href="/#categories" class="nav-link-premium nav-icon-link" data-section="categories">
                 <span class="material-symbols-outlined text-[17px]">grid_view</span>
-                <span data-i18n="nav_categories">@Localizer["nav_categories"]</span>
+                <span>@Localizer["nav_categories"]</span>
             </a>
             <a href="/#all-products" class="nav-link-premium nav-icon-link">
                 <span class="material-symbols-outlined text-[17px]">inventory_2</span>
-                <span data-i18n="nav_all_products">@Localizer["nav_all_products"]</span>
+                <span>@Localizer["nav_all_products"]</span>
             </a>
             <a href="/Home/About" class="nav-link-premium nav-icon-link active">
                 <span class="material-symbols-outlined text-[17px]">groups</span>
-                <span data-i18n="nav_about">@Localizer["nav_about"]</span>
+                <span>@Localizer["nav_about"]</span>
             </a>
             <a href="/#contact" class="nav-link-premium nav-icon-link">
                 <span class="material-symbols-outlined text-[17px]">support_agent</span>
-                <span data-i18n="nav_support">@Localizer["nav_support"]</span>
+                <span>@Localizer["nav_support"]</span>
             </a>
         </div>
     </div>
     <div class="flex items-center gap-1 md:gap-3">
-        <button aria-label="person" class="navbar-icon-btn scale-90 md:scale-100" title="Account">
+        <a asp-action="Login" asp-controller="Auth" class="navbar-icon-btn scale-90 md:scale-100" title="Account">
             <span class="material-symbols-outlined text-[24px]">person</span>
-        </button>
+        </a>
         <button aria-label="shopping_cart" class="navbar-icon-btn relative scale-90 md:scale-100" title="Cart">
             <span class="material-symbols-outlined text-[24px]">shopping_cart</span>
             <span class="absolute top-1.5 right-1.5 rtl:right-auto rtl:left-1.5 w-2 h-2 bg-tertiary-container rounded-full"></span>
         </button>
         <button id="lang-toggle-btn" onclick="toggleLang()" class="lang-pill-premium text-[11px] md:text-[13px] px-3 md:px-4 py-1.5 md:py-2">
-            العربية
+            @(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") ? "English" : "العربية")
         </button>
     </div>
 </nav>
@@ -66,23 +63,23 @@
         <div class="relative z-10 max-w-3xl mx-auto text-center flex flex-col items-center gap-5">
             <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-container-high border border-outline-variant/30 w-fit shadow-sm scroll-animate visible">
                 <span class="w-2.5 h-2.5 rounded-full bg-tertiary animate-pulse"></span>
-                <span data-i18n="about_badge" class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">@Localizer["about_badge"]</span>
+                <span class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">@Localizer["about_badge"]</span>
             </div>
             <h1 class="text-4xl md:text-6xl font-extrabold text-on-surface leading-tight tracking-tight scroll-animate visible">
-                <span data-i18n="about_hero_h1a">@Localizer["about_hero_h1a"]</span>
-                <span class="text-primary" data-i18n="about_hero_h1b">@Localizer["about_hero_h1b"]</span><span data-i18n="about_hero_h1c">@Localizer["about_hero_h1c"]</span><br />
-                <span data-i18n="about_hero_h1d">@Localizer["about_hero_h1d"]</span>
-                <span class="text-tertiary" data-i18n="about_hero_h1e">@Localizer["about_hero_h1e"]</span>.
+                <span>@Localizer["about_hero_h1a"]</span>
+                <span class="text-primary">@Localizer["about_hero_h1b"]</span><span>@Localizer["about_hero_h1c"]</span><br />
+                <span>@Localizer["about_hero_h1d"]</span>
+                <span class="text-tertiary">@Localizer["about_hero_h1e"]</span>.
             </h1>
-            <p data-i18n="about_hero_p" class="text-base md:text-lg text-on-surface-variant max-w-xl leading-relaxed scroll-animate">
+            <p class="text-base md:text-lg text-on-surface-variant max-w-xl leading-relaxed scroll-animate">
                 @Localizer["about_hero_p"]
             </p>
             <div class="flex flex-wrap justify-center gap-3 pt-2 scroll-animate delay-200">
                 <a href="#our-mission" class="bg-primary hover:bg-primary-container text-on-primary font-semibold px-7 py-3.5 rounded-xl transition-all shadow-[0_4px_14px_0_rgba(8,145,178,0.35)] hover:shadow-none hover:-translate-y-0.5 duration-200 text-sm">
-                    <span data-i18n="about_cta_mission">@Localizer["about_cta_mission"]</span>
+                    <span>@Localizer["about_cta_mission"]</span>
                 </a>
                 <a href="/#shop" class="border border-primary/30 text-primary hover:bg-primary/5 font-semibold px-7 py-3.5 rounded-xl transition-all duration-200 text-sm">
-                    <span data-i18n="btn_shop">@Localizer["btn_shop"]</span>
+                    <span>@Localizer["btn_shop"]</span>
                 </a>
             </div>
         </div>
@@ -93,19 +90,19 @@
         <div class="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-0 md:divide-x divide-outline-variant/20" data-stagger>
             <div class="flex flex-col items-center gap-1 scroll-animate delay-100">
                 <span class="text-4xl md:text-5xl font-black text-primary font-sans">10K+</span>
-                <span data-i18n="stat1" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider text-center">@Localizer["stat1"]</span>
+                <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider text-center">@Localizer["stat1"]</span>
             </div>
             <div class="flex flex-col items-center gap-1 scroll-animate delay-200">
                 <span class="text-4xl md:text-5xl font-black text-primary font-sans">5</span>
-                <span data-i18n="stat2" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider text-center">@Localizer["stat2"]</span>
+                <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider text-center">@Localizer["stat2"]</span>
             </div>
             <div class="flex flex-col items-center gap-1 scroll-animate delay-300">
                 <span class="text-4xl md:text-5xl font-black text-primary font-sans">5yr</span>
-                <span data-i18n="stat3" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider text-center">@Localizer["stat3"]</span>
+                <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider text-center">@Localizer["stat3"]</span>
             </div>
             <div class="flex flex-col items-center gap-1 scroll-animate delay-400">
                 <span class="text-4xl md:text-5xl font-black text-primary font-sans">6</span>
-                <span data-i18n="stat4" class="text-xs font-bold text-on-surface-variant uppercase tracking-wider text-center">@Localizer["stat4"]</span>
+                <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider text-center">@Localizer["stat4"]</span>
             </div>
         </div>
     </section>
@@ -121,15 +118,15 @@
             <div class="flex flex-col gap-6 scroll-animate-left">
                 <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-container-high border border-outline-variant/30 w-fit">
                     <span class="material-symbols-outlined text-primary text-[18px]">auto_stories</span>
-                    <span data-i18n="about_story_badge" class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">@Localizer["about_story_badge"]</span>
+                    <span class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">@Localizer["about_story_badge"]</span>
                 </div>
-                <h2 data-i18n="about_story_h2" class="text-3xl md:text-4xl font-extrabold text-on-surface leading-snug">
+                <h2 class="text-3xl md:text-4xl font-extrabold text-on-surface leading-snug">
                     @Localizer["about_story_h2"]
                 </h2>
-                <p data-i18n="about_story_p1" class="text-sm md:text-base text-on-surface-variant leading-relaxed">
+                <p class="text-sm md:text-base text-on-surface-variant leading-relaxed">
                     @Localizer["about_story_p1"]
                 </p>
-                <p data-i18n="about_story_p2" class="text-sm md:text-base text-on-surface-variant leading-relaxed">
+                <p class="text-sm md:text-base text-on-surface-variant leading-relaxed">
                     @Localizer["about_story_p2"]
                 </p>
                 <div class="flex items-center gap-4 pt-2">
@@ -137,8 +134,8 @@
                         <span class="material-symbols-outlined text-2xl">pin_drop</span>
                     </div>
                     <div>
-                        <p data-i18n="about_hq_label" class="text-xs font-bold text-primary uppercase tracking-wider">@Localizer["about_hq_label"]</p>
-                        <p data-i18n="about_hq_val" class="text-sm font-semibold text-on-surface">@Localizer["about_hq_val"]</p>
+                        <p class="text-xs font-bold text-primary uppercase tracking-wider">@Localizer["about_hq_label"]</p>
+                        <p class="text-sm font-semibold text-on-surface">@Localizer["about_hq_val"]</p>
                     </div>
                 </div>
             </div>
@@ -149,18 +146,18 @@
                 <div class="relative z-10 grid grid-cols-2 gap-4 w-full max-md">
                     <div class="glass-panel rounded-2xl p-5 flex flex-col gap-3 col-span-2 shadow-md">
                         <span class="material-symbols-outlined text-primary text-3xl">emoji_objects</span>
-                        <h3 data-i18n="about_vision_h" class="font-extrabold text-on-surface text-base">@Localizer["about_vision_h"]</h3>
-                        <p data-i18n="about_vision_p" class="text-xs text-on-surface-variant leading-relaxed">@Localizer["about_vision_p"]</p>
+                        <h3 class="font-extrabold text-on-surface text-base">@Localizer["about_vision_h"]</h3>
+                        <p class="text-xs text-on-surface-variant leading-relaxed">@Localizer["about_vision_p"]</p>
                     </div>
                     <div class="glass-panel rounded-2xl p-5 flex flex-col gap-3 shadow-md">
                         <span class="material-symbols-outlined text-tertiary text-2xl">target</span>
-                        <h3 data-i18n="about_mission_h" class="font-extrabold text-on-surface text-sm">@Localizer["about_mission_h"]</h3>
-                        <p data-i18n="about_mission_p" class="text-xs text-on-surface-variant leading-relaxed">@Localizer["about_mission_p"]</p>
+                        <h3 class="font-extrabold text-on-surface text-sm">@Localizer["about_mission_h"]</h3>
+                        <p class="text-xs text-on-surface-variant leading-relaxed">@Localizer["about_mission_p"]</p>
                     </div>
                     <div class="glass-panel rounded-2xl p-5 flex flex-col gap-3 shadow-md">
                         <span class="material-symbols-outlined text-secondary text-2xl">handshake</span>
-                        <h3 data-i18n="about_promise_h" class="font-extrabold text-on-surface text-sm">@Localizer["about_promise_h"]</h3>
-                        <p data-i18n="about_promise_p" class="text-xs text-on-surface-variant leading-relaxed">@Localizer["about_promise_p"]</p>
+                        <h3 class="font-extrabold text-on-surface text-sm">@Localizer["about_promise_h"]</h3>
+                        <p class="text-xs text-on-surface-variant leading-relaxed">@Localizer["about_promise_p"]</p>
                     </div>
                 </div>
             </div>
@@ -174,8 +171,8 @@
             <div class="deco-ring-solid w-[400px] h-[400px] -bottom-40 left-1/3 opacity-25"></div>
         </div>
         <div class="relative z-10 max-w-3xl mx-auto text-center mb-16 scroll-animate">
-            <h2 data-i18n="process_h2" class="text-3xl md:text-4xl font-extrabold text-on-surface mb-4">@Localizer["process_h2"]</h2>
-            <p data-i18n="process_p" class="text-base text-on-surface-variant leading-relaxed">@Localizer["process_p"]</p>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-on-surface mb-4">@Localizer["process_h2"]</h2>
+            <p class="text-base text-on-surface-variant leading-relaxed">@Localizer["process_p"]</p>
         </div>
 
         <div class="relative z-10 max-w-4xl mx-auto">
@@ -189,8 +186,8 @@
                     <div class="glass-panel rounded-2xl p-6 flex-grow flex flex-col md:flex-row gap-5 items-start shadow-sm">
                         <span class="material-symbols-outlined text-primary text-3xl flex-shrink-0">brush</span>
                         <div>
-                            <h3 data-i18n="step1_h" class="font-extrabold text-on-surface text-base mb-1">@Localizer["step1_h"]</h3>
-                            <p data-i18n="step1_p" class="text-sm text-on-surface-variant leading-relaxed">@Localizer["step1_p"]</p>
+                            <h3 class="font-extrabold text-on-surface text-base mb-1">@Localizer["step1_h"]</h3>
+                            <p class="text-sm text-on-surface-variant leading-relaxed">@Localizer["step1_p"]</p>
                         </div>
                     </div>
                 </div>
@@ -200,8 +197,8 @@
                     <div class="glass-panel rounded-2xl p-6 flex-grow flex flex-col md:flex-row gap-5 items-start shadow-sm">
                         <span class="material-symbols-outlined text-secondary text-3xl flex-shrink-0">layers</span>
                         <div>
-                            <h3 data-i18n="step2_h" class="font-extrabold text-on-surface text-base mb-1">@Localizer["step2_h"]</h3>
-                            <p data-i18n="step2_p" class="text-sm text-on-surface-variant leading-relaxed">@Localizer["step2_p"]</p>
+                            <h3 class="font-extrabold text-on-surface text-base mb-1">@Localizer["step2_h"]</h3>
+                            <p class="text-sm text-on-surface-variant leading-relaxed">@Localizer["step2_p"]</p>
                         </div>
                     </div>
                 </div>
@@ -211,8 +208,8 @@
                     <div class="glass-panel rounded-2xl p-6 flex-grow flex flex-col md:flex-row gap-5 items-start shadow-sm">
                         <span class="material-symbols-outlined text-tertiary text-3xl flex-shrink-0">content_cut</span>
                         <div>
-                            <h3 data-i18n="step3_h" class="font-extrabold text-on-surface text-base mb-1">@Localizer["step3_h"]</h3>
-                            <p data-i18n="step3_p" class="text-sm text-on-surface-variant leading-relaxed">@Localizer["step3_p"]</p>
+                            <h3 class="font-extrabold text-on-surface text-base mb-1">@Localizer["step3_h"]</h3>
+                            <p class="text-sm text-on-surface-variant leading-relaxed">@Localizer["step3_p"]</p>
                         </div>
                     </div>
                 </div>
@@ -222,8 +219,8 @@
                     <div class="glass-panel rounded-2xl p-6 flex-grow flex flex-col md:flex-row gap-5 items-start shadow-sm">
                         <span class="material-symbols-outlined text-primary text-3xl flex-shrink-0">fact_check</span>
                         <div>
-                            <h3 data-i18n="step4_h" class="font-extrabold text-on-surface text-base mb-1">@Localizer["step4_h"]</h3>
-                            <p data-i18n="step4_p" class="text-sm text-on-surface-variant leading-relaxed">@Localizer["step4_p"]</p>
+                            <h3 class="font-extrabold text-on-surface text-base mb-1">@Localizer["step4_h"]</h3>
+                            <p class="text-sm text-on-surface-variant leading-relaxed">@Localizer["step4_p"]</p>
                         </div>
                     </div>
                 </div>
@@ -233,8 +230,8 @@
                     <div class="glass-panel rounded-2xl p-6 flex-grow flex flex-col md:flex-row gap-5 items-start shadow-sm">
                         <span class="material-symbols-outlined text-secondary text-3xl flex-shrink-0">local_shipping</span>
                         <div>
-                            <h3 data-i18n="step5_h" class="font-extrabold text-on-surface text-base mb-1">@Localizer["step5_h"]</h3>
-                            <p data-i18n="step5_p" class="text-sm text-on-surface-variant leading-relaxed">@Localizer["step5_p"]</p>
+                            <h3 class="font-extrabold text-on-surface text-base mb-1">@Localizer["step5_h"]</h3>
+                            <p class="text-sm text-on-surface-variant leading-relaxed">@Localizer["step5_p"]</p>
                         </div>
                     </div>
                 </div>
@@ -249,51 +246,51 @@
             <div class="deco-ring w-[240px] h-[240px] bottom-12 left-1/4 opacity-40"></div>
         </div>
         <div class="relative z-10 max-w-3xl mx-auto text-center mb-16 scroll-animate">
-            <h2 data-i18n="values_h2" class="text-3xl md:text-4xl font-extrabold text-on-surface mb-4">@Localizer["values_h2"]</h2>
-            <p data-i18n="values_p" class="text-base text-on-surface-variant leading-relaxed">@Localizer["values_p"]</p>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-on-surface mb-4">@Localizer["values_h2"]</h2>
+            <p class="text-base text-on-surface-variant leading-relaxed">@Localizer["values_p"]</p>
         </div>
         <div class="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto" data-stagger>
             <div class="glass-panel p-7 rounded-2xl flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 shadow-sm scroll-animate delay-100">
                 <div class="w-11 h-11 rounded-xl bg-primary/15 border border-primary/25 flex items-center justify-center text-primary">
                     <span class="material-symbols-outlined text-xl">verified</span>
                 </div>
-                <h3 data-i18n="val1_h" class="font-extrabold text-on-surface">@Localizer["val1_h"]</h3>
-                <p data-i18n="val1_p" class="text-sm text-on-surface-variant leading-relaxed">@Localizer["val1_p"]</p>
+                <h3 class="font-extrabold text-on-surface">@Localizer["val1_h"]</h3>
+                <p class="text-sm text-on-surface-variant leading-relaxed">@Localizer["val1_p"]</p>
             </div>
             <div class="glass-panel p-7 rounded-2xl flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 shadow-sm scroll-animate delay-200">
                 <div class="w-11 h-11 rounded-xl bg-tertiary-container/30 border border-tertiary/25 flex items-center justify-center text-tertiary">
                     <span class="material-symbols-outlined text-xl">diversity_3</span>
                 </div>
-                <h3 data-i18n="val2_h" class="font-extrabold text-on-surface">@Localizer["val2_h"]</h3>
-                <p data-i18n="val2_p" class="text-sm text-on-surface-variant leading-relaxed">@Localizer["val2_p"]</p>
+                <h3 class="font-extrabold text-on-surface">@Localizer["val2_h"]</h3>
+                <p class="text-sm text-on-surface-variant leading-relaxed">@Localizer["val2_p"]</p>
             </div>
             <div class="glass-panel p-7 rounded-2xl flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 shadow-sm scroll-animate delay-300">
                 <div class="w-11 h-11 rounded-xl bg-secondary-container/30 border border-secondary/25 flex items-center justify-center text-secondary">
                     <span class="material-symbols-outlined text-xl">eco</span>
                 </div>
-                <h3 data-i18n="val3_h" class="font-extrabold text-on-surface">@Localizer["val3_h"]</h3>
-                <p data-i18n="val3_p" class="text-sm text-on-surface-variant leading-relaxed">@Localizer["val3_p"]</p>
+                <h3 class="font-extrabold text-on-surface">@Localizer["val3_h"]</h3>
+                <p class="text-sm text-on-surface-variant leading-relaxed">@Localizer["val3_p"]</p>
             </div>
             <div class="glass-panel p-7 rounded-2xl flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 shadow-sm scroll-animate delay-100">
                 <div class="w-11 h-11 rounded-xl bg-primary/15 border border-primary/25 flex items-center justify-center text-primary">
                     <span class="material-symbols-outlined text-xl">bolt</span>
                 </div>
-                <h3 data-i18n="val4_h" class="font-extrabold text-on-surface">@Localizer["val4_h"]</h3>
-                <p data-i18n="val4_p" class="text-sm text-on-surface-variant leading-relaxed">@Localizer["val4_p"]</p>
+                <h3 class="font-extrabold text-on-surface">@Localizer["val4_h"]</h3>
+                <p class="text-sm text-on-surface-variant leading-relaxed">@Localizer["val4_p"]</p>
             </div>
             <div class="glass-panel p-7 rounded-2xl flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 shadow-sm scroll-animate delay-200">
                 <div class="w-11 h-11 rounded-xl bg-tertiary-container/30 border border-tertiary/25 flex items-center justify-center text-tertiary">
                     <span class="material-symbols-outlined text-xl">lock_open</span>
                 </div>
-                <h3 data-i18n="val5_h" class="font-extrabold text-on-surface">@Localizer["val5_h"]</h3>
-                <p data-i18n="val5_p" class="text-sm text-on-surface-variant leading-relaxed">@Localizer["val5_p"]</p>
+                <h3 class="font-extrabold text-on-surface">@Localizer["val5_h"]</h3>
+                <p class="text-sm text-on-surface-variant leading-relaxed">@Localizer["val5_p"]</p>
             </div>
             <div class="glass-panel p-7 rounded-2xl flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 shadow-sm scroll-animate delay-300">
                 <div class="w-11 h-11 rounded-xl bg-secondary-container/30 border border-secondary/25 flex items-center justify-center text-secondary">
                     <span class="material-symbols-outlined text-xl">star</span>
                 </div>
-                <h3 data-i18n="val6_h" class="font-extrabold text-on-surface">@Localizer["val6_h"]</h3>
-                <p data-i18n="val6_p" class="text-sm text-on-surface-variant leading-relaxed">@Localizer["val6_p"]</p>
+                <h3 class="font-extrabold text-on-surface">@Localizer["val6_h"]</h3>
+                <p class="text-sm text-on-surface-variant leading-relaxed">@Localizer["val6_p"]</p>
             </div>
         </div>
     </section>
@@ -305,8 +302,8 @@
             <div class="deco-dots-grid top-10 right-10 opacity-40"></div>
         </div>
         <div class="relative z-10 max-w-3xl mx-auto text-center mb-16 scroll-animate">
-            <h2 data-i18n="team_h2" class="text-3xl md:text-4xl font-extrabold text-on-surface mb-4">@Localizer["team_h2"]</h2>
-            <p data-i18n="team_p" class="text-base text-on-surface-variant leading-relaxed">@Localizer["team_p"]</p>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-on-surface mb-4">@Localizer["team_h2"]</h2>
+            <p class="text-base text-on-surface-variant leading-relaxed">@Localizer["team_p"]</p>
         </div>
         <div class="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto" data-stagger>
             <!-- Member 1 -->
@@ -315,10 +312,10 @@
                     <span class="material-symbols-outlined text-4xl">person</span>
                 </div>
                 <div>
-                    <h3 data-i18n="team1_name" class="font-extrabold text-on-surface text-base">@Localizer["team1_name"]</h3>
-                    <p data-i18n="team1_role" class="text-xs font-bold text-primary uppercase tracking-wider mt-0.5">@Localizer["team1_role"]</p>
+                    <h3 class="font-extrabold text-on-surface text-base">@Localizer["team1_name"]</h3>
+                    <p class="text-xs font-bold text-primary uppercase tracking-wider mt-0.5">@Localizer["team1_role"]</p>
                 </div>
-                <p data-i18n="team1_bio" class="text-xs text-on-surface-variant leading-relaxed">@Localizer["team1_bio"]</p>
+                <p class="text-xs text-on-surface-variant leading-relaxed">@Localizer["team1_bio"]</p>
             </div>
             <!-- Member 2 -->
             <div class="glass-panel p-7 rounded-2xl flex flex-col items-center text-center gap-4 hover:-translate-y-1 transition-transform duration-300 shadow-sm scroll-animate delay-200">
@@ -326,10 +323,10 @@
                     <span class="material-symbols-outlined text-4xl">engineering</span>
                 </div>
                 <div>
-                    <h3 data-i18n="team2_name" class="font-extrabold text-on-surface text-base">@Localizer["team2_name"]</h3>
-                    <p data-i18n="team2_role" class="text-xs font-bold text-tertiary uppercase tracking-wider mt-0.5">@Localizer["team2_role"]</p>
+                    <h3 class="font-extrabold text-on-surface text-base">@Localizer["team2_name"]</h3>
+                    <p class="text-xs font-bold text-tertiary uppercase tracking-wider mt-0.5">@Localizer["team2_role"]</p>
                 </div>
-                <p data-i18n="team2_bio" class="text-xs text-on-surface-variant leading-relaxed">@Localizer["team2_bio"]</p>
+                <p class="text-xs text-on-surface-variant leading-relaxed">@Localizer["team2_bio"]</p>
             </div>
             <!-- Member 3 -->
             <div class="glass-panel p-7 rounded-2xl flex flex-col items-center text-center gap-4 hover:-translate-y-1 transition-transform duration-300 shadow-sm scroll-animate delay-300">
@@ -337,10 +334,10 @@
                     <span class="material-symbols-outlined text-4xl">palette</span>
                 </div>
                 <div>
-                    <h3 data-i18n="team3_name" class="font-extrabold text-on-surface text-base">@Localizer["team3_name"]</h3>
-                    <p data-i18n="team3_role" class="text-xs font-bold text-secondary uppercase tracking-wider mt-0.5">@Localizer["team3_role"]</p>
+                    <h3 class="font-extrabold text-on-surface text-base">@Localizer["team3_name"]</h3>
+                    <p class="text-xs font-bold text-secondary uppercase tracking-wider mt-0.5">@Localizer["team3_role"]</p>
                 </div>
-                <p data-i18n="team3_bio" class="text-xs text-on-surface-variant leading-relaxed">@Localizer["team3_bio"]</p>
+                <p class="text-xs text-on-surface-variant leading-relaxed">@Localizer["team3_bio"]</p>
             </div>
         </div>
     </section>
@@ -352,16 +349,16 @@
             <div class="deco-ring w-[300px] h-[300px] bottom-0 left-1/4 opacity-20"></div>
         </div>
         <div class="relative z-10 max-w-3xl mx-auto text-center flex flex-col items-center gap-6">
-            <h2 data-i18n="cta_h2" class="text-3xl md:text-4xl font-extrabold text-on-primary leading-tight">@Localizer["cta_h2"]</h2>
-            <p data-i18n="cta_p" class="text-sm md:text-base text-on-primary/80 max-w-lg leading-relaxed">
+            <h2 class="text-3xl md:text-4xl font-extrabold text-on-primary leading-tight">@Localizer["cta_h2"]</h2>
+            <p class="text-sm md:text-base text-on-primary/80 max-w-lg leading-relaxed">
                 @Localizer["cta_p"]
             </p>
             <div class="flex flex-col sm:flex-row gap-3">
                 <a href="/#shop" class="bg-white text-primary font-bold px-8 py-3.5 rounded-xl hover:bg-primary-container transition-colors duration-200 text-sm shadow-lg">
-                    <span data-i18n="btn_shop">@Localizer["btn_shop"]</span>
+                    <span>@Localizer["btn_shop"]</span>
                 </a>
                 <a href="/#contact" class="border-2 border-white/40 text-on-primary font-bold px-8 py-3.5 rounded-xl hover:bg-white/10 transition-colors duration-200 text-sm">
-                    <span data-i18n="cta_contact">@Localizer["cta_contact"]</span>
+                    <span>@Localizer["cta_contact"]</span>
                 </a>
             </div>
         </div>
@@ -372,11 +369,11 @@
 <!-- Footer (reused from Index) -->
 <footer class="relative w-full py-12 px-4 md:px-16 grid grid-cols-1 md:grid-cols-12 gap-8 bg-white border-t border-outline-variant/10">
     <div class="md:col-span-5 flex flex-col gap-4">
-        <span data-i18n="brand" class="text-2xl font-black text-on-surface">@Localizer["brand"]</span>
-        <p data-i18n="footer_copy" class="text-xs text-on-surface-variant">@Localizer["footer_copy"]</p>
+        <span class="text-2xl font-black text-on-surface">@Localizer["brand"]</span>
+        <p class="text-xs text-on-surface-variant">@Localizer["footer_copy"]</p>
     </div>
     <div class="md:col-span-7 flex flex-wrap gap-6 md:justify-end items-center">
-        <a data-i18n="f_privacy" class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors duration-200" asp-controller="Home" asp-action="Privacy">@Localizer["f_privacy"]</a>
-        <a data-i18n="f_terms" class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors duration-200" asp-controller="Home" asp-action="Terms">@Localizer["f_terms"]</a>
+        <a class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors duration-200" asp-controller="Home" asp-action="Privacy">@Localizer["f_privacy"]</a>
+        <a class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors duration-200" asp-controller="Home" asp-action="Terms">@Localizer["f_terms"]</a>
     </div>
 </footer>

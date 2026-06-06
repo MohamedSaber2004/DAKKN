@@ -5,51 +5,60 @@
     ViewData["Title"] = Localizer["otp.title"];
 }
 
-@await Html.PartialAsync("Partials/_AuthAlert")
-
-@if (TempData["DevOtp"] is string devOtp)
-{
-    <div class="bg-tertiary/10 border border-tertiary/30 text-tertiary rounded-2xl px-4 py-3 mb-6 text-sm text-center font-mono scroll-animate visible">
-        <span data-i18n="dev_otp_label">@Localizer["dev_otp_label"]</span> <strong class="text-base">@devOtp</strong>
+@section Illustration {
+    <div class="relative w-[400px] h-[400px]">
+        <div class="absolute inset-0 flex items-center justify-center z-20 transform hover:scale-105 transition-transform duration-500">
+            <img alt="Dakkn OTP Illustration" class="w-full h-full object-cover rounded-2xl shadow-2xl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDrjYI8fDsNV_4WUoB2-2zVHGo5IgqParXeGP5kyW0oU5JhRFyco_kP-899V03TTMSPtAb6jvEXeE0lnMQ_KSChHZhxp_y2BmZw-tYILhhx49-JUrnhtLzpYVFcP0xaKvIMblTXrfQ71MozbBYuQ2HfY8cIROXd1VENJR9YpYF3B5kOb0rZQoJhMacVMXimsDY_W0gCpOHSEhb9MzcfX5KOXkiLG6SqHNWbfpfDc1Vs4x98k9n6rov6o2N26teYym1BAe20mxRVioIW">
+        </div>
     </div>
 }
 
-<div class="mb-8 text-center">
-    <h1 class="text-3xl font-black text-[var(--color-text-primary)] mb-2" data-i18n="otp.title">@Localizer["otp.title"]</h1>
-    <p class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-1" data-i18n="otp.subtitle">@Localizer["otp.subtitle"]</p>
-    <p class="text-sm font-black text-[var(--color-primary)]">@Model.Email</p>
+@await Html.PartialAsync("Partials/_AuthAlert")
+
+<div class="mb-8">
+    <a asp-action="Login" asp-controller="Auth" class="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-primary transition-colors group">
+        <span class="material-symbols-outlined text-[20px] rtl:rotate-180">arrow_back</span>
+        @Localizer["forgot.back"]
+    </a>
 </div>
 
-<form method="post" asp-action="Otp" asp-controller="Auth" novalidate>
+<div class="mb-10 text-right rtl:text-right ltr:text-left">
+    <h1 class="text-3xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
+        @Localizer["otp.title"] <span class="text-4xl">📧</span>
+    </h1>
+    <p class="text-slate-500 dark:text-slate-400">@Localizer["otp.subtitle"] <span class="font-bold text-primary">@Model.Email</span></p>
+</div>
+
+<form asp-action="VerifyOtp" asp-controller="Auth" method="post" class="space-y-8" novalidate>
     @Html.AntiForgeryToken()
     <input type="hidden" asp-for="Email" />
-    <input type="hidden" asp-for="Purpose" />
 
-    @await Html.PartialAsync("Partials/_OtpInput", Model)
+    <div class="space-y-4">
+        @await Html.PartialAsync("Partials/_OtpInput")
+        <span asp-validation-for="Code" class="text-xs text-red-500 font-bold block text-center mt-2"></span>
+    </div>
 
-    <button type="submit"
-            class="h-[56px] w-full rounded-2xl bg-[var(--color-primary)] text-white font-bold text-base flex items-center justify-center gap-2 shadow-lg shadow-[var(--color-primary)]/20 hover:bg-[var(--color-primary-hover)] hover:-translate-y-0.5 active:scale-[0.98] transition-all group">
-        <span data-i18n="otp.submit">@Localizer["otp.submit"]</span>
-        <span class="material-symbols-outlined text-[20px] group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform">verified_user</span>
-    </button>
+    <div class="text-center space-y-4">
+        <p class="text-sm font-medium text-slate-500">
+            @Localizer["otp.expires"] <span id="otp-countdown" class="font-bold text-primary">10:00</span>
+        </p>
+        
+        <div class="flex flex-col gap-3">
+            <button class="w-full bg-primary hover:bg-[#0c7a77] text-white font-bold py-4 px-6 rounded-xl transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-3 active:scale-[0.98] group" type="submit">
+                <span>@Localizer["otp.submit"]</span>
+                <span class="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">verified_user</span>
+            </button>
+            
+            <p class="text-sm font-medium text-slate-500">
+                @Localizer["otp.no_code"]
+                <a href="javascript:void(0)" onclick="alert('Resent!')" class="text-primary font-bold hover:underline ms-1">
+                    @Localizer["otp.resend"]
+                </a>
+            </p>
+        </div>
+    </div>
 </form>
 
-<div class="mt-8 text-center">
-    <p class="text-xs text-[var(--color-text-muted)] font-bold uppercase tracking-widest mb-4">
-        <span data-i18n="otp.expires">@Localizer["otp.expires"]</span>
-        <span id="otp-countdown" class="font-mono text-[var(--color-primary)] ms-1">10:00</span>
-    </p>
-
-    <div class="flex flex-col items-center gap-3">
-        <span class="text-sm text-[var(--color-text-muted)] font-medium" data-i18n="otp.no_code">@Localizer["otp.no_code"]</span>
-        <form method="post" asp-action="ResendOtp" asp-controller="Auth">
-            @Html.AntiForgeryToken()
-            <input type="hidden" name="email" value="@Model.Email" />
-            <input type="hidden" name="purpose" value="@Model.Purpose" />
-            <button type="submit"
-                    class="text-sm font-black text-[var(--color-primary)] hover:text-[var(--color-primary-hover)] transition-colors underline underline-offset-4"
-                    data-i18n="otp.resend">@Localizer["otp.resend"]
-            </button>
-        </form>
-    </div>
-</div>
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

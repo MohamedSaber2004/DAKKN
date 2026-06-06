@@ -16,7 +16,9 @@
         </div>
     </div>
     <div class="flex items-center gap-1 md:gap-3">
-        <button id="lang-toggle-btn" onclick="toggleLang()" class="lang-pill-premium text-[11px] md:text-[13px] px-3 md:px-4 py-1.5 md:py-2" data-i18n="lang_toggle">@Localizer["lang_toggle"]</button>
+        <button id="lang-toggle-btn" onclick="toggleLang()" class="lang-pill-premium text-[11px] md:text-[13px] px-3 md:px-4 py-1.5 md:py-2">
+            @(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") ? "English" : "العربية")
+        </button>
     </div>
 </nav>
 

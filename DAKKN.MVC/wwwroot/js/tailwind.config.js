@@ -3,18 +3,21 @@ tailwind.config = {
     theme: {
         extend: {
             colors: {
-                /* ── Sky-blue / Cyan primary ────────────────────── */
-                primary: "#006a68",
-                "primary-container": "#69d2cf",
-                "primary-fixed": "#8cf4f0",
-                "primary-fixed-dim": "#6ed7d4",
-                "primary-light": "#A6ECE9",
-                "primary-dark": "#45B8B5",
-                "on-primary": "#ffffff",
-                "on-primary-container": "#005957",
-                "on-primary-fixed": "#00201f",
-                "on-primary-fixed-variant": "#00504e",
-                "inverse-primary": "#6ed7d4",
+                /* ── Sky-blue / Cyan primary (Original) ─────────── */
+                "primary-old":            "#0891B2",   
+
+                /* ── New Brand Palette ──────────────────────────── */
+                primary:                  "#0E908C",   /* New primary teal */
+                decorative:               "#69D2CF",   /* Soft decorative teal */
+                "background-light":       "#FFFFFF",
+                "background-dark":        "#121212",
+
+                "primary-container":      "#CFFAFE",
+                "primary-fixed":          "#E0F7FA",
+                "primary-fixed-dim":      "#A5F3FC",
+                "on-primary":             "#FFFFFF",
+                "on-primary-container":   "#164E63",
+                "inverse-primary":        "#67E8F9",
 
                 /* ── Warm secondary ──────────────────────────────── */
                 secondary: "#725c00",
@@ -75,44 +78,12 @@ tailwind.config = {
                 "border": "#E8EDF0",
             },
             borderRadius: {
-                DEFAULT: "0.25rem",
-                lg: "0.5rem",
-                xl: "0.75rem",
-                "2xl": "1.5rem",
-                full: "9999px"
-            },
-            spacing: {
-                "xs": "4px",
-                "sm": "8px",
-                "md": "16px",
-                "lg": "24px",
-                "xl": "32px",
-                "2xl": "48px",
-                "3xl": "64px",
-                "gutter": "16px",
-                "margin-mobile": "20px",
+                DEFAULT: "0.75rem", lg: "0.5rem", xl: "0.75rem", "2xl": "1rem", "3xl": "1.5rem", full: "9999px"
             },
             fontFamily: {
-                sans: ["Inter", "Cairo", "sans-serif"],
-                display: ["Inter", "Cairo", "sans-serif"],
-                body: ["Inter", "Cairo", "sans-serif"],
-                caption: ["Inter", "Cairo", "sans-serif"],
-                h1: ["Inter", "Cairo", "sans-serif"],
-                h2: ["Inter", "Cairo", "sans-serif"],
-                h3: ["Inter", "Cairo", "sans-serif"],
-                h4: ["Inter", "Cairo", "sans-serif"],
-            },
-            fontSize: {
-                "caption": ["12px", { "lineHeight": "1.4", "fontWeight": "400" }],
-                "body": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
-                "body-lg": ["16px", { "lineHeight": "1.5", "fontWeight": "500" }],
-                "h4": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
-                "h3": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
-                "h2": ["30px", { "lineHeight": "1.3", "fontWeight": "600" }],
-                "h2-mobile": ["26px", { "lineHeight": "1.3", "fontWeight": "600" }],
-                "h1": ["36px", { "lineHeight": "1.2", "fontWeight": "700" }],
-                "h1-mobile": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }],
-                "display": ["48px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                sans:    ["Inter", "Plus Jakarta Sans", "Cairo", "sans-serif"],
+                arabic:  ["Cairo", "sans-serif"],
+                display: ["'IBM Plex Sans Arabic'", "sans-serif"],
             },
             boxShadow: {
                 'small': '0 4px 12px rgba(0,0,0,0.05)',

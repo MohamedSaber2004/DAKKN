@@ -8,38 +8,48 @@
 <nav class="fixed top-0 w-full z-50 flex justify-between items-center px-4 md:px-16 h-16 md:h-20 bg-surface/75 dark:bg-surface-container/75 backdrop-blur-md border-b border-outline-variant/10 shadow-sm navbar-animate">
     <div class="flex items-center gap-4 md:gap-6">
         <a href="#hero" class="logo-glow cursor-pointer" data-section="hero">
-                    <img src="~/images/logo.png" alt="DAKKN Logo" class="h-16 md:h-18" />
-                </a>
+            <img src="~/images/logo.png" alt="DAKKN Logo" class="h-16 md:h-18" />
+        </a>
         <!-- Desktop nav links with icons -->
         <div class="hidden lg:flex items-center gap-1">
             <a href="#shop" class="nav-link-premium nav-icon-link" data-section="shop">
                 <span class="material-symbols-outlined text-[17px]">local_fire_department</span>
-                <span data-i18n="nav_shop">@Localizer["nav_shop"]</span>
+                <span>@Localizer["nav_shop"]</span>
             </a>
             <a href="#categories" class="nav-link-premium nav-icon-link" data-section="categories">
                 <span class="material-symbols-outlined text-[17px]">grid_view</span>
-                <span data-i18n="nav_categories">@Localizer["nav_categories"]</span>
+                <span>@Localizer["nav_categories"]</span>
             </a>
             <a href="#all-products" class="nav-link-premium nav-icon-link" data-section="all-products">
                 <span class="material-symbols-outlined text-[17px]">inventory_2</span>
-                <span data-i18n="nav_all_products">@Localizer["nav_all_products"]</span>
+                <span>@Localizer["nav_all_products"]</span>
             </a>
             <a href="#testimonials" class="nav-link-premium nav-icon-link" data-section="testimonials">
                 <span class="material-symbols-outlined text-[17px]">reviews</span>
-                <span data-i18n="nav_reviews">@Localizer["nav_reviews"]</span>
+                <span>@Localizer["nav_reviews"]</span>
             </a>
             <a href="#contact" class="nav-link-premium nav-icon-link" data-section="contact">
                 <span class="material-symbols-outlined text-[17px]">support_agent</span>
-                <span data-i18n="nav_support">@Localizer["nav_support"]</span>
+                <span>@Localizer["nav_support"]</span>
             </a>
         </div>
     </div>
     <div class="flex items-center gap-1 md:gap-3">
 
-        <!-- Account Button -->
-        <button aria-label="person" class="navbar-icon-btn scale-90 md:scale-100" title="Account">
+        <!-- Auth Group (Desktop) -->
+        <div class="hidden lg:flex items-center gap-4 me-3">
+            <a asp-action="Login" asp-controller="Auth" class="text-[14px] font-bold text-on-surface-variant hover:text-primary transition-colors">
+                @Localizer["auth.register.login"]
+            </a>
+            <a asp-action="Register" asp-controller="Auth" class="bg-primary hover:bg-primary-container text-on-primary text-[14px] font-bold px-6 py-2.5 rounded-full transition-all shadow-lg shadow-primary/20 hover:-translate-y-0.5 active:scale-95">
+                @Localizer["auth.login.register"]
+            </a>
+        </div>
+
+        <!-- Account Button (Mobile) -->
+        <a asp-action="Login" asp-controller="Auth" class="navbar-icon-btn scale-90 md:scale-100 lg:hidden" title="@Localizer["auth.register.login"]">
             <span class="material-symbols-outlined text-[24px]">person</span>
-        </button>
+        </a>
 
         <!-- Cart Button -->
         <button aria-label="shopping_cart" class="navbar-icon-btn relative scale-90 md:scale-100" title="Cart">
@@ -49,7 +59,7 @@
 
         <!-- Language Switcher -->
         <button id="lang-toggle-btn" onclick="toggleLang()" class="lang-pill-premium text-[11px] md:text-[13px] px-3 md:px-4 py-1.5 md:py-2">
-            English
+            @(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") ? "English" : "العربية")
         </button>
     </div>
 </nav>
@@ -58,23 +68,23 @@
 <nav id="mobile-bottom-nav" class="mobile-bottom-nav lg:hidden">
     <a href="#shop" class="mob-nav-item" id="mobnav-shop" data-section="shop">
         <span class="material-symbols-outlined">local_fire_department</span>
-        <span data-i18n="nav_shop">@Localizer["nav_shop"]</span>
+        <span>@Localizer["nav_shop"]</span>
     </a>
     <a href="#categories" class="mob-nav-item" id="mobnav-cats" data-section="categories">
         <span class="material-symbols-outlined">grid_view</span>
-        <span data-i18n="nav_categories">@Localizer["nav_categories"]</span>
+        <span>@Localizer["nav_categories"]</span>
     </a>
     <a href="#all-products" class="mob-nav-item" id="mobnav-products" data-section="all-products">
         <span class="material-symbols-outlined">inventory_2</span>
-        <span data-i18n="nav_all_products">@Localizer["nav_all_products"]</span>
+        <span>@Localizer["nav_all_products"]</span>
     </a>
     <a href="#testimonials" class="mob-nav-item" id="mobnav-reviews" data-section="testimonials">
         <span class="material-symbols-outlined">reviews</span>
-        <span data-i18n="nav_reviews">@Localizer["nav_reviews"]</span>
+        <span>@Localizer["nav_reviews"]</span>
     </a>
     <a href="#contact" class="mob-nav-item" id="mobnav-contact" data-section="contact">
         <span class="material-symbols-outlined">support_agent</span>
-        <span data-i18n="nav_support">@Localizer["nav_support"]</span>
+        <span>@Localizer["nav_support"]</span>
     </a>
 </nav>
 
@@ -104,7 +114,7 @@
         <!-- Mobile: image top, text bottom. Desktop: text left, image right -->
         <div class="flex flex-col lg:grid lg:grid-cols-12 gap-6 lg:gap-12 w-full z-10 relative">
 
-            <!-- Image: order-1 on mobile (top), order-2 on desktop (right) -->
+            <!-- Image -->
             <div class="order-1 lg:order-2 lg:col-span-6 relative flex items-center justify-center fade-in-up delay-200 scroll-animate-right">
                 <div class="absolute w-[110%] h-[110%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 to-transparent blur-3xl z-0"></div>
                 <div class="glass-panel rounded-2xl p-3 md:p-4 relative z-10 w-full max-w-sm md:max-w-lg aspect-square flex items-center justify-center overflow-hidden group shadow-2xl">
@@ -112,49 +122,39 @@
                     
                     <div class="absolute top-3 right-3 md:top-6 md:right-6 bg-surface-container-high/90 backdrop-blur-md px-3 py-1.5 md:px-4 md:py-2 rounded-full border border-outline-variant/30 flex items-center gap-1.5 md:gap-2 shadow-lg">
                         <span class="material-symbols-outlined text-primary text-base md:text-lg">water_drop</span>
-                        <span data-i18n="waterproof" class="text-[10px] md:text-xs font-bold text-on-surface">@Localizer["waterproof"]</span>
+                        <span class="text-[10px] md:text-xs font-bold text-on-surface">@Localizer["waterproof"]</span>
                     </div>
                     
                     <div class="absolute bottom-3 left-3 md:bottom-6 md:left-6 bg-surface-container-high/90 backdrop-blur-md px-3 py-1.5 md:px-4 md:py-2 rounded-full border border-outline-variant/30 flex items-center gap-1.5 md:gap-2 shadow-lg">
                         <span class="material-symbols-outlined text-tertiary-container text-base md:text-lg">sunny</span>
-                        <span data-i18n="uv" class="text-[10px] md:text-xs font-bold text-on-surface">@Localizer["uv"]</span>
+                        <span class="text-[10px] md:text-xs font-bold text-on-surface">@Localizer["uv"]</span>
                     </div>
                 </div>
             </div>
 
 
-            <!-- Text: order-2 on mobile (bottom), order-1 on desktop (left) -->
+            <!-- Text -->
             <div class="order-2 lg:order-1 lg:col-span-6 flex flex-col justify-center gap-4 md:gap-6 fade-in-up scroll-animate visible">
                 <div class="inline-flex items-center gap-2 px-3 py-1 md:px-4 md:py-1.5 rounded-full bg-surface-container-high border border-outline-variant/30 w-fit shadow-sm scroll-animate delay-100">
                     <span class="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-primary animate-pulse"></span>
-                    <span data-i18n="hero_badge" class="text-[10px] md:text-xs font-bold text-on-surface-variant uppercase tracking-wider">@Localizer["hero_badge"]</span>
+                    <span class="text-[10px] md:text-xs font-bold text-on-surface-variant uppercase tracking-wider">@Localizer["hero_badge"]</span>
                 </div>
 
                 <h1 class="text-3xl md:text-5xl lg:text-6xl font-extrabold text-on-surface leading-tight tracking-tight scroll-animate delay-200">
-                    <span data-i18n="hero_h1_a">@Localizer["hero_h1_a"]</span> 
-                    <span data-i18n="hero_h1_b" class="text-primary">@Localizer["hero_h1_b"]</span><span data-i18n="hero_h1_c">@Localizer["hero_h1_c"]</span> 
-                    <span data-i18n="hero_h1_d" class="text-tertiary">@Localizer["hero_h1_d"]</span>.
+                    <span>@Localizer["hero_h1_a"]</span> 
+                    <span class="text-primary">@Localizer["hero_h1_b"]</span><span>@Localizer["hero_h1_c"]</span> 
+                    <span class="text-tertiary">@Localizer["hero_h1_d"]</span>.
                 </h1>
 
-                <p data-i18n="hero_p" class="text-sm md:text-lg text-on-surface-variant max-w-xl leading-relaxed scroll-animate delay-300">
+                <p class="text-sm md:text-lg text-on-surface-variant max-w-xl leading-relaxed scroll-animate delay-300">
                     @Localizer["hero_p"]
                 </p>
                 
                 <div class="flex flex-col sm:flex-row gap-3 md:gap-4 pt-2 md:pt-4 scroll-animate delay-400">
-                    <a href="#shop" data-i18n="btn_shop" class="bg-primary hover:bg-primary-container text-on-primary font-semibold text-center px-6 md:px-8 py-3 md:py-4 rounded-xl transition-all shadow-[0_4px_14px_0_rgba(77,46,229,0.4)] hover:shadow-[0_6px_20px_rgba(77,46,229,0.25)] hover:-translate-y-0.5 duration-200 text-sm md:text-base">
+                    <a href="#shop" class="bg-primary hover:bg-primary-container text-on-primary font-semibold text-center px-6 md:px-8 py-3 md:py-4 rounded-xl transition-all shadow-[0_4px_14px_0_rgba(77,46,229,0.4)] hover:shadow-[0_6px_20px_rgba(77,46,229,0.25)] hover:-translate-y-0.5 duration-200 text-sm md:text-base">
                         @Localizer["btn_shop"]
                     </a>
                 </div>
-
-                @* <!-- Scroll Down Indicator -->
-                <div class="hidden lg:flex items-center gap-4 mt-8 scroll-animate delay-600">
-                    <a href="#shop" class="group flex items-center gap-3 text-on-surface-variant hover:text-primary transition-colors duration-300">
-                        <div class="w-10 h-10 rounded-full border border-outline-variant/30 flex items-center justify-center group-hover:border-primary group-hover:bg-primary/5 transition-all duration-300">
-                            <span class="material-symbols-outlined text-xl animate-bounce">expand_more</span>
-                        </div>
-                        <span class="text-xs font-bold uppercase tracking-widest" data-i18n="hero_scroll_down">@Localizer["hero_scroll_down"]</span>
-                    </a>
-                </div> *@
 
                 <div class="flex items-center gap-3 md:gap-4 mt-4 md:mt-8 pt-4 md:pt-8 border-t border-outline-variant/20 scroll-animate delay-500">
                     <div class="flex -space-x-3 rtl:space-x-reverse">
@@ -170,7 +170,7 @@
                             <span class="material-symbols-outlined text-xs md:text-sm fill-icon">star</span>
                             <span class="material-symbols-outlined text-xs md:text-sm fill-icon">star</span>
                         </div>
-                        <span data-i18n="hero_trust" class="text-[10px] md:text-xs font-semibold text-on-surface-variant">@Localizer["hero_trust"]</span>
+                        <span class="text-[10px] md:text-xs font-semibold text-on-surface-variant">@Localizer["hero_trust"]</span>
                     </div>
                 </div>
             </div>
@@ -180,21 +180,22 @@
     <!-- 5. Featured Products Section -->
     <section id="shop" class="py-16 md:py-24 px-4 md:px-16 bg-white border-t border-outline-variant/10">
         <div class="max-w-3xl mx-auto text-center mb-16 scroll-animate">
-            <h2 data-i18n="prod_h2" class="text-3xl md:text-4xl font-extrabold text-on-surface mb-4">@Localizer["prod_h2"]</h2>
-            <p data-i18n="prod_p" class="text-base text-on-surface-variant leading-relaxed">@Localizer["prod_p"]</p>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-on-surface mb-4">@Localizer["prod_h2"]</h2>
+            <p class="text-base text-on-surface-variant leading-relaxed">@Localizer["prod_p"]</p>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8" data-stagger>
+            <!-- Rendered via Localizer for initial state, products grid handled by landing.js -->
             <div class="product-card glass-panel p-5 rounded-2xl flex flex-col gap-4 scroll-animate delay-100">
                 <div class="aspect-square rounded-xl overflow-hidden relative">
                     <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzltvWG8WURo7Y4suxD28ZKqrZqGo_jT9MfzPzO7YJy159K35OA3WcmauA2spMG7cSXjHDhIBERG4el4QITFH87cqD8aMULaFRF6R8fJR1-3Ca-RKAss7q3wjlw1wBwI3rFiciRCrPiyATA55LfV9EKWbH2U3sOeu7UJAl8IDPaLRei3JCXrYPz3r5ZhxVc0UtwbuT7RVAGaG2RC-eLlRnM81bQT6Eh1bbP7SQsT1UJJQ0cAhzAaTxkwWgpmYmBUSrtGFIZzFwZGoi"/>
                 </div>
                 <div>
-                    <h3 data-i18n="prod1_name" class="text-lg font-bold text-on-surface">@Localizer["prod1_name"]</h3>
-                    <p data-i18n="prod1_type" class="text-xs text-on-surface-variant">@Localizer["prod1_type"]</p>
+                    <h3 class="text-lg font-bold text-on-surface">@Localizer["prod1_name"]</h3>
+                    <p class="text-xs text-on-surface-variant">@Localizer["prod1_type"]</p>
                 </div>
                 <div class="flex items-center justify-between mt-auto pt-2">
-                    <span data-i18n="prod1_price" class="text-xl font-bold text-primary">@Localizer["prod1_price"]</span>
-                    <button data-i18n="add_cart" aria-label="Add to cart" class="px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-xs font-bold transition-all duration-200">
+                    <span class="text-xl font-bold text-primary">@Localizer["prod1_price"]</span>
+                    <button aria-label="Add to cart" class="px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-xs font-bold transition-all duration-200">
                         @Localizer["add_cart"]
                     </button>
                 </div>
@@ -206,12 +207,12 @@
                     <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNlKihBsHggV1O8npzxCBXgegvVuI9C4X9A-R-pMkpZxfd9ETgPzw3yV8Y7K3xqS2YMYggvApzgWiC98n2TQ2pkEDVuIHFZk8cdkGoU2Dzg0p-YDxsbRUkr7iogDacxpKtjBwNN8TgcAAQjXmr_2WPuLmhYP5h7kUYXO2hciCSdgSRCl8IObo8nbGIoQBgQFJobpxX69IGcm6UVeiu02pY0d5nSJZtH1JrJd_y0GescOC89BTPWnxp-4oBlohshrnihq2NDtrjYqPR"/>
                 </div>
                 <div>
-                    <h3 data-i18n="prod2_name" class="text-lg font-bold text-on-surface">@Localizer["prod2_name"]</h3>
-                    <p data-i18n="prod2_type" class="text-xs text-on-surface-variant">@Localizer["prod2_type"]</p>
+                    <h3 class="text-lg font-bold text-on-surface">@Localizer["prod2_name"]</h3>
+                    <p class="text-xs text-on-surface-variant">@Localizer["prod2_type"]</p>
                 </div>
                 <div class="flex items-center justify-between mt-auto pt-2">
-                    <span data-i18n="prod2_price" class="text-xl font-bold text-primary">@Localizer["prod2_price"]</span>
-                    <button data-i18n="add_cart" aria-label="Add to cart" class="px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-xs font-bold transition-all duration-200">
+                    <span class="text-xl font-bold text-primary">@Localizer["prod2_price"]</span>
+                    <button aria-label="Add to cart" class="px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-xs font-bold transition-all duration-200">
                         @Localizer["add_cart"]
                     </button>
                 </div>
@@ -223,12 +224,12 @@
                     <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXD4f3g-Xcj3q_tUbHslHRvBGQQPqNJQo25aoOQpYJoAkNvsN195Xr69-P45FG6MuYFa9KKf_wUbKQqLgDlsy1sU972rS_ZK7HtRKvkl8I9A5ISg24pUCXPNvW0tl93POppw80pkH_AeNnI-tIE5PvfS67qcqQroSEGYsxRDcktuS0aiGkoOOxaPLQ5tXSwNn_JqXw3Ken-xEZM-KtUYI6B_jVITKI3yQKJM8Yk-CNFye4fDZcWCf1VN6AeXyte_x6yygWA3xobXz5"/>
                 </div>
                 <div>
-                    <h3 data-i18n="prod3_name" class="text-lg font-bold text-on-surface">@Localizer["prod3_name"]</h3>
-                    <p data-i18n="prod3_type" class="text-xs text-on-surface-variant">@Localizer["prod3_type"]</p>
+                    <h3 class="text-lg font-bold text-on-surface">@Localizer["prod3_name"]</h3>
+                    <p class="text-xs text-on-surface-variant">@Localizer["prod3_type"]</p>
                 </div>
                 <div class="flex items-center justify-between mt-auto pt-2">
-                    <span data-i18n="prod3_price" class="text-xl font-bold text-primary">@Localizer["prod3_price"]</span>
-                    <button data-i18n="add_cart" aria-label="Add to cart" class="px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-xs font-bold transition-all duration-200">
+                    <span class="text-xl font-bold text-primary">@Localizer["prod3_price"]</span>
+                    <button aria-label="Add to cart" class="px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-xs font-bold transition-all duration-200">
                         @Localizer["add_cart"]
                     </button>
                 </div>
@@ -240,12 +241,12 @@
                     <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNEuLIza1T-3Iuc-68bHHLc2pPetxBeuxUnxKpQ6IRTTI82ybqG-q5I9BAWIeOsJ9YBhCLD2DNvoBL2TX8rup2TWluPf4rAjhxdSShOt8fSWMzrUleduQUNPviusk5FHo6g-N4FpR_58KIT9_qchh-raYGS_H-GhrFQ-sgF5lc_PrfRgsuyGdd9q8_CATQniccrhh87XNV1MTwun7KOCcEmJboJnnpEmtKm8asHBRe94TFFUESjJL-f0S50d37pS09FasbtTA3VAPe"/>
                 </div>
                 <div>
-                    <h3 data-i18n="prod4_name" class="text-lg font-bold text-on-surface">@Localizer["prod4_name"]</h3>
-                    <p data-i18n="prod4_type" class="text-xs text-on-surface-variant">@Localizer["prod4_type"]</p>
+                    <h3 class="text-lg font-bold text-on-surface">@Localizer["prod4_name"]</h3>
+                    <p class="text-xs text-on-surface-variant">@Localizer["prod4_type"]</p>
                 </div>
                 <div class="flex items-center justify-between mt-auto pt-2">
-                    <span data-i18n="prod4_price" class="text-xl font-bold text-primary">@Localizer["prod4_price"]</span>
-                    <button data-i18n="add_cart" aria-label="Add to cart" class="px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-xs font-bold transition-all duration-200">
+                    <span class="text-xl font-bold text-primary">@Localizer["prod4_price"]</span>
+                    <button aria-label="Add to cart" class="px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-xs font-bold transition-all duration-200">
                         @Localizer["add_cart"]
                     </button>
                 </div>
@@ -264,32 +265,32 @@
         </div>
 
         <div class="relative z-10 max-w-3xl mx-auto text-center mb-16 scroll-animate">
-            <h2 data-i18n="about_h2" class="text-3xl md:text-4xl font-extrabold text-on-surface mb-4">@Localizer["about_h2"]</h2>
-            <p data-i18n="about_p" class="text-base text-on-surface-variant leading-relaxed">@Localizer["about_p"]</p>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-on-surface mb-4">@Localizer["about_h2"]</h2>
+            <p class="text-base text-on-surface-variant leading-relaxed">@Localizer["about_p"]</p>
         </div>
         <div class="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8" data-stagger>
             <div class="glass-panel p-8 rounded-2xl flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 shadow-sm scroll-animate delay-100">
                 <div class="w-12 h-12 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary mb-2">
                     <span class="material-symbols-outlined text-2xl">layers</span>
                 </div>
-                <h3 data-i18n="feat1_h" class="text-xl font-bold text-on-surface">@Localizer["feat1_h"]</h3>
-                <p data-i18n="feat1_p" class="text-sm text-on-surface-variant leading-relaxed flex-grow">@Localizer["feat1_p"]</p>
+                <h3 class="text-xl font-bold text-on-surface">@Localizer["feat1_h"]</h3>
+                <p class="text-sm text-on-surface-variant leading-relaxed flex-grow">@Localizer["feat1_p"]</p>
             </div>
             
             <div class="glass-panel p-8 rounded-2xl flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 shadow-sm scroll-animate delay-200">
                 <div class="w-12 h-12 rounded-xl bg-tertiary-container/20 border border-tertiary/30 flex items-center justify-center text-tertiary mb-2">
                     <span class="material-symbols-outlined text-2xl">palette</span>
                 </div>
-                <h3 data-i18n="feat2_h" class="text-xl font-bold text-on-surface">@Localizer["feat2_h"]</h3>
-                <p data-i18n="feat2_p" class="text-sm text-on-surface-variant leading-relaxed flex-grow">@Localizer["feat2_p"]</p>
+                <h3 class="text-xl font-bold text-on-surface">@Localizer["feat2_h"]</h3>
+                <p class="text-sm text-on-surface-variant leading-relaxed flex-grow">@Localizer["feat2_p"]</p>
             </div>
             
             <div class="glass-panel p-8 rounded-2xl flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 shadow-sm scroll-animate delay-300">
                 <div class="w-12 h-12 rounded-xl bg-secondary-container/20 border border-secondary/30 flex items-center justify-center text-secondary mb-2">
                     <span class="material-symbols-outlined text-2xl">shield</span>
                 </div>
-                <h3 data-i18n="feat3_h" class="text-xl font-bold text-on-surface">@Localizer["feat3_h"]</h3>
-                <p data-i18n="feat3_p" class="text-sm text-on-surface-variant leading-relaxed flex-grow">@Localizer["feat3_p"]</p>
+                <h3 class="text-xl font-bold text-on-surface">@Localizer["feat3_h"]</h3>
+                <p class="text-sm text-on-surface-variant leading-relaxed flex-grow">@Localizer["feat3_p"]</p>
             </div>
         </div>
     </section>
@@ -304,8 +305,8 @@
         </div>
 
         <div class="relative z-10 max-w-3xl mx-auto text-center mb-16 scroll-animate">
-            <h2 data-i18n="cat_h2" class="text-3xl md:text-4xl font-extrabold text-on-surface mb-4">@Localizer["cat_h2"]</h2>
-            <p data-i18n="cat_p" class="text-base text-on-surface-variant leading-relaxed">@Localizer["cat_p"]</p>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-on-surface mb-4">@Localizer["cat_h2"]</h2>
+            <p class="text-base text-on-surface-variant leading-relaxed">@Localizer["cat_p"]</p>
         </div>
         <!-- Category Slider Wrapper -->
         <div class="relative z-10 scroll-animate">
@@ -320,7 +321,7 @@
                         <div class="absolute inset-0 bg-surface-container-highest/20 group-hover:bg-transparent transition-colors z-10"></div>
                         <img alt="Die-Cut Stickers" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAk_qLkXMyRhZHsFCiX42KXytRcQjX2nab3tojgzqftF18C49FJpCS5XBGoaBsnX75L1gyYlftOBl7WKTmtACsTCrr806OId-nyvJx3XDZ1w-v8x5Qm_GT3GqS4OKn2MFeB83w4XvOMsFFzZxFXuQ8oFPLgpySI6MxTeuJpXw6YP_zc4_64RRwlk0pmeKbcMA2D6nh67sbI8UVcw84LEEpeaE0L3-YyDqG3MvrVsCw0ZjDKcxm043x28Rzxo5kX03VP42LKDk4lLeA2"/>
                         <div class="absolute bottom-0 left-0 right-0 p-6 cat-overlay z-20">
-                            <h3 data-i18n="cat1" class="text-xl font-bold text-white">@Localizer["cat1"]</h3>
+                            <h3 class="text-xl font-bold text-white">@Localizer["cat1"]</h3>
                         </div>
                     </div>
 
@@ -329,7 +330,7 @@
                         <div class="absolute inset-0 bg-surface-container-highest/20 group-hover:bg-transparent transition-colors z-10"></div>
                         <img alt="Holographic Stickers" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7R0HC8qN2XvoVeNE2ALpluQWlRv1gqsRoZU694CuR3U-dd_9BcWYyazCSb8t36Ueu4AMVfnYtCF7ibe4X76KrHDlZT3reA_YXSTkFfjqGL8GFRd-0Lhg6lf7026uYYjkidJ1ee2eCGL1ntOmk7LT1iwgtgGxO2q0EIj0lskO7TRjr-x7JOKyDhU-8hBAWjDPQSOpFV90-R6H7F9udXZw6fG5DQQxbsnf9Xau_C9lXJlhk3LZcnb7kakWDPtTqFCx2BYRNZhvn4WxE"/>
                         <div class="absolute bottom-0 left-0 right-0 p-6 cat-overlay z-20">
-                            <h3 data-i18n="cat2" class="text-xl font-bold text-white">@Localizer["cat2"]</h3>
+                            <h3 class="text-xl font-bold text-white">@Localizer["cat2"]</h3>
                         </div>
                     </div>
 
@@ -338,7 +339,7 @@
                         <div class="absolute inset-0 bg-surface-container-highest/20 group-hover:bg-transparent transition-colors z-10"></div>
                         <img alt="Clear Stickers" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAC2qBsDcgLT342jaNSLEoqNj5Rx2jFhv4LfF_VtFR0CQCpVygfxVenKIzh0I5yMBCDjTBZzuo49gngmWJdbScbYmtfwVAfuT1IbqQGsqRCPbh8glmwWGu9jBhUaw0CAT4GnPBWsr_jQCdanBnIjVL1smPv9KDOZl4a94lqN4EB9o2cuX5hwTWDC3Nb9ee0q6Eg606xnGfs1odHMvZtT2vAjEPllNmAVE8oujmDyK9bwdyJ7Sc1Ax5Ks1JEp7UShdQtV14II81lUaU7"/>
                         <div class="absolute bottom-0 left-0 right-0 p-6 cat-overlay z-20">
-                            <h3 data-i18n="cat3" class="text-xl font-bold text-white">@Localizer["cat3"]</h3>
+                            <h3 class="text-xl font-bold text-white">@Localizer["cat3"]</h3>
                         </div>
                     </div>
 
@@ -347,25 +348,25 @@
                         <div class="absolute inset-0 bg-surface-container-highest/20 group-hover:bg-transparent transition-colors z-10"></div>
                         <img alt="Sticker Sheets" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJDMScKPq8MJUOklieS9wyBeBolpgZgCezPLy5vxVSfLlZwafOkDMZcTXqanKwSbFFMgETfofN0f0Z3PPVvyA1qXwoqVbzrm3cUyBoWSfHJNsnxf83OEz_N6XWfdgx1j_CKPnEvaDHmQ3-UEQrqJqmPhtF6p4hySOo3H8IrSxJpVe0omQj6ZEYGEcptT3bs84jGWIWvNYTod4_9LUv4Br9s3Mo0kZYUle3La_hd77AzNcmDbQZXxtuVqUGni9yAaljCyssQ3T884AU"/>
                         <div class="absolute bottom-0 left-0 right-0 p-6 cat-overlay z-20">
-                            <h3 data-i18n="cat4" class="text-xl font-bold text-white">@Localizer["cat4"]</h3>
+                            <h3 class="text-xl font-bold text-white">@Localizer["cat4"]</h3>
                         </div>
                     </div>
 
-                    <!-- Card 5: Custom Labels (NEW) -->
+                    <!-- Card 5: Custom Labels -->
                     <div class="group cursor-pointer rounded-2xl overflow-hidden relative flex-shrink-0 w-[calc(100%-0px)] sm:w-[calc(50%-12px)] md:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] aspect-square glass-panel shadow-sm">
                         <div class="absolute inset-0 bg-surface-container-highest/20 group-hover:bg-transparent transition-colors z-10"></div>
                         <img alt="Custom Labels" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzltvWG8WURo7Y4suxD28ZKqrZqGo_jT9MfzPzO7YJy159K35OA3WcmauA2spMG7cSXjHDhIBERG4el4QITFH87cqD8aMULaFRF6R8fJR1-3Ca-RKAss7q3wjlw1wBwI3rFiciRCrPiyATA55LfV9EKWbH2U3sOeu7UJAl8IDPaLRei3JCXrYPz3r5ZhxVc0UtwbuT7RVAGaG2RC-eLlRnM81bQT6Eh1bbP7SQsT1UJJQ0cAhzAaTxkwWgpmYmBUSrtGFIZzFwZGoi"/>
                         <div class="absolute bottom-0 left-0 right-0 p-6 cat-overlay z-20">
-                            <h3 data-i18n="cat5" class="text-xl font-bold text-white">@Localizer["cat5"]</h3>
+                            <h3 class="text-xl font-bold text-white">@Localizer["cat5"]</h3>
                         </div>
                     </div>
 
-                    <!-- Card 6: Matte Vinyl (NEW) -->
+                    <!-- Card 6: Matte Vinyl -->
                     <div class="group cursor-pointer rounded-2xl overflow-hidden relative flex-shrink-0 w-[calc(100%-0px)] sm:w-[calc(50%-12px)] md:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] aspect-square glass-panel shadow-sm">
                         <div class="absolute inset-0 bg-surface-container-highest/20 group-hover:bg-transparent transition-colors z-10"></div>
                         <img alt="Matte Vinyl" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNEuLIza1T-3Iuc-68bHHLc2pPetxBeuxUnxKpQ6IRTTI82ybqG-q5I9BAWIeOsJ9YBhCLD2DNvoBL2TX8rup2TWluPf4rAjhxdSShOt8fSWMzrUleduQUNPviusk5FHo6g-N4FpR_58KIT9_qchh-raYGS_H-GhrFQ-sgF5lc_PrfRgsuyGdd9q8_CATQniccrhh87XNV1MTwun7KOCcEmJboJnnpEmtKm8asHBRe94TFFUESjJL-f0S50d37pS09FasbtTA3VAPe"/>
                         <div class="absolute bottom-0 left-0 right-0 p-6 cat-overlay z-20">
-                            <h3 data-i18n="cat6" class="text-xl font-bold text-white">@Localizer["cat6"]</h3>
+                            <h3 class="text-xl font-bold text-white">@Localizer["cat6"]</h3>
                         </div>
                     </div>
 
@@ -410,36 +411,36 @@
         </div>
 
         <div class="relative z-10 max-w-3xl mx-auto text-center mb-12 scroll-animate">
-            <h2 data-i18n="all_products_h2" class="text-3xl md:text-4xl font-extrabold text-on-surface mb-4">@Localizer["all_products_h2"]</h2>
-            <p data-i18n="all_products_p" class="text-base text-on-surface-variant leading-relaxed">@Localizer["all_products_p"]</p>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-on-surface mb-4">@Localizer["all_products_h2"]</h2>
+            <p class="text-base text-on-surface-variant leading-relaxed">@Localizer["all_products_p"]</p>
         </div>
 
         <!-- Filter Controls -->
         <div class="relative z-10 max-w-5xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 bg-white/60 backdrop-blur-md border border-primary/15 p-6 rounded-2xl shadow-sm">
             <!-- Category Filter Pills -->
             <div class="flex flex-col gap-2.5">
-                <span data-i18n="filter_category" class="text-xs font-bold text-primary uppercase tracking-wider">@Localizer["filter_category"]</span>
+                <span class="text-xs font-bold text-primary uppercase tracking-wider">@Localizer["filter_category"]</span>
                 <div class="flex flex-wrap gap-2" id="prod-cat-filters">
                     <button onclick="filterCategory('all')" id="cat-filter-all" class="cat-pill px-4 py-2 rounded-full border text-xs font-bold transition-all duration-200 bg-primary border-primary text-white">
-                        <span data-i18n="all_cats">@Localizer["all_cats"]</span>
+                        <span>@Localizer["all_cats"]</span>
                     </button>
                     <button onclick="filterCategory('Die-Cut')" id="cat-filter-Die-Cut" class="cat-pill px-4 py-2 rounded-full border border-primary/20 text-primary hover:border-primary text-xs font-bold transition-all duration-200 bg-white/50">
-                        <span data-i18n="cat1">@Localizer["cat1"]</span>
+                        <span>@Localizer["cat1"]</span>
                     </button>
                     <button onclick="filterCategory('Holographic')" id="cat-filter-Holographic" class="cat-pill px-4 py-2 rounded-full border border-primary/20 text-primary hover:border-primary text-xs font-bold transition-all duration-200 bg-white/50">
-                        <span data-i18n="cat2">@Localizer["cat2"]</span>
+                        <span>@Localizer["cat2"]</span>
                     </button>
                     <button onclick="filterCategory('Clear')" id="cat-filter-Clear" class="cat-pill px-4 py-2 rounded-full border border-primary/20 text-primary hover:border-primary text-xs font-bold transition-all duration-200 bg-white/50">
-                        <span data-i18n="cat3">@Localizer["cat3"]</span>
+                        <span>@Localizer["cat3"]</span>
                     </button>
                     <button onclick="filterCategory('Sticker Sheets')" id="cat-filter-Sticker-Sheets" class="cat-pill px-4 py-2 rounded-full border border-primary/20 text-primary hover:border-primary text-xs font-bold transition-all duration-200 bg-white/50">
-                        <span data-i18n="cat4">@Localizer["cat4"]</span>
+                        <span>@Localizer["cat4"]</span>
                     </button>
                     <button onclick="filterCategory('Custom Labels')" id="cat-filter-Custom-Labels" class="cat-pill px-4 py-2 rounded-full border border-primary/20 text-primary hover:border-primary text-xs font-bold transition-all duration-200 bg-white/50">
-                        <span data-i18n="cat5">@Localizer["cat5"]</span>
+                        <span>@Localizer["cat5"]</span>
                     </button>
                     <button onclick="filterCategory('Matte Vinyl')" id="cat-filter-Matte-Vinyl" class="cat-pill px-4 py-2 rounded-full border border-primary/20 text-primary hover:border-primary text-xs font-bold transition-all duration-200 bg-white/50">
-                        <span data-i18n="cat6">@Localizer["cat6"]</span>
+                        <span>@Localizer["cat6"]</span>
                     </button>
                 </div>
             </div>
@@ -447,7 +448,7 @@
             <!-- Price Filter Slider -->
             <div class="flex flex-col gap-2.5 min-w-[200px]">
                 <div class="flex justify-between items-center">
-                    <span data-i18n="filter_price" class="text-xs font-bold text-primary uppercase tracking-wider">@Localizer["filter_price"]</span>
+                    <span class="text-xs font-bold text-primary uppercase tracking-wider">@Localizer["filter_price"]</span>
                     <span class="text-xs font-bold text-primary font-sans" id="price-val-display">150 EGP</span>
                 </div>
                 <input type="range" min="40" max="150" value="150" class="w-full h-1.5 bg-primary/20 rounded-lg appearance-none cursor-pointer accent-primary" id="price-slider" oninput="filterPrice(this.value)"/>
@@ -490,8 +491,8 @@
         </div>
 
         <div class="relative z-10 max-w-3xl mx-auto text-center mb-16 scroll-animate">
-            <h2 data-i18n="test_h2" class="text-3xl md:text-4xl font-extrabold text-on-surface mb-4">@Localizer["test_h2"]</h2>
-            <p data-i18n="test_p" class="text-base text-on-surface-variant leading-relaxed">@Localizer["test_p"]</p>
+            <h2 class="text-3xl md:text-4xl font-extrabold text-on-surface mb-4">@Localizer["test_h2"]</h2>
+            <p class="text-base text-on-surface-variant leading-relaxed">@Localizer["test_p"]</p>
         </div>
         <div class="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8" data-stagger>
             <!-- Testimonial 1 -->
@@ -503,12 +504,12 @@
                     <span class="material-symbols-outlined text-sm fill-icon">star</span>
                     <span class="material-symbols-outlined text-sm fill-icon">star</span>
                 </div>
-                <p data-i18n="test1_q" class="text-base text-on-surface italic mb-8 flex-grow">@Localizer["test1_q"]</p>
+                <p class="text-base text-on-surface italic mb-8 flex-grow">@Localizer["test1_q"]</p>
                 <div class="flex items-center gap-3 mt-auto">
                     <img alt="Customer" class="w-10 h-10 rounded-full object-cover border border-outline-variant/30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCxhgN9kVJT4qx9-LGF3zSHTWErK2FTfM-GPLlse2Na8Edz0X6o7Gk_KCoVq_p_b0lSjmL5FREK3RfOXD4qyQ8ipXCobcniUkcNy1PR2VMmWFTTTVz0jmgZ5QdQK68Km2cn6KuCmuSVXDZ5LRYNh7s8RdNI0IKo1M5D5ZiyCfKb7dv6mCS4srU_TOdgeIswHcUue6zkUg-V69xcOTPl49O6k3JUZNgkbLQKUtgpxp-0bAraMQqIqrvzo4-V6BkuSYLU9anfNID546p5"/>
                     <div>
-                        <p data-i18n="test1_name" class="text-sm font-bold text-on-surface">@Localizer["test1_name"]</p>
-                        <p data-i18n="test1_role" class="text-xs text-on-surface-variant">@Localizer["test1_role"]</p>
+                        <p class="text-sm font-bold text-on-surface">@Localizer["test1_name"]</p>
+                        <p class="text-xs text-on-surface-variant">@Localizer["test1_role"]</p>
                     </div>
                 </div>
             </div>
@@ -522,12 +523,12 @@
                     <span class="material-symbols-outlined text-sm fill-icon">star</span>
                     <span class="material-symbols-outlined text-sm fill-icon">star</span>
                 </div>
-                <p data-i18n="test2_q" class="text-base text-on-surface italic mb-8 flex-grow">@Localizer["test2_q"]</p>
+                <p class="text-base text-on-surface italic mb-8 flex-grow">@Localizer["test2_q"]</p>
                 <div class="flex items-center gap-3 mt-auto">
                     <img alt="Customer" class="w-10 h-10 rounded-full object-cover border border-outline-variant/30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD6_gLR98Q-VPpyfMvyq0oGkQoT1fZPDeUInOxKvfuHjyXfv_SpOLqh2Kmhht3npW9gXcTsvTJUCHTACjnkQ2FQ2Y1LAYvGImfEE1Qn9m74zeWYCbrwnpToXOCkFoDeO0Tjmd4PTzJDfhbH3m88-RjABq7lnMy1A5YkVtWDXKepdwaeD9Nz8ffuzdW06caPf5w-d71N1O23LAK_735LPKmyJ_xcFUUrzCL8SjUBkBQZaemCxxS2Y4XOexKoDo6yv9YF_TI4Gq96Dp26"/>
                     <div>
-                        <p data-i18n="test2_name" class="text-sm font-bold text-on-surface">@Localizer["test2_name"]</p>
-                        <p data-i18n="test2_role" class="text-xs text-on-surface-variant">@Localizer["test2_role"]</p>
+                        <p class="text-sm font-bold text-on-surface">@Localizer["test2_name"]</p>
+                        <p class="text-xs text-on-surface-variant">@Localizer["test2_role"]</p>
                     </div>
                 </div>
             </div>
@@ -541,12 +542,12 @@
                     <span class="material-symbols-outlined text-sm fill-icon">star</span>
                     <span class="material-symbols-outlined text-sm fill-icon">star</span>
                 </div>
-                <p data-i18n="test3_q" class="text-base text-on-surface italic mb-8 flex-grow">@Localizer["test3_q"]</p>
+                <p class="text-base text-on-surface italic mb-8 flex-grow">@Localizer["test3_q"]</p>
                 <div class="flex items-center gap-3 mt-auto">
                     <img alt="Customer" class="w-10 h-10 rounded-full object-cover border border-outline-variant/30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJKM8ZFri8g-gka0dARGAl8FNz0s0WfcZARweLRVtLFPjc27sktcGxbLDd0rgQEU85pvCzYcfEFPjOkt2datIj4pwFLrECpGGmphhtBV5eaF2A_ht5BvMlF6wiknjL81VMLXDBr1HdL1kZqYOlMmDROPfhtwBBKoVCgkRn_n_sfZQQLLRnICgg0YsVF4UMIMj9TzeHHG4XOanLZsQW8NMz4aC3klzgUENh_Hz5upjnkrR2LCYKFcf4zSM8AOe6wVo8h9tF-f5wnZR-"/>
                     <div>
-                        <p data-i18n="test3_name" class="text-sm font-bold text-on-surface">@Localizer["test3_name"]</p>
-                        <p data-i18n="test3_role" class="text-xs text-on-surface-variant">@Localizer["test3_role"]</p>
+                        <p class="text-sm font-bold text-on-surface">@Localizer["test3_name"]</p>
+                        <p class="text-xs text-on-surface-variant">@Localizer["test3_role"]</p>
                     </div>
                 </div>
             </div>
@@ -556,24 +557,24 @@
     <!-- 7. Feedback / Contact Form -->
     <section id="contact" class="py-16 md:py-24 px-4 md:px-16 bg-cyan-50 border-t border-outline-variant/10">
         <div class="relative z-10 max-w-2xl mx-auto bg-cyan-50/60 backdrop-blur-md border border-primary/20 p-8 md:p-12 rounded-3xl shadow-2xl shadow-primary/5 scroll-animate-scale">
-            <h2 data-i18n="form_h2" class="text-3xl font-extrabold text-on-surface mb-3 text-center">@Localizer["form_h2"]</h2>
-            <p data-i18n="form_p" class="text-sm text-on-surface-variant text-center mb-8">@Localizer["form_p"]</p>
+            <h2 class="text-3xl font-extrabold text-on-surface mb-3 text-center">@Localizer["form_h2"]</h2>
+            <p class="text-sm text-on-surface-variant text-center mb-8">@Localizer["form_p"]</p>
             <form onsubmit="event.preventDefault(); alert('Message sent successfully! / تم إرسال الرسالة بنجاح!');" class="flex flex-col gap-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="flex flex-col gap-2">
-                        <label data-i18n="form_name" class="text-xs font-bold text-primary">@Localizer["form_name"]</label>
-                        <input data-i18n="form_name_ph" class="bg-white border border-primary/20 rounded-xl p-3.5 text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-cyan-50 outline-none transition-all duration-200" placeholder="@Localizer["form_name_ph"]" type="text" required/>
+                        <label class="text-xs font-bold text-primary">@Localizer["form_name"]</label>
+                        <input class="bg-white border border-primary/20 rounded-xl p-3.5 text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-cyan-50 outline-none transition-all duration-200" placeholder="@Localizer["form_name_ph"]" type="text" required/>
                     </div>
                     <div class="flex flex-col gap-2">
-                        <label data-i18n="form_email" class="text-xs font-bold text-primary">@Localizer["form_email"]</label>
-                        <input data-i18n="form_email_ph" class="bg-white border border-primary/20 rounded-xl p-3.5 text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-cyan-50 outline-none transition-all duration-200" placeholder="@Localizer["form_email_ph"]" type="email" required/>
+                        <label class="text-xs font-bold text-primary">@Localizer["form_email"]</label>
+                        <input class="bg-white border border-primary/20 rounded-xl p-3.5 text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-cyan-50 outline-none transition-all duration-200" placeholder="@Localizer["form_email_ph"]" type="email" required/>
                     </div>
                 </div>
                 <div class="flex flex-col gap-2">
-                    <label data-i18n="form_msg" class="text-xs font-bold text-primary">@Localizer["form_msg"]</label>
-                    <textarea data-i18n="form_msg_ph" class="bg-white border border-primary/20 rounded-xl p-3.5 text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-cyan-50 outline-none transition-all duration-200" placeholder="@Localizer["form_msg_ph"]" rows="4" required></textarea>
+                    <label class="text-xs font-bold text-primary">@Localizer["form_msg"]</label>
+                    <textarea class="bg-white border border-primary/20 rounded-xl p-3.5 text-on-surface focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-cyan-50 outline-none transition-all duration-200" placeholder="@Localizer["form_msg_ph"]" rows="4" required></textarea>
                 </div>
-                <button data-i18n="btn_send" class="bg-primary hover:bg-primary-container text-on-primary font-bold py-4 rounded-xl transition-all shadow-md hover:shadow-lg duration-200 mt-2" type="submit">
+                <button class="bg-primary hover:bg-primary-container text-on-primary font-bold py-4 rounded-xl transition-all shadow-md hover:shadow-lg duration-200 mt-2" type="submit">
                     @Localizer["btn_send"]
                 </button>
             </form>
@@ -582,7 +583,7 @@
 </main>
 
 <!-- 8. Footer -->
-<section class="bg-white py-6 md:py-8 px-4 relative overflow-hidden">
+<section class="bg-white pt-6 pb-24 md:py-8 px-4 relative overflow-hidden">
     <!-- Dots Pattern Background -->
     <div class="absolute inset-0 opacity-20 pointer-events-none">
         <div class="absolute inset-0" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 32px 32px;"></div>
@@ -604,17 +605,17 @@
 
         <!-- Links (Center) -->
         <div class="flex flex-wrap justify-center gap-x-8 gap-y-4 order-2 px-4">
-            <a data-i18n="f_about" class="text-sm font-bold text-white/90 hover:text-white transition-colors duration-200" asp-controller="Home" asp-action="About">@Localizer["f_about"]</a>
-            <a data-i18n="f_terms_full" class="text-sm font-bold text-white/90 hover:text-white transition-colors duration-200" asp-controller="Home" asp-action="Terms">@Localizer["f_terms_full"]</a>
-            <a data-i18n="f_privacy" class="text-sm font-bold text-white/90 hover:text-white transition-colors duration-200" asp-controller="Home" asp-action="Privacy">@Localizer["f_privacy"]</a>
+            <a class="text-sm font-bold text-white/90 hover:text-white transition-colors duration-200" asp-controller="Home" asp-action="About">@Localizer["f_about"]</a>
+            <a class="text-sm font-bold text-white/90 hover:text-white transition-colors duration-200" asp-controller="Home" asp-action="Terms">@Localizer["f_terms_full"]</a>
+            <a class="text-sm font-bold text-white/90 hover:text-white transition-colors duration-200" asp-controller="Home" asp-action="Privacy">@Localizer["f_privacy"]</a>
         </div>
 
         <!-- Logo & Copyright (Right on RTL, Left on LTR) -->
         <div class="flex flex-col items-center md:items-end order-1 md:order-3">
-                    <div class="flex items-center gap-2.5 mb-1">
-                        <img src="~/images/logo.png" alt="DAKKN Logo" class="h-14 md:h-16" />
-                    </div>
-                    <p data-i18n="footer_copy" class="text-[11px] font-medium text-cyan-100/70">@Localizer["footer_copy"]</p>
-                </div>
+            <div class="flex items-center gap-2.5 mb-1">
+                <img src="~/images/logo.png" alt="DAKKN Logo" class="h-14 md:h-16" />
+            </div>
+            <p class="text-[11px] font-medium text-cyan-100/70">@Localizer["footer_copy"]</p>
+        </div>
     </footer>
 </section>

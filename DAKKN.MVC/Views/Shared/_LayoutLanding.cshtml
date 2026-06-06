@@ -1,10 +1,10 @@
-@inject IStringLocalizer<Messages> Localizer
+@using System.Text.Json
 @{
     var culture = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("en") ? "en" : "ar";
     var dir = culture == "ar" ? "rtl" : "ltr";
 }
 <!DOCTYPE html>
-<html lang="@culture" dir="@dir" id="html-root">
+<html lang="@culture" dir="@dir" id="html-root" data-dakkn-loading="true">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,7 +14,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
 
     <!-- Tailwind via CDN -->
@@ -25,9 +25,77 @@
     <!-- Custom Landing Stylesheet -->
     <link rel="stylesheet" href="~/css/landing.css" asp-append-version="true" />
 
+    <style>
+        body {
+            font-family: 'IBM Plex Sans Arabic', 'Cairo', sans-serif;
+        }
+        [dir="ltr"] body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Prevent FOUC and show preloader */
+        [data-dakkn-loading] body {
+            visibility: hidden !important;
+            overflow: hidden !important;
+        }
+
+        #dakkn-preloader {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            visibility: visible !important;
+        }
+
+        .dark #dakkn-preloader {
+            background: #0f172a;
+        }
+
+        .preloader-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(8, 145, 178, 0.1);
+            border-top-color: #0891B2;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @@keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+
+    <script>
+        (function() {
+            const theme = localStorage.getItem('dakkn_theme');
+            if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+
+        // Inject current translations immediately to avoid flickering
+        window.currentTranslations = @Html.Raw(JsonSerializer.Serialize(DAKKN.Application.Localization.JsonLocalizationProvider.GetTranslations(culture)));
+
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('dakkn_theme', isDark ? 'dark' : 'light');
+        }
+    </script>
+
     @await RenderSectionAsync("HeadStyles", required: false)
 </head>
 <body class="bg-background text-on-background min-h-screen flex flex-col antialiased overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
+
+    <!-- Preloader Overlay -->
+    <div id="dakkn-preloader">
+        <div class="preloader-spinner"></div>
+    </div>
 
     @RenderBody()
 

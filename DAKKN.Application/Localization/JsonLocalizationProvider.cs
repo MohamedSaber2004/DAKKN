@@ -22,6 +22,7 @@ namespace DAKKN.Application.Localization
             if (!string.IsNullOrEmpty(rootPath))
             {
                 possiblePaths.Add(Path.Combine(rootPath, "Localization", "Resources"));
+                possiblePaths.Add(Path.Combine(rootPath, "..", "DAKKN.Application", "Localization", "Resources"));
                 
                 // If we are in DAKKN.MVC, go up to solution root then into DAKKN.Application
                 var solutionRoot = Directory.GetParent(rootPath)?.FullName;
