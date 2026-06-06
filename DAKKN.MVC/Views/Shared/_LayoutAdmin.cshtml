@@ -14,7 +14,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 
     <!-- Tailwind via CDN -->
@@ -23,7 +23,8 @@
     <script src="~/js/tailwind.config.js" asp-append-version="true"></script>
 
     <style>
-        body { font-family: 'Cairo', sans-serif; background-color: #F8FAFB; }
+        body { font-family: 'Inter', 'Cairo', sans-serif; background-color: #F8FAFB; transition: background-color 0.3s ease; }
+        .dark body { background-color: #171d1c; }
         .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
         .filled-icon { font-variation-settings: 'FILL' 1; }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
@@ -45,15 +46,15 @@
         }
     </style>
 </head>
-<body class="text-text-primary h-screen overflow-hidden flex">
+<body class="text-text-primary dark:text-inverse-on-surface h-screen overflow-hidden flex bg-background dark:bg-on-background transition-colors duration-300">
     <!-- SideNavBar -->
-    <aside class="hidden md:flex flex-col docked ltr:left-0 ltr:border-r rtl:right-0 rtl:border-l h-screen w-64 border-border bg-surface shadow-medium z-40 relative flex-shrink-0">
-        <div class="p-lg border-b border-border flex flex-col items-center justify-center gap-sm group cursor-pointer">
+    <aside class="hidden md:flex flex-col docked ltr:left-0 ltr:border-r rtl:right-0 rtl:border-l h-screen w-64 border-border dark:border-outline/20 bg-surface dark:bg-inverse-surface shadow-medium z-40 relative flex-shrink-0 transition-colors duration-300">
+        <div class="p-lg border-b border-border dark:border-outline/20 flex flex-col items-center justify-center gap-sm group cursor-pointer">
             <div class="admin-logo-container">
-                <img src="/images/logo.png" alt="DAKKN Logo" class="h-16 admin-logo-img" />
+                <img src="/images/logo.png" alt="DAKKN Logo" class="h-16 admin-logo-img dark:brightness-125" />
             </div>
-            <h1 class="font-h2 text-h2 font-bold text-primary">@Localizer["brand"]</h1>
-            <p class="font-body text-body text-text-secondary">@Localizer["admin_dashboard"]</p>
+            <h1 class="font-h2 text-h2 font-bold text-primary dark:text-primary-light">@Localizer["brand"]</h1>
+            <p class="font-body text-body text-text-secondary dark:text-outline-variant">@Localizer["admin_dashboard"]</p>
         </div>
         <nav class="flex-1 overflow-y-auto custom-scrollbar py-md px-sm flex flex-col gap-sm">
             <a asp-controller="Admin" asp-action="Index" class="flex items-center gap-md @(currentAction == "Index" ? "bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") rounded-xl px-4 py-3 scale-100 hover:scale-103 transition-all duration-200">
@@ -90,32 +91,34 @@
     </aside>
 
     <!-- Main Content Area -->
-    <main class="flex-1 flex flex-col h-screen overflow-hidden">
+    <main class="flex-1 flex flex-col h-screen overflow-hidden bg-background dark:bg-on-background transition-colors duration-300">
         <!-- TopNavBar -->
-        <header class="flex justify-between items-center w-full px-lg py-md z-30 bg-surface/80 backdrop-blur-md flex-shrink-0">
+        <header class="flex justify-between items-center w-full px-lg py-md z-30 bg-surface/80 dark:bg-inverse-surface/80 backdrop-blur-md flex-shrink-0 border-b border-border dark:border-outline/10 transition-colors duration-300">
             <div class="flex items-center gap-md md:hidden">
-                <span class="material-symbols-outlined text-primary cursor-pointer text-2xl">menu</span>
+                <span class="material-symbols-outlined text-primary dark:text-primary-light cursor-pointer text-2xl">menu</span>
                 <div class="admin-logo-container">
-                    <img src="/images/logo.png" alt="DAKKN Logo" class="h-10 admin-logo-img" />
+                    <img src="/images/logo.png" alt="DAKKN Logo" class="h-10 admin-logo-img dark:brightness-125" />
                 </div>
             </div>
             <div class="hidden md:block">
-                <h2 class="font-h3 text-h3 font-bold text-text-primary">@ViewData["Title"]</h2>
+                <h2 class="font-h3 text-h3 font-bold text-text-primary dark:text-inverse-on-surface">@ViewData["Title"]</h2>
             </div>
             <div class="flex items-center gap-lg">
                 <div class="relative hidden sm:block">
-                    <input class="bg-surface-container rounded-full py-2 px-4 ltr:pl-10 ltr:pr-4 rtl:pr-10 rtl:pl-4 text-body font-body border-none focus:ring-2 focus:ring-primary outline-none w-64" placeholder="@Localizer["admin_search"]" type="text">
-                    <span class="material-symbols-outlined absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 text-text-secondary">search</span>
+                    <input class="bg-surface-container dark:bg-surface-container-high rounded-full py-2 px-4 ltr:pl-10 ltr:pr-4 rtl:pr-10 rtl:pl-4 text-body font-body border-none focus:ring-2 focus:ring-primary dark:focus:ring-primary-light outline-none w-64 text-text-primary dark:text-inverse-on-surface placeholder:text-text-secondary dark:placeholder:text-outline transition-all" placeholder="@Localizer["admin_search"]" type="text">
+                    <span class="material-symbols-outlined absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 text-text-secondary dark:text-outline">search</span>
                 </div>
                 <div class="flex items-center gap-sm">
-                    <button class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary transition-colors hover:bg-surface-container">
+                    <button class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary dark:text-outline dark:hover:text-primary-light transition-colors hover:bg-surface-container dark:hover:bg-surface-container-high">
                         <span class="material-symbols-outlined">notifications</span>
                     </button>
-                    <button class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary transition-colors hover:bg-surface-container">
+                    <!-- Language Switcher -->
+                    <button onclick="toggleLang()" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary dark:text-outline dark:hover:text-primary-light transition-colors hover:bg-surface-container dark:hover:bg-surface-container-high" title="Switch Language">
                         <span class="material-symbols-outlined">translate</span>
                     </button>
-                    <button class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary transition-colors hover:bg-surface-container">
-                        <span class="material-symbols-outlined">dark_mode</span>
+                    <!-- Dark Mode Toggle -->
+                    <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary dark:text-outline dark:hover:text-primary-light transition-colors hover:bg-surface-container dark:hover:bg-surface-container-high" title="Toggle Theme">
+                        <span class="material-symbols-outlined" id="dark-mode-icon">dark_mode</span>
                     </button>
                 </div>
                 <div class="w-10 h-10 rounded-full bg-primary-container overflow-hidden cursor-pointer shadow-small">
@@ -134,6 +137,48 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        // Language Toggle Logic
+        function toggleLang() {
+            const currentLang = document.documentElement.lang || 'ar';
+            const newLang = currentLang === 'ar' ? 'en' : 'ar';
+            
+            // Correct ASP.NET Core culture cookie format: c=en|u=en
+            const cookieValue = `c=${newLang}|u=${newLang}`;
+            document.cookie = `.AspNetCore.Culture=${cookieValue};path=/;max-age=31536000;SameSite=Lax`;
+            
+            window.location.reload();
+        }
+
+        // Dark Mode Logic
+        function toggleDarkMode() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateDarkModeIcon(isDark);
+        }
+
+        function updateDarkModeIcon(isDark) {
+            const icon = document.getElementById('dark-mode-icon');
+            if (icon) {
+                icon.textContent = isDark ? 'light_mode' : 'dark_mode';
+            }
+        }
+
+        // Initialize Theme on Load
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const isDark = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
+            
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+            updateDarkModeIcon(isDark);
+        })();
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
