@@ -5,6 +5,7 @@ using DAKKN.Infrastructure;
 using DAKKN.Persistence;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Localization;
 using Serilog;
 using System.Reflection;
@@ -57,6 +58,24 @@ namespace DAKKN.MVC
                 options.AddBasePolicy(builder => builder.Expire(TimeSpan.FromMinutes(10)));
             });
 
+            builder.Services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                // Only loopback proxies are allowed by default. Clear that restriction to allow all proxies.
+                options.KnownNetworks.Clear();
+                options.KnownProxies.Clear();
+            });
+
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("CQRS", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
+
 
             builder.Services.AddApiVersioning(options =>
             {
@@ -74,28 +93,43 @@ namespace DAKKN.MVC
                 options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 
                 var globalSettings = builder.Configuration.GetSection("RateLimiting:Global");
+                var globalPermitLimit = globalSettings.GetValue<int>("PermitLimit");
+                var globalWindowSeconds = globalSettings.GetValue<int>("WindowSeconds");
+                
+                // Fallback to sane defaults if not configured
+                if (globalPermitLimit <= 0) globalPermitLimit = 100;
+                if (globalWindowSeconds <= 0) globalWindowSeconds = 60;
+
                 options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
                     RateLimitPartition.GetFixedWindowLimiter(
                         partitionKey: httpContext.User.Identity?.Name ?? httpContext.Connection.RemoteIpAddress?.ToString() ?? "global",
                         factory: partition => new FixedWindowRateLimiterOptions
                         {
                             AutoReplenishment = true,
-                            PermitLimit = globalSettings.GetValue<int>("PermitLimit"),
-                            QueueLimit = globalSettings.GetValue<int>("QueueLimit"),
-                            Window = TimeSpan.FromSeconds(globalSettings.GetValue<int>("WindowSeconds"))
+                            PermitLimit = globalPermitLimit,
+                            QueueLimit = globalSettings.GetValue("QueueLimit", 0),
+                            Window = TimeSpan.FromSeconds(globalWindowSeconds)
                         }));
 
                 var authSettings = builder.Configuration.GetSection("RateLimiting:Auth");
+                var authPermitLimit = authSettings.GetValue<int>("PermitLimit");
+                var authWindowSeconds = authSettings.GetValue<int>("WindowSeconds");
+
+                if (authPermitLimit <= 0) authPermitLimit = 10;
+                if (authWindowSeconds <= 0) authWindowSeconds = 60;
+
                 options.AddFixedWindowLimiter(policyName: "auth", options =>
                 {
-                    options.PermitLimit = authSettings.GetValue<int>("PermitLimit");
-                    options.Window = TimeSpan.FromSeconds(authSettings.GetValue<int>("WindowSeconds"));
-                    options.QueueLimit = authSettings.GetValue<int>("QueueLimit");
+                    options.PermitLimit = authPermitLimit;
+                    options.Window = TimeSpan.FromSeconds(authWindowSeconds);
+                    options.QueueLimit = authSettings.GetValue("QueueLimit", 0);
                     options.AutoReplenishment = true;
                 });
             });
 
             var app = builder.Build();
+
+            app.UseForwardedHeaders();
 
             if (!app.Environment.IsDevelopment())
             {
@@ -228,6 +262,8 @@ namespace DAKKN.MVC
             app.UseRouting();
 
             app.UseOutputCache();
+
+            app.UseCors("CQRS");
 
             app.UseRateLimiter();
 
