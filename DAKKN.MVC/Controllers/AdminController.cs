@@ -235,6 +235,21 @@ namespace DAKKN.MVC.Controllers
             return View(viewModel);
         }
 
+        [HttpGet("content")]
+        public IActionResult Content()
+        {
+            ViewData["Title"] = _localizer["admin_content_mgmt"];
+            var model = new ContentManagementViewModel();
+            return View(model);
+        }
+
+        [HttpPost("content/update")]
+        public IActionResult UpdateContent([FromBody] ContentManagementViewModel model)
+        {
+            // Logic to save settings to database would go here
+            return Json(new { success = true });
+        }
+
         [HttpGet("settings")]
         public IActionResult Settings()
         {

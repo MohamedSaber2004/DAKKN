@@ -1,0 +1,278 @@
+@model DAKKN.MVC.ViewModels.Admin.ContentManagementViewModel
+@inject IStringLocalizer<Messages> Localizer
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = Localizer["admin_content_mgmt"];
+}
+
+<div class="flex flex-col lg:flex-row gap-lg h-full">
+    <!-- Sub-sidebar: Content Modules -->
+    <aside class="w-full lg:w-72 flex-shrink-0">
+        <div class="bg-surface dark:bg-inverse-surface rounded-[24px] shadow-small p-md border border-border dark:border-outline/10 sticky top-0">
+            <h3 class="font-h3 text-h3 font-bold mb-md px-2 text-text-primary dark:text-inverse-on-surface">@Localizer["admin_content_mgmt"]</h3>
+            <nav class="flex flex-col gap-xs">
+                <button onclick="switchTab('section-order')" id="tab-section-order" class="content-tab-btn active flex items-center gap-md p-3 rounded-xl transition-all duration-200 text-left rtl:text-right w-full">
+                    <span class="material-symbols-outlined">reorder</span>
+                    <span class="font-body-lg">@Localizer["admin_section_order"]</span>
+                </button>
+                <button onclick="switchTab('hero-banner')" id="tab-hero-banner" class="content-tab-btn flex items-center gap-md p-3 rounded-xl transition-all duration-200 text-left rtl:text-right w-full">
+                    <span class="material-symbols-outlined">branding_watermark</span>
+                    <span class="font-body-lg">@Localizer["admin_hero_settings"]</span>
+                </button>
+                <button onclick="switchTab('featured-categories')" id="tab-featured-categories" class="content-tab-btn flex items-center gap-md p-3 rounded-xl transition-all duration-200 text-left rtl:text-right w-full">
+                    <span class="material-symbols-outlined">category</span>
+                    <span class="font-body-lg">@Localizer["admin_featured_categories"]</span>
+                </button>
+                <button onclick="switchTab('featured-products')" id="tab-featured-products" class="content-tab-btn flex items-center gap-md p-3 rounded-xl transition-all duration-200 text-left rtl:text-right w-full">
+                    <span class="material-symbols-outlined">star</span>
+                    <span class="font-body-lg">@Localizer["admin_featured_products"]</span>
+                </button>
+                <button onclick="switchTab('global-pricing')" id="tab-global-pricing" class="content-tab-btn flex items-center gap-md p-3 rounded-xl transition-all duration-200 text-left rtl:text-right w-full">
+                    <span class="material-symbols-outlined">payments</span>
+                    <span class="font-body-lg">@Localizer["admin_global_pricing"]</span>
+                </button>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Editor Area -->
+    <div class="flex-1 min-w-0">
+        <!-- Section: Order Management -->
+        <div id="panel-section-order" class="content-panel bg-surface dark:bg-inverse-surface rounded-[32px] shadow-medium border border-border dark:border-outline/10 p-xl transition-all duration-300">
+            <div class="flex justify-between items-center mb-xl">
+                <div>
+                    <h2 class="font-h2 text-h2 font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["admin_section_order"]</h2>
+                    <p class="text-text-secondary dark:text-outline-variant mt-xs">@Localizer["admin_section_order_desc"]</p>
+                </div>
+                <button onclick="saveLayout()" class="bg-primary text-on-primary px-xl py-md rounded-full font-bold shadow-medium hover:scale-105 transition-all">
+                    @Localizer["admin_save_layout"]
+                </button>
+            </div>
+
+            <div id="sortable-sections" class="flex flex-col gap-md">
+                @foreach (var item in Model.SectionOrder.Sections.OrderBy(s => s.DisplayOrder))
+                {
+                    <div class="section-card group bg-surface-container dark:bg-surface-container-high p-lg rounded-2xl border border-border dark:border-outline/10 flex items-center gap-lg hover:border-primary/50 transition-all cursor-grab active:cursor-grabbing" data-id="@item.Id">
+                        <span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">drag_indicator</span>
+                        <div class="flex-1">
+                            <h4 class="font-h3 text-h3 font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["section_" + item.Id.Replace("-", "_")]</h4>
+                            <span class="text-xs uppercase tracking-wider text-outline font-bold">@item.Id</span>
+                        </div>
+                        <div class="flex items-center gap-xl">
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer" @(item.IsVisible ? "checked" : "")>
+                                <div class="w-11 h-6 bg-outline/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:ltr:left-[2px] after:rtl:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                <span class="ltr:ml-3 rtl:mr-3 text-sm font-medium text-text-secondary dark:text-outline-variant">@Localizer["admin_visibility_toggle"]</span>
+                            </label>
+                            <button class="w-10 h-10 rounded-full flex items-center justify-center bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 text-primary hover:bg-primary hover:text-on-primary transition-all">
+                                <span class="material-symbols-outlined">edit</span>
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Section: Hero Settings -->
+        <div id="panel-hero-banner" class="content-panel hidden bg-surface dark:bg-inverse-surface rounded-[32px] shadow-medium border border-border dark:border-outline/10 p-xl">
+            <h2 class="font-h2 text-h2 font-bold mb-xl">@Localizer["admin_hero_settings"]</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
+                <div class="space-y-lg">
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_badge"]</label>
+                        <input type="text" value="@Model.Hero.Badge" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md focus:ring-primary focus:border-primary transition-all">
+                    </div>
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_title_segments"]</label>
+                        <div class="grid grid-cols-2 gap-sm">
+                            <input type="text" value="@Model.Hero.TitleA" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                            <input type="text" value="@Model.Hero.TitleB" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                            <input type="text" value="@Model.Hero.TitleC" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                            <input type="text" value="@Model.Hero.TitleD" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_desc"]</label>
+                        <textarea rows="4" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.Hero.Description</textarea>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-lg">
+                    <div class="aspect-video rounded-3xl bg-surface-container dark:bg-surface-container-high border-2 border-dashed border-border dark:border-outline/20 flex flex-col items-center justify-center p-xl relative group overflow-hidden">
+                        <img src="@Model.Hero.ImageUrl" class="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-10 transition-opacity">
+                        <span class="material-symbols-outlined text-4xl text-outline mb-sm">image</span>
+                        <span class="font-bold text-text-secondary">@Localizer["admin_hero_image_update"]</span>
+                        <input type="file" class="absolute inset-0 opacity-0 cursor-pointer">
+                    </div>
+                    <button class="bg-primary text-on-primary py-md rounded-full font-bold shadow-medium hover:scale-103 transition-all">@Localizer["admin_save_changes"]</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: Global Pricing -->
+        <div id="panel-global-pricing" class="content-panel hidden bg-surface dark:bg-inverse-surface rounded-[32px] shadow-medium border border-border dark:border-outline/10 p-xl">
+             <div class="flex items-center gap-md mb-xl">
+                <span class="material-symbols-outlined text-primary text-4xl">payments</span>
+                <div>
+                    <h2 class="font-h2 text-h2 font-bold">@Localizer["admin_global_pricing"]</h2>
+                    <p class="text-text-secondary">@Localizer["admin_global_pricing_desc"]</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-lg">
+                <div class="bg-surface-container dark:bg-surface-container-high p-xl rounded-3xl border border-border relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-110"></div>
+                    <label class="text-sm font-bold text-outline block mb-sm">@Localizer["admin_base_price"]</label>
+                    <div class="flex items-baseline gap-xs">
+                        <input type="number" value="@Model.Pricing.BasePrice" class="bg-transparent border-none p-0 text-3xl font-bold w-full focus:ring-0">
+                        <span class="text-outline font-bold">@Localizer["egp"]</span>
+                    </div>
+                </div>
+
+                <div class="bg-surface-container dark:bg-surface-container-high p-xl rounded-3xl border border-border">
+                    <label class="text-sm font-bold text-outline block mb-sm">@Localizer["admin_effect_hologram"]</label>
+                    <div class="flex items-baseline gap-xs">
+                        <span class="text-primary font-bold">+</span>
+                        <input type="number" value="@Model.Pricing.HologramSurcharge" class="bg-transparent border-none p-0 text-3xl font-bold w-full focus:ring-0">
+                        <span class="text-outline font-bold">@Localizer["egp"]</span>
+                    </div>
+                </div>
+
+                <div class="bg-surface-container dark:bg-surface-container-high p-xl rounded-3xl border border-border">
+                    <label class="text-sm font-bold text-outline block mb-sm">@Localizer["admin_effect_custom_cut"]</label>
+                    <div class="flex items-baseline gap-xs">
+                        <span class="text-primary font-bold">+</span>
+                        <input type="number" value="@Model.Pricing.CustomCutSurcharge" class="bg-transparent border-none p-0 text-3xl font-bold w-full focus:ring-0">
+                        <span class="text-outline font-bold">@Localizer["egp"]</span>
+                    </div>
+                </div>
+
+                <div class="bg-surface-container dark:bg-surface-container-high p-xl rounded-3xl border border-border">
+                    <label class="text-sm font-bold text-outline block mb-sm">@Localizer["admin_shipping_flat"]</label>
+                    <div class="flex items-baseline gap-xs">
+                        <input type="number" value="@Model.Pricing.ShippingRate" class="bg-transparent border-none p-0 text-3xl font-bold w-full focus:ring-0">
+                        <span class="text-outline font-bold">@Localizer["egp"]</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-xl p-lg bg-primary/5 rounded-2xl flex items-center gap-md border border-primary/10">
+                <span class="material-symbols-outlined text-primary">info</span>
+                <p class="text-sm text-text-primary dark:text-inverse-on-surface">
+                    @Localizer["admin_pricing_info"]
+                </p>
+            </div>
+            
+            <button class="mt-xl bg-primary text-on-primary px-12 py-md rounded-full font-bold shadow-medium hover:scale-103 transition-all">
+                @Localizer["admin_pricing_update_all"]
+            </button>
+        </div>
+
+        <!-- Placeholders for other tabs -->
+        <div id="panel-featured-categories" class="content-panel hidden p-xl text-center">
+            <span class="material-symbols-outlined text-6xl text-outline mb-md">construction</span>
+            <h2 class="font-h2 text-h2 font-bold mb-sm">@Localizer["admin_featured_categories"]</h2>
+            <p class="text-text-secondary">@Localizer["admin_module_dev"]</p>
+        </div>
+
+        <div id="panel-featured-products" class="content-panel hidden p-xl text-center">
+            <span class="material-symbols-outlined text-6xl text-outline mb-md">construction</span>
+            <h2 class="font-h2 text-h2 font-bold mb-sm">@Localizer["admin_featured_products"]</h2>
+            <p class="text-text-secondary">@Localizer["admin_module_dev"]</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .content-tab-btn {
+        color: var(--md-sys-color-text-secondary);
+    }
+    .content-tab-btn:hover {
+        background-color: var(--md-sys-color-surface-container-high);
+        color: var(--md-sys-color-primary);
+    }
+    .content-tab-btn.active {
+        background-color: var(--md-sys-color-primary-container);
+        color: var(--md-sys-color-on-primary-container);
+        font-weight: 700;
+    }
+    
+    .sortable-ghost {
+        opacity: 0.4;
+        border: 2px dashed var(--md-sys-color-primary) !important;
+        background-color: var(--md-sys-color-primary-container) !important;
+    }
+    
+    .sortable-drag {
+        cursor: grabbing !important;
+    }
+</style>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script>
+        function switchTab(tabId) {
+            // Update Buttons
+            document.querySelectorAll('.content-tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById('tab-' + tabId).classList.add('active');
+
+            // Update Panels
+            document.querySelectorAll('.content-panel').forEach(panel => {
+                panel.classList.add('hidden');
+            });
+            const activePanel = document.getElementById('panel-' + tabId);
+            activePanel.classList.remove('hidden');
+            
+            // Re-init sortable if it's the section-order tab
+            if (tabId === 'section-order') {
+                initSortable();
+            }
+        }
+
+        function initSortable() {
+            const el = document.getElementById('sortable-sections');
+            if (el && !el.dataset.sortable) {
+                new Sortable(el, {
+                    animation: 250,
+                    ghostClass: 'sortable-ghost',
+                    dragClass: 'sortable-drag',
+                    handle: '.material-symbols-outlined',
+                    onEnd: function (evt) {
+                        console.log('New order:', Array.from(el.children).map(c => c.dataset.id));
+                    }
+                });
+                el.dataset.sortable = "true";
+            }
+        }
+
+        function saveLayout() {
+            const el = document.getElementById('sortable-sections');
+            const sections = Array.from(el.children).map((c, index) => ({
+                id: c.dataset.id,
+                displayOrder: index,
+                isVisible: c.querySelector('input[type="checkbox"]').checked
+            }));
+
+            fetch('/admin/content/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': window.csrfToken
+                },
+                body: JSON.stringify({ sectionOrder: { sections: sections } })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('@Localizer["admin_save_success"]');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initSortable();
+        });
+    </script>
+}

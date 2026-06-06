@@ -134,6 +134,10 @@
                 <span class="material-symbols-outlined @(currentAction == "Support" ? "filled-icon" : "") flex-shrink-0">support_agent</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_support"]</span>
             </a>
+            <a asp-controller="Admin" asp-action="Content" class="nav-item flex items-center gap-md @(currentAction == "Content" ? "bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl" title="@Localizer["admin_content_mgmt"]">
+                <span class="material-symbols-outlined @(currentAction == "Content" ? "filled-icon" : "") flex-shrink-0">edit_note</span>
+                <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_content_mgmt"]</span>
+            </a>
             <a asp-controller="Admin" asp-action="Settings" class="nav-item flex items-center gap-md @(currentAction == "Settings" ? "bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl mt-auto" title="@Localizer["admin_settings"]">
                 <span class="material-symbols-outlined @(currentAction == "Settings" ? "filled-icon" : "") flex-shrink-0">settings</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_settings"]</span>
