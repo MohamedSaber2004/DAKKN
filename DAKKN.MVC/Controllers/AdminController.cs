@@ -1,54 +1,67 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DAKKN.MVC.Controllers;
-
-public class AdminController : Controller
+namespace DAKKN.MVC.Controllers
 {
-    public IActionResult Index()
+    [Route("admin")]
+    // [Authorize(Roles = "Admin")]   // wire up once real auth is implemented
+    public class AdminController : Controller
     {
-        ViewData["Title"] = "نظرة عامة";
-        return View();
-    }
+        [HttpGet("")]
+        [HttpGet("dashboard")]
+        public IActionResult Dashboard()
+        {
+            ViewData["Title"] = "نظرة عامة";
+            return View();
+        }
 
-    public IActionResult Users()
-    {
-        ViewData["Title"] = "المستخدمون";
-        return View("Placeholder", "المستخدمون");
-    }
+        [HttpGet("users")]
+        public IActionResult Users()
+        {
+            ViewData["Title"] = "المستخدمون";
+            return View("Placeholder", "المستخدمون");
+        }
 
-    public IActionResult Orders()
-    {
-        ViewData["Title"] = "الطلبات";
-        return View("Placeholder", "الطلبات");
-    }
+        [HttpGet("orders")]
+        public IActionResult Orders()
+        {
+            ViewData["Title"] = "الطلبات";
+            return View("Placeholder", "الطلبات");
+        }
 
-    public IActionResult OrderDetails(int id)
-    {
-        ViewData["Title"] = "تفاصيل الطلب";
-        return View("Placeholder", $"تفاصيل الطلب #{id}");
-    }
+        [HttpGet("order-details/{id}")]
+        public IActionResult OrderDetails(int id)
+        {
+            ViewData["Title"] = "تفاصيل الطلب";
+            return View("Placeholder", $"تفاصيل الطلب #{id}");
+        }
 
-    public IActionResult Inventory()
-    {
-        ViewData["Title"] = "المخزون";
-        return View("Placeholder", "المخزون");
-    }
+        [HttpGet("inventory")]
+        public IActionResult Inventory()
+        {
+            ViewData["Title"] = "المخزون";
+            return View("Placeholder", "المخزون");
+        }
 
-    public IActionResult Support()
-    {
-        ViewData["Title"] = "الدعم";
-        return View("Placeholder", "الدعم");
-    }
+        [HttpGet("support")]
+        public IActionResult Support()
+        {
+            ViewData["Title"] = "الدعم";
+            return View("Placeholder", "الدعم");
+        }
 
-    public IActionResult Settings()
-    {
-        ViewData["Title"] = "الإعدادات";
-        return View();
-    }
+        [HttpGet("settings")]
+        public IActionResult Settings()
+        {
+            ViewData["Title"] = "الإعدادات";
+            return View();
+        }
 
-    public IActionResult AddProduct()
-    {
-        ViewData["Title"] = "إضافة منتج";
-        return View("Placeholder", "إضافة منتج جديد");
+        [HttpGet("add-product")]
+        public IActionResult AddProduct()
+        {
+            ViewData["Title"] = "إضافة منتج";
+            return View("Placeholder", "إضافة منتج جديد");
+        }
     }
 }

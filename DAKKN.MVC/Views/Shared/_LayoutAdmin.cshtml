@@ -5,10 +5,11 @@
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
 }
 <!DOCTYPE html>
-<html lang="@culture" dir="@dir">
+<html lang="@culture" dir="@dir" id="html-root" data-dakkn-loading="true">
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta name="robots" content="noindex, nofollow" />
     <title>@ViewData["Title"] - @Localizer["brand"] @Localizer["admin_dashboard"]</title>
 
     <!-- Fonts -->
@@ -22,33 +23,34 @@
     <!-- Tailwind Custom Configuration -->
     <script src="~/js/tailwind.config.js" asp-append-version="true"></script>
 
+    <!-- Admin Stylesheet -->
+    <link rel="stylesheet" href="~/css/landing.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+
     <style>
-        body { font-family: 'Inter', 'Cairo', sans-serif; background-color: #F8FAFB; transition: background-color 0.3s ease; }
-        .dark body { background-color: #171d1c; }
-        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        .filled-icon { font-variation-settings: 'FILL' 1; }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #bcc9c8; border-radius: 10px; }
-        
-        .admin-logo-container {
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .admin-logo-container:hover {
-            transform: scale(1.1) rotate(5deg);
-            filter: drop-shadow(0 0 12px rgba(0, 106, 104, 0.3));
-        }
-        .admin-logo-img {
-            transition: all 0.4s ease;
-        }
-        .admin-logo-container:hover .admin-logo-img {
-            filter: brightness(1.1);
-        }
+        body { font-family: 'Inter', 'Cairo', sans-serif; transition: background-color 0.3s ease; }
     </style>
+
+    <script>
+        (function() {
+            const theme = localStorage.getItem('dakkn_theme');
+            if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+
+        window.csrfToken = "@Html.AntiForgeryToken()".match(/value="([^"]+)"/)[1];
+    </script>
 </head>
-<body class="text-text-primary dark:text-inverse-on-surface h-screen overflow-hidden flex bg-background dark:bg-on-background transition-colors duration-300">
+<body class="text-text-primary dark:text-inverse-on-surface h-screen overflow-hidden flex bg-background dark:bg-dark-page transition-colors duration-300">
+    
+    <!-- Preloader Overlay -->
+    @await Html.PartialAsync("Partials/_Preloader")
+
     <!-- SideNavBar -->
-    <aside class="hidden md:flex flex-col docked ltr:left-0 ltr:border-r rtl:right-0 rtl:border-l h-screen w-64 border-border dark:border-outline/20 bg-surface dark:bg-inverse-surface shadow-medium z-40 relative flex-shrink-0 transition-colors duration-300">
+    <aside class="hidden md:flex flex-col admin-sidebar ltr:left-0 ltr:border-r rtl:right-0 rtl:border-l h-screen w-64 shadow-medium z-40 relative flex-shrink-0 transition-colors duration-300">
         <div class="p-lg border-b border-border dark:border-outline/20 flex flex-col items-center justify-center gap-sm group cursor-pointer">
             <div class="admin-logo-container">
                 <img src="/images/logo.png" alt="DAKKN Logo" class="h-16 admin-logo-img dark:brightness-125" />
@@ -137,23 +139,9 @@
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/landing.js" asp-append-version="true"></script>
 
     <script>
-        // Language Toggle Logic
-        function toggleLang() {
-            const currentLang = document.documentElement.lang || 'ar';
-            const newLang = currentLang.startsWith('en') ? 'ar' : 'en';
-            
-            // Persist language choice in localStorage (sync with landing.js)
-            localStorage.setItem('dakkn_lang', newLang);
-
-            // Correct ASP.NET Core culture cookie format: c=en|uic=en
-            const cookieValue = `c=${newLang}|uic=${newLang}`;
-            document.cookie = `.AspNetCore.Culture=${cookieValue};path=/;max-age=31536000;SameSite=Lax`;
-            
-            window.location.reload();
-        }
-
         // Dark Mode Logic
         function toggleDarkMode() {
             const isDark = document.documentElement.classList.toggle('dark');
@@ -173,12 +161,6 @@
             const savedTheme = localStorage.getItem('dakkn_theme');
             const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             const isDark = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
-            
-            if (isDark) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
             updateDarkModeIcon(isDark);
         })();
     </script>
