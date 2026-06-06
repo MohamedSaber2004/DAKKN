@@ -304,17 +304,78 @@
             </button>
         </div>
 
-        <!-- Placeholders for other tabs -->
-        <div id="panel-featured-categories" class="content-panel hidden p-xl text-center">
-            <span class="material-symbols-outlined text-6xl text-outline mb-md">construction</span>
-            <h2 class="font-h2 text-h2 font-bold mb-sm">@Localizer["admin_featured_categories"]</h2>
-            <p class="text-text-secondary">@Localizer["admin_module_dev"]</p>
+        <!-- Section: Featured Categories -->
+        <div id="panel-featured-categories" class="content-panel hidden bg-surface dark:bg-inverse-surface rounded-[32px] shadow-medium border border-border dark:border-outline/10 p-xl">
+            <div class="flex justify-between items-center mb-xl">
+                <div>
+                    <h2 class="font-h2 text-h2 font-bold">@Localizer["admin_featured_categories"]</h2>
+                    <p class="text-text-secondary">@Localizer["admin_featured_cat_desc"]</p>
+                </div>
+                <div class="px-lg py-sm bg-primary/10 text-primary rounded-full font-bold text-sm">
+                    <span id="cat-selection-count">0</span> / 6 @Localizer["admin_selected_count"].Value.Split(' ')[2]
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-md">
+                @foreach (var cat in Model.Categories.AllCategories)
+                {
+                    <div onclick="toggleCategory('@cat.Id')" id="cat-card-@cat.Id" class="category-select-card group cursor-pointer bg-surface-container dark:bg-surface-container-high p-lg rounded-2xl border-2 @(cat.IsFeatured ? "border-primary bg-primary/5" : "border-transparent") transition-all text-center">
+                        <div class="w-12 h-12 rounded-full bg-surface dark:bg-inverse-surface mx-auto flex items-center justify-center mb-md shadow-small group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined @(cat.IsFeatured ? "text-primary filled-icon" : "text-outline")">@cat.Icon</span>
+                        </div>
+                        <h4 class="font-bold text-sm @(cat.IsFeatured ? "text-primary" : "text-text-primary")">@cat.Name</h4>
+                        <div class="mt-sm">
+                            <span class="status-badge text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider @(cat.IsFeatured ? "bg-primary text-on-primary" : "bg-outline/10 text-outline")">
+                                @(cat.IsFeatured ? Localizer["admin_select"] : Localizer["admin_unselect"])
+                            </span>
+                        </div>
+                        <input type="checkbox" id="cat-check-@cat.Id" class="hidden" @(cat.IsFeatured ? "checked" : "")>
+                    </div>
+                }
+            </div>
+            <button class="mt-xl bg-primary text-on-primary px-xl py-md rounded-full font-bold shadow-medium">@Localizer["admin_save_changes"]</button>
         </div>
 
-        <div id="panel-featured-products" class="content-panel hidden p-xl text-center">
-            <span class="material-symbols-outlined text-6xl text-outline mb-md">construction</span>
-            <h2 class="font-h2 text-h2 font-bold mb-sm">@Localizer["admin_featured_products"]</h2>
-            <p class="text-text-secondary">@Localizer["admin_module_dev"]</p>
+        <!-- Section: Featured Products -->
+        <div id="panel-featured-products" class="content-panel hidden bg-surface dark:bg-inverse-surface rounded-[32px] shadow-medium border border-border dark:border-outline/10 p-xl">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-lg mb-xl">
+                <div>
+                    <h2 class="font-h2 text-h2 font-bold">@Localizer["admin_featured_products"]</h2>
+                    <p class="text-text-secondary">@Localizer["admin_featured_prod_desc"]</p>
+                </div>
+                <div class="flex items-center gap-md bg-surface-container p-md rounded-2xl border border-border">
+                    <span class="font-bold text-sm">@Localizer["admin_auto_select"]</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="auto-select-toggle" class="sr-only peer" onchange="toggleAutoMode(this.checked)" @(Model.Products.AutoSelectBestSellers ? "checked" : "")>
+                        <div class="w-11 h-6 bg-outline/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:ltr:left-[2px] after:rtl:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                    </label>
+                </div>
+            </div>
+
+            <div id="manual-product-grid" class="@(Model.Products.AutoSelectBestSellers ? "opacity-50 pointer-events-none" : "") transition-opacity">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg">
+                    @foreach (var prod in Model.Products.AllProducts)
+                    {
+                        <div class="product-select-card bg-surface-container dark:bg-surface-container-high rounded-3xl border border-border overflow-hidden group">
+                            <div class="aspect-square relative overflow-hidden bg-white/5">
+                                <img src="@prod.ImageUrl" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                <button onclick="toggleProduct('@prod.Id')" id="prod-star-@prod.Id" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-surface/90 backdrop-blur-sm shadow-medium flex items-center justify-center transition-all @(prod.IsFeatured ? "text-yellow-500 scale-110" : "text-outline/50 hover:text-yellow-500")">
+                                    <span class="material-symbols-outlined @(prod.IsFeatured ? "filled-icon" : "")">star</span>
+                                </button>
+                                <div class="absolute bottom-4 left-4 bg-primary text-on-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
+                                    @prod.Category
+                                </div>
+                            </div>
+                            <div class="p-lg">
+                                <h4 class="font-bold text-lg mb-xs">@prod.Name</h4>
+                                <p class="text-xs text-outline font-medium">SKU: @prod.Id</p>
+                            </div>
+                            <input type="checkbox" id="prod-check-@prod.Id" class="hidden" @(prod.IsFeatured ? "checked" : "")>
+                        </div>
+                    }
+                </div>
+            </div>
+            <button class="mt-xl bg-primary text-on-primary px-xl py-md rounded-full font-bold shadow-medium">@Localizer["admin_save_changes"]</button>
         </div>
     </div>
 </div>
@@ -429,8 +490,74 @@
             .catch(error => console.error('Error:', error));
         }
 
+        function toggleCategory(id) {
+            const card = document.getElementById('cat-card-' + id);
+            const checkbox = document.getElementById('cat-check-' + id);
+            const icon = card.querySelector('.material-symbols-outlined');
+            const badge = card.querySelector('.status-badge');
+            const title = card.querySelector('h4');
+
+            checkbox.checked = !checkbox.checked;
+
+            if (checkbox.checked) {
+                card.classList.add('border-primary', 'bg-primary/5');
+                card.classList.remove('border-transparent');
+                icon.classList.add('text-primary', 'filled-icon');
+                icon.classList.remove('text-outline');
+                badge.classList.add('bg-primary', 'text-on-primary');
+                badge.classList.remove('bg-outline/10', 'text-outline');
+                badge.innerText = '@Localizer["admin_select"]';
+                title.classList.add('text-primary');
+                title.classList.remove('text-text-primary');
+            } else {
+                card.classList.remove('border-primary', 'bg-primary/5');
+                card.classList.add('border-transparent');
+                icon.classList.remove('text-primary', 'filled-icon');
+                icon.classList.add('text-outline');
+                badge.classList.remove('bg-primary', 'text-on-primary');
+                badge.classList.add('bg-outline/10', 'text-outline');
+                badge.innerText = '@Localizer["admin_unselect"]';
+                title.classList.remove('text-primary');
+                title.classList.add('text-text-primary');
+            }
+            updateCategoryCount();
+        }
+
+        function updateCategoryCount() {
+            const count = document.querySelectorAll('.category-select-card input[type="checkbox"]:checked').length;
+            document.getElementById('cat-selection-count').innerText = count;
+        }
+
+        function toggleAutoMode(enabled) {
+            const grid = document.getElementById('manual-product-grid');
+            if (enabled) {
+                grid.classList.add('opacity-50', 'pointer-events-none');
+            } else {
+                grid.classList.remove('opacity-50', 'pointer-events-none');
+            }
+        }
+
+        function toggleProduct(id) {
+            const starBtn = document.getElementById('prod-star-' + id);
+            const checkbox = document.getElementById('prod-check-' + id);
+            const icon = starBtn.querySelector('.material-symbols-outlined');
+
+            checkbox.checked = !checkbox.checked;
+
+            if (checkbox.checked) {
+                starBtn.classList.add('text-yellow-500', 'scale-110');
+                starBtn.classList.remove('text-outline/50');
+                icon.classList.add('filled-icon');
+            } else {
+                starBtn.classList.remove('text-yellow-500', 'scale-110');
+                starBtn.classList.add('text-outline/50');
+                icon.classList.remove('filled-icon');
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             initSortable();
+            updateCategoryCount();
         });
     </script>
 }

@@ -750,5 +750,11 @@
   "admin_testi_quote_ph": "ماذا قال العميل...",
   "admin_contact_email": "بريد الدعم",
   "admin_contact_phone": "الهاتف العام",
-  "admin_contact_address": "عنوان العمل"
+  "admin_contact_address": "عنوان العمل",
+  "admin_featured_cat_desc": "اختر ما يصل إلى 6 فئات لإبرازها في شريط الصفحة الرئيسية.",
+  "admin_featured_prod_desc": "اختر منتجات محددة لقسم 'الأكثر مبيعاً' أو قم بتفعيل الاختيار التلقائي.",
+  "admin_auto_select": "اختيار تلقائي للأكثر مبيعاً",
+  "admin_selected_count": "تم اختيار {0} من {1}",
+  "admin_select": "اختيار",
+  "admin_unselect": "إلغاء الاختيار"
   }

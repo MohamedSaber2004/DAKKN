@@ -94,13 +94,46 @@ namespace DAKKN.MVC.ViewModels.Admin
 
     public class FeaturedCategoriesViewModel
     {
-        public List<string> SelectedCategoryIds { get; set; } = new();
+        public string Description { get; set; } = string.Empty;
+        public List<CategoryManagementItem> AllCategories { get; set; } = new()
+        {
+            new CategoryManagementItem { Id = "cat-diecut", Name = "Die-Cut", IsFeatured = true, Icon = "cut" },
+            new CategoryManagementItem { Id = "cat-holographic", Name = "Holographic", IsFeatured = true, Icon = "flare" },
+            new CategoryManagementItem { Id = "cat-clear", Name = "Clear", IsFeatured = false, Icon = "opacity" },
+            new CategoryManagementItem { Id = "cat-sheets", Name = "Sticker Sheets", IsFeatured = true, Icon = "layers" },
+            new CategoryManagementItem { Id = "cat-labels", Name = "Custom Labels", IsFeatured = false, Icon = "label" },
+            new CategoryManagementItem { Id = "cat-matte", Name = "Matte Vinyl", IsFeatured = true, Icon = "texture" }
+        };
+    }
+
+    public class CategoryManagementItem
+    {
+        public string Id { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Icon { get; set; } = string.Empty;
+        public bool IsFeatured { get; set; }
     }
 
     public class FeaturedProductsViewModel
     {
         public bool AutoSelectBestSellers { get; set; } = true;
-        public List<string> ManualProductIds { get; set; } = new();
+        public List<ProductManagementItem> AllProducts { get; set; } = new()
+        {
+            new ProductManagementItem { Id = "PRD-001", Name = "Retro Cassette", Category = "Die-Cut", IsFeatured = true, ImageUrl = "https://lh3.googleusercontent.com/..." },
+            new ProductManagementItem { Id = "PRD-002", Name = "Neon Skull", Category = "Holographic", IsFeatured = true, ImageUrl = "https://lh3.googleusercontent.com/..." },
+            new ProductManagementItem { Id = "PRD-003", Name = "Pixel Heart", Category = "Clear", IsFeatured = false, ImageUrl = "https://lh3.googleusercontent.com/..." },
+            new ProductManagementItem { Id = "PRD-004", Name = "Galaxy Explorer", Category = "Die-Cut", IsFeatured = true, ImageUrl = "https://lh3.googleusercontent.com/..." },
+            new ProductManagementItem { Id = "PRD-005", Name = "Cyberpunk Ramen", Category = "Matte", IsFeatured = false, ImageUrl = "https://lh3.googleusercontent.com/..." }
+        };
+    }
+
+    public class ProductManagementItem
+    {
+        public string Id { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
+        public string ImageUrl { get; set; } = string.Empty;
+        public bool IsFeatured { get; set; }
     }
 
     public class GlobalPricingViewModel

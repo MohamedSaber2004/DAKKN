@@ -735,5 +735,11 @@
   "admin_testi_quote_ph": "What the customer said...",
   "admin_contact_email": "Support Email",
   "admin_contact_phone": "Public Phone",
-  "admin_contact_address": "Business Address"
+  "admin_contact_address": "Business Address",
+  "admin_featured_cat_desc": "Select up to 6 categories to highlight in the homepage slider.",
+  "admin_featured_prod_desc": "Choose specific products for the 'Best Sellers' section or enable auto-selection.",
+  "admin_auto_select": "Auto-select Best Sellers",
+  "admin_selected_count": "{0} of {1} selected",
+  "admin_select": "Select",
+  "admin_unselect": "Deselect"
   }
