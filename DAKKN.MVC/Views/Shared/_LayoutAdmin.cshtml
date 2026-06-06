@@ -94,6 +94,14 @@
             }
         })();
 
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('dakkn_theme', isDark ? 'dark' : 'light');
+            
+            // Dispatch event for components that need to react to theme changes
+            window.dispatchEvent(new CustomEvent('dakkn-theme-change', { detail: { isDark } }));
+        }
+
         window.csrfToken = "@Html.AntiForgeryToken()".match(/value="([^"]+)"/)[1];
     </script>
 </head>
@@ -114,31 +122,32 @@
             </div>
         </div>
         <nav class="flex-1 overflow-y-auto custom-scrollbar py-md px-sm flex flex-col gap-sm">
-            <a asp-controller="Admin" asp-action="Index" class="nav-item flex items-center gap-md @(currentAction == "Index" ? "bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") rounded-xl px-4 py-3 scale-100 hover:scale-103 transition-all duration-200" title="@Localizer["admin_overview"]">
+            <a asp-controller="Admin" asp-action="Index" class="nav-item flex items-center gap-md @(currentAction == "Index" ? "active bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") rounded-xl px-4 py-3 scale-100 hover:scale-103 transition-all duration-200" title="@Localizer["admin_overview"]">
                 <span class="material-symbols-outlined @(currentAction == "Index" ? "filled-icon" : "") flex-shrink-0">dashboard</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_overview"]</span>
             </a>
-            <a asp-controller="Admin" asp-action="Users" class="nav-item flex items-center gap-md @(currentAction == "Users" ? "bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl" title="@Localizer["admin_users"]">
+            <a asp-controller="Admin" asp-action="Users" class="nav-item flex items-center gap-md @(currentAction == "Users" ? "active bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl" title="@Localizer["admin_users"]">
                 <span class="material-symbols-outlined @(currentAction == "Users" ? "filled-icon" : "") flex-shrink-0">group</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_users"]</span>
             </a>
-            <a asp-controller="Admin" asp-action="Orders" class="nav-item flex items-center gap-md @(currentAction == "Orders" ? "bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl" title="@Localizer["admin_orders"]">
+            <a asp-controller="Admin" asp-action="Orders" class="nav-item flex items-center gap-md @(currentAction == "Orders" ? "active bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl" title="@Localizer["admin_orders"]">
                 <span class="material-symbols-outlined @(currentAction == "Orders" ? "filled-icon" : "") flex-shrink-0">shopping_cart</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_orders"]</span>
             </a>
-            <a asp-controller="Admin" asp-action="Inventory" class="nav-item flex items-center gap-md @(currentAction == "Inventory" ? "bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl" title="@Localizer["admin_inventory"]">
+            <a asp-controller="Admin" asp-action="Inventory" class="nav-item flex items-center gap-md @(currentAction == "Inventory" ? "active bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl" title="@Localizer["admin_inventory"]">
                 <span class="material-symbols-outlined @(currentAction == "Inventory" ? "filled-icon" : "") flex-shrink-0">inventory_2</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_inventory"]</span>
             </a>
-            <a asp-controller="Admin" asp-action="Support" class="nav-item flex items-center gap-md @(currentAction == "Support" ? "bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl" title="@Localizer["admin_support"]">
+            <a asp-controller="Admin" asp-action="Support" class="nav-item flex items-center gap-md @(currentAction == "Support" ? "active bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl" title="@Localizer["admin_support"]">
                 <span class="material-symbols-outlined @(currentAction == "Support" ? "filled-icon" : "") flex-shrink-0">support_agent</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_support"]</span>
             </a>
-            <a asp-controller="Admin" asp-action="Content" class="nav-item flex items-center gap-md @(currentAction == "Content" ? "bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl" title="@Localizer["admin_content_mgmt"]">
+            <a asp-controller="Admin" asp-action="Content" class="nav-item flex items-center gap-md @(currentAction == "Content" ? "active bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl" title="@Localizer["admin_content_mgmt"]">
                 <span class="material-symbols-outlined @(currentAction == "Content" ? "filled-icon" : "") flex-shrink-0">edit_note</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_content_mgmt"]</span>
             </a>
-            <a asp-controller="Admin" asp-action="Settings" class="nav-item flex items-center gap-md @(currentAction == "Settings" ? "bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl mt-auto" title="@Localizer["admin_settings"]">
+
+            <a asp-controller="Admin" asp-action="Settings" class="nav-item flex items-center gap-md @(currentAction == "Settings" ? "active bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl mt-auto" title="@Localizer["admin_settings"]">
                 <span class="material-symbols-outlined @(currentAction == "Settings" ? "filled-icon" : "") flex-shrink-0">settings</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_settings"]</span>
             </a>
@@ -175,14 +184,6 @@
                 <div class="flex items-center gap-sm">
                     <button class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary dark:text-outline dark:hover:text-primary-light transition-colors hover:bg-surface-container dark:hover:bg-surface-container-high">
                         <span class="material-symbols-outlined">notifications</span>
-                    </button>
-                    <!-- Language Switcher -->
-                    <button onclick="toggleLang()" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary dark:text-outline dark:hover:text-primary-light transition-colors hover:bg-surface-container dark:hover:bg-surface-container-high" title="Switch Language">
-                        <span class="material-symbols-outlined">translate</span>
-                    </button>
-                    <!-- Dark Mode Toggle -->
-                    <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary dark:text-outline dark:hover:text-primary-light transition-colors hover:bg-surface-container dark:hover:bg-surface-container-high" title="Toggle Theme">
-                        <span class="material-symbols-outlined" id="dark-mode-icon">dark_mode</span>
                     </button>
                 </div>
                 <div class="w-10 h-10 rounded-full bg-primary-container overflow-hidden cursor-pointer shadow-small">

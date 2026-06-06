@@ -756,5 +756,18 @@
   "admin_auto_select": "اختيار تلقائي للأكثر مبيعاً",
   "admin_selected_count": "تم اختيار {0} من {1}",
   "admin_select": "اختيار",
-  "admin_unselect": "إلغاء الاختيار"
+  "admin_unselect": "إلغاء الاختيار",
+  "admin_appearance": "المظهر",
+  "admin_appearance_desc": "تخصيص سمة لوحة التحكم وتفضيلات اللغة.",
+  "admin_theme_select": "سمة لوحة التحكم",
+  "admin_theme_light": "الوضع الفاتح",
+  "admin_theme_light_desc": "مظهر كلاسيكي نظيف مع نص عالي التباين.",
+  "admin_theme_dark": "الوضع الداكن",
+  "admin_theme_dark_desc": "مريح للعين لإدارة النظام ليلاً.",
+  "admin_lang_select": "لغة النظام",
+  "admin_lang_en": "الإنجليزية",
+  "admin_lang_en_sub": "الولايات المتحدة",
+  "admin_lang_ar": "العربية",
+  "admin_lang_ar_sub": "الشرق الأوسط",
+  "admin_security_desc": "إدارة كلمة المرور، والمصادقة الثنائية، وجلسات تسجيل الدخول."
   }

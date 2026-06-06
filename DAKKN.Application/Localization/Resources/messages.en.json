@@ -741,5 +741,18 @@
   "admin_auto_select": "Auto-select Best Sellers",
   "admin_selected_count": "{0} of {1} selected",
   "admin_select": "Select",
-  "admin_unselect": "Deselect"
+  "admin_unselect": "Deselect",
+  "admin_appearance": "Appearance",
+  "admin_appearance_desc": "Customize your dashboard theme and language preferences.",
+  "admin_theme_select": "Dashboard Theme",
+  "admin_theme_light": "Light Mode",
+  "admin_theme_light_desc": "Classic clean look with high contrast text.",
+  "admin_theme_dark": "Dark Mode",
+  "admin_theme_dark_desc": "Easy on the eyes for night-time management.",
+  "admin_lang_select": "System Language",
+  "admin_lang_en": "English",
+  "admin_lang_en_sub": "United States",
+  "admin_lang_ar": "Arabic",
+  "admin_lang_ar_sub": "Middle East",
+  "admin_security_desc": "Manage your password, two-factor authentication, and login sessions."
   }
