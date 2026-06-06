@@ -680,5 +680,9 @@
   "admin_product_sec_material": "Available Material Options",
   "admin_product_sec_size": "Available Sizes",
   "admin_product_size_add": "Add New Size",
+  "admin_product_edit_title": "Edit Product",
+      "admin_product_edit_subtitle": "Update the product details below.",
+      "admin_product_update_btn": "Update Product",
+      "admin_product_image_current": "Current Image",
   "admin_placeholder_msg": "This page is currently under development."
   }

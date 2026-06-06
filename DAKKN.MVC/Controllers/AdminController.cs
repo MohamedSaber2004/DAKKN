@@ -249,5 +249,41 @@ namespace DAKKN.MVC.Controllers
             var viewModel = new AddProductViewModel();
             return View(viewModel);
         }
+
+        [HttpGet("edit-product/{id}")]
+        public IActionResult EditProduct(string id)
+        {
+            ViewData["Title"] = _localizer["admin_product_edit_title"];
+
+            // Fetch mock product details
+            var viewModel = new AddProductViewModel
+            {
+                Id = id,
+                Name = "كاسيت ريترو",
+                Description = "ملصق فينيل عالي الجودة بتصميم كاسيت كلاسيكي.",
+                Category = "Anime",
+                Price = 70,
+                Sku = "STK-RETR-01",
+                Quantity = 150,
+                TrackInventory = true,
+                Tags = "ريترو, كلاسيك, أنمي",
+                ExistingImageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuBdJqwUIJElF6yKiAthjzqbJT3oybHZLiBv1kJqmbuD5er1OlaDE6e1hoP4RbXI68dtTm9QrVrdOu4_L3gIbRZzTfdPkJLIImwJgtfFOblkSv-zMbSFfD_U6GblKhzSYn6aZ6UMAQTaHHAv7ja5lVj5JQ_0eA60WnQU6Tdn8_-P_aPc-MlDlgr3RCXgvrDq7VwR6wWvaxjG5_se3JpJkYk1JpuDc-70Yt9bnuSg2R_zVgHYwNGlkw_-8bAWpGARNWW3NW7GDdgZKL8"
+            };
+
+            return View("AddProduct", viewModel);
+        }
+
+        [HttpPost("edit-product/{id}")]
+        public IActionResult EditProduct(AddProductViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewData["Title"] = _localizer["admin_product_edit_title"];
+                return View("AddProduct", model);
+            }
+
+            // Logic to overwrite current product details would go here
+            return RedirectToAction("Inventory");
+        }
     }
 }

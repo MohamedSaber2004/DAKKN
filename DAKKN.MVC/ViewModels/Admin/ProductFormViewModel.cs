@@ -5,6 +5,12 @@ namespace DAKKN.MVC.ViewModels.Admin
 {
     public class AddProductViewModel
     {
+        public string? Id { get; set; }
+
+        public bool IsEdit => !string.IsNullOrEmpty(Id);
+
+        public string? ExistingImageUrl { get; set; }
+
         [Required]
         public string Name { get; set; } = string.Empty;
 

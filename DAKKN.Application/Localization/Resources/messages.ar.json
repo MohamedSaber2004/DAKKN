@@ -695,5 +695,9 @@
   "admin_product_sec_material": "خيارات الخامات المتاحة",
   "admin_product_sec_size": "المقاسات المتاحة",
   "admin_product_size_add": "إضافة مقاس جديد",
+  "admin_product_edit_title": "تعديل المنتج",
+  "admin_product_edit_subtitle": "قم بتحديث تفاصيل المنتج أدناه.",
+  "admin_product_update_btn": "تحديث المنتج",
+  "admin_product_image_current": "الصورة الحالية",
   "admin_placeholder_msg": "هذه الصفحة قيد التطوير حالياً."
   }
