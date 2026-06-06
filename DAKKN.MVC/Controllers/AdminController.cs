@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using DAKKN.MVC.ViewModels.Admin;
 
 namespace DAKKN.MVC.Controllers
 {
@@ -47,7 +48,50 @@ namespace DAKKN.MVC.Controllers
         public IActionResult Support()
         {
             ViewData["Title"] = "الدعم";
-            return View("Placeholder", "الدعم");
+            
+            var mockTickets = new List<SupportTicketViewModel>
+            {
+                new SupportTicketViewModel { 
+                    TicketId = "TK-1001", 
+                    CustomerName = "أحمد محمد", 
+                    CustomerEmail = "ahmed@example.com", 
+                    Subject = "تأخر في وصول الطلب", 
+                    MessageSnippet = "لقد طلبت ملصقات منذ 5 أيام ولم تصل حتى الآن...", 
+                    CreatedAt = DateTime.Now.AddHours(-2), 
+                    Status = TicketStatus.Open, 
+                    Priority = TicketPriority.High 
+                },
+                new SupportTicketViewModel { 
+                    TicketId = "TK-1002", 
+                    CustomerName = "سارة أحمد", 
+                    CustomerEmail = "sara@example.com", 
+                    Subject = "خطأ في تصميم الملصق", 
+                    MessageSnippet = "الألوان في الملصق الذي وصلني مختلفة عن التصميم الأصلي...", 
+                    CreatedAt = DateTime.Now.AddDays(-1), 
+                    Status = TicketStatus.InProgress, 
+                    Priority = TicketPriority.Medium 
+                },
+                new SupportTicketViewModel { 
+                    TicketId = "TK-1003", 
+                    CustomerName = "ياسين علي", 
+                    CustomerEmail = "yassin@example.com", 
+                    Subject = "طلب جملة مخصص", 
+                    MessageSnippet = "أريد طلب 500 ملصق لشعار شركتي، هل يوجد خصم؟", 
+                    CreatedAt = DateTime.Now.AddDays(-2), 
+                    Status = TicketStatus.Resolved, 
+                    Priority = TicketPriority.Low 
+                }
+            };
+
+            var viewModel = new SupportDashboardViewModel
+            {
+                Tickets = mockTickets,
+                TotalOpen = 12,
+                WaitingResponse = 5,
+                AverageResolutionTime = "18h"
+            };
+
+            return View(viewModel);
         }
 
         [HttpGet("settings")]

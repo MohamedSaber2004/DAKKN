@@ -560,6 +560,19 @@
   "admin_wed": "Wednesday",
   "admin_thu": "Thursday",
   "admin_fri": "Friday",
-  "dev_otp_label": "DEV — OTP:",
-  "forgot.back_label": "Back to Login"
-}
+  "dev_otp_label": "DEV — OTP Code:",
+  "forgot.back_label": "Back to login",
+  "admin_support_title": "Support & Ticket Management",
+  "admin_support_open": "Open",
+  "admin_support_inprogress": "In Progress",
+  "admin_support_resolved": "Resolved",
+  "admin_support_all": "All Tickets",
+  "admin_support_waiting": "Waiting Response",
+  "admin_support_avg_time": "Avg. Resolution Time",
+  "admin_support_search_ph": "Search by ticket ID or customer name...",
+  "admin_support_ticket_no": "Ticket #",
+  "admin_support_priority_high": "High",
+  "admin_support_priority_medium": "Medium",
+  "admin_support_priority_low": "Low",
+  "admin_support_priority_urgent": "Urgent"
+  }

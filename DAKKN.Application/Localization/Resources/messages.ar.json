@@ -576,5 +576,18 @@
   "admin_thu": "الخميس",
   "admin_fri": "الجمعة",
   "dev_otp_label": "DEV — رمز التحقق:",
-  "forgot.back_label": "العودة لتسجيل الدخول"
+  "forgot.back_label": "العودة لتسجيل الدخول",
+  "admin_support_title": "إدارة التذاكر والدعم",
+  "admin_support_open": "مفتوحة",
+  "admin_support_inprogress": "قيد المعالجة",
+  "admin_support_resolved": "محلولة",
+  "admin_support_all": "جميع التذاكر",
+  "admin_support_waiting": "بانتظار الرد",
+  "admin_support_avg_time": "متوسط وقت الحل",
+  "admin_support_search_ph": "ابحث برقم التذكرة أو اسم العميل...",
+  "admin_support_ticket_no": "تذكرة #",
+  "admin_support_priority_high": "عالية",
+  "admin_support_priority_medium": "متوسطة",
+  "admin_support_priority_low": "منخفضة",
+  "admin_support_priority_urgent": "عاجلة"
   }
