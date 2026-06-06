@@ -250,6 +250,8 @@
         }
 
         function setLanguage(lang) {
+            // Pre-sync localStorage to avoid landing.js reload loops
+            localStorage.setItem('dakkn_lang', lang);
             window.location.href = '/Translation/SetLanguage?culture=' + lang + '&returnUrl=' + encodeURIComponent(window.location.pathname);
         }
 

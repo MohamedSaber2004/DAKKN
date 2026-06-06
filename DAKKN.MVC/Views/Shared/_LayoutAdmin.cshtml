@@ -103,6 +103,18 @@
         }
 
         window.csrfToken = "@Html.AntiForgeryToken()".match(/value="([^"]+)"/)[1];
+
+        // Failsafe: Ensure preloader is hidden even if scripts fail or hang
+        setTimeout(() => {
+            const preloader = document.getElementById('dakkn-preloader');
+            if (preloader) {
+                preloader.style.opacity = '0';
+                setTimeout(() => {
+                    preloader.remove();
+                    document.documentElement.removeAttribute('data-dakkn-loading');
+                }, 400);
+            }
+        }, 2000); // 2 second timeout
     </script>
 </head>
 <body class="text-text-primary dark:text-inverse-on-surface h-screen overflow-hidden flex bg-background dark:bg-dark-page transition-colors duration-300">
