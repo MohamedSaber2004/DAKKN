@@ -1,0 +1,95 @@
+@{
+    Layout = "_LayoutCustomer";
+}
+
+<div class="max-w-7xl mx-auto px-lg py-xl">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-lg mb-xl">
+        <div>
+            <h1 class="font-h1 text-h1 font-bold text-text-primary dark:text-inverse-on-surface">Welcome back, @User.Identity.Name! 👋</h1>
+            <p class="text-text-secondary dark:text-outline-variant mt-2">Manage your collection, track orders, and discover new stickers.</p>
+        </div>
+        <a asp-controller="Customer" asp-action="Products" class="bg-primary text-on-primary px-xl py-md rounded-full font-bold shadow-medium hover:scale-105 transition-all">
+            Browse New Arrivals
+        </a>
+    </div>
+
+    <!-- Dashboard Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-xl">
+        
+        <!-- Left Column: Activity & Stats -->
+        <div class="lg:col-span-2 space-y-xl">
+            <!-- Stats Row -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-lg">
+                <div class="bg-surface dark:bg-inverse-surface p-lg rounded-3xl border border-border dark:border-outline/10 shadow-small">
+                    <span class="material-symbols-outlined text-primary mb-md text-3xl">shopping_bag</span>
+                    <h3 class="font-h3 text-h3 font-bold text-text-primary dark:text-inverse-on-surface">12</h3>
+                    <p class="text-xs text-text-secondary uppercase tracking-widest font-bold mt-1">Total Stickers</p>
+                </div>
+                <div class="bg-surface dark:bg-inverse-surface p-lg rounded-3xl border border-border dark:border-outline/10 shadow-small">
+                    <span class="material-symbols-outlined text-secondary mb-md text-3xl">local_shipping</span>
+                    <h3 class="font-h3 text-h3 font-bold text-text-primary dark:text-inverse-on-surface">1</h3>
+                    <p class="text-xs text-text-secondary uppercase tracking-widest font-bold mt-1">Active Orders</p>
+                </div>
+                <div class="bg-surface dark:bg-inverse-surface p-lg rounded-3xl border border-border dark:border-outline/10 shadow-small">
+                    <span class="material-symbols-outlined text-tertiary mb-md text-3xl">stars</span>
+                    <h3 class="font-h3 text-h3 font-bold text-text-primary dark:text-inverse-on-surface">450</h3>
+                    <p class="text-xs text-text-secondary uppercase tracking-widest font-bold mt-1">Reward Points</p>
+                </div>
+            </div>
+
+            <!-- Recent Orders Section -->
+            <div class="bg-surface dark:bg-inverse-surface rounded-3xl border border-border dark:border-outline/10 shadow-medium overflow-hidden">
+                <div class="p-lg border-b border-border dark:border-outline/10 flex justify-between items-center">
+                    <h2 class="font-h2 text-h2 font-bold">Recent Orders</h2>
+                    <a asp-action="Orders" class="text-sm font-bold text-primary hover:underline">View All</a>
+                </div>
+                <div class="p-lg">
+                    <div class="flex flex-col gap-lg">
+                        <div class="flex items-center gap-lg p-md hover:bg-surface-container rounded-2xl transition-colors">
+                            <div class="w-16 h-16 rounded-xl bg-primary/5 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-primary">package_2</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-bold">Order #DK-9021</h4>
+                                <p class="text-sm text-text-secondary">3 Stickers • Shipped on June 4</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase">Shipped</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Discover & Sidebar -->
+        <div class="space-y-xl">
+            <!-- Discover Section -->
+            <div class="bg-primary text-on-primary p-xl rounded-[40px] shadow-large relative overflow-hidden group">
+                <div class="relative z-10">
+                    <h3 class="font-h3 text-h3 font-bold mb-md">Exclusive Drops</h3>
+                    <p class="text-primary-container mb-xl text-sm leading-relaxed">Early access to limited edition holographic series is now live for members.</p>
+                    <button class="bg-white text-primary px-lg py-md rounded-full font-bold shadow-medium hover:scale-105 transition-all">Explore Series</button>
+                </div>
+                <!-- Abstract BG shapes -->
+                <div class="absolute -bottom-10 -right-10 w-48 h-48 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
+            </div>
+
+            <!-- Suggested for you -->
+            <div class="bg-surface dark:bg-inverse-surface rounded-3xl border border-border dark:border-outline/10 shadow-medium p-lg">
+                <h2 class="font-h2 text-h2 font-bold mb-lg text-lg">Recommended</h2>
+                <div class="space-y-lg">
+                    <div class="flex items-center gap-md group cursor-pointer">
+                        <div class="w-14 h-14 rounded-2xl bg-white/5 border border-border overflow-hidden">
+                            <img src="https://lh3.googleusercontent.com/aida/AP1WRLvk0o2fHlsgnzmZ9xrrRAnUTq9hl5CW063LX44OhYiXj0ZAadSE46fIAmtHQKBEzfk8NKsMl6AwohhVGiDgxsbst33TGFkDW68Y9_d3C1Cvf-mtviXqQYHM-Aqnsunu3Q6Yy2-9A5mXcsO80D173UvbE44Odz0GI41kQbHK_cLtDiruHCKTT15snGH5XT7Y6MLMfFd4rUCTY71ZJwiOba19bKW0Du2pMXYtJtF-I-h5V-wypv1z0Vztp_M" class="w-full h-full object-cover group-hover:scale-110 transition-transform">
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-sm">Cyberpunk Ramen</h4>
+                            <p class="text-xs text-text-secondary">Holographic • 85 EGP</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

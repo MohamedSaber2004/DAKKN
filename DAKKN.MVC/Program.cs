@@ -68,6 +68,14 @@ namespace DAKKN.MVC
                 options.ReportApiVersions = true;
             }).AddMvc();
 
+            builder.Services.AddAuthentication("Cookies")
+                .AddCookie("Cookies", options =>
+                {
+                    options.LoginPath = "/auth/login";
+                    options.LogoutPath = "/auth/logout";
+                    options.AccessDeniedPath = "/auth/login";
+                });
+
             builder.Services.AddControllersWithViews()
                 .AddViewLocalization()
                 .AddDataAnnotationsLocalization();
