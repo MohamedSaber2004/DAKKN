@@ -1,11 +1,12 @@
 using Asp.Versioning;
+using DAKKN.Appearence.Services;
 using DAKKN.Application;
 using DAKKN.Application.Localization;
 using DAKKN.Infrastructure;
 using DAKKN.Persistence;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Localization;
 using Serilog;
 using System.Reflection;
@@ -46,7 +47,7 @@ namespace DAKKN.MVC
             builder.Host.UseSerilog();
 
 
-            builder.Services.AddApplication();
+            builder.Services.AddApplication(builder.Configuration);
             builder.Services.AddPersistence();
             builder.Services.AddInfrastructure();
 
@@ -161,6 +162,12 @@ namespace DAKKN.MVC
             app.UseReferrerPolicy(opts => opts.NoReferrer());
 
             app.UseStaticFiles();
+
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new CustomFileProvider(app.Environment.WebRootPath),
+                RequestPath = "/files"
+            });
 
             app.UseNoCacheHttpHeaders();
 
