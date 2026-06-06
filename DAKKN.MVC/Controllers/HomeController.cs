@@ -1,6 +1,7 @@
 using DAKKN.Application.Localization;
 using DAKKN.MVC.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using System.Diagnostics;
 
 namespace DAKKN.MVC.Controllers
@@ -14,21 +15,25 @@ namespace DAKKN.MVC.Controllers
             _logger = logger;
         }
 
+        [OutputCache(Duration = 600)]
         public IActionResult Index()
         {
             return View();
         }
 
+        [OutputCache(Duration = 600)]
         public IActionResult Privacy()
         {
             return View();
         }
 
+        [OutputCache(Duration = 600)]
         public IActionResult Terms()
         {
             return View();
         }
 
+        [OutputCache(Duration = 600)]
         public IActionResult About()
         {
             return View();

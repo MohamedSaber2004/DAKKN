@@ -4,9 +4,11 @@ using DAKKN.Application.Localization;
 using DAKKN.Infrastructure;
 using DAKKN.Persistence;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Localization;
 using Serilog;
 using System.Reflection;
+using System.Threading.RateLimiting;
 
 namespace DAKKN.MVC
 {
@@ -50,16 +52,11 @@ namespace DAKKN.MVC
             builder.Services.AddSingleton<IStringLocalizerFactory, JsonStringLocalizerFactory>();
             builder.Services.AddLocalization();
 
-            builder.Services.AddCors(options =>
+            builder.Services.AddOutputCache(options =>
             {
-                options.AddPolicy("AllowAll",
-                    builder =>
-                    {
-                        builder.AllowAnyOrigin()
-                               .AllowAnyMethod()
-                               .AllowAnyHeader();
-                    });
+                options.AddBasePolicy(builder => builder.Expire(TimeSpan.FromMinutes(10)));
             });
+
 
             builder.Services.AddApiVersioning(options =>
             {
@@ -71,6 +68,32 @@ namespace DAKKN.MVC
             builder.Services.AddControllersWithViews()
                 .AddViewLocalization()
                 .AddDataAnnotationsLocalization();
+
+            builder.Services.AddRateLimiter(options =>
+            {
+                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+                var globalSettings = builder.Configuration.GetSection("RateLimiting:Global");
+                options.GlobalLimiter = PartitionedRateLimiter.Create<HttpContext, string>(httpContext =>
+                    RateLimitPartition.GetFixedWindowLimiter(
+                        partitionKey: httpContext.User.Identity?.Name ?? httpContext.Connection.RemoteIpAddress?.ToString() ?? "global",
+                        factory: partition => new FixedWindowRateLimiterOptions
+                        {
+                            AutoReplenishment = true,
+                            PermitLimit = globalSettings.GetValue<int>("PermitLimit"),
+                            QueueLimit = globalSettings.GetValue<int>("QueueLimit"),
+                            Window = TimeSpan.FromSeconds(globalSettings.GetValue<int>("WindowSeconds"))
+                        }));
+
+                var authSettings = builder.Configuration.GetSection("RateLimiting:Auth");
+                options.AddFixedWindowLimiter(policyName: "auth", options =>
+                {
+                    options.PermitLimit = authSettings.GetValue<int>("PermitLimit");
+                    options.Window = TimeSpan.FromSeconds(authSettings.GetValue<int>("WindowSeconds"));
+                    options.QueueLimit = authSettings.GetValue<int>("QueueLimit");
+                    options.AutoReplenishment = true;
+                });
+            });
 
             var app = builder.Build();
 
@@ -204,7 +227,9 @@ namespace DAKKN.MVC
 
             app.UseRouting();
 
-            app.UseCors("AllowAll");
+            app.UseOutputCache();
+
+            app.UseRateLimiter();
 
             app.UseAuthentication();
             app.UseAuthorization();

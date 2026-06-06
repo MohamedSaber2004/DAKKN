@@ -1,10 +1,13 @@
 using DAKKN.MVC.Mock;
 using DAKKN.MVC.ViewModels.Auth;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace DAKKN.MVC.Controllers
 {
     [Route("auth")]
+    [EnableRateLimiting("auth")]
     public class AuthController(IWebHostEnvironment env) : Controller
     {
         // ──────────────────────────────────────────────
@@ -12,6 +15,7 @@ namespace DAKKN.MVC.Controllers
         // ──────────────────────────────────────────────
 
         [HttpGet("login")]
+        [OutputCache(Duration =600)]
         public IActionResult Login() => View(new LoginViewModel());
 
         [HttpPost("login")]
@@ -45,6 +49,7 @@ namespace DAKKN.MVC.Controllers
         // ──────────────────────────────────────────────
 
         [HttpGet("register")]
+        [OutputCache(Duration = 600)]
         public IActionResult Register() => View(new RegisterViewModel());
 
         [HttpPost("register")]
@@ -143,6 +148,7 @@ namespace DAKKN.MVC.Controllers
         // ──────────────────────────────────────────────
 
         [HttpGet("forgot-password")]
+        [OutputCache(Duration = 600)]
         public IActionResult ForgotPassword() => View(new ForgotPasswordViewModel());
 
         [HttpPost("forgot-password")]
@@ -178,6 +184,7 @@ namespace DAKKN.MVC.Controllers
         // ──────────────────────────────────────────────
 
         [HttpGet("reset-password")]
+        [OutputCache(Duration = 600)]
         public IActionResult ResetPassword()
         {
             var email = TempData.Peek("ResetEmail") as string;
