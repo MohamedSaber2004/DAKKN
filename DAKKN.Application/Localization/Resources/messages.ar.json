@@ -733,5 +733,22 @@
   "section_all_products": "تصفح جميع المنتجات",
   "section_testimonials": "قصص العملاء",
   "section_contact": "نموذج الاتصال",
-  "admin_save_success": "تم حفظ التخطيط بنجاح!"
+  "admin_save_success": "تم حفظ التخطيط بنجاح!",
+  "admin_about_title": "عنوان القسم (الرئيسي)",
+  "admin_about_title_ph": "مثال: مصممة لتتحمل القسوة",
+  "admin_about_desc": "الوصف الرئيسي",
+  "admin_about_desc_ph": "اشرح ما الذي يجعل منتجك فريداً (أقل من 200 حرف).",
+  "admin_feature_h": "الميزة {0}",
+  "admin_feature_title_ph": "عنوان قصير وجذاب",
+  "admin_feature_desc_ph": "تفاصيل حول هذه الميزة...",
+  "admin_testi_title": "عنوان التقييمات",
+  "admin_testi_desc": "العنوان الفرعي",
+  "admin_testi_name": "اسم العميل",
+  "admin_testi_role": "الدور / السياق",
+  "admin_testi_role_ph": "مثال: فنان، صاحب مقهى",
+  "admin_testi_quote": "الاقتباس",
+  "admin_testi_quote_ph": "ماذا قال العميل...",
+  "admin_contact_email": "بريد الدعم",
+  "admin_contact_phone": "الهاتف العام",
+  "admin_contact_address": "عنوان العمل"
   }

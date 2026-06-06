@@ -8,6 +8,9 @@ namespace DAKKN.MVC.ViewModels.Admin
         public HeroSettingsViewModel Hero { get; set; } = new();
         public FeaturedCategoriesViewModel Categories { get; set; } = new();
         public FeaturedProductsViewModel Products { get; set; } = new();
+        public AboutSettingsViewModel About { get; set; } = new();
+        public TestimonialsSettingsViewModel Testimonials { get; set; } = new();
+        public ContactSettingsViewModel Contact { get; set; } = new();
         public GlobalPricingViewModel Pricing { get; set; } = new();
     }
 
@@ -43,6 +46,50 @@ namespace DAKKN.MVC.ViewModels.Admin
         public string Description { get; set; } = "Engineered with 5-layer vinyl construction...";
         public string ButtonText { get; set; } = "Shop Best Sellers";
         public string ImageUrl { get; set; } = "https://lh3.googleusercontent.com/...";
+    }
+
+    public class AboutSettingsViewModel
+    {
+        public string Title { get; set; } = "Engineered for Extremes";
+        public string Description { get; set; } = "Our stickers aren't just printed; they are manufactured...";
+        
+        public string Feature1Title { get; set; } = "5-Layer Construction";
+        public string Feature1Desc { get; set; } = "From the strong adhesive base...";
+        
+        public string Feature2Title { get; set; } = "Vibrant Customization";
+        public string Feature2Desc { get; set; } = "High-fidelity 8-color printing...";
+        
+        public string Feature3Title { get; set; } = "Industrial Durability";
+        public string Feature3Desc { get; set; } = "Dishwasher safe, weather-proof...";
+    }
+
+    public class TestimonialsSettingsViewModel
+    {
+        public string Title { get; set; } = "Community Stories";
+        public string Description { get; set; } = "See how our stickers hold up in the real world.";
+        public List<TestimonialItem> Reviews { get; set; } = new()
+        {
+            new TestimonialItem { Name = "Sarah J.", Role = "Snowboarder", Quote = "These stickers have survived 6 months...", Rating = 5, IsFeatured = true },
+            new TestimonialItem { Name = "Marcus T.", Role = "Cafe Owner", Quote = "I use them to brand my custom coffee tumblers...", Rating = 5, IsFeatured = true }
+        };
+    }
+
+    public class TestimonialItem
+    {
+        public string Name { get; set; } = string.Empty;
+        public string Role { get; set; } = string.Empty;
+        public string Quote { get; set; } = string.Empty;
+        public int Rating { get; set; }
+        public bool IsFeatured { get; set; }
+    }
+
+    public class ContactSettingsViewModel
+    {
+        public string Title { get; set; } = "Get in Touch";
+        public string Description { get; set; } = "Have a custom bulk order or need support?";
+        public string Email { get; set; } = "support@dakkn.com";
+        public string Phone { get; set; } = "+20 123 456 7890";
+        public string Address { get; set; } = "Damietta, Egypt";
     }
 
     public class FeaturedCategoriesViewModel

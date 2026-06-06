@@ -718,5 +718,22 @@
   "section_all_products": "Browse All Products",
   "section_testimonials": "Customer Stories",
   "section_contact": "Contact Form",
-  "admin_save_success": "Layout saved successfully!"
+  "admin_save_success": "Layout saved successfully!",
+  "admin_about_title": "Section Title (Main)",
+  "admin_about_title_ph": "e.g., Engineered for Extremes",
+  "admin_about_desc": "Main Description",
+  "admin_about_desc_ph": "Explain what makes your product unique (keep under 200 chars).",
+  "admin_feature_h": "Feature {0}",
+  "admin_feature_title_ph": "Short catchy title",
+  "admin_feature_desc_ph": "Detail about this feature...",
+  "admin_testi_title": "Testimonials Header",
+  "admin_testi_desc": "Sub-header",
+  "admin_testi_name": "Customer Name",
+  "admin_testi_role": "Role / Context",
+  "admin_testi_role_ph": "e.g., Artist, Cafe Owner",
+  "admin_testi_quote": "The Quote",
+  "admin_testi_quote_ph": "What the customer said...",
+  "admin_contact_email": "Support Email",
+  "admin_contact_phone": "Public Phone",
+  "admin_contact_address": "Business Address"
   }
