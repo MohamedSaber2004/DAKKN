@@ -1,0 +1,200 @@
+@{
+    Layout = "_LayoutCustomer";
+}
+
+<div class="max-w-7xl mx-auto px-lg py-xl">
+    <div class="mb-xl flex items-center gap-md">
+        <a asp-action="Cart" class="w-10 h-10 rounded-full bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 flex items-center justify-center text-text-secondary hover:text-primary transition-all">
+            <span class="material-symbols-outlined">arrow_back</span>
+        </a>
+        <h1 class="font-h1 text-h1 font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["checkout_h1"]</h1>
+    </div>
+
+    <form action="/customer/confirmation" method="get" class="grid grid-cols-1 lg:grid-cols-3 gap-2xl items-start">
+        <!-- Left Column: Checkout Details -->
+        <div class="lg:col-span-2 space-y-lg">
+            
+            <!-- 1. Shipping Address Section -->
+            <section class="bg-surface dark:bg-inverse-surface rounded-[40px] border border-border dark:border-outline/10 p-lg md:p-xl shadow-small space-y-xl">
+                <div class="flex items-center gap-md border-b border-border dark:border-outline/10 pb-md">
+                    <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                        <span class="material-symbols-outlined">local_shipping</span>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold">@Localizer["checkout_shipping_h"]</h2>
+                        <p class="text-sm text-text-secondary">@Localizer["checkout_shipping_p"]</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-xl pt-md">
+                    <!-- Full Name -->
+                    <div class="md:col-span-2 space-y-2">
+                        <label class="block font-bold text-sm text-outline uppercase tracking-wider px-1">@Localizer["checkout_name"]</label>
+                        <div class="relative">
+                            <input required type="text" class="w-full pl-12 pr-4 py-4 bg-surface-container dark:bg-white/5 rounded-2xl border border-border dark:border-outline/20 focus:ring-2 focus:ring-primary outline-none transition-all font-medium" placeholder="@Localizer["checkout_name_ph"]">
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">person</span>
+                        </div>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="space-y-2">
+                        <label class="block font-bold text-sm text-outline uppercase tracking-wider px-1">@Localizer["checkout_phone"]</label>
+                        <div class="flex items-center bg-surface-container dark:bg-white/5 rounded-2xl border border-border dark:border-outline/20 focus-within:ring-2 focus-within:ring-primary transition-all overflow-hidden">
+                            <div class="px-4 py-4 border-r border-border dark:border-outline/20 bg-surface-container-high dark:bg-white/5 flex items-center gap-2">
+                                <img src="https://flagcdn.com/w20/eg.png" width="20" alt="Egypt Flag">
+                                <span class="text-sm font-bold">+20</span>
+                            </div>
+                            <input required type="tel" class="flex-1 px-4 py-4 bg-transparent border-none outline-none focus:ring-0 font-medium" placeholder="1x xxx xxxx">
+                        </div>
+                    </div>
+
+                    <!-- Governorate -->
+                    <div class="space-y-2">
+                        <label class="block font-bold text-sm text-outline uppercase tracking-wider px-1">@Localizer["checkout_gov"]</label>
+                        <div class="relative">
+                            <select required class="w-full pl-12 pr-10 py-4 bg-surface-container dark:bg-white/5 rounded-2xl border border-border dark:border-outline/20 focus:ring-2 focus:ring-primary outline-none appearance-none transition-all font-medium">
+                                <option value="" disabled selected>@Localizer["checkout_gov_ph"]</option>
+                                <option value="Cairo">Cairo</option>
+                                <option value="Giza">Giza</option>
+                                <option value="Alexandria">Alexandria</option>
+                                <option value="Damietta">Damietta</option>
+                                <option value="Mansoura">Mansoura</option>
+                            </select>
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">map</span>
+                            <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Address -->
+                    <div class="md:col-span-2 space-y-2">
+                        <label class="block font-bold text-sm text-outline uppercase tracking-wider px-1">@Localizer["checkout_address"]</label>
+                        <div class="relative">
+                            <textarea required rows="3" class="w-full pl-12 pr-4 py-4 bg-surface-container dark:bg-white/5 rounded-2xl border border-border dark:border-outline/20 focus:ring-2 focus:ring-primary outline-none transition-all font-medium resize-none" placeholder="@Localizer["checkout_address_ph"]"></textarea>
+                            <span class="material-symbols-outlined absolute left-4 top-4 text-outline">home_pin</span>
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="md:col-span-2 space-y-2">
+                        <label class="block font-bold text-sm text-outline uppercase tracking-wider px-1">@Localizer["checkout_notes"]</label>
+                        <div class="relative">
+                            <input type="text" class="w-full pl-12 pr-4 py-4 bg-surface-container dark:bg-white/5 rounded-2xl border border-border dark:border-outline/20 focus:ring-2 focus:ring-primary outline-none transition-all font-medium" placeholder="@Localizer["checkout_notes_ph"]">
+                            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">edit_note</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            @* 2. Payment Method Section (Hidden for now - Admin will contact customer for payment)
+            <section class="bg-surface dark:bg-inverse-surface rounded-[40px] border border-border dark:border-outline/10 p-lg md:p-xl shadow-small space-y-xl">
+                <div class="flex items-center gap-md border-b border-border dark:border-outline/10 pb-md">
+                    <div class="w-12 h-12 rounded-2xl bg-secondary/10 flex items-center justify-center text-secondary">
+                        <span class="material-symbols-outlined">payments</span>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold">@Localizer["checkout_payment_h"]</h2>
+                        <p class="text-sm text-text-secondary">Choose how you'd like to pay</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-lg pt-md">
+                    <label class="relative cursor-pointer group">
+                        <input type="radio" name="payment" value="cod" class="peer hidden" checked>
+                        <div class="p-xl rounded-[32px] border-2 border-border dark:border-outline/10 peer-checked:border-primary peer-checked:bg-primary/5 transition-all h-full">
+                            <div class="flex justify-between items-start mb-md">
+                                <div class="w-12 h-12 rounded-2xl bg-surface-container dark:bg-white/10 flex items-center justify-center text-text-primary group-hover:scale-110 transition-transform">
+                                    <span class="material-symbols-outlined">local_atm</span>
+                                </div>
+                                <div class="w-6 h-6 rounded-full border-2 border-border dark:border-outline/20 flex items-center justify-center peer-checked:border-primary">
+                                    <div class="w-3 h-3 rounded-full bg-primary opacity-0 peer-checked:opacity-100"></div>
+                                </div>
+                            </div>
+                            <h4 class="font-bold text-lg">@Localizer["checkout_pay_cod"]</h4>
+                            <p class="text-xs text-text-secondary mt-1">@Localizer["checkout_pay_cod_p"]</p>
+                        </div>
+                    </label>
+
+                    <label class="relative cursor-pointer group">
+                        <input type="radio" name="payment" value="card" class="peer hidden">
+                        <div class="p-xl rounded-[32px] border-2 border-border dark:border-outline/10 peer-checked:border-primary peer-checked:bg-primary/5 transition-all h-full">
+                            <div class="flex justify-between items-start mb-md">
+                                <div class="w-12 h-12 rounded-2xl bg-surface-container dark:bg-white/10 flex items-center justify-center text-text-primary group-hover:scale-110 transition-transform">
+                                    <span class="material-symbols-outlined">credit_card</span>
+                                </div>
+                                <div class="w-6 h-6 rounded-full border-2 border-border dark:border-outline/20 flex items-center justify-center peer-checked:border-primary">
+                                    <div class="w-3 h-3 rounded-full bg-primary opacity-0 peer-checked:opacity-100"></div>
+                                </div>
+                            </div>
+                            <h4 class="font-bold text-lg">@Localizer["checkout_pay_card"]</h4>
+                            <p class="text-xs text-text-secondary mt-1">@Localizer["checkout_pay_card_p"]</p>
+                        </div>
+                    </label>
+                </div>
+            </section>
+            *@
+        </div>
+
+        <!-- Right Column: Order Summary (Sticky) -->
+        <aside class="space-y-lg sticky top-24">
+            <div class="bg-surface dark:bg-inverse-surface rounded-[40px] border border-border dark:border-outline/10 p-xl shadow-large space-y-xl">
+                <h2 class="text-2xl font-bold">@Localizer["cart_summary_h"]</h2>
+                
+                <!-- Items Mini-List -->
+                <div class="space-y-md max-h-48 overflow-y-auto pr-2 custom-scrollbar">
+                    <div class="flex gap-md items-center">
+                        <div class="w-12 h-12 rounded-xl overflow-hidden bg-surface-container-high">
+                            <img src="https://lh3.googleusercontent.com/aida/AP1WRLvk0o2fHlsgnzmZ9xrrRAnUTq9hl5CW063LX44OhYiXj0ZAadSE46fIAmtHQKBEzfk8NKsMl6AwohhVGiDgxsbst33TGFkDW68Y9_d3C1Cvf-mtviXqQYHM-Aqnsunu3Q6Yy2-9A5mXcsO80D173UvbE44Odz0GI41kQbHK_cLtDiruHCKTT15snGH5XT7Y6MLMfFd4rUCTY71ZJwiOba19bKW0Du2pMXYtJtF-I-h5V-wypv1z0Vztp_M" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs font-bold truncate">Retro Cassette</p>
+                            <p class="text-[10px] text-text-secondary">Qty: 3 • 210.00 ج.م</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-md items-center">
+                        <div class="w-12 h-12 rounded-xl overflow-hidden bg-surface-container-high">
+                            <img src="https://lh3.googleusercontent.com/aida/AP1WRLvk0o2fHlsgnzmZ9xrrRAnUTq9hl5CW063LX44OhYiXj0ZAadSE46fIAmtHQKBEzfk8NKsMl6AwohhVGiDgxsbst33TGFkDW68Y9_d3C1Cvf-mtviXqQYHM-Aqnsunu3Q6Yy2-9A5mXcsO80D173UvbE44Odz0GI41kQbHK_cLtDiruHCKTT15snGH5XT7Y6MLMfFd4rUCTY71ZJwiOba19bKW0Du2pMXYtJtF-I-h5V-wypv1z0Vztp_M" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs font-bold truncate">Custom Order Sticker</p>
+                            <p class="text-[10px] text-text-secondary">Qty: 1 • 35.00 ج.م</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="h-px bg-border dark:bg-outline/10"></div>
+
+                <div class="space-y-md">
+                    <div class="flex justify-between text-text-secondary">
+                        <span>@Localizer["cart_subtotal"]</span>
+                        <span>245.00 @Html.Raw(Localizer["Currency_EGP"])</span>
+                    </div>
+                    <div class="flex justify-between text-text-secondary">
+                        <span>@Localizer["cart_shipping"]</span>
+                        <span>45.00 @Html.Raw(Localizer["Currency_EGP"])</span>
+                    </div>
+                    <div class="h-px bg-border dark:bg-outline/10"></div>
+                    <div class="flex justify-between items-end">
+                        <span class="font-bold text-lg">@Localizer["cart_total"]</span>
+                        <div class="text-right">
+                            <div class="text-4xl font-bold text-primary">290.00 @Html.Raw(Localizer["Currency_EGP"])</div>
+                            <div class="text-[10px] text-text-secondary uppercase tracking-widest mt-1">@Localizer["cart_vat_inc"]</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-primary text-on-primary py-5 rounded-3xl font-bold text-xl shadow-large hover:scale-[1.02] hover:shadow-2xl transition-all flex items-center justify-center gap-3">
+                    @Localizer["checkout_place_order"]
+                    <span class="material-symbols-outlined">shopping_bag</span>
+                </button>
+
+                <div class="flex items-center gap-3 p-4 bg-surface-container dark:bg-white/5 rounded-2xl">
+                    <span class="material-symbols-outlined text-primary">verified_user</span>
+                    <div class="text-[10px] text-left rtl:text-right">
+                        <p class="font-bold">@Localizer["cart_secure_h"]</p>
+                        <p class="text-text-secondary">@Localizer["cart_secure_p"]</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </form>
+</div>
