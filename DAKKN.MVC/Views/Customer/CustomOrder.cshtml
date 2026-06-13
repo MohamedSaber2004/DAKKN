@@ -1,0 +1,443 @@
+@{
+    Layout = "_LayoutCustomer";
+}
+
+<div class="max-w-5xl mx-auto px-lg py-xl">
+    <!-- Stepper Header -->
+    <div class="mb-2xl text-center space-y-md">
+        <h1 class="text-3xl font-bold">@Localizer["custom_h1"]</h1>
+        <p class="text-text-secondary">@Localizer["custom_p"]</p>
+        
+        <!-- Progress Bar -->
+        <div class="max-w-md mx-auto pt-lg">
+            <div class="h-2 bg-surface-container-highest dark:bg-white/10 rounded-full relative overflow-hidden">
+                <div id="progress-bar" class="absolute inset-y-0 left-0 bg-primary rounded-full transition-all duration-500" style="width: 25%"></div>
+            </div>
+            <div class="flex justify-between mt-4 px-2">
+                <div class="step-indicator active text-primary" data-step="1">
+                    <span class="w-8 h-8 rounded-full border-2 border-primary flex items-center justify-center font-bold mb-1 mx-auto bg-primary text-on-primary">1</span>
+                    <span class="text-xs font-bold uppercase tracking-wider">@Localizer["custom_step1"]</span>
+                </div>
+                <div class="step-indicator text-text-secondary opacity-50" data-step="2">
+                    <span class="w-8 h-8 rounded-full border-2 border-current flex items-center justify-center font-bold mb-1 mx-auto">2</span>
+                    <span class="text-xs font-bold uppercase tracking-wider">@Localizer["custom_step2"]</span>
+                </div>
+                <div class="step-indicator text-text-secondary opacity-50" data-step="3">
+                    <span class="w-8 h-8 rounded-full border-2 border-current flex items-center justify-center font-bold mb-1 mx-auto">3</span>
+                    <span class="text-xs font-bold uppercase tracking-wider">@Localizer["custom_step3"]</span>
+                </div>
+                <div class="step-indicator text-text-secondary opacity-50" data-step="4">
+                    <span class="w-8 h-8 rounded-full border-2 border-current flex items-center justify-center font-bold mb-1 mx-auto">4</span>
+                    <span class="text-xs font-bold uppercase tracking-wider">@Localizer["custom_step4"]</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Wizard Steps Container -->
+    <div class="bg-surface dark:bg-inverse-surface rounded-[40px] border border-border dark:border-outline/10 shadow-large p-lg md:p-2xl relative overflow-hidden min-h-[500px]">
+        
+        <!-- Step 1: Upload -->
+        <div id="step-1" class="step-content space-y-xl animate-fade-in">
+            <div class="text-center space-y-md">
+                <div class="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto text-primary">
+                    <span class="material-symbols-outlined text-5xl">cloud_upload</span>
+                </div>
+                <h2 class="text-2xl font-bold">@Localizer["custom_upload_h"]</h2>
+                <p class="text-text-secondary max-w-lg mx-auto">@Localizer["custom_upload_p"]</p>
+            </div>
+
+            <div class="max-w-lg mx-auto">
+                <label for="file-upload" 
+                       id="drop-zone"
+                       class="group relative flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-border dark:border-outline/20 rounded-[32px] cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-all"
+                       ondragover="handleDragOver(event)" 
+                       ondragleave="handleDragLeave(event)" 
+                       ondrop="handleDrop(event)">
+                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                        <span class="material-symbols-outlined text-4xl text-text-secondary group-hover:text-primary transition-colors mb-3">upload_file</span>
+                        <p class="mb-2 text-sm text-text-primary dark:text-inverse-on-surface font-bold">@Localizer["custom_upload_label"]</p>
+                        <p class="text-xs text-text-secondary">@Localizer["custom_upload_formats"]</p>
+                    </div>
+                    <input id="file-upload" type="file" class="hidden" onchange="handleFileUpload(this)" />
+                    
+                    <!-- Preview Overlay (Hidden initially) -->
+                    <div id="upload-preview" class="absolute inset-0 bg-surface dark:bg-inverse-surface rounded-[30px] hidden items-center justify-center p-4">
+                        <img id="preview-img" src="#" alt="Preview" class="max-h-full max-w-full rounded-xl object-contain shadow-medium" />
+                        <button onclick="removeFile(event)" class="absolute top-4 right-4 w-10 h-10 bg-error text-white rounded-full flex items-center justify-center shadow-medium hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined">close</span>
+                        </button>
+                    </div>
+                </label>
+            </div>
+
+            <div class="flex justify-center pt-lg">
+                <button onclick="nextStep(2)" id="btn-step-1" disabled class="bg-primary text-on-primary px-2xl py-4 rounded-2xl font-bold text-lg shadow-medium opacity-50 cursor-not-allowed hover:shadow-large transition-all flex items-center gap-2">
+                    @Localizer["custom_next"] <span class="material-symbols-outlined">arrow_forward</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 2: Shape -->
+        <div id="step-2" class="step-content hidden space-y-xl animate-fade-in">
+            <div class="text-center space-y-md">
+                <h2 class="text-2xl font-bold">@Localizer["custom_shape_h"]</h2>
+                <p class="text-text-secondary">@Localizer["custom_shape_p"]</p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-lg">
+                <div onclick="selectShape('die-cut')" class="shape-card group bg-surface-container-low dark:bg-white/5 border-2 border-transparent rounded-[32px] p-lg text-center cursor-pointer hover:border-primary/30 transition-all">
+                    <div class="w-16 h-16 bg-white dark:bg-inverse-surface rounded-2xl shadow-small flex items-center justify-center mx-auto mb-md group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-3xl">auto_fix_high</span>
+                    </div>
+                    <h4 class="font-bold">@Localizer["custom_shape_die"]</h4>
+                    <p class="text-xs text-text-secondary mt-1">@Localizer["custom_shape_die_sub"]</p>
+                </div>
+                <div onclick="selectShape('circle')" class="shape-card group bg-surface-container-low dark:bg-white/5 border-2 border-transparent rounded-[32px] p-lg text-center cursor-pointer hover:border-primary/30 transition-all">
+                    <div class="w-16 h-16 bg-white dark:bg-inverse-surface rounded-full shadow-small flex items-center justify-center mx-auto mb-md group-hover:scale-110 transition-transform">
+                        <div class="w-10 h-10 border-2 border-current rounded-full"></div>
+                    </div>
+                    <h4 class="font-bold">@Localizer["custom_shape_circle"]</h4>
+                    <p class="text-xs text-text-secondary mt-1">@Localizer["custom_shape_circle_sub"]</p>
+                </div>
+                <div onclick="selectShape('square')" class="shape-card group bg-surface-container-low dark:bg-white/5 border-2 border-transparent rounded-[32px] p-lg text-center cursor-pointer hover:border-primary/30 transition-all">
+                    <div class="w-16 h-16 bg-white dark:bg-inverse-surface rounded-2xl shadow-small flex items-center justify-center mx-auto mb-md group-hover:scale-110 transition-transform">
+                        <div class="w-10 h-10 border-2 border-current rounded-md"></div>
+                    </div>
+                    <h4 class="font-bold">@Localizer["custom_shape_square"]</h4>
+                    <p class="text-xs text-text-secondary mt-1">@Localizer["custom_shape_square_sub"]</p>
+                </div>
+                <div onclick="selectShape('rounded')" class="shape-card group bg-surface-container-low dark:bg-white/5 border-2 border-transparent rounded-[32px] p-lg text-center cursor-pointer hover:border-primary/30 transition-all">
+                    <div class="w-16 h-16 bg-white dark:bg-inverse-surface rounded-2xl shadow-small flex items-center justify-center mx-auto mb-md group-hover:scale-110 transition-transform">
+                        <div class="w-10 h-10 border-2 border-current rounded-xl"></div>
+                    </div>
+                    <h4 class="font-bold">@Localizer["custom_shape_rounded"]</h4>
+                    <p class="text-xs text-text-secondary mt-1">@Localizer["custom_shape_rounded_sub"]</p>
+                </div>
+            </div>
+
+            <div class="flex justify-between pt-lg">
+                <button onclick="nextStep(1)" class="text-text-secondary font-bold flex items-center gap-2 hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined">arrow_back</span> @Localizer["custom_back"]
+                </button>
+                <button onclick="nextStep(3)" id="btn-step-2" disabled class="bg-primary text-on-primary px-2xl py-4 rounded-2xl font-bold text-lg shadow-medium opacity-50 cursor-not-allowed flex items-center gap-2">
+                    @Localizer["custom_next"] <span class="material-symbols-outlined">arrow_forward</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 3: Specs (Customize) -->
+        <div id="step-3" class="step-content hidden space-y-xl animate-fade-in">
+            <div class="grid md:grid-cols-2 gap-2xl">
+                <!-- Left: Form -->
+                <div class="space-y-xl">
+                    <div>
+                        <h3 class="text-xl font-bold mb-md">@Localizer["custom_material"]</h3>
+                        <div class="grid grid-cols-2 gap-md">
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="material" value="glossy" class="peer hidden" onchange="updatePrice()" checked />
+                                <div class="p-lg rounded-2xl border-2 border-border dark:border-outline/20 peer-checked:border-primary peer-checked:bg-primary/5 transition-all">
+                                    <div class="font-bold">@Localizer["custom_mat_glossy"]</div>
+                                    <div class="text-xs text-text-secondary">@Localizer["custom_material_glossy_sub"]</div>
+                                </div>
+                            </label>
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="material" value="matte" class="peer hidden" onchange="updatePrice()" />
+                                <div class="p-lg rounded-2xl border-2 border-border dark:border-outline/20 peer-checked:border-primary peer-checked:bg-primary/5 transition-all">
+                                    <div class="font-bold">@Localizer["custom_mat_matte"]</div>
+                                    <div class="text-xs text-text-secondary">@Localizer["custom_material_matte_sub"]</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-bold mb-md">@Localizer["custom_size"]</h3>
+                        <div class="flex gap-md">
+                            @foreach (var size in new[] { "5x5", "7x7", "10x10" })
+                            {
+                                <label class="flex-1 cursor-pointer">
+                                    <input type="radio" name="size" value="@size" class="peer hidden" onchange="updatePrice()" @(size == "5x5" ? "checked" : "") />
+                                    <div class="py-md text-center rounded-xl border-2 border-border dark:border-outline/20 peer-checked:border-primary peer-checked:bg-primary/5 transition-all">
+                                        <div class="font-bold">@size</div>
+                                        <div class="text-[10px] text-text-secondary uppercase">cm</div>
+                                    </div>
+                                </label>
+                            }
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-xl font-bold mb-md">@Localizer["custom_qty"]</h3>
+                        <div class="flex items-center gap-lg bg-surface-container dark:bg-white/5 p-4 rounded-2xl">
+                            <button onclick="changeQty(-10)" class="w-12 h-12 rounded-xl bg-surface dark:bg-inverse-surface shadow-small flex items-center justify-center hover:scale-105 transition-transform">-</button>
+                            <input id="qty" type="number" value="50" min="10" step="10" class="flex-1 bg-transparent text-center text-2xl font-bold border-none focus:ring-0" onchange="updatePrice()" />
+                            <button onclick="changeQty(10)" class="w-12 h-12 rounded-xl bg-surface dark:bg-inverse-surface shadow-small flex items-center justify-center hover:scale-105 transition-transform">+</button>
+                        </div>
+                        <p class="text-xs text-text-secondary mt-2 text-center italic">@Localizer["custom_qty_min"]</p>
+                    </div>
+                </div>
+
+                <!-- Right: Price Card -->
+                <div class="bg-surface-container-high dark:bg-white/5 rounded-[32px] p-xl flex flex-col justify-between">
+                    <div class="space-y-lg">
+                        <h3 class="text-2xl font-bold">@Localizer["custom_cost_h"]</h3>
+                        <div class="space-y-md">
+                            <div class="flex justify-between text-text-secondary">
+                                <span>@Localizer["custom_unit_price"]</span>
+                                <span id="unit-price">2.40 @Localizer["Currency_EGP"]</span>
+                            </div>
+                            <div class="flex justify-between text-text-secondary">
+                                <span>@Localizer["custom_discount"]</span>
+                                <span class="text-success">-0.00 @Localizer["Currency_EGP"]</span>
+                            </div>
+                            <div class="h-px bg-border dark:bg-outline/10"></div>
+                            <div class="flex justify-between items-end">
+                                <span class="font-bold">@Localizer["admin_order_total"]</span>
+                                <div class="text-right">
+                                    <div id="total-price" class="text-4xl font-bold text-primary">120.00 @Localizer["Currency_EGP"]</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-md pt-xl">
+                        <div class="flex items-center gap-3 p-4 bg-primary/10 rounded-2xl text-primary text-sm font-medium">
+                            <span class="material-symbols-outlined">local_shipping</span>
+                            <span>@Localizer["custom_free_shipping"]</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex justify-between pt-lg">
+                <button onclick="nextStep(2)" class="text-text-secondary font-bold flex items-center gap-2 hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined">arrow_back</span> @Localizer["custom_back"]
+                </button>
+                <button onclick="nextStep(4)" class="bg-primary text-on-primary px-2xl py-4 rounded-2xl font-bold text-lg shadow-medium flex items-center gap-2">
+                    @Localizer["custom_step4"] <span class="material-symbols-outlined">fact_check</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 4: Review -->
+        <div id="step-4" class="step-content hidden space-y-xl animate-fade-in">
+            <div class="text-center space-y-md">
+                <div class="w-20 h-20 bg-success/10 rounded-full flex items-center justify-center mx-auto text-success">
+                    <span class="material-symbols-outlined text-4xl">check_circle</span>
+                </div>
+                <h2 class="text-2xl font-bold">@Localizer["custom_ready_h"]</h2>
+                <p class="text-text-secondary">@Localizer["custom_ready_p"]</p>
+            </div>
+
+            <div class="max-w-2xl mx-auto space-y-lg">
+                <div class="flex gap-lg items-center bg-surface-container dark:bg-white/5 p-lg rounded-3xl border border-border dark:border-outline/10">
+                    <div class="w-32 h-32 bg-white dark:bg-inverse-surface rounded-2xl overflow-hidden flex items-center justify-center shadow-small">
+                        <img id="final-preview" src="#" class="max-h-full max-w-full object-contain" alt="Final sticker preview" />
+                    </div>
+                    <div class="flex-1 grid grid-cols-2 gap-x-lg gap-y-md">
+                        <div>
+                            <div class="text-xs uppercase tracking-widest text-text-secondary font-bold">@Localizer["custom_step2"]</div>
+                            <div id="final-shape" class="font-bold"></div>
+                        </div>
+                        <div>
+                            <div class="text-xs uppercase tracking-widest text-text-secondary font-bold">@Localizer["custom_material"]</div>
+                            <div id="final-material" class="font-bold"></div>
+                        </div>
+                        <div>
+                            <div class="text-xs uppercase tracking-widest text-text-secondary font-bold">@Localizer["admin_order_size"]</div>
+                            <div id="final-size" class="font-bold"></div>
+                        </div>
+                        <div>
+                            <div class="text-xs uppercase tracking-widest text-text-secondary font-bold">@Localizer["custom_qty"]</div>
+                            <div id="final-qty" class="font-bold"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-lg bg-surface-container dark:bg-white/5 rounded-3xl space-y-md border border-border dark:border-outline/10">
+                    <div class="flex justify-between font-bold text-xl">
+                        <span>@Localizer["admin_order_total"]</span>
+                        <span id="final-total" class="text-primary"></span>
+                    </div>
+                    <p class="text-xs text-text-secondary">@Localizer["custom_terms_notice"]</p>
+                </div>
+            </div>
+
+            <div class="flex justify-between pt-lg">
+                <button onclick="nextStep(3)" class="text-text-secondary font-bold flex items-center gap-2 hover:text-primary transition-colors">
+                    <span class="material-symbols-outlined">arrow_back</span> @Localizer["custom_back"]
+                </button>
+                <form action="/customer/orders" method="get">
+                    <button type="submit" class="bg-primary text-on-primary px-3xl py-4 rounded-2xl font-bold text-xl shadow-large hover:scale-105 transition-all">
+                        @Localizer["custom_submit"]
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .animate-fade-in {
+        animation: fadeIn 0.4s ease-out forwards;
+    }
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .shape-card.active {
+        border-color: var(--tw-primary);
+        background-color: rgba(14, 144, 140, 0.05);
+    }
+    .step-indicator.completed span {
+        background-color: var(--tw-primary);
+        color: white;
+        border-color: var(--tw-primary);
+    }
+</style>
+
+@section Scripts {
+    <script>
+        // Prevent default browser behavior for drag-and-drop across the entire window
+        window.addEventListener("dragover", function(e) {
+            e.preventDefault();
+        }, false);
+        window.addEventListener("drop", function(e) {
+            e.preventDefault();
+        }, false);
+
+        let currentStep = 1;
+        let selections = {
+            file: null,
+            shape: '',
+            material: 'glossy',
+            size: '5x5',
+            qty: 50
+        };
+
+        function nextStep(step) {
+            document.querySelectorAll('.step-content').forEach(c => c.classList.add('hidden'));
+            document.getElementById(`step-${step}`).classList.remove('hidden');
+            
+            // Update Indicators
+            document.querySelectorAll('.step-indicator').forEach(ind => {
+                const s = parseInt(ind.dataset.step);
+                if(s === step) {
+                    ind.classList.add('active', 'text-primary');
+                    ind.classList.remove('opacity-50', 'text-text-secondary');
+                } else if (s < step) {
+                    ind.classList.add('completed');
+                    ind.classList.remove('active');
+                } else {
+                    ind.classList.remove('active', 'completed', 'text-primary');
+                    ind.classList.add('opacity-50', 'text-text-secondary');
+                }
+            });
+
+            // Update Progress Bar
+            const progress = (step / 4) * 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+            
+            currentStep = step;
+            if(step === 4) populateReview();
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('drop-zone').classList.add('border-primary', 'bg-primary/5');
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('drop-zone').classList.remove('border-primary', 'bg-primary/5');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('drop-zone').classList.remove('border-primary', 'bg-primary/5');
+            
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            if (files && files[0]) {
+                const input = document.getElementById('file-upload');
+                // Note: Direct assignment to input.files is not always supported in all browsers for security reasons,
+                // but usually works for drop events. For best compatibility, we trigger handleFileUpload directly.
+                handleFileUpload({ files: files });
+            }
+        }
+
+        function handleFileUpload(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('preview-img').src = e.target.result;
+                    document.getElementById('final-preview').src = e.target.result;
+                    document.getElementById('upload-preview').classList.remove('hidden');
+                    document.getElementById('upload-preview').classList.add('flex');
+                    document.getElementById('btn-step-1').disabled = false;
+                    document.getElementById('btn-step-1').classList.remove('opacity-50', 'cursor-not-allowed');
+                    selections.file = input.files[0];
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function removeFile(e) {
+            e.preventDefault();
+            document.getElementById('file-upload').value = '';
+            document.getElementById('upload-preview').classList.add('hidden');
+            document.getElementById('btn-step-1').disabled = true;
+            document.getElementById('btn-step-1').classList.add('opacity-50', 'cursor-not-allowed');
+            selections.file = null;
+        }
+
+        function selectShape(shape) {
+            selections.shape = shape;
+            document.querySelectorAll('.shape-card').forEach(card => card.classList.remove('active', 'border-primary'));
+            event.currentTarget.classList.add('active', 'border-primary');
+            document.getElementById('btn-step-2').disabled = false;
+            document.getElementById('btn-step-2').classList.remove('opacity-50', 'cursor-not-allowed');
+        }
+
+        function changeQty(amount) {
+            const input = document.getElementById('qty');
+            let val = parseInt(input.value) + amount;
+            if(val < 10) val = 10;
+            input.value = val;
+            updatePrice();
+        }
+
+        function updatePrice() {
+            const material = document.querySelector('input[name="material"]:checked').value;
+            const size = document.querySelector('input[name="size"]:checked').value;
+            const qty = parseInt(document.getElementById('qty').value);
+            
+            selections.material = material;
+            selections.size = size;
+            selections.qty = qty;
+
+            // Mock Logic
+            let unitPrice = 2.0;
+            if(size === "7x7") unitPrice = 3.5;
+            if(size === "10x10") unitPrice = 5.0;
+            if(material === "holographic") unitPrice *= 1.5;
+            
+            const total = unitPrice * qty;
+            
+            document.getElementById('unit-price').textContent = `${unitPrice.toFixed(2)} EGP`;
+            document.getElementById('total-price').textContent = `${total.toFixed(2)} EGP`;
+        }
+
+        function populateReview() {
+            document.getElementById('final-shape').textContent = selections.shape.replace('-', ' ').toUpperCase();
+            document.getElementById('final-material').textContent = selections.material.toUpperCase();
+            document.getElementById('final-size').textContent = `${selections.size} cm`;
+            document.getElementById('final-qty').textContent = `${selections.qty} pieces`;
+            document.getElementById('final-total').textContent = document.getElementById('total-price').textContent;
+        }
+    </script>
+}

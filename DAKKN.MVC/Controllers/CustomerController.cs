@@ -40,6 +40,13 @@ namespace DAKKN.MVC.Controllers
             return View();
         }
 
+        [HttpGet("custom-order")]
+        public IActionResult CustomOrder()
+        {
+            ViewData["Title"] = "Custom Sticker Order";
+            return View();
+        }
+
         [HttpGet("profile")]
         public IActionResult Profile()
         {

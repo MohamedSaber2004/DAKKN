@@ -6,7 +6,7 @@
 <div class="max-w-7xl mx-auto px-lg py-xl">
     <div class="mb-xl">
         <h1 class="font-h1 text-h1 font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["admin_orders"]</h1>
-        <p class="text-text-secondary dark:text-outline-variant mt-2">Track your sticker orders and view your purchase history.</p>
+        <p class="text-text-secondary dark:text-outline-variant mt-2">@Localizer["orders_p"]</p>
     </div>
 
     <!-- Orders List -->
@@ -15,12 +15,12 @@
             <table class="w-full text-left rtl:text-right">
                 <thead class="bg-surface-container dark:bg-inverse-surface-container border-b border-border dark:border-outline/10">
                     <tr>
-                        <th class="py-lg px-xl font-bold text-sm uppercase tracking-widest text-outline">Order ID</th>
-                        <th class="py-lg px-xl font-bold text-sm uppercase tracking-widest text-outline">Date</th>
-                        <th class="py-lg px-xl font-bold text-sm uppercase tracking-widest text-outline">Items</th>
-                        <th class="py-lg px-xl font-bold text-sm uppercase tracking-widest text-outline">Total</th>
-                        <th class="py-lg px-xl font-bold text-sm uppercase tracking-widest text-outline">Status</th>
-                        <th class="py-lg px-xl font-bold text-sm uppercase tracking-widest text-outline">Action</th>
+                        <th class="py-lg px-xl font-bold text-sm uppercase tracking-widest text-outline">@Localizer["orders_th_id"]</th>
+                        <th class="py-lg px-xl font-bold text-sm uppercase tracking-widest text-outline">@Localizer["admin_order_date"]</th>
+                        <th class="py-lg px-xl font-bold text-sm uppercase tracking-widest text-outline">@Localizer["orders_th_items"]</th>
+                        <th class="py-lg px-xl font-bold text-sm uppercase tracking-widest text-outline">@Localizer["admin_order_total"]</th>
+                        <th class="py-lg px-xl font-bold text-sm uppercase tracking-widest text-outline">@Localizer["admin_order_status"]</th>
+                        <th class="py-lg px-xl font-bold text-sm uppercase tracking-widest text-outline">@Localizer["admin_th_action"]</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-border dark:divide-outline/10">
@@ -28,26 +28,26 @@
                     <tr class="hover:bg-primary/5 transition-colors">
                         <td class="py-lg px-xl font-bold text-primary">#DK-9021</td>
                         <td class="py-lg px-xl text-text-secondary">June 4, 2026</td>
-                        <td class="py-lg px-xl">3 Stickers</td>
-                        <td class="py-lg px-xl font-bold">245 EGP</td>
+                        <td class="py-lg px-xl">3 @Localizer["admin_order_items"]</td>
+                        <td class="py-lg px-xl font-bold">245 @Localizer["Currency_EGP"]</td>
                         <td class="py-lg px-xl">
-                            <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase">Shipped</span>
+                            <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase">@Localizer["status_shipped"]</span>
                         </td>
                         <td class="py-lg px-xl">
-                            <button class="text-primary font-bold hover:underline">Track Order</button>
+                            <button class="text-primary font-bold hover:underline">@Localizer["Dashboard_TrackOrder"]</button>
                         </td>
                     </tr>
                     <!-- Sample Order -->
                     <tr class="hover:bg-primary/5 transition-colors">
                         <td class="py-lg px-xl font-bold text-primary">#DK-8842</td>
                         <td class="py-lg px-xl text-text-secondary">May 28, 2026</td>
-                        <td class="py-lg px-xl">12 Stickers</td>
-                        <td class="py-lg px-xl font-bold">850 EGP</td>
+                        <td class="py-lg px-xl">12 @Localizer["admin_order_items"]</td>
+                        <td class="py-lg px-xl font-bold">850 @Localizer["Currency_EGP"]</td>
                         <td class="py-lg px-xl">
-                            <span class="bg-success/10 text-success px-3 py-1 rounded-full text-xs font-bold uppercase">Delivered</span>
+                            <span class="bg-success/10 text-success px-3 py-1 rounded-full text-xs font-bold uppercase">@Localizer["status_delivered"]</span>
                         </td>
                         <td class="py-lg px-xl">
-                            <button class="text-primary font-bold hover:underline">Reorder</button>
+                            <button class="text-primary font-bold hover:underline">@Localizer["orders_btn_reorder"]</button>
                         </td>
                     </tr>
                 </tbody>
@@ -57,9 +57,9 @@
         <!-- Empty State Placeholder -->
         <div class="hidden p-2xl text-center">
             <span class="material-symbols-outlined text-6xl text-outline mb-md opacity-20">inventory_2</span>
-            <h3 class="font-h3 text-h3 font-bold mb-md">No orders yet</h3>
-            <p class="text-text-secondary mb-xl">Your sticker collection starts here!</p>
-            <a asp-action="Products" class="bg-primary text-on-primary px-xl py-md rounded-full font-bold shadow-medium">Browse Shop</a>
+            <h3 class="font-h3 text-h3 font-bold mb-md">@Localizer["orders_empty_h"]</h3>
+            <p class="text-text-secondary mb-xl">@Localizer["orders_empty_p"]</p>
+            <a asp-action="Products" class="bg-primary text-on-primary px-xl py-md rounded-full font-bold shadow-medium">@Localizer["orders_empty_btn"]</a>
         </div>
     </div>
 </div>

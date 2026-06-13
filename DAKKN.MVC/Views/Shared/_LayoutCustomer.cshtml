@@ -14,7 +14,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cairo:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 
     <!-- Tailwind via CDN -->
@@ -26,6 +26,42 @@
     <link rel="stylesheet" href="~/css/landing.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
+    <style>
+        .customer-sidebar {
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .sidebar-is-collapsed .customer-sidebar {
+            width: 80px !important;
+        }
+
+        .sidebar-is-collapsed .sidebar-text,
+        .sidebar-is-collapsed .brand-info {
+            opacity: 0;
+            pointer-events: none;
+            width: 0;
+            overflow: hidden;
+            display: none;
+        }
+
+        .sidebar-is-collapsed .logo-img {
+            height: 40px !important;
+        }
+
+        .sidebar-is-collapsed .nav-item {
+            justify-content: center;
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: 8px;
+            margin-right: 8px;
+        }
+
+        .nav-item {
+            transition: all 0.2s ease;
+        }
+    </style>
+
     <script>
         (function() {
             const savedTheme = localStorage.getItem('dakkn_theme');
@@ -36,6 +72,12 @@
                 document.documentElement.classList.add('dark');
             } else {
                 document.documentElement.classList.remove('dark');
+            }
+
+            // Initialize Sidebar State
+            const isCollapsed = localStorage.getItem('dakkn_customer_sidebar_collapsed') === 'true';
+            if (isCollapsed || window.innerWidth < 1280) {
+                document.documentElement.classList.add('sidebar-is-collapsed');
             }
         })();
 
@@ -54,72 +96,150 @@
         }, 1500);
     </script>
 </head>
-<body class="text-text-primary dark:text-inverse-on-surface bg-background dark:bg-dark-page transition-colors duration-300 min-h-screen flex flex-col">
+<body class="text-text-primary dark:text-inverse-on-surface bg-background dark:bg-dark-page transition-colors duration-300 h-screen overflow-hidden flex font-sans">
     
     <!-- Preloader Overlay -->
     @await Html.PartialAsync("Partials/_Preloader")
 
-    <!-- Customer Top NavBar -->
-    <header class="sticky top-0 z-50 bg-surface/80 dark:bg-inverse-surface/80 backdrop-blur-md border-b border-border dark:border-outline/10">
-        <div class="max-w-7xl mx-auto px-lg h-20 flex items-center justify-between">
-            <div class="flex items-center gap-xl">
-                <a asp-controller="Home" asp-action="Index" class="flex items-center gap-md group">
-                    <img src="/images/logo.png" alt="DAKKN Logo" class="h-12 group-hover:scale-105 transition-transform" />
-                    <span class="font-h3 text-h3 font-bold text-primary dark:text-primary-light">DAKKN</span>
-                </a>
-                
-                <nav class="hidden md:flex items-center gap-lg">
-                    <a asp-controller="Customer" asp-action="Products" class="nav-link font-body-lg @(currentAction == "Products" ? "text-primary font-bold" : "text-text-secondary hover:text-primary") transition-colors">@Localizer["nav_shop"]</a>
-                    <a asp-controller="Customer" asp-action="Orders" class="nav-link font-body-lg @(currentAction == "Orders" ? "text-primary font-bold" : "text-text-secondary hover:text-primary") transition-colors">@Localizer["admin_orders"]</a>
-                </nav>
+    <!-- Sidebar -->
+    <aside id="customer-sidebar" class="hidden md:flex flex-col customer-sidebar h-screen w-64 shadow-medium z-40 relative flex-shrink-0 transition-all duration-300 bg-surface dark:bg-inverse-surface border-r border-border dark:border-outline/10">
+        <div class="p-lg border-b border-border dark:border-outline/10 flex flex-col items-center justify-center gap-sm group cursor-pointer overflow-hidden">
+            <div class="logo-container transition-all duration-300">
+                <img src="/images/logo.png" alt="DAKKN Logo" class="h-16 logo-img dark:brightness-125 transition-all duration-300" />
+            </div>
+            <div class="brand-info text-center transition-all duration-300">
+                <h1 class="font-h2 text-h2 font-bold text-primary dark:text-primary-light whitespace-nowrap">DAKKN</h1>
+                <p class="text-xs font-bold text-text-secondary dark:text-outline-variant uppercase tracking-widest whitespace-nowrap">@Localizer["nav_shop"]</p>
+            </div>
+        </div>
+
+        <nav class="flex-1 overflow-y-auto no-scrollbar py-md px-sm flex flex-col gap-sm">
+            <a asp-controller="Customer" asp-action="Index" class="nav-item flex items-center gap-md @(currentAction == "Index" ? "bg-primary text-on-primary shadow-medium" : "text-text-secondary hover:text-primary hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["Dashboard_Welcome"]">
+                <span class="material-symbols-outlined @(currentAction == "Index" ? "filled-icon" : "")">grid_view</span>
+                <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["Dashboard_Welcome"]</span>
+            </a>
+            <a asp-controller="Customer" asp-action="Products" class="nav-item flex items-center gap-md @(currentAction == "Products" ? "bg-primary text-on-primary shadow-medium" : "text-text-secondary hover:text-primary hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["nav_shop"]">
+                <span class="material-symbols-outlined @(currentAction == "Products" ? "filled-icon" : "")">shopping_bag</span>
+                <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["nav_shop"]</span>
+            </a>
+            <a asp-controller="Customer" asp-action="Orders" class="nav-item flex items-center gap-md @(currentAction == "Orders" ? "bg-primary text-on-primary shadow-medium" : "text-text-secondary hover:text-primary hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["admin_orders"]">
+                <span class="material-symbols-outlined @(currentAction == "Orders" ? "filled-icon" : "")">receipt_long</span>
+                <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["admin_orders"]</span>
+            </a>
+            <a asp-controller="Customer" asp-action="Profile" class="nav-item flex items-center gap-md @(currentAction == "Profile" ? "bg-primary text-on-primary shadow-medium" : "text-text-secondary hover:text-primary hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200 mt-auto" title="@Localizer["nav_profile"]">
+                <span class="material-symbols-outlined @(currentAction == "Profile" ? "filled-icon" : "")">person</span>
+                <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["nav_profile"]</span>
+            </a>
+        </nav>
+
+        <div class="p-md border-t border-border dark:border-outline/10">
+            <form asp-controller="Auth" asp-action="Logout" method="post">
+                <button type="submit" class="w-full flex items-center gap-md text-text-secondary hover:text-error hover:bg-error/5 rounded-2xl px-4 py-3.5 transition-all duration-200" title="Logout">
+                    <span class="material-symbols-outlined">logout</span>
+                    <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["f_logout"]</span>
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden bg-background dark:bg-on-background transition-colors duration-300">
+        <!-- Top Appbar -->
+        <header class="flex justify-between items-center w-full px-lg h-20 z-30 bg-surface/80 dark:bg-inverse-surface/80 backdrop-blur-md flex-shrink-0 border-b border-border dark:border-outline/10">
+            <div class="flex items-center gap-md">
+                <button onclick="toggleCustomerSidebar()" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary hover:bg-primary/5 transition-all">
+                    <span class="material-symbols-outlined" id="sidebar-toggle-icon">menu_open</span>
+                </button>
+                <h2 class="hidden md:block font-h3 text-h3 font-bold text-text-primary dark:text-inverse-on-surface">@ViewData["Title"]</h2>
             </div>
 
             <div class="flex items-center gap-lg">
                 <div class="relative hidden sm:block">
-                    <input class="bg-surface-container dark:bg-surface-container-high rounded-full py-2 px-4 ltr:pl-10 ltr:pr-4 rtl:pr-10 rtl:pl-4 text-sm font-body border-none focus:ring-2 focus:ring-primary outline-none w-48 lg:w-64 transition-all" placeholder="@Localizer["search_placeholder"]" type="text">
-                    <span class="material-symbols-outlined absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 text-text-secondary dark:text-outline text-lg">search</span>
+                    <input class="bg-surface-container dark:bg-surface-container-high rounded-full py-2.5 px-5 ltr:pl-11 rtl:pr-11 text-sm font-medium border-none focus:ring-2 focus:ring-primary outline-none w-64 lg:w-80 transition-all" placeholder="@Localizer["search_placeholder"]" type="text">
+                    <span class="material-symbols-outlined absolute ltr:left-4 rtl:right-4 top-1/2 -translate-y-1/2 text-text-secondary text-lg">search</span>
                 </div>
 
                 <div class="flex items-center gap-sm">
-                    <button class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary dark:text-outline transition-colors relative">
+                    <button class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary transition-colors relative hover:bg-primary/5">
                         <span class="material-symbols-outlined">notifications</span>
-                        <span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+                        <span class="absolute top-2.5 right-2.5 w-2 h-2 bg-error rounded-full border-2 border-surface"></span>
                     </button>
-                    <a asp-controller="Customer" asp-action="Profile" class="flex items-center gap-md p-1 pr-4 rtl:pl-4 rounded-full bg-surface-container dark:bg-inverse-surface border border-border dark:border-outline/10 hover:bg-primary/5 transition-all">
-                        <div class="w-8 h-8 rounded-full overflow-hidden">
-                            <img src="https://ui-avatars.com/api/?name=@(User.Identity?.Name ?? "User")&background=69d2cf&color=005957" class="w-full h-full object-cover">
+                    
+                    <div class="h-10 w-[1px] bg-border dark:bg-outline/10 mx-2 hidden sm:block"></div>
+
+                    <a asp-action="Profile" class="flex items-center gap-md p-1.5 ltr:pr-4 rtl:pl-4 rounded-full bg-surface-container dark:bg-inverse-surface border border-border dark:border-outline/10 hover:border-primary/30 transition-all">
+                        <div class="w-8 h-8 rounded-full overflow-hidden shadow-small">
+                            <img src="https://ui-avatars.com/api/?name=@(User.Identity?.Name ?? "User")&background=69d2cf&color=005957" class="w-full h-full object-cover" alt="User profile avatar">
                         </div>
-                        <span class="hidden lg:block font-bold text-sm">@(User.Identity?.Name ?? "User")</span>
+                        <span class="hidden sm:block font-bold text-sm">@(User.Identity?.Name?.Split(' ')[0] ?? "User")</span>
                     </a>
                 </div>
-                
-                <form asp-controller="Auth" asp-action="Logout" method="post">
-                    <button type="submit" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-error transition-colors" title="Logout">
-                        <span class="material-symbols-outlined">logout</span>
-                    </button>
-                </form>
             </div>
-        </div>
-    </header>
+        </header>
 
-    <!-- Main Content -->
-    <main class="flex-1">
-        @RenderBody()
+        <!-- Scrollable Content -->
+        <div class="flex-1 overflow-y-auto custom-scrollbar">
+            @RenderBody()
+            <!-- Footer -->
+            <footer class="bg-surface dark:bg-inverse-surface border-t border-border dark:border-outline/10 py-lg mt-xl">
+                <div class="max-w-7xl mx-auto px-lg flex flex-col md:flex-row justify-between items-center gap-md">
+                    <p class="text-sm text-text-secondary">@Localizer["footer_copy"]</p>
+                    <div class="flex gap-lg">
+                        <a asp-controller="Home" asp-action="Privacy" class="text-sm text-text-secondary hover:text-primary transition-colors">@Localizer["nav_privacy"]</a>
+                        <a asp-controller="Home" asp-action="Terms" class="text-sm text-text-secondary hover:text-primary transition-colors">@Localizer["f_terms"]</a>
+                    </div>
+                </div>
+            </footer>
+        </div>
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-surface dark:bg-inverse-surface border-t border-border dark:border-outline/10 py-lg">
-        <div class="max-w-7xl mx-auto px-lg flex flex-col md:flex-row justify-between items-center gap-md">
-            <p class="text-sm text-text-secondary">@Localizer["footer_copy"]</p>
-            <div class="flex gap-lg">
-                <a asp-controller="Home" asp-action="Privacy" class="text-sm text-text-secondary hover:text-primary transition-colors">@Localizer["nav_privacy"]</a>
-                <a asp-controller="Home" asp-action="Terms" class="text-sm text-text-secondary hover:text-primary transition-colors">@Localizer["f_terms"]</a>
-            </div>
-        </div>
-    </footer>
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav md:hidden">
+        <a asp-controller="Customer" asp-action="Index" class="mob-nav-item @(currentAction == "Index" ? "active" : "")">
+            <span class="material-symbols-outlined">grid_view</span>
+            <span>Dashboard</span>
+        </a>
+        <a asp-controller="Customer" asp-action="Products" class="mob-nav-item @(currentAction == "Products" ? "active" : "")">
+            <span class="material-symbols-outlined">shopping_bag</span>
+            <span>Shop</span>
+        </a>
+        <a asp-controller="Customer" asp-action="CustomOrder" class="mob-nav-item @(currentAction == "CustomOrder" ? "active" : "")">
+            <span class="material-symbols-outlined">brush</span>
+            <span>@Localizer["mob_nav_custom"]</span>
+        </a>
+        <a asp-controller="Customer" asp-action="Orders" class="mob-nav-item @(currentAction == "Orders" ? "active" : "")">
+            <span class="material-symbols-outlined">receipt_long</span>
+            <span>Orders</span>
+        </a>
+        <a asp-controller="Customer" asp-action="Profile" class="mob-nav-item @(currentAction == "Profile" ? "active" : "")">
+            <span class="material-symbols-outlined">person</span>
+            <span>Profile</span>
+        </a>
+    </nav>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="~/js/landing.js" asp-append-version="true"></script>
+
+    <script>
+        function toggleCustomerSidebar() {
+            const isCollapsed = document.documentElement.classList.toggle('sidebar-is-collapsed');
+            localStorage.setItem('dakkn_customer_sidebar_collapsed', isCollapsed);
+            updateSidebarIcon(isCollapsed);
+        }
+
+        function updateSidebarIcon(isCollapsed) {
+            const icon = document.getElementById('sidebar-toggle-icon');
+            if (icon) {
+                icon.textContent = isCollapsed ? 'menu' : 'menu_open';
+            }
+        }
+
+        (function() {
+            const isCollapsed = document.documentElement.classList.contains('sidebar-is-collapsed');
+            updateSidebarIcon(isCollapsed);
+        })();
+    </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
