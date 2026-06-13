@@ -1,0 +1,246 @@
+@inject IStringLocalizer<Messages> Localizer
+@{
+    var culture = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("en") ? "en" : "ar";
+    var dir = culture == "ar" ? "rtl" : "ltr";
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
+<!DOCTYPE html>
+<html lang="@culture" dir="@dir" id="html-root" data-dakkn-loading="true">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta name="robots" content="noindex, nofollow" />
+    <title>@ViewData["Title"] - @Localizer["brand"] @Localizer["admin_dashboard"]</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+    <!-- Tailwind via CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Tailwind Custom Configuration -->
+    <script src="~/js/tailwind.config.js" asp-append-version="true"></script>
+
+    <!-- Admin Stylesheet -->
+    <link rel="stylesheet" href="~/css/landing.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+
+    <style>
+        body { font-family: 'Inter', 'Cairo', sans-serif; transition: background-color 0.3s ease; }
+
+        /* Collapsible Sidebar Styles */
+        .admin-sidebar {
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+
+        .sidebar-is-collapsed .admin-sidebar {
+            width: 80px !important;
+        }
+
+        .sidebar-is-collapsed .sidebar-text,
+        .sidebar-is-collapsed .admin-brand-info {
+            opacity: 0;
+            pointer-events: none;
+            width: 0;
+            overflow: hidden;
+            display: none;
+        }
+
+        .sidebar-is-collapsed .admin-logo-img {
+            height: 40px !important;
+        }
+
+        .sidebar-is-collapsed .nav-item {
+            justify-content: center;
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: 8px;
+            margin-right: 8px;
+        }
+
+        .sidebar-is-collapsed .add-product-btn span:last-child {
+            display: none;
+        }
+
+        .sidebar-is-collapsed .add-product-btn {
+            width: 48px;
+            height: 48px;
+            padding: 0;
+            border-radius: 50%;
+        }
+
+        .nav-item {
+            transition: all 0.2s ease;
+        }
+    </style>
+
+    <script>
+        // High-priority theme application to prevent light-mode flash
+        (function() {
+            const savedTheme = localStorage.getItem('dakkn_theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const isDark = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
+            
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+
+            // Initialize Sidebar State
+            const isCollapsed = localStorage.getItem('dakkn_sidebar_collapsed') === 'true';
+            if (isCollapsed || window.innerWidth < 1280) {
+                document.documentElement.classList.add('sidebar-is-collapsed');
+            }
+        })();
+
+        window.csrfToken = "@Html.AntiForgeryToken()".match(/value="([^"]+)"/)[1];
+
+        // Failsafe: Ensure preloader is hidden even if scripts fail or hang
+        setTimeout(() => {
+            const preloader = document.getElementById('dakkn-preloader');
+            if (preloader) {
+                preloader.style.opacity = '0';
+                setTimeout(() => {
+                    preloader.remove();
+                    document.documentElement.removeAttribute('data-dakkn-loading');
+                }, 400);
+            }
+        }, 2000);
+    </script>
+</head>
+<body class="text-text-primary dark:text-inverse-on-surface h-screen overflow-hidden flex bg-background dark:bg-dark-page transition-colors duration-300">
+    
+    <!-- Preloader Overlay -->
+    @await Html.PartialAsync("Partials/_Preloader")
+
+    <!-- SideNavBar -->
+    <aside id="admin-sidebar" class="hidden md:flex flex-col admin-sidebar ltr:left-0 ltr:border-r rtl:right-0 rtl:border-l h-screen w-64 shadow-medium z-40 relative flex-shrink-0 transition-all duration-300 bg-surface dark:bg-inverse-surface border-border dark:border-outline/20">
+        <div class="p-lg border-b border-border dark:border-outline/20 flex flex-col items-center justify-center gap-sm group cursor-pointer overflow-hidden">
+            <div class="admin-logo-container transition-all duration-300">
+                <img src="/images/logo.png" alt="DAKKN Logo" class="h-16 admin-logo-img dark:brightness-125 transition-all duration-300" />
+            </div>
+            <div class="admin-brand-info text-center transition-all duration-300">
+                <h1 class="font-h2 text-h2 font-bold text-primary dark:text-primary-light whitespace-nowrap">@Localizer["brand"]</h1>
+                <p class="font-body text-body text-text-secondary dark:text-outline-variant whitespace-nowrap">@Localizer["admin_dashboard"]</p>
+            </div>
+        </div>
+        <nav class="flex-1 overflow-y-auto custom-scrollbar py-md px-sm flex flex-col gap-sm">
+            <a asp-controller="Admin" asp-action="Index" class="nav-item flex items-center gap-md @(currentAction == "Index" ? "active bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") rounded-xl px-4 py-3 scale-100 hover:scale-103 transition-all duration-200" title="@Localizer["admin_overview"]">
+                <span class="material-symbols-outlined @(currentAction == "Index" ? "filled-icon" : "") flex-shrink-0">dashboard</span>
+                <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_overview"]</span>
+            </a>
+            <a asp-controller="Admin" asp-action="Users" class="nav-item flex items-center gap-md @(currentAction == "Users" ? "active bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl" title="@Localizer["admin_users"]">
+                <span class="material-symbols-outlined @(currentAction == "Users" ? "filled-icon" : "") flex-shrink-0">group</span>
+                <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_users"]</span>
+            </a>
+            <a asp-controller="Admin" asp-action="Orders" class="nav-item flex items-center gap-md @(currentAction == "Orders" ? "active bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl" title="@Localizer["admin_orders"]">
+                <span class="material-symbols-outlined @(currentAction == "Orders" ? "filled-icon" : "") flex-shrink-0">shopping_cart</span>
+                <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_orders"]</span>
+            </a>
+            <a asp-controller="Admin" asp-action="Inventory" class="nav-item flex items-center gap-md @(currentAction == "Inventory" ? "active bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl" title="@Localizer["admin_inventory"]">
+                <span class="material-symbols-outlined @(currentAction == "Inventory" ? "filled-icon" : "") flex-shrink-0">inventory_2</span>
+                <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_inventory"]</span>
+            </a>
+            <a asp-controller="Admin" asp-action="Support" class="nav-item flex items-center gap-md @(currentAction == "Support" ? "active bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl" title="@Localizer["admin_support"]">
+                <span class="material-symbols-outlined @(currentAction == "Support" ? "filled-icon" : "") flex-shrink-0">support_agent</span>
+                <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_support"]</span>
+            </a>
+            <a asp-controller="Admin" asp-action="Content" class="nav-item flex items-center gap-md @(currentAction == "Content" ? "active bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl" title="@Localizer["admin_content_mgmt"]">
+                <span class="material-symbols-outlined @(currentAction == "Content" ? "filled-icon" : "") flex-shrink-0">edit_note</span>
+                <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_content_mgmt"]</span>
+            </a>
+
+            <a asp-controller="Admin" asp-action="Settings" class="nav-item flex items-center gap-md @(currentAction == "Settings" ? "active bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl mt-auto" title="@Localizer["admin_settings"]">
+                <span class="material-symbols-outlined @(currentAction == "Settings" ? "filled-icon" : "") flex-shrink-0">settings</span>
+                <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_settings"]</span>
+            </a>
+        </nav>
+        <div class="p-md border-t border-border flex justify-center items-center">
+            <a asp-controller="Admin" asp-action="AddProduct" class="add-product-btn w-full bg-primary text-on-primary h-[52px] rounded-[18px] shadow-small font-body-lg text-body-lg flex items-center justify-center gap-sm hover:scale-105 transition-all duration-200 overflow-hidden" title="@Localizer["admin_add_product"]">
+                <span class="material-symbols-outlined flex-shrink-0">add</span>
+                <span class="sidebar-text whitespace-nowrap">@Localizer["admin_add_product"]</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col h-screen overflow-hidden bg-background dark:bg-on-background transition-colors duration-300">
+        <!-- TopNavBar -->
+        <header class="flex justify-between items-center w-full px-lg py-md z-30 bg-surface/80 dark:bg-inverse-surface/80 backdrop-blur-md flex-shrink-0 border-b border-border dark:border-outline/10 transition-colors duration-300">
+            <div class="flex items-center gap-md">
+                <!-- Sidebar Toggle -->
+                <button onclick="toggleSidebar()" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary dark:text-outline dark:hover:text-primary-light transition-colors hover:bg-surface-container dark:hover:bg-surface-container-high">
+                    <span class="material-symbols-outlined" id="sidebar-toggle-icon">menu_open</span>
+                </button>
+                <div class="admin-logo-container md:hidden">
+                    <img src="/images/logo.png" alt="DAKKN Logo" class="h-10 admin-logo-img dark:brightness-125" />
+                </div>
+                <div class="hidden md:block">
+                    <h2 class="font-h3 text-h3 font-bold text-text-primary dark:text-inverse-on-surface">@ViewData["Title"]</h2>
+                </div>
+            </div>
+            <div class="flex items-center gap-lg">
+                <div class="relative hidden sm:block">
+                    <input class="bg-surface-container dark:bg-surface-container-high rounded-full py-2 px-4 ltr:pl-10 ltr:pr-4 rtl:pr-10 rtl:pl-4 text-body font-body border-none focus:ring-2 focus:ring-primary dark:focus:ring-primary-light outline-none w-64 text-text-primary dark:text-inverse-on-surface placeholder:text-text-secondary dark:placeholder:text-outline transition-all" placeholder="@Localizer["admin_search"]" type="text">
+                    <span class="material-symbols-outlined absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 text-text-secondary dark:text-outline">search</span>
+                </div>
+                <div class="flex items-center gap-sm">
+                    <button class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary dark:text-outline dark:hover:text-primary-light transition-colors hover:bg-surface-container dark:hover:bg-surface-container-high">
+                        <span class="material-symbols-outlined">notifications</span>
+                    </button>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-primary-container overflow-hidden cursor-pointer shadow-small">
+                    <img alt="Admin Avatar" class="w-full h-full object-cover" src="https://ui-avatars.com/api/?name=Admin&background=69d2cf&color=005957">
+                </div>
+            </div>
+        </header>
+
+        <!-- Scrollable Canvas -->
+        <div class="flex-1 overflow-y-auto p-margin-mobile md:p-xl custom-scrollbar">
+            @RenderBody()
+            <!-- Spacer for bottom scrolling -->
+            <div class="h-xl"></div>
+        </div>
+    </main>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/landing.js" asp-append-version="true"></script>
+
+    <script>
+        // Sidebar Toggle Logic
+        function toggleSidebar() {
+            const isCollapsed = document.documentElement.classList.toggle('sidebar-is-collapsed');
+            localStorage.setItem('dakkn_sidebar_collapsed', isCollapsed);
+            updateSidebarIcon(isCollapsed);
+        }
+
+        function updateSidebarIcon(isCollapsed) {
+            const icon = document.getElementById('sidebar-toggle-icon');
+            if (icon) {
+                icon.textContent = isCollapsed ? 'menu' : 'menu_open';
+            }
+        }
+
+        // Initialize State on Load
+        (function() {
+            const isCollapsed = document.documentElement.classList.contains('sidebar-is-collapsed');
+            updateSidebarIcon(isCollapsed);
+
+            window.addEventListener('resize', () => {
+                if (window.innerWidth < 1280) {
+                    if (!document.documentElement.classList.contains('sidebar-is-collapsed')) {
+                        document.documentElement.classList.add('sidebar-is-collapsed');
+                        updateSidebarIcon(true);
+                    }
+                }
+            });
+        })();
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

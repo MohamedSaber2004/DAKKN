@@ -88,7 +88,7 @@ function hidePreloader() {
         preloader.style.opacity = '0';
         preloader.style.transition = 'opacity 0.4s ease';
         setTimeout(() => {
-            preloader.remove();
+            if (preloader.parentNode) preloader.remove();
             document.documentElement.removeAttribute('data-dakkn-loading');
         }, 400);
     } else {
@@ -98,74 +98,98 @@ function hidePreloader() {
 
 /* ── Boot ────────────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', async () => {
-    // Determine target language: Cookie > LocalStorage > Page Lang
-    const cookieValue = getCookie(".AspNetCore.Culture");
-    let saved = null;
-    
-    if (cookieValue) {
-        const match = cookieValue.match(/c=([a-z]{2})/);
-        if (match) saved = match[1];
-    }
-    
-    if (!saved) {
-        saved = localStorage.getItem('dakkn_lang');
-    }
-
-    const current = getCurrentLang();
-    
-    // If the saved preference differs from the page language, reload once to sync
-    if (saved && saved !== current) {
-        setCookie(".AspNetCore.Culture", `c=${saved}|uic=${saved}`, 365);
-        window.location.reload();
-        return;
-    }
-
-    // Initialize dynamic components with current language
-    await applyLang(current);
-
-    // Wait for fonts (Icons) to be ready to avoid icon text flickering
-    if (document.fonts) {
-        try {
-            await document.fonts.ready;
-        } catch (e) {
-            console.warn('Font loading failed, showing UI anyway.');
-        }
-    }
-
-    // Everything is ready, hide preloader
-    hidePreloader();
-
-    // Standard Landing UI Initializations
-    if (typeof initScrollAnimations === 'function') initScrollAnimations();
-    if (typeof initStaggeredGrids === 'function') initStaggeredGrids();
-    if (typeof initNavbarScrollEffect === 'function') initNavbarScrollEffect();
-    if (typeof initScrollSpy === 'function') initScrollSpy();
-
-    // Attach click handlers for all in-page anchors
-    document.querySelectorAll('a[href^="#"]').forEach(link => {
-        const href = link.getAttribute('href');
-        if (!href || href === '#') return;
+    try {
+        // Determine target language: Cookie > LocalStorage > Page Lang
+        const cookieValue = getCookie(".AspNetCore.Culture");
+        let saved = null;
         
-        link.addEventListener('click', (e) => {
-            const targetId = href.substring(1);
-            if (!document.getElementById(targetId)) return;
-            e.preventDefault();
-            scrollToHash(href);
+        if (cookieValue) {
+            const match = cookieValue.match(/c=([a-z]{2})/);
+            if (match) saved = match[1];
+        }
+        
+        if (!saved) {
+            saved = localStorage.getItem('dakkn_lang');
+        }
+
+        const current = getCurrentLang();
+        
+        // Loop prevention: check if we just reloaded for sync
+        const isSyncing = sessionStorage.getItem('dakkn_lang_syncing');
+        const isAdmin = window.location.pathname.toLowerCase().startsWith('/admin');
+        
+        // If the saved preference differs from the page language, reload once to sync
+        // NOTE: Disable this auto-sync for Admin pages as they handle it via Settings
+        if (saved && saved !== current && !isSyncing && !isAdmin) {
+            console.log(`Syncing language: ${current} -> ${saved}`);
+            sessionStorage.setItem('dakkn_lang_syncing', 'true');
+            setCookie(".AspNetCore.Culture", `c=${saved}|uic=${saved}`, 365);
+            window.location.reload();
+            return;
+        }
+
+        // Clear sync flag once we match
+        sessionStorage.removeItem('dakkn_lang_syncing');
+
+        // Initialize dynamic components with current language
+        await applyLang(current);
+
+        // Wait for fonts (Icons) to be ready to avoid icon text flickering
+        if (document.fonts) {
+            try {
+                await Promise.race([
+                    document.fonts.ready,
+                    new Promise(resolve => setTimeout(resolve, 1000)) // Max 1s wait for fonts
+                ]);
+            } catch (e) {
+                console.warn('Font loading failed or timed out.');
+            }
+        }
+
+        // Initialize Components (wrapped to prevent one failure blocking everything)
+        const safeInit = (fnName) => {
+            try {
+                if (typeof window[fnName] === 'function') window[fnName]();
+            } catch (e) {
+                console.error(`Error in ${fnName}:`, e);
+            }
+        };
+
+        safeInit('initScrollAnimations');
+        safeInit('initStaggeredGrids');
+        safeInit('initNavbarScrollEffect');
+        safeInit('initScrollSpy');
+        safeInit('updateSlider');
+        safeInit('renderAllProducts');
+
+        // OTP & Password micro-interactions
+        initOtpBoxes();
+        initPasswordToggles();
+        initOtpCountdown();
+
+        // Attach click handlers for all in-page anchors
+        document.querySelectorAll('a[href^="#"]').forEach(link => {
+            const href = link.getAttribute('href');
+            if (!href || href === '#') return;
+            
+            link.addEventListener('click', (e) => {
+                const targetId = href.substring(1);
+                if (!document.getElementById(targetId)) return;
+                e.preventDefault();
+                scrollToHash(href);
+            });
         });
-    });
 
-    if (window.location.hash) {
-        setTimeout(() => scrollToHash(window.location.hash, false), 150);
+        if (window.location.hash) {
+            setTimeout(() => scrollToHash(window.location.hash, false), 150);
+        }
+
+    } catch (error) {
+        console.error('Boot sequence error:', error);
+    } finally {
+        // Everything is ready (or failed), hide preloader
+        hidePreloader();
     }
-
-    // Initialize Components
-    if (typeof updateSlider === 'function') updateSlider();
-    if (typeof renderAllProducts === 'function') renderAllProducts();
-
-    // OTP & Password micro-interactions
-    initOtpBoxes();
-    initPasswordToggles();
-    initOtpCountdown();
 });
 
 /* ── Sub-Initializers ────────────────────────────────────── */

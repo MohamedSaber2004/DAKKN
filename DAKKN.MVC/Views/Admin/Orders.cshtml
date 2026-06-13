@@ -1,0 +1,121 @@
+@using DAKKN.MVC.ViewModels.Admin
+@model OrderListViewModel
+@inject IStringLocalizer<Messages> Localizer
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = Localizer["admin_orders"];
+}
+
+<div class="mb-lg flex flex-col md:flex-row justify-between items-start md:items-end gap-md">
+    <div>
+        <h2 class="font-h2 text-h2 text-text-primary dark:text-inverse-on-surface mb-sm">@Localizer["admin_orders_mgmt"]</h2>
+        <p class="font-body text-body text-text-secondary dark:text-outline-variant">@Localizer["admin_stats_overview"]</p>
+    </div>
+</div>
+
+<!-- KPI Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-lg mb-lg">
+    <div class="bg-surface dark:bg-surface-container rounded-2xl p-lg shadow-sm border border-border dark:border-outline/20 flex items-center justify-between transition-colors">
+        <div>
+            <p class="font-body text-body text-text-secondary dark:text-outline-variant mb-xs">@Localizer["admin_orders_total"]</p>
+            <p class="font-h2 text-h2 text-text-primary dark:text-inverse-on-surface">@Model.TotalOrders</p>
+            <p class="text-caption text-primary font-bold mt-1">+12% @Localizer["admin_week"]</p>
+        </div>
+        <div class="w-12 h-12 rounded-full bg-primary-container/20 text-primary flex items-center justify-center">
+            <span class="material-symbols-outlined filled-icon">shopping_cart</span>
+        </div>
+    </div>
+    <div class="bg-surface dark:bg-surface-container rounded-2xl p-lg shadow-sm border border-border dark:border-outline/20 flex items-center justify-between transition-colors">
+        <div>
+            <p class="font-body text-body text-text-secondary dark:text-outline-variant mb-xs">@Localizer["admin_orders_processing"]</p>
+            <p class="font-h2 text-h2 text-text-primary dark:text-inverse-on-surface">@Model.ProcessingCount</p>
+        </div>
+        <div class="w-12 h-12 rounded-full bg-secondary-container/20 text-secondary flex items-center justify-center">
+            <span class="material-symbols-outlined filled-icon">pending_actions</span>
+        </div>
+    </div>
+    <div class="bg-surface dark:bg-surface-container rounded-2xl p-lg shadow-sm border border-border dark:border-outline/20 flex items-center justify-between transition-colors">
+        <div>
+            <p class="font-body text-body text-text-secondary dark:text-outline-variant mb-xs">@Localizer["admin_orders_shipped"]</p>
+            <p class="font-h2 text-h2 text-text-primary dark:text-inverse-on-surface">@Model.ShippedCount</p>
+            <p class="text-caption text-secondary font-bold mt-1">+5% @Localizer["admin_week"]</p>
+        </div>
+        <div class="w-12 h-12 rounded-full bg-tertiary-container/20 text-tertiary flex items-center justify-center">
+            <span class="material-symbols-outlined filled-icon">local_shipping</span>
+        </div>
+    </div>
+    <div class="bg-surface dark:bg-surface-container rounded-2xl p-lg shadow-sm border border-border dark:border-outline/20 flex items-center justify-between transition-colors">
+        <div>
+            <p class="font-body text-body text-text-secondary dark:text-outline-variant mb-xs">@Localizer["admin_orders_revenue"]</p>
+            <p class="font-h2 text-h2 text-text-primary dark:text-inverse-on-surface">@Model.MonthlyRevenue</p>
+            <p class="text-caption text-primary font-bold mt-1">+18% @Localizer["admin_month"]</p>
+        </div>
+        <div class="w-12 h-12 rounded-full bg-primary-container/20 text-primary flex items-center justify-center">
+            <span class="material-symbols-outlined filled-icon">payments</span>
+        </div>
+    </div>
+</div>
+
+<!-- Orders Table -->
+<div class="bg-surface dark:bg-surface-container rounded-2xl shadow-small border border-border dark:border-outline/20 overflow-hidden transition-colors">
+    <div class="p-lg border-b border-border dark:border-outline/10 flex flex-col sm:flex-row justify-between items-center gap-md bg-surface-bright dark:bg-surface-container-high">
+        <h3 class="font-h3 text-h3 text-text-primary dark:text-inverse-on-surface">@Localizer["admin_recent_orders"]</h3>
+        <div class="relative w-full sm:w-64">
+            <input type="text" placeholder="@Localizer["admin_search"]" class="w-full bg-surface dark:bg-surface-container-low border border-border dark:border-outline/20 rounded-full py-2 ltr:pl-10 ltr:pr-4 rtl:pr-10 rtl:pl-4 font-body text-body text-on-surface dark:text-inverse-on-surface focus:ring-2 focus:ring-primary outline-none transition-all">
+            <span class="material-symbols-outlined absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 text-text-secondary dark:text-outline">search</span>
+        </div>
+    </div>
+    <div class="overflow-x-auto custom-scrollbar">
+        <table class="w-full text-start border-collapse">
+            <thead class="bg-surface-container-low dark:bg-surface-container-highest/30 text-text-secondary dark:text-outline font-body border-b border-border dark:border-outline/10">
+                <tr>
+                    <th class="p-md text-start font-bold">@Localizer["admin_order_id"]</th>
+                    <th class="p-md text-start font-bold">@Localizer["admin_order_customer"]</th>
+                    <th class="p-md text-start font-bold">@Localizer["admin_order_date"]</th>
+                    <th class="p-md text-start font-bold">@Localizer["admin_order_status"]</th>
+                    <th class="p-md text-start font-bold">@Localizer["admin_order_total"]</th>
+                    <th class="p-md text-center font-bold">@Localizer["admin_th_action"]</th>
+                </tr>
+            </thead>
+            <tbody class="text-body text-text-primary dark:text-inverse-on-surface divide-y divide-border dark:divide-outline/10">
+                @foreach (var order in Model.Orders)
+                {
+                    var statusClass = order.Status switch
+                    {
+                        OrderStatus.Delivered => "bg-primary-container/20 text-primary",
+                        OrderStatus.Processing => "bg-secondary-container/20 text-secondary",
+                        OrderStatus.Shipped => "bg-tertiary-container/20 text-tertiary",
+                        OrderStatus.Cancelled => "bg-error-container/20 text-error",
+                        OrderStatus.TechnicalReview => "bg-secondary-container/20 text-secondary",
+                        _ => "bg-surface-container-highest text-text-secondary"
+                    };
+
+                    <tr class="hover:bg-surface-container-lowest dark:hover:bg-surface-container-high/50 transition-colors group">
+                        <td class="p-md font-bold text-primary dark:text-primary-light">#@order.OrderId</td>
+                        <td class="p-md">@order.CustomerName</td>
+                        <td class="p-md text-text-secondary dark:text-outline">@order.OrderDate.ToString("MMM dd, yyyy")</td>
+                        <td class="p-md">
+                            <span class="px-3 py-1 @statusClass rounded-full text-caption font-bold">
+                                @Localizer[$"status_{order.Status.ToString().ToLower()}"]
+                            </span>
+                        </td>
+                        <td class="p-md font-bold">@order.TotalAmount.ToString("N0") @Localizer["egp"]</td>
+                        <td class="p-md text-center">
+                            <a asp-controller="Admin" asp-action="OrderDetails" asp-route-id="@order.OrderId" class="inline-flex items-center justify-center w-10 h-10 rounded-full text-text-secondary hover:text-primary hover:bg-primary-container/20 dark:hover:bg-primary/20 transition-all">
+                                <span class="material-symbols-outlined">visibility</span>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <style>
+        .filled-icon {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+}

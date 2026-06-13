@@ -1,8 +1,10 @@
 using DAKKN.MVC.Mock;
 using DAKKN.MVC.ViewModels.Auth;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.AspNetCore.RateLimiting;
+using System.Security.Claims;
 
 namespace DAKKN.MVC.Controllers
 {
@@ -19,7 +21,7 @@ namespace DAKKN.MVC.Controllers
         public IActionResult Login() => View(new LoginViewModel());
 
         [HttpPost("login")]
-        public IActionResult Login(LoginViewModel vm)
+        public async Task<IActionResult> Login(LoginViewModel vm)
         {
             if (!ModelState.IsValid) return View(vm);
 
@@ -39,7 +41,24 @@ namespace DAKKN.MVC.Controllers
                 return RedirectToAction(nameof(Otp));
             }
 
-            // TODO (Phase 2): issue JWT / cookie here
+            // Issue Authentication Cookie
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.FullName),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, "Customer") // Default to Customer for now
+            };
+
+            var identity = new ClaimsIdentity(claims, "Cookies");
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync("Cookies", principal, new AuthenticationProperties
+            {
+                IsPersistent = vm.RememberMe,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
+            });
+
             TempData["SuccessMessage"] = "login_success";
             return RedirectToAction("Index", "Home");
         }
@@ -218,9 +237,9 @@ namespace DAKKN.MVC.Controllers
         // ──────────────────────────────────────────────
 
         [HttpPost("logout")]
-        public IActionResult Logout()
+        public async Task<IActionResult> Logout()
         {
-            // TODO (Phase 2): clear cookie/JWT
+            await HttpContext.SignOutAsync("Cookies");
             return RedirectToAction(nameof(Login));
         }
     }

@@ -104,6 +104,17 @@ namespace DAKKN.MVC
             })
             .AddViewLocalization()
             .AddDataAnnotationsLocalization();
+            builder.Services.AddAuthentication("Cookies")
+                .AddCookie("Cookies", options =>
+                {
+                    options.LoginPath = "/auth/login";
+                    options.LogoutPath = "/auth/logout";
+                    options.AccessDeniedPath = "/auth/login";
+                });
+
+            builder.Services.AddControllersWithViews()
+                .AddViewLocalization()
+                .AddDataAnnotationsLocalization();
 
             builder.Services.AddRateLimiter(options =>
             {
@@ -270,15 +281,15 @@ namespace DAKKN.MVC
 
             var supportedCultures = new[] { "en", "ar" };
             var localizationOptions = new RequestLocalizationOptions()
-                .SetDefaultCulture(supportedCultures[1])
+                .SetDefaultCulture(supportedCultures[1]) // "ar"
                 .AddSupportedCultures(supportedCultures)
                 .AddSupportedUICultures(supportedCultures);
 
-            localizationOptions.RequestCultureProviders.Remove(
-                localizationOptions.RequestCultureProviders
-                    .OfType<AcceptLanguageHeaderRequestCultureProvider>()
-                    .First()
-            );
+            // Prioritize Cookie and QueryString providers
+            localizationOptions.RequestCultureProviders.Clear();
+            localizationOptions.RequestCultureProviders.Add(new QueryStringRequestCultureProvider());
+            localizationOptions.RequestCultureProviders.Add(new CookieRequestCultureProvider());
+            localizationOptions.RequestCultureProviders.Add(new AcceptLanguageHeaderRequestCultureProvider());
 
             app.UseRequestLocalization(localizationOptions);
 

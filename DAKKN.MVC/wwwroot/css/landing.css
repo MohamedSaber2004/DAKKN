@@ -1,5 +1,6 @@
-/* ── Global scrolling fix ──────────────────────────── */
+/* ── Global typography ─────────────────────────────── */
 html, body {
+    font-family: 'Inter', 'Cairo', sans-serif;
     overflow-x: hidden;
     overflow-y: auto;
     width: 100%;
@@ -38,15 +39,6 @@ section {
     section[id] {
         scroll-margin-top: 72px;
     }
-}
-
-/* ── Direction-aware font swap ─────────────────────── */
-[dir="ltr"] {
-    font-family: 'Inter', sans-serif;
-}
-[dir="rtl"] {
-    font-family: 'Cairo', sans-serif;
-    letter-spacing: 0;
 }
 
 /* ── Glass panel ────────────────────────────────────── */

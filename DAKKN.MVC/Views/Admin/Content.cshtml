@@ -1,0 +1,563 @@
+@model DAKKN.MVC.ViewModels.Admin.ContentManagementViewModel
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = Localizer["admin_content_mgmt"];
+}
+
+<div class="flex flex-col lg:flex-row gap-lg h-full">
+    <!-- Sub-sidebar: Content Modules -->
+    <aside class="w-full lg:w-72 flex-shrink-0">
+        <div class="bg-surface dark:bg-inverse-surface rounded-[24px] shadow-small p-md border border-border dark:border-outline/10 sticky top-0">
+            <h3 class="font-h3 text-h3 font-bold mb-md px-2 text-text-primary dark:text-inverse-on-surface">@Localizer["admin_content_mgmt"]</h3>
+            <nav class="flex flex-col gap-xs">
+                <button onclick="switchTab('section-order')" id="tab-section-order" class="content-tab-btn active flex items-center gap-md p-3 rounded-xl transition-all duration-200 text-left rtl:text-right w-full">
+                    <span class="material-symbols-outlined">reorder</span>
+                    <span class="font-body-lg">@Localizer["admin_section_order"]</span>
+                </button>
+                <button onclick="switchTab('hero-banner')" id="tab-hero-banner" class="content-tab-btn flex items-center gap-md p-3 rounded-xl transition-all duration-200 text-left rtl:text-right w-full">
+                    <span class="material-symbols-outlined">branding_watermark</span>
+                    <span class="font-body-lg">@Localizer["admin_hero_settings"]</span>
+                </button>
+                <button onclick="switchTab('about-us')" id="tab-about-us" class="content-tab-btn flex items-center gap-md p-3 rounded-xl transition-all duration-200 text-left rtl:text-right w-full">
+                    <span class="material-symbols-outlined">info</span>
+                    <span class="font-body-lg">@Localizer["section_about"]</span>
+                </button>
+                <button onclick="switchTab('featured-categories')" id="tab-featured-categories" class="content-tab-btn flex items-center gap-md p-3 rounded-xl transition-all duration-200 text-left rtl:text-right w-full">
+                    <span class="material-symbols-outlined">category</span>
+                    <span class="font-body-lg">@Localizer["admin_featured_categories"]</span>
+                </button>
+                <button onclick="switchTab('featured-products')" id="tab-featured-products" class="content-tab-btn flex items-center gap-md p-3 rounded-xl transition-all duration-200 text-left rtl:text-right w-full">
+                    <span class="material-symbols-outlined">star</span>
+                    <span class="font-body-lg">@Localizer["admin_featured_products"]</span>
+                </button>
+                <button onclick="switchTab('customer-stories')" id="tab-customer-stories" class="content-tab-btn flex items-center gap-md p-3 rounded-xl transition-all duration-200 text-left rtl:text-right w-full">
+                    <span class="material-symbols-outlined">forum</span>
+                    <span class="font-body-lg">@Localizer["section_testimonials"]</span>
+                </button>
+                <button onclick="switchTab('contact-info')" id="tab-contact-info" class="content-tab-btn flex items-center gap-md p-3 rounded-xl transition-all duration-200 text-left rtl:text-right w-full">
+                    <span class="material-symbols-outlined">contact_support</span>
+                    <span class="font-body-lg">@Localizer["section_contact"]</span>
+                </button>
+                <button onclick="switchTab('global-pricing')" id="tab-global-pricing" class="content-tab-btn flex items-center gap-md p-3 rounded-xl transition-all duration-200 text-left rtl:text-right w-full">
+                    <span class="material-symbols-outlined">payments</span>
+                    <span class="font-body-lg">@Localizer["admin_global_pricing"]</span>
+                </button>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- Main Editor Area -->
+    <div class="flex-1 min-w-0">
+        <!-- Section: Order Management -->
+        <div id="panel-section-order" class="content-panel bg-surface dark:bg-inverse-surface rounded-[32px] shadow-medium border border-border dark:border-outline/10 p-xl transition-all duration-300">
+            <div class="flex justify-between items-center mb-xl">
+                <div>
+                    <h2 class="font-h2 text-h2 font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["admin_section_order"]</h2>
+                    <p class="text-text-secondary dark:text-outline-variant mt-xs">@Localizer["admin_section_order_desc"]</p>
+                </div>
+                <button onclick="saveLayout()" class="bg-primary text-on-primary px-xl py-md rounded-full font-bold shadow-medium hover:scale-105 transition-all">
+                    @Localizer["admin_save_layout"]
+                </button>
+            </div>
+
+            <div id="sortable-sections" class="flex flex-col gap-md">
+                @foreach (var item in Model.SectionOrder.Sections.OrderBy(s => s.DisplayOrder))
+                {
+                    <div class="section-card group bg-surface-container dark:bg-surface-container-high p-lg rounded-2xl border border-border dark:border-outline/10 flex items-center gap-lg hover:border-primary/50 transition-all cursor-grab active:cursor-grabbing" data-id="@item.Id">
+                        <span class="material-symbols-outlined drag_indicator text-outline group-hover:text-primary transition-colors">drag_indicator</span>
+                        <div class="flex-1">
+                            <h4 class="font-h3 text-h3 font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["section_" + item.Id.Replace("-", "_")]</h4>
+                            <span class="text-xs uppercase tracking-wider text-outline font-bold">@item.Id</span>
+                        </div>
+                        <div class="flex items-center gap-xl">
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" class="sr-only peer" @(item.IsVisible ? "checked" : "")>
+                                <div class="w-11 h-6 bg-outline/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:ltr:left-[2px] after:rtl:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                <span class="ltr:ml-3 rtl:mr-3 text-sm font-medium text-text-secondary dark:text-outline-variant">@Localizer["admin_visibility_toggle"]</span>
+                            </label>
+                            <button onclick="goToEditor('@item.Id')" class="w-10 h-10 rounded-full flex items-center justify-center bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 text-primary hover:bg-primary hover:text-on-primary transition-all" title="@Localizer["admin_edit"]">
+                                <span class="material-symbols-outlined">edit</span>
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Section: Hero Settings -->
+        <div id="panel-hero-banner" class="content-panel hidden bg-surface dark:bg-inverse-surface rounded-[32px] shadow-medium border border-border dark:border-outline/10 p-xl">
+            <h2 class="font-h2 text-h2 font-bold mb-xl">@Localizer["admin_hero_settings"]</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
+                <div class="space-y-lg">
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_badge"]</label>
+                        <input type="text" value="@Model.Hero.Badge" placeholder="e.g. Industrial Grade Quality" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md focus:ring-primary focus:border-primary transition-all">
+                    </div>
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_title_segments"]</label>
+                        <div class="grid grid-cols-2 gap-sm">
+                            <input type="text" value="@Model.Hero.TitleA" placeholder="Quality You Can" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                            <input type="text" value="@Model.Hero.TitleB" placeholder="Feel" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md text-primary font-bold">
+                            <input type="text" value="@Model.Hero.TitleC" placeholder=", Styles You" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                            <input type="text" value="@Model.Hero.TitleD" placeholder="Love" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md text-secondary font-bold">
+                        </div>
+                    </div>
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_desc"]</label>
+                        <textarea rows="4" placeholder="Briefly describe what makes DAKKN unique..." class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.Hero.Description</textarea>
+                    </div>
+                </div>
+                <div class="flex flex-col gap-lg">
+                    <div class="aspect-video rounded-3xl bg-surface-container dark:bg-surface-container-high border-2 border-dashed border-border dark:border-outline/20 flex flex-col items-center justify-center p-xl relative group overflow-hidden">
+                        <img src="@Model.Hero.ImageUrl" class="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-10 transition-opacity">
+                        <span class="material-symbols-outlined text-4xl text-outline mb-sm">image</span>
+                        <span class="font-bold text-text-secondary">@Localizer["admin_hero_image_update"]</span>
+                        <input type="file" class="absolute inset-0 opacity-0 cursor-pointer">
+                    </div>
+                    <button class="bg-primary text-on-primary py-md rounded-full font-bold shadow-medium hover:scale-103 transition-all">@Localizer["admin_save_changes"]</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section: About Us -->
+        <div id="panel-about-us" class="content-panel hidden bg-surface dark:bg-inverse-surface rounded-[32px] shadow-medium border border-border dark:border-outline/10 p-xl">
+            <h2 class="font-h2 text-h2 font-bold mb-xl">@Localizer["section_about"]</h2>
+            <div class="space-y-xl">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_about_title"]</label>
+                        <input type="text" value="@Model.About.Title" placeholder="@Localizer["admin_about_title_ph"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                    </div>
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_about_desc"]</label>
+                        <textarea rows="2" placeholder="@Localizer["admin_about_desc_ph"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.About.Description</textarea>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+                    <!-- Feature 1 -->
+                    <div class="bg-surface-container dark:bg-surface-container-high p-lg rounded-2xl border border-border">
+                        <div class="flex items-center gap-md mb-md">
+                            <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">1</span>
+                            <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 1)</h4>
+                        </div>
+                        <input type="text" value="@Model.About.Feature1Title" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-border rounded-lg p-md mb-sm">
+                        <textarea rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-border rounded-lg p-md text-sm">@Model.About.Feature1Desc</textarea>
+                    </div>
+                    <!-- Feature 2 -->
+                    <div class="bg-surface-container dark:bg-surface-container-high p-lg rounded-2xl border border-border">
+                        <div class="flex items-center gap-md mb-md">
+                            <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">2</span>
+                            <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 2)</h4>
+                        </div>
+                        <input type="text" value="@Model.About.Feature2Title" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-border rounded-lg p-md mb-sm">
+                        <textarea rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-border rounded-lg p-md text-sm">@Model.About.Feature2Desc</textarea>
+                    </div>
+                    <!-- Feature 3 -->
+                    <div class="bg-surface-container dark:bg-surface-container-high p-lg rounded-2xl border border-border">
+                        <div class="flex items-center gap-md mb-md">
+                            <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">3</span>
+                            <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 3)</h4>
+                        </div>
+                        <input type="text" value="@Model.About.Feature3Title" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-border rounded-lg p-md mb-sm">
+                        <textarea rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-border rounded-lg p-md text-sm">@Model.About.Feature3Desc</textarea>
+                    </div>
+                </div>
+                <button class="bg-primary text-on-primary px-xl py-md rounded-full font-bold">@Localizer["admin_save_changes"]</button>
+            </div>
+        </div>
+
+        <!-- Section: Customer Stories (Testimonials) -->
+        <div id="panel-customer-stories" class="content-panel hidden bg-surface dark:bg-inverse-surface rounded-[32px] shadow-medium border border-border dark:border-outline/10 p-xl">
+            <div class="flex justify-between items-center mb-xl">
+                <div>
+                    <h2 class="font-h2 text-h2 font-bold">@Localizer["section_testimonials"]</h2>
+                    <p class="text-text-secondary">Moderate reviews and select featured quotes.</p>
+                </div>
+                <button class="bg-primary text-on-primary px-xl py-md rounded-full font-bold">@Localizer["admin_save_changes"]</button>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left rtl:text-right">
+                    <thead class="border-b border-border">
+                        <tr>
+                            <th class="py-md px-lg font-bold text-outline uppercase text-xs">Featured</th>
+                            <th class="py-md px-lg font-bold text-outline uppercase text-xs">Customer</th>
+                            <th class="py-md px-lg font-bold text-outline uppercase text-xs">Quote</th>
+                            <th class="py-md px-lg font-bold text-outline uppercase text-xs">Rating</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var review in Model.Testimonials.Reviews)
+                        {
+                            <tr class="border-b border-border/50 hover:bg-surface-container transition-colors">
+                                <td class="py-lg px-lg">
+                                    <button class="text-2xl @(review.IsFeatured ? "text-yellow-500" : "text-outline/30 hover:text-yellow-500/50") transition-colors">
+                                        <span class="material-symbols-outlined @(review.IsFeatured ? "filled-icon" : "")">star</span>
+                                    </button>
+                                </td>
+                                <td class="py-lg px-lg">
+                                    <div class="font-bold text-text-primary">@review.Name</div>
+                                    <div class="text-xs text-outline">@review.Role</div>
+                                </td>
+                                <td class="py-lg px-lg max-w-xs">
+                                    <textarea class="w-full bg-transparent border-none p-0 text-sm focus:ring-0 resize-none">@review.Quote</textarea>
+                                </td>
+                                <td class="py-lg px-lg">
+                                    <div class="flex text-yellow-500">
+                                        @for (int i = 0; i < 5; i++)
+                                        {
+                                            <span class="material-symbols-outlined text-sm @(i < review.Rating ? "filled-icon" : "")">star</span>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Section: Contact Info -->
+        <div id="panel-contact-info" class="content-panel hidden bg-surface dark:bg-inverse-surface rounded-[32px] shadow-medium border border-border dark:border-outline/10 p-xl">
+            <h2 class="font-h2 text-h2 font-bold mb-xl">@Localizer["section_contact"]</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
+                <div class="space-y-lg">
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_contact_email"]</label>
+                        <input type="email" value="@Model.Contact.Email" placeholder="support@dakkn.com" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                    </div>
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_contact_phone"]</label>
+                        <input type="text" value="@Model.Contact.Phone" placeholder="+20 1xx xxx xxxx" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                    </div>
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_contact_address"]</label>
+                        <textarea rows="3" placeholder="Street name, City, Country" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.Contact.Address</textarea>
+                    </div>
+                </div>
+                <div class="bg-primary/5 rounded-3xl p-xl flex flex-col items-center justify-center text-center border border-primary/10">
+                    <span class="material-symbols-outlined text-6xl text-primary mb-md">location_on</span>
+                    <h3 class="font-bold text-xl mb-sm">Map Integration</h3>
+                    <p class="text-text-secondary text-sm">Changing the address will automatically update the Google Maps embed on the contact page.</p>
+                </div>
+            </div>
+            <button class="mt-xl bg-primary text-on-primary px-xl py-md rounded-full font-bold">@Localizer["admin_save_changes"]</button>
+        </div>
+
+        <!-- Section: Global Pricing -->
+        <div id="panel-global-pricing" class="content-panel hidden bg-surface dark:bg-inverse-surface rounded-[32px] shadow-medium border border-border dark:border-outline/10 p-xl">
+             <div class="flex items-center gap-md mb-xl">
+                <span class="material-symbols-outlined text-primary text-4xl">payments</span>
+                <div>
+                    <h2 class="font-h2 text-h2 font-bold">@Localizer["admin_global_pricing"]</h2>
+                    <p class="text-text-secondary">@Localizer["admin_global_pricing_desc"]</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-lg">
+                <div class="bg-surface-container dark:bg-surface-container-high p-xl rounded-3xl border border-border relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-110"></div>
+                    <label class="text-sm font-bold text-outline block mb-sm">@Localizer["admin_base_price"]</label>
+                    <div class="flex items-baseline gap-xs">
+                        <input type="number" value="@Model.Pricing.BasePrice" class="bg-transparent border-none p-0 text-3xl font-bold w-full focus:ring-0">
+                        <span class="text-outline font-bold">@Localizer["egp"]</span>
+                    </div>
+                </div>
+
+                <div class="bg-surface-container dark:bg-surface-container-high p-xl rounded-3xl border border-border">
+                    <label class="text-sm font-bold text-outline block mb-sm">@Localizer["admin_effect_hologram"]</label>
+                    <div class="flex items-baseline gap-xs">
+                        <span class="text-primary font-bold">+</span>
+                        <input type="number" value="@Model.Pricing.HologramSurcharge" class="bg-transparent border-none p-0 text-3xl font-bold w-full focus:ring-0">
+                        <span class="text-outline font-bold">@Localizer["egp"]</span>
+                    </div>
+                </div>
+
+                <div class="bg-surface-container dark:bg-surface-container-high p-xl rounded-3xl border border-border">
+                    <label class="text-sm font-bold text-outline block mb-sm">@Localizer["admin_effect_custom_cut"]</label>
+                    <div class="flex items-baseline gap-xs">
+                        <span class="text-primary font-bold">+</span>
+                        <input type="number" value="@Model.Pricing.CustomCutSurcharge" class="bg-transparent border-none p-0 text-3xl font-bold w-full focus:ring-0">
+                        <span class="text-outline font-bold">@Localizer["egp"]</span>
+                    </div>
+                </div>
+
+                <div class="bg-surface-container dark:bg-surface-container-high p-xl rounded-3xl border border-border">
+                    <label class="text-sm font-bold text-outline block mb-sm">@Localizer["admin_shipping_flat"]</label>
+                    <div class="flex items-baseline gap-xs">
+                        <input type="number" value="@Model.Pricing.ShippingRate" class="bg-transparent border-none p-0 text-3xl font-bold w-full focus:ring-0">
+                        <span class="text-outline font-bold">@Localizer["egp"]</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-xl p-lg bg-primary/5 rounded-2xl flex items-center gap-md border border-primary/10">
+                <span class="material-symbols-outlined text-primary">info</span>
+                <p class="text-sm text-text-primary dark:text-inverse-on-surface">
+                    @Localizer["admin_pricing_info"]
+                </p>
+            </div>
+            
+            <button class="mt-xl bg-primary text-on-primary px-12 py-md rounded-full font-bold shadow-medium hover:scale-103 transition-all">
+                @Localizer["admin_pricing_update_all"]
+            </button>
+        </div>
+
+        <!-- Section: Featured Categories -->
+        <div id="panel-featured-categories" class="content-panel hidden bg-surface dark:bg-inverse-surface rounded-[32px] shadow-medium border border-border dark:border-outline/10 p-xl">
+            <div class="flex justify-between items-center mb-xl">
+                <div>
+                    <h2 class="font-h2 text-h2 font-bold">@Localizer["admin_featured_categories"]</h2>
+                    <p class="text-text-secondary">@Localizer["admin_featured_cat_desc"]</p>
+                </div>
+                <div class="px-lg py-sm bg-primary/10 text-primary rounded-full font-bold text-sm">
+                    <span id="cat-selection-count">0</span> / 6 @Localizer["admin_selected_count"].Value.Split(' ')[2]
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-md">
+                @foreach (var cat in Model.Categories.AllCategories)
+                {
+                    <div onclick="toggleCategory('@cat.Id')" id="cat-card-@cat.Id" class="category-select-card group cursor-pointer bg-surface-container dark:bg-surface-container-high p-lg rounded-2xl border-2 @(cat.IsFeatured ? "border-primary bg-primary/5" : "border-transparent") transition-all text-center">
+                        <div class="w-12 h-12 rounded-full bg-surface dark:bg-inverse-surface mx-auto flex items-center justify-center mb-md shadow-small group-hover:scale-110 transition-transform">
+                            <span class="material-symbols-outlined @(cat.IsFeatured ? "text-primary filled-icon" : "text-outline")">@cat.Icon</span>
+                        </div>
+                        <h4 class="font-bold text-sm @(cat.IsFeatured ? "text-primary" : "text-text-primary")">@cat.Name</h4>
+                        <div class="mt-sm">
+                            <span class="status-badge text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider @(cat.IsFeatured ? "bg-primary text-on-primary" : "bg-outline/10 text-outline")">
+                                @(cat.IsFeatured ? Localizer["admin_select"] : Localizer["admin_unselect"])
+                            </span>
+                        </div>
+                        <input type="checkbox" id="cat-check-@cat.Id" class="hidden" @(cat.IsFeatured ? "checked" : "")>
+                    </div>
+                }
+            </div>
+            <button class="mt-xl bg-primary text-on-primary px-xl py-md rounded-full font-bold shadow-medium">@Localizer["admin_save_changes"]</button>
+        </div>
+
+        <!-- Section: Featured Products -->
+        <div id="panel-featured-products" class="content-panel hidden bg-surface dark:bg-inverse-surface rounded-[32px] shadow-medium border border-border dark:border-outline/10 p-xl">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-lg mb-xl">
+                <div>
+                    <h2 class="font-h2 text-h2 font-bold">@Localizer["admin_featured_products"]</h2>
+                    <p class="text-text-secondary">@Localizer["admin_featured_prod_desc"]</p>
+                </div>
+                <div class="flex items-center gap-md bg-surface-container p-md rounded-2xl border border-border">
+                    <span class="font-bold text-sm">@Localizer["admin_auto_select"]</span>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="auto-select-toggle" class="sr-only peer" onchange="toggleAutoMode(this.checked)" @(Model.Products.AutoSelectBestSellers ? "checked" : "")>
+                        <div class="w-11 h-6 bg-outline/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:ltr:left-[2px] after:rtl:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                    </label>
+                </div>
+            </div>
+
+            <div id="manual-product-grid" class="@(Model.Products.AutoSelectBestSellers ? "opacity-50 pointer-events-none" : "") transition-opacity">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg">
+                    @foreach (var prod in Model.Products.AllProducts)
+                    {
+                        <div class="product-select-card bg-surface-container dark:bg-surface-container-high rounded-3xl border border-border overflow-hidden group">
+                            <div class="aspect-square relative overflow-hidden bg-white/5">
+                                <img src="@prod.ImageUrl" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                <button onclick="toggleProduct('@prod.Id')" id="prod-star-@prod.Id" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-surface/90 backdrop-blur-sm shadow-medium flex items-center justify-center transition-all @(prod.IsFeatured ? "text-yellow-500 scale-110" : "text-outline/50 hover:text-yellow-500")">
+                                    <span class="material-symbols-outlined @(prod.IsFeatured ? "filled-icon" : "")">star</span>
+                                </button>
+                                <div class="absolute bottom-4 left-4 bg-primary text-on-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
+                                    @prod.Category
+                                </div>
+                            </div>
+                            <div class="p-lg">
+                                <h4 class="font-bold text-lg mb-xs">@prod.Name</h4>
+                                <p class="text-xs text-outline font-medium">SKU: @prod.Id</p>
+                            </div>
+                            <input type="checkbox" id="prod-check-@prod.Id" class="hidden" @(prod.IsFeatured ? "checked" : "")>
+                        </div>
+                    }
+                </div>
+            </div>
+            <button class="mt-xl bg-primary text-on-primary px-xl py-md rounded-full font-bold shadow-medium">@Localizer["admin_save_changes"]</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .content-tab-btn {
+        color: var(--md-sys-color-text-secondary);
+    }
+    .content-tab-btn:hover {
+        background-color: var(--md-sys-color-surface-container-high);
+        color: var(--md-sys-color-primary);
+    }
+    .content-tab-btn.active {
+        background-color: var(--md-sys-color-primary-container);
+        color: var(--md-sys-color-on-primary-container);
+        font-weight: 700;
+    }
+    
+    .sortable-ghost {
+        opacity: 0.4;
+        border: 2px dashed var(--md-sys-color-primary) !important;
+        background-color: var(--md-sys-color-primary-container) !important;
+    }
+    
+    .sortable-drag {
+        cursor: grabbing !important;
+    }
+
+    .filled-icon {
+        font-variation-settings: 'FILL' 1;
+    }
+</style>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script>
+        // Mapping of section IDs to tab IDs
+        const sectionToTabMap = {
+            'hero': 'hero-banner',
+            'about': 'about-us',
+            'categories': 'featured-categories',
+            'shop': 'featured-products',
+            'all-products': 'featured-products', // Redirecting to products for now
+            'testimonials': 'customer-stories',
+            'contact': 'contact-info'
+        };
+
+        function goToEditor(sectionId) {
+            const tabId = sectionToTabMap[sectionId] || 'section-order';
+            switchTab(tabId);
+        }
+
+        function switchTab(tabId) {
+            // Update Buttons
+            document.querySelectorAll('.content-tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            const activeTab = document.getElementById('tab-' + tabId);
+            if (activeTab) activeTab.classList.add('active');
+
+            // Update Panels
+            document.querySelectorAll('.content-panel').forEach(panel => {
+                panel.classList.add('hidden');
+            });
+            const activePanel = document.getElementById('panel-' + tabId);
+            if (activePanel) activePanel.classList.remove('hidden');
+            
+            // Re-init sortable if it's the section-order tab
+            if (tabId === 'section-order') {
+                initSortable();
+            }
+        }
+
+        function initSortable() {
+            const el = document.getElementById('sortable-sections');
+            if (el && !el.dataset.sortable) {
+                new Sortable(el, {
+                    animation: 250,
+                    ghostClass: 'sortable-ghost',
+                    dragClass: 'sortable-drag',
+                    handle: '.drag_indicator',
+                    onEnd: function (evt) {
+                        console.log('New order:', Array.from(el.children).map(c => c.dataset.id));
+                    }
+                });
+                el.dataset.sortable = "true";
+            }
+        }
+
+        function saveLayout() {
+            const el = document.getElementById('sortable-sections');
+            const sections = Array.from(el.children).map((c, index) => ({
+                id: c.dataset.id,
+                displayOrder: index,
+                isVisible: c.querySelector('input[type="checkbox"]').checked
+            }));
+
+            fetch('/admin/content/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': window.csrfToken
+                },
+                body: JSON.stringify({ sectionOrder: { sections: sections } })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('@Localizer["admin_save_success"]');
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+
+        function toggleCategory(id) {
+            const card = document.getElementById('cat-card-' + id);
+            const checkbox = document.getElementById('cat-check-' + id);
+            const icon = card.querySelector('.material-symbols-outlined');
+            const badge = card.querySelector('.status-badge');
+            const title = card.querySelector('h4');
+
+            checkbox.checked = !checkbox.checked;
+
+            if (checkbox.checked) {
+                card.classList.add('border-primary', 'bg-primary/5');
+                card.classList.remove('border-transparent');
+                icon.classList.add('text-primary', 'filled-icon');
+                icon.classList.remove('text-outline');
+                badge.classList.add('bg-primary', 'text-on-primary');
+                badge.classList.remove('bg-outline/10', 'text-outline');
+                badge.innerText = '@Localizer["admin_select"]';
+                title.classList.add('text-primary');
+                title.classList.remove('text-text-primary');
+            } else {
+                card.classList.remove('border-primary', 'bg-primary/5');
+                card.classList.add('border-transparent');
+                icon.classList.remove('text-primary', 'filled-icon');
+                icon.classList.add('text-outline');
+                badge.classList.remove('bg-primary', 'text-on-primary');
+                badge.classList.add('bg-outline/10', 'text-outline');
+                badge.innerText = '@Localizer["admin_unselect"]';
+                title.classList.remove('text-primary');
+                title.classList.add('text-text-primary');
+            }
+            updateCategoryCount();
+        }
+
+        function updateCategoryCount() {
+            const count = document.querySelectorAll('.category-select-card input[type="checkbox"]:checked').length;
+            document.getElementById('cat-selection-count').innerText = count;
+        }
+
+        function toggleAutoMode(enabled) {
+            const grid = document.getElementById('manual-product-grid');
+            if (enabled) {
+                grid.classList.add('opacity-50', 'pointer-events-none');
+            } else {
+                grid.classList.remove('opacity-50', 'pointer-events-none');
+            }
+        }
+
+        function toggleProduct(id) {
+            const starBtn = document.getElementById('prod-star-' + id);
+            const checkbox = document.getElementById('prod-check-' + id);
+            const icon = starBtn.querySelector('.material-symbols-outlined');
+
+            checkbox.checked = !checkbox.checked;
+
+            if (checkbox.checked) {
+                starBtn.classList.add('text-yellow-500', 'scale-110');
+                starBtn.classList.remove('text-outline/50');
+                icon.classList.add('filled-icon');
+            } else {
+                starBtn.classList.remove('text-yellow-500', 'scale-110');
+                starBtn.classList.add('text-outline/50');
+                icon.classList.remove('filled-icon');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initSortable();
+            updateCategoryCount();
+        });
+    </script>
+}

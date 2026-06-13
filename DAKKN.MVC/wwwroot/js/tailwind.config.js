@@ -20,51 +20,70 @@ tailwind.config = {
                 "inverse-primary":        "#67E8F9",
 
                 /* ── Warm secondary ──────────────────────────────── */
-                secondary:                "#0E7490",   /* cyan-700  */
-                "secondary-container":    "#E0F2FE",
-                "on-secondary":           "#FFFFFF",
-                "on-secondary-container": "#0C4A6E",
+                secondary: "#725c00",
+                "secondary-container": "#fed74c",
+                "secondary-fixed": "#ffe07e",
+                "secondary-fixed-dim": "#e9c339",
+                "on-secondary": "#ffffff",
+                "on-secondary-container": "#735d00",
+                "on-secondary-fixed": "#231b00",
+                "on-secondary-fixed-variant": "#564500",
 
                 /* ── Warm amber tertiary ────────────────────────── */
-                tertiary:                 "#B45309",   /* amber-700 */
-                "tertiary-container":     "#FEF3C7",   /* amber-100 */
-                "on-tertiary":            "#FFFFFF",
-                "on-tertiary-container":  "#78350F",
-                "tertiary-fixed":         "#FDE68A",
+                tertiary: "#8b501a",
+                "tertiary-container": "#ffb072",
+                "tertiary-fixed": "#ffdcc4",
+                "tertiary-fixed-dim": "#ffb780",
+                "on-tertiary": "#ffffff",
+                "on-tertiary-container": "#79410b",
+                "on-tertiary-fixed": "#2f1400",
+                "on-tertiary-fixed-variant": "#6e3902",
 
-                /* ── Creamy / sky surfaces ───────────────────────── */
-                surface:                  "#FFFFFF",
-                "surface-dim":            "#DCF0F5",
-                "surface-bright":         "#FEFCF8",   /* warm ivory */
-                "surface-variant":        "#D8EFF4",
-                "surface-container-lowest":"#FFFFFF",
-                "surface-container-low":  "#FFF9F4",   /* warm cream */
-                "surface-container":      "#EFF9FB",   /* sky tint   */
-                "surface-container-high": "#DDF2F6",
-                "surface-container-highest":"#CCE9EF",
+                /* ── Surfaces ───────────────────────── */
+                surface: "#FFFFFF",
+                "surface-dim": "#d6dbda",
+                "surface-bright": "#f6faf9",
+                "surface-variant": "#dfe3e2",
+                "surface-container-lowest": "#ffffff",
+                "surface-container-low": "#f0f5f3",
+                "surface-container": "#eaefee",
+                "surface-container-high": "#e4e9e8",
+                "surface-container-highest": "#dfe3e2",
+                "surface-tint": "#006a68",
 
                 /* ── Text ────────────────────────────────────────── */
-                "on-surface":             "#0A2030",
-                "on-surface-variant":     "#3A5A62",
-                background:               "#FFFCF8",   /* warm ivory background */
-                "on-background":          "#0A2030",
-                outline:                  "#5F8A96",
-                "outline-variant":        "#A8CDD6",
-                "inverse-surface":        "#1A3840",
-                "inverse-on-surface":     "#E4F3F7",
+                "on-surface": "#171d1c",
+                "on-surface-variant": "#3d4948",
+                background: "#F8FAFB",
+                "on-background": "#171d1c",
+                outline: "#6d7979",
+                "outline-variant": "#bcc9c8",
+                "inverse-surface": "#2c3131",
+                "inverse-on-surface": "#edf2f1",
+                "text-primary": "#1A1A1A",
+                "text-secondary": "#6B7280",
 
                 /* ── Error ───────────────────────────────────────── */
-                error:                    "#DC2626",
-                "error-container":        "#FEE2E2",
-                "on-error":               "#FFFFFF",
-                "on-error-container":     "#991B1B",
+                error: "#ba1a1a",
+                "error-container": "#ffdad6",
+                "on-error": "#ffffff",
+                "on-error-container": "#93000a",
 
-                /* ── Auth Specific (StickerVault / Stitch) ───────── */
-                "auth-surface":           "#FFFFFF",
-                "auth-bg":                "#F8FAFB",
-                "auth-primary":           "#006a68",
-                "auth-text-primary":      "#1A1A1A",
-                "auth-text-secondary":    "#6B7280",
+                /* ── Accents ──────────────────────────────────────── */
+                "accent-orange": "#FF9F45",
+                "accent-pink": "#FF7EB6",
+                "accent-purple": "#9C7DFF",
+
+                /* ── Layout ───────────────────────────────────────── */
+                "border": "#E8EDF0",
+            },
+            spacing: {
+                "xs": "0.25rem",
+                "sm": "0.5rem",
+                "md": "1rem",
+                "lg": "1.5rem",
+                "xl": "2.5rem",
+                "margin-mobile": "1.25rem",
             },
             borderRadius: {
                 DEFAULT: "0.75rem", lg: "0.5rem", xl: "0.75rem", "2xl": "1rem", "3xl": "1.5rem", full: "9999px"
@@ -75,8 +94,12 @@ tailwind.config = {
                 display: ["'IBM Plex Sans Arabic'", "sans-serif"],
             },
             boxShadow: {
+                'small': '0 4px 12px rgba(0,0,0,0.05)',
+                'medium': '0 8px 24px rgba(0,0,0,0.08)',
+                'large': '0 20px 40px rgba(0,0,0,0.12)',
                 'auth': '0 20px 40px rgba(0,0,0,0.12)',
             }
         }
     }
 };
+

@@ -1,0 +1,125 @@
+@inject IStringLocalizer<Messages> Localizer
+@{
+    var culture = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("en") ? "en" : "ar";
+    var dir = culture == "ar" ? "rtl" : "ltr";
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+}
+<!DOCTYPE html>
+<html lang="@culture" dir="@dir" id="html-root" data-dakkn-loading="true">
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>@ViewData["Title"] - DAKKN</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+    <!-- Tailwind via CDN -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Tailwind Custom Configuration -->
+    <script src="~/js/tailwind.config.js" asp-append-version="true"></script>
+
+    <!-- Shared Styles -->
+    <link rel="stylesheet" href="~/css/landing.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('dakkn_theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const isDark = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
+            
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
+
+        window.csrfToken = "@Html.AntiForgeryToken()".match(/value="([^"]+)"/)[1];
+
+        // Failsafe: Ensure preloader is hidden
+        setTimeout(() => {
+            const preloader = document.getElementById('dakkn-preloader');
+            if (preloader) {
+                preloader.style.opacity = '0';
+                setTimeout(() => {
+                    preloader.remove();
+                    document.documentElement.removeAttribute('data-dakkn-loading');
+                }, 400);
+            }
+        }, 1500);
+    </script>
+</head>
+<body class="text-text-primary dark:text-inverse-on-surface bg-background dark:bg-dark-page transition-colors duration-300 min-h-screen flex flex-col">
+    
+    <!-- Preloader Overlay -->
+    @await Html.PartialAsync("Partials/_Preloader")
+
+    <!-- Customer Top NavBar -->
+    <header class="sticky top-0 z-50 bg-surface/80 dark:bg-inverse-surface/80 backdrop-blur-md border-b border-border dark:border-outline/10">
+        <div class="max-w-7xl mx-auto px-lg h-20 flex items-center justify-between">
+            <div class="flex items-center gap-xl">
+                <a asp-controller="Home" asp-action="Index" class="flex items-center gap-md group">
+                    <img src="/images/logo.png" alt="DAKKN Logo" class="h-12 group-hover:scale-105 transition-transform" />
+                    <span class="font-h3 text-h3 font-bold text-primary dark:text-primary-light">DAKKN</span>
+                </a>
+                
+                <nav class="hidden md:flex items-center gap-lg">
+                    <a asp-controller="Customer" asp-action="Products" class="nav-link font-body-lg @(currentAction == "Products" ? "text-primary font-bold" : "text-text-secondary hover:text-primary") transition-colors">@Localizer["nav_shop"]</a>
+                    <a asp-controller="Customer" asp-action="Orders" class="nav-link font-body-lg @(currentAction == "Orders" ? "text-primary font-bold" : "text-text-secondary hover:text-primary") transition-colors">@Localizer["admin_orders"]</a>
+                </nav>
+            </div>
+
+            <div class="flex items-center gap-lg">
+                <div class="relative hidden sm:block">
+                    <input class="bg-surface-container dark:bg-surface-container-high rounded-full py-2 px-4 ltr:pl-10 ltr:pr-4 rtl:pr-10 rtl:pl-4 text-sm font-body border-none focus:ring-2 focus:ring-primary outline-none w-48 lg:w-64 transition-all" placeholder="@Localizer["search_placeholder"]" type="text">
+                    <span class="material-symbols-outlined absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 text-text-secondary dark:text-outline text-lg">search</span>
+                </div>
+
+                <div class="flex items-center gap-sm">
+                    <button class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary dark:text-outline transition-colors relative">
+                        <span class="material-symbols-outlined">notifications</span>
+                        <span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+                    </button>
+                    <a asp-controller="Customer" asp-action="Profile" class="flex items-center gap-md p-1 pr-4 rtl:pl-4 rounded-full bg-surface-container dark:bg-inverse-surface border border-border dark:border-outline/10 hover:bg-primary/5 transition-all">
+                        <div class="w-8 h-8 rounded-full overflow-hidden">
+                            <img src="https://ui-avatars.com/api/?name=@(User.Identity?.Name ?? "User")&background=69d2cf&color=005957" class="w-full h-full object-cover">
+                        </div>
+                        <span class="hidden lg:block font-bold text-sm">@(User.Identity?.Name ?? "User")</span>
+                    </a>
+                </div>
+                
+                <form asp-controller="Auth" asp-action="Logout" method="post">
+                    <button type="submit" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-error transition-colors" title="Logout">
+                        <span class="material-symbols-outlined">logout</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1">
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-surface dark:bg-inverse-surface border-t border-border dark:border-outline/10 py-lg">
+        <div class="max-w-7xl mx-auto px-lg flex flex-col md:flex-row justify-between items-center gap-md">
+            <p class="text-sm text-text-secondary">@Localizer["footer_copy"]</p>
+            <div class="flex gap-lg">
+                <a asp-controller="Home" asp-action="Privacy" class="text-sm text-text-secondary hover:text-primary transition-colors">@Localizer["nav_privacy"]</a>
+                <a asp-controller="Home" asp-action="Terms" class="text-sm text-text-secondary hover:text-primary transition-colors">@Localizer["f_terms"]</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/landing.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

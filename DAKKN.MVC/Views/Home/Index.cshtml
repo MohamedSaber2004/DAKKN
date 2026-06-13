@@ -1,3 +1,4 @@
+@inject IStringLocalizer<Messages> Localizer
 @{
     Layout = "_LayoutLanding";
     ViewData["Title"] = Localizer["brand"] + " - " + Localizer["hero_badge"];
@@ -53,7 +54,7 @@
         <!-- Cart Button -->
         <button aria-label="shopping_cart" class="navbar-icon-btn relative scale-90 md:scale-100" title="Cart">
             <span class="material-symbols-outlined text-[24px]">shopping_cart</span>
-            <span class="absolute top-1.5 right-1.5 rtl:right-auto rtl:left-1.5 w-2 h-2 bg-tertiary-container rounded-full"></span>
+            <span class="absolute top-1.5 end-1.5 w-2 h-2 bg-tertiary-container rounded-full"></span>
         </button>
 
         <!-- Language Switcher -->
@@ -93,21 +94,21 @@
         <!-- Decorative Ambient Elements -->
         <div class="absolute inset-0 overflow-hidden pointer-events-none z-0 hidden md:block">
             <!-- Floating Blobs -->
-            <div class="deco-blob animate-blob-1 bg-primary/20 w-[450px] h-[450px] -top-24 -left-24 rtl:-left-auto rtl:-right-24"></div>
-            <div class="deco-blob animate-blob-2 bg-tertiary-container/30 w-[350px] h-[350px] bottom-12 right-12 rtl:right-auto rtl:left-12"></div>
-            <div class="deco-blob animate-blob-3 bg-secondary-container/20 w-[400px] h-[400px] top-1/3 left-1/3"></div>
+            <div class="deco-blob animate-blob-1 bg-primary/20 w-[450px] h-[450px] -top-24 start-[-6rem]"></div>
+            <div class="deco-blob animate-blob-2 bg-tertiary-container/30 w-[350px] h-[350px] bottom-12 end-12"></div>
+            <div class="deco-blob animate-blob-3 bg-secondary-container/20 w-[400px] h-[400px] top-1/3 start-1/3"></div>
 
             <!-- Rotating Rings -->
-            <div class="deco-ring w-[300px] h-[300px] top-10 right-10 rtl:right-auto rtl:left-10 opacity-70"></div>
-            <div class="deco-ring-solid w-[500px] h-[500px] -bottom-36 -left-12 opacity-40"></div>
+            <div class="deco-ring w-[300px] h-[300px] top-10 end-10 opacity-70"></div>
+            <div class="deco-ring-solid w-[500px] h-[500px] -bottom-36 start-[-3rem] opacity-40"></div>
 
             <!-- Floating Mini Shapes -->
-            <div class="deco-shape-diamond top-1/4 left-10 rtl:left-auto rtl:right-10" style="animation-delay: 1s;"></div>
-            <div class="deco-shape-square top-1/2 right-1/4 rtl:right-auto rtl:left-1/4" style="animation-delay: 3s;"></div>
-            <div class="deco-shape-diamond bottom-1/4 left-1/2" style="animation-delay: 5s;"></div>
+            <div class="deco-shape-diamond top-1/4 start-10" style="animation-delay: 1s;"></div>
+            <div class="deco-shape-square top-1/2 end-1/4" style="animation-delay: 3s;"></div>
+            <div class="deco-shape-diamond bottom-1/4 start-1/2" style="animation-delay: 5s;"></div>
             
             <!-- Dots Grid -->
-            <div class="deco-dots-grid top-12 left-1/2 rtl:left-auto rtl:right-1/2 opacity-60"></div>
+            <div class="deco-dots-grid top-12 start-1/2 opacity-60"></div>
         </div>
 
         <!-- Mobile: image top, text bottom. Desktop: text left, image right -->

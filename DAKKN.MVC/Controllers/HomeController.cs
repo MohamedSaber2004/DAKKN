@@ -18,6 +18,12 @@ namespace DAKKN.MVC.Controllers
         [OutputCache(Duration = 600)]
         public IActionResult Index()
         {
+            // Redirect authorized users to the Customer Dashboard
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Index", "Customer");
+            }
+
             return View();
         }
 
