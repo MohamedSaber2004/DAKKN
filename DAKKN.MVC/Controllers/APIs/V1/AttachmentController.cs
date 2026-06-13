@@ -1,37 +1,61 @@
-using Asp.Versioning;
+﻿using Asp.Versioning;
 using DAKKN.Appearence.Routes;
-using DAKKN.Application.Common.Models;
-using DAKKN.Application.Features.Attachments.Commands.UploadAttachment;
+using DAKKN.Application.Features.Attachments.Commands.UpdateImage;
+using DAKKN.Application.Features.Attachments.Commands.UploadImage;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DAKKN.Appearence.Controllers.APIs.V1
 {
     [ApiVersion("1.0")]
-    [Route(ApiRoutes.Attachments.Base)]
-    public class AttachmentController(IMediator mediator) : BaseApiController
+    public class AttachmentController:BaseApiController
     {
-        [HttpPost(ApiRoutes.Attachments.Upload)]
-        public async Task<IActionResult> Upload(IFormFile file, [FromQuery] int place = 0)
+        public AttachmentController(IMediator mediator): base(mediator) { }
+
+        /// <summary>
+        /// Upload Image
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        [HttpPost]
+        [Route(ApiRoutes.Attachments.UploadImage)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UploadImage([FromForm] UploadImageCommand request)
         {
-            if (file == null || file.Length == 0)
-                return BadRequest(ApiResponse<UploadResult>.Error("File is empty"));
+            var response = await _mediator.Send(request);
+            return Created(ApiRoutes.Attachments.UploadImage, response);
+        }
 
-            using var stream = file.OpenReadStream();
-            var command = new UploadAttachmentCommand
-            {
-                Stream = stream,
-                FileName = file.FileName,
-                ContentType = file.ContentType,
-                Place = place
-            };
+        /// <summary>
+        /// Update Image
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        [HttpPatch]
+        [Route(ApiRoutes.Attachments.UpdateImage)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status202Accepted)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdateImage(string name, [FromForm] UpdateImageCommand request)
+        {
+            request.ImageName = name;
+            var response = await _mediator.Send(request);
+            return Accepted(response);
+        }
 
-            var result = await mediator.Send(command);
-
-            if (result.Succeeded)
-                return Ok(ApiResponse<UploadResult>.Ok(result, "File uploaded successfully"));
-
-            return BadRequest(ApiResponse<UploadResult>.Error(result.Error ?? "Upload failed"));
+        /// <summary>
+        /// Upload List Of Images
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        [HttpPost]
+        [Route(ApiRoutes.Attachments.UploadMultiImage)]
+        [ProducesResponseType(typeof(List<string>), StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UploadListOfImages([FromForm] UploadMultipleImageCommand request)
+        {
+            var response = await _mediator.Send(request);
+            return Created(ApiRoutes.Attachments.UploadMultiImage, response);
         }
     }
 }

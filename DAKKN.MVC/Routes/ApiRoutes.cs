@@ -1,4 +1,4 @@
-﻿namespace DAKKN.Appearence.Routes
+namespace DAKKN.Appearence.Routes
 {
     public static class ApiRoutes
     {
@@ -11,8 +11,9 @@
 
         public static class Attachments
         {
-            public const string Base = ApiRoutes.Base + "/attachments";
-            public const string Upload = "";
+            public const string UploadImage = Base + "/attachments/upload-image";
+            public const string UploadMultiImage = Base + "/attachments/upload-multi-image";
+            public const string UpdateImage = Base + "/attachments/update-image";
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
@@ -29,10 +29,10 @@ namespace DAKKN.Application.Common.Behaviours
             if (elapsedMilliseconds > 600)
             {
                 var requestName = typeof(TRequest).Name;
-                var userName = string.Empty;
 
-                _logger.LogWarning("Dakkn Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@Request}",
-                    requestName, elapsedMilliseconds, request);
+                // Safe logging to avoid serialization issues with Streams
+                _logger.LogWarning("Dakkn Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds)",
+                    requestName, elapsedMilliseconds);
             }
 
             return response;

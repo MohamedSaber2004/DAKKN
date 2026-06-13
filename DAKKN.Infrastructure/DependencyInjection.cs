@@ -1,8 +1,8 @@
 using DAKKN.Application.Common.Interfaces;
+using DAKKN.Application.Common.Services;
 using DAKKN.Domain.Repositories.Interfaces.Base;
-using DAKKN.Infrastructure.Options;
 using DAKKN.Infrastructure.Repositories.Implementations.Base;
-using DAKKN.Infrastructure.Services;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -13,24 +13,12 @@ namespace DAKKN.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration, IHostEnvironment env)
         {
-            services.AddOptions<B2Options>()
-                .Bind(configuration.GetSection("B2"));
-
             services.AddScoped(typeof(IGenericRepository<,>), typeof(GenericRepository<,>));
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            
+
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.RegisterRepositories();
-
-            if (env.IsDevelopment())
-            {
-                services.AddScoped<IFileStorageService, LocalFileStorageService>();
-            }
-            else
-            {
-                services.AddScoped<IFileStorageService, B2FileStorageService>();
-            }
 
             return services;
         }

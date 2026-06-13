@@ -16,8 +16,6 @@ namespace DAKKN.Persistence
         {
         }
 
-        public DbSet<Attachment> Attachments => Set<Attachment>();
-
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
             builder.ConfigureWarnings(action =>

@@ -1,5 +1,6 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace DAKKN.Application.Common.Behaviours
 {
@@ -17,11 +18,27 @@ namespace DAKKN.Application.Common.Behaviours
         {
             var requestName = typeof(TRequest).Name;
 
-            _logger.LogInformation("Handling Request: {Name} {@Request}", requestName, request);
+            // Safe logging to avoid System.Text.Json errors during destructuring
+            _logger.LogInformation("Handling Request: {Name}", requestName);
+
+            try 
+            {
+                // We avoid {@Request} here if it's causing serialization issues with certain types
+                var jsonRequest = JsonSerializer.Serialize(request, new JsonSerializerOptions 
+                { 
+                    WriteIndented = false,
+                    DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                });
+                _logger.LogInformation("Request Body: {JSON}", jsonRequest);
+            }
+            catch 
+            {
+                _logger.LogInformation("Request Body: [Serialization Failed]");
+            }
 
             var response = await next();
 
-            _logger.LogInformation("Handled Request: {Name} {@Response}", requestName, response);
+            _logger.LogInformation("Handled Request: {Name}", requestName);
 
             return response;
         }

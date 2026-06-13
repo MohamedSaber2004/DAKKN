@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using DAKKN.Appearence.Filters;
 using DAKKN.Appearence.Services;
 using DAKKN.Application;
 using DAKKN.Application.Common.Interfaces;
@@ -96,9 +97,13 @@ namespace DAKKN.MVC
                 options.ReportApiVersions = true;
             }).AddMvc();
 
-            builder.Services.AddControllersWithViews()
-                .AddViewLocalization()
-                .AddDataAnnotationsLocalization();
+            builder.Services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add<ApiExceptionFilterAttribute>();
+                options.MaxModelValidationErrors = 50;
+            })
+            .AddViewLocalization()
+            .AddDataAnnotationsLocalization();
 
             builder.Services.AddRateLimiter(options =>
             {

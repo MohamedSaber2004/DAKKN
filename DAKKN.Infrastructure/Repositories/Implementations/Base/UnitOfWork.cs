@@ -1,5 +1,4 @@
 using DAKKN.Domain.Common.Interfaces;
-using DAKKN.Domain.Repositories.Interfaces;
 using DAKKN.Domain.Repositories.Interfaces.Base;
 using DAKKN.Persistence;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -14,16 +13,12 @@ namespace DAKKN.Infrastructure.Repositories.Implementations.Base
         private readonly Dictionary<string, object> _repositories;
         private IDbContextTransaction? _transaction;
 
-        private IAttachmentRepository? _attachmentRepository;
-
         public UnitOfWork(DAKKNDbContext context, IServiceProvider serviceProvider)
         {
             _context = context;
             _serviceProvider = serviceProvider;
             _repositories = new Dictionary<string, object>();
         }
-
-        public IAttachmentRepository AttachmentRepository => _attachmentRepository ?? new AttachmentRepository(_context);
 
         public IGenericRepository<T, TKey> GetRepository<T, TKey>() where T : class, IBaseEntity<TKey> where TKey : IEquatable<TKey>
         {

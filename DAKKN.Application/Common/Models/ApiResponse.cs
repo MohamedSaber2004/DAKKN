@@ -1,4 +1,4 @@
-﻿namespace DAKKN.Application.Common.Models
+namespace DAKKN.Application.Common.Models
 {
     public record ApiResponse<TData>
     {
@@ -29,7 +29,7 @@
             return new ApiResponse<TData>
             {
                 Success = false,
-                Errors = errors!,
+                Errors = errors ?? new Dictionary<string, string[]>(),
                 Data = default,
                 Message = message,
                 StatusCode = statusCode
@@ -41,11 +41,11 @@
             return new ApiResponse<TData>
             {
                 Success = false,
+                Errors = new Dictionary<string, string[]>(),
                 Data = default,
                 Message = message,
                 StatusCode = statusCode
             };
-
         }
     }
 }

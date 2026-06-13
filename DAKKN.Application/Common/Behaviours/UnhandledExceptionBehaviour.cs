@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace DAKKN.Application.Common.Behaviours
@@ -23,7 +23,8 @@ namespace DAKKN.Application.Common.Behaviours
             {
                 var requestName = typeof(TRequest).Name;
 
-                _logger.LogError(ex, "Dakkn Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
+                // Safe logging: avoid destructuring {@Request} which can fail on Streams
+                _logger.LogError(ex, "Dakkn Request: Unhandled Exception for Request {Name}", requestName);
 
                 throw;
             }
