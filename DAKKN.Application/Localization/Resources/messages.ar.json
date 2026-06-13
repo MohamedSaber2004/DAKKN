@@ -778,5 +778,13 @@
   "Product_Size": "الحجم",
   "Product_Quantity": "الكمية",
   "Product_BulkSavings": "وفر 10% عند طلب 50 قطعة فأكثر",
-  "Product_AddToCart": "أضف إلى السلة"
+  "Product_AddToCart": "أضف إلى السلة",
+  "Dashboard_Welcome": "مرحباً بك مجدداً",
+  "Dashboard_SubHeader": "إدارة مجموعتك، تتبع طلباتك، واكتشاف ملصقات جديدة.",
+  "Dashboard_BrowseNew": "تصفح أحدث الملصقات",
+  "Dashboard_LastOrder": "الطلب الأخير",
+  "Dashboard_TrackOrder": "تتبع الشحنة",
+  "Dashboard_Suggested": "مقترح لك",
+  "Dashboard_Programming": "البرمجة والتقنية",
+  "Dashboard_Memes": "ثقافة الإنترنت والميمز"
   }

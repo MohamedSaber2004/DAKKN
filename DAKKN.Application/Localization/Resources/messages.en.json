@@ -763,5 +763,13 @@
   "Product_Size": "Size",
   "Product_Quantity": "Quantity",
   "Product_BulkSavings": "Save 10% on orders of 50+",
-  "Product_AddToCart": "Add to Cart"
+  "Product_AddToCart": "Add to Cart",
+  "Dashboard_Welcome": "Welcome back",
+  "Dashboard_SubHeader": "Manage your collection, track orders, and discover new stickers.",
+  "Dashboard_BrowseNew": "Browse New Arrivals",
+  "Dashboard_LastOrder": "Last Order",
+  "Dashboard_TrackOrder": "Track Shipment",
+  "Dashboard_Suggested": "Recommended for You",
+  "Dashboard_Programming": "Programming & Tech",
+  "Dashboard_Memes": "Internet Culture & Memes"
   }
