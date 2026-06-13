@@ -81,7 +81,12 @@
             }
         })();
 
-        window.csrfToken = "@Html.AntiForgeryToken()".match(/value="([^"]+)"/)[1];
+        document.addEventListener('DOMContentLoaded', function() {
+            const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+            if (tokenInput) {
+                window.csrfToken = tokenInput.value;
+            }
+        });
 
         // Failsafe: Ensure preloader is hidden
         setTimeout(() => {
