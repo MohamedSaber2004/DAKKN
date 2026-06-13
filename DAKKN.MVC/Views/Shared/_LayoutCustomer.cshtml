@@ -143,6 +143,10 @@
                 <span class="material-symbols-outlined @(currentAction == "Orders" ? "filled-icon" : "")">receipt_long</span>
                 <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["admin_orders"]</span>
             </a>
+            <a asp-controller="Customer" asp-action="Support" class="nav-item flex items-center gap-md @(currentAction == "Support" ? "bg-primary text-on-primary shadow-medium" : "text-text-secondary hover:text-primary hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["nav_support"]">
+                <span class="material-symbols-outlined @(currentAction == "Support" ? "filled-icon" : "")">support_agent</span>
+                <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["nav_support"]</span>
+            </a>
             <a asp-controller="Customer" asp-action="Profile" class="nav-item flex items-center gap-md @(currentAction == "Profile" ? "bg-primary text-on-primary shadow-medium" : "text-text-secondary hover:text-primary hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200 mt-auto" title="@Localizer["nav_profile"]">
                 <span class="material-symbols-outlined @(currentAction == "Profile" ? "filled-icon" : "")">person</span>
                 <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["nav_profile"]</span>
@@ -235,6 +239,10 @@
         <a asp-controller="Customer" asp-action="Orders" class="mob-nav-item @(currentAction == "Orders" ? "active" : "")">
             <span class="material-symbols-outlined">receipt_long</span>
             <span>Orders</span>
+        </a>
+        <a asp-controller="Customer" asp-action="Support" class="mob-nav-item @(currentAction == "Support" ? "active" : "")">
+            <span class="material-symbols-outlined">support_agent</span>
+            <span>Support</span>
         </a>
         <a asp-controller="Customer" asp-action="Profile" class="mob-nav-item @(currentAction == "Profile" ? "active" : "")">
             <span class="material-symbols-outlined">person</span>

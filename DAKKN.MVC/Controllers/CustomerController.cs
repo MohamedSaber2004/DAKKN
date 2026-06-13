@@ -150,5 +150,41 @@ namespace DAKKN.MVC.Controllers
             ViewData["Title"] = "My Profile";
             return View();
         }
+
+        [HttpGet("support")]
+        public IActionResult Support()
+        {
+            ViewData["Title"] = "Support Center";
+            var viewModel = new CustomerSupportDashboardViewModel
+            {
+                Tickets = new List<SupportTicketViewModel>
+                {
+                    new SupportTicketViewModel { TicketId = "TK-2024-001", Subject = "Missing Item in Order #DK-9021", Status = TicketStatus.Open, Priority = TicketPriority.High, CreatedAt = DateTime.Now.AddDays(-1) },
+                    new SupportTicketViewModel { TicketId = "TK-2024-002", Subject = "Holographic finish question", Status = TicketStatus.Resolved, Priority = TicketPriority.Low, CreatedAt = DateTime.Now.AddDays(-5) }
+                }
+            };
+            return View(viewModel);
+        }
+
+        [HttpGet("support/new")]
+        public IActionResult NewTicket(string? orderId)
+        {
+            ViewData["Title"] = "Open New Ticket";
+            return View(new NewTicketViewModel { OrderId = orderId });
+        }
+
+        [HttpPost("support/new")]
+        public IActionResult CreateTicket(NewTicketViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewData["Title"] = "Open New Ticket";
+                return View("NewTicket", model);
+            }
+
+            // Mock saving ticket
+            TempData["SuccessMessage"] = "Your support ticket has been created successfully!";
+            return RedirectToAction("Support");
+        }
     }
 }
