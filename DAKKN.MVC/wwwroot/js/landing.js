@@ -1,3 +1,31 @@
+// ── Theme Management ────────────────────────────
+
+function applyTheme(theme) {
+    if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+    } else {
+        document.documentElement.classList.remove('dark');
+    }
+}
+
+function toggleDarkMode() {
+    const isDark = document.documentElement.classList.toggle('dark');
+    const theme = isDark ? 'dark' : 'light';
+    localStorage.setItem('dakkn_theme', theme);
+    // Dispatch a storage event manually for the current tab
+    window.dispatchEvent(new StorageEvent('storage', {
+        key: 'dakkn_theme',
+        newValue: theme
+    }));
+}
+
+// Sync theme across tabs
+window.addEventListener('storage', (e) => {
+    if (e.key === 'dakkn_theme') {
+        applyTheme(e.newValue);
+    }
+});
+
 // ── Language State Management ────────────────────────────
 
 // Utility to get current language from document

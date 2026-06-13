@@ -1,6 +1,14 @@
+using DAKKN.Application.Common.Exceptions;
+using DAKKN.Application.Features.Auth.Comands.RefreshToken;
+using DAKKN.Application.Features.Auth.Comands.SignIn;
+using DAKKN.Application.Features.Auth.Comands.SignUp;
+using DAKKN.Application.Features.Auth.DTOs;
+using DAKKN.Domain.Entities;
 using DAKKN.MVC.Mock;
 using DAKKN.MVC.ViewModels.Auth;
+using MediatR;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.AspNetCore.RateLimiting;
@@ -10,57 +18,47 @@ namespace DAKKN.MVC.Controllers
 {
     [Route("auth")]
     [EnableRateLimiting("auth")]
-    public class AuthController(IWebHostEnvironment env) : Controller
+    public class AuthController(IWebHostEnvironment env, IMediator mediator, UserManager<ApplicationUser> userManager) : Controller
     {
+        private readonly IMediator _mediator = mediator;
+        private readonly UserManager<ApplicationUser> _userManager = userManager;
+
         // ──────────────────────────────────────────────
         // LOGIN
         // ──────────────────────────────────────────────
 
         [HttpGet("login")]
-        [OutputCache(Duration =600)]
+        [OutputCache(Duration = 600)]
         public IActionResult Login() => View(new LoginViewModel());
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginViewModel vm)
         {
-            if (!ModelState.IsValid) return View(vm);
-
-            var user = AuthMockStore.FindByEmail(vm.Email);
-
-            if (user is null || user.Password != vm.Password)
+            try
             {
-                ModelState.AddModelError(string.Empty, "invalid_credentials");
-                return View(vm);
+                var result = await _mediator.Send(new SignInCommand(vm.Email, vm.Password));
+                return await SignInAndRedirect(result, vm.RememberMe);
+            }
+            catch (ValidationException ex)
+            {
+                foreach (var error in ex.Errors)
+                {
+                    foreach (var message in error.Value)
+                    {
+                        ModelState.AddModelError(error.Key, message);
+                    }
+                }
+            }
+            catch (BadRequestException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
             }
 
-            if (!user.IsVerified)
-            {
-                // Kick to OTP to finish verification
-                TempData["OtpEmail"]   = vm.Email;
-                TempData["OtpPurpose"] = "VerifyEmail";
-                return RedirectToAction(nameof(Otp));
-            }
-
-            // Issue Authentication Cookie
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.FullName),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, "Customer") // Default to Customer for now
-            };
-
-            var identity = new ClaimsIdentity(claims, "Cookies");
-            var principal = new ClaimsPrincipal(identity);
-
-            await HttpContext.SignInAsync("Cookies", principal, new AuthenticationProperties
-            {
-                IsPersistent = vm.RememberMe,
-                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
-            });
-
-            TempData["SuccessMessage"] = "login_success";
-            return RedirectToAction("Index", "Home");
+            return View(vm);
         }
 
         // ──────────────────────────────────────────────
@@ -72,34 +70,88 @@ namespace DAKKN.MVC.Controllers
         public IActionResult Register() => View(new RegisterViewModel());
 
         [HttpPost("register")]
-        public IActionResult Register(RegisterViewModel vm)
+        public async Task<IActionResult> Register(RegisterViewModel vm)
         {
-            if (!ModelState.IsValid) return View(vm);
-
-            if (AuthMockStore.FindByEmail(vm.Email) is not null)
+            try
             {
-                ModelState.AddModelError(nameof(vm.Email), "email_taken");
-                return View(vm);
+                var result = await _mediator.Send(new SignupCommand(vm.FullName, vm.Email, vm.Password, vm.ConfirmPassword));
+                return await SignInAndRedirect(result, true);
+            }
+            catch (ValidationException ex)
+            {
+                foreach (var error in ex.Errors)
+                {
+                    foreach (var message in error.Value)
+                    {
+                        ModelState.AddModelError(error.Key, message);
+                    }
+                }
+            }
+            catch (BadRequestException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
             }
 
-            AuthMockStore.Users.Add(new MockUser
+            return View(vm);
+        }
+
+        private async Task<IActionResult> SignInAndRedirect(AuthResponseDto result, bool rememberMe)
+        {
+            var claims = new List<Claim>
             {
-                Id       = Guid.NewGuid(),
-                FullName = vm.FullName,
-                Email    = vm.Email,
-                Password = vm.Password,
-                IsVerified = false
+                new Claim(ClaimTypes.NameIdentifier, result.id.ToString()),
+                new Claim(ClaimTypes.Name, result.FullName),
+                new Claim(ClaimTypes.Email, result.Email)
+            };
+
+            foreach (var role in result.Roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            var identity = new ClaimsIdentity(claims, "Cookies");
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync("Cookies", principal, new AuthenticationProperties
+            {
+                IsPersistent = rememberMe,
+                ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
             });
 
-            TempData["OtpEmail"]   = vm.Email;
-            TempData["OtpPurpose"] = "VerifyEmail";
+            TempData["SuccessMessage"] = "login_success";
 
-            if (env.IsDevelopment())
-                TempData["DevOtp"] = AuthMockStore.IssueOtp(vm.Email);
-            else
-                AuthMockStore.IssueOtp(vm.Email);
+            if (result.Roles.Contains("Admin"))
+            {
+                return RedirectToAction("Dashboard", "Admin");
+            }
 
-            return RedirectToAction(nameof(Otp));
+            return RedirectToAction("Index", "Customer");
+        }
+
+        // ──────────────────────────────────────────────
+        // REFRESH TOKEN
+        // ──────────────────────────────────────────────
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken(string token)
+        {
+            try
+            {
+                var result = await _mediator.Send(new RefreshTokenCommand(token));
+                return Ok(result);
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { errors = ex.Errors });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         // ──────────────────────────────────────────────

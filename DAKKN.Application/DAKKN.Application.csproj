@@ -32,7 +32,6 @@
 
   <ItemGroup>
     <Folder Include="Common\Exceptions\" />
-    <Folder Include="Common\Options\" />
     <Folder Include="Localization\" />
   </ItemGroup>
 

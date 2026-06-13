@@ -70,8 +70,11 @@
 
     <script>
         (function() {
-            const theme = localStorage.getItem('dakkn_theme');
-            if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            const savedTheme = localStorage.getItem('dakkn_theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const isDark = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
+            
+            if (isDark) {
                 document.documentElement.classList.add('dark');
             } else {
                 document.documentElement.classList.remove('dark');
@@ -80,11 +83,6 @@
 
         // Inject current translations immediately to avoid flickering
         window.currentTranslations = @Html.Raw(JsonSerializer.Serialize(DAKKN.Application.Localization.JsonLocalizationProvider.GetTranslations(culture)));
-
-        function toggleDarkMode() {
-            const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.setItem('dakkn_theme', isDark ? 'dark' : 'light');
-        }
     </script>
 </head>
 <body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 min-h-screen antialiased selection:bg-primary/10">
@@ -170,7 +168,7 @@
     </div>
 
     <!-- Dark Mode Toggle Floating -->
-    <button class="fixed bottom-6 right-6 w-12 h-12 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full flex items-center justify-center shadow-lg z-50 transition-all hover:scale-110 active:scale-95" 
+    <button class="fixed bottom-6 end-6 w-12 h-12 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full flex items-center justify-center shadow-lg z-50 transition-all hover:scale-110 active:scale-95" 
             onclick="toggleDarkMode()">
         <span class="material-symbols-outlined dark:text-yellow-400 text-slate-700">dark_mode</span>
     </button>

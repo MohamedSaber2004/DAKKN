@@ -15,5 +15,10 @@ namespace DAKKN.Appearence.Routes
             public const string UploadMultiImage = Base + "/attachments/upload-multi-image";
             public const string UpdateImage = Base + "/attachments/update-image";
         }
+
+        public static class Auth
+        {
+            public const string Signup = Base + "/auth/signup";
+        }
     }
 }

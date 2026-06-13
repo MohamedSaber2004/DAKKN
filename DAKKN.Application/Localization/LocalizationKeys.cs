@@ -36,5 +36,21 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString Accepted = new("actionresult.accepted");
             public static readonly KeyString Deleted = new("actionresult.deleted");
         }
+
+        public static class AuthMessages
+        {
+            public static readonly KeyString PasswordMismatch = new("auth.password_mismatch");
+            public static readonly KeyString WeakPassword = new("auth.weak_password");
+            public static readonly KeyString EmailFoundBefore = new("auth.email_found_before");
+            public static readonly KeyString InvalidCredentials = new("auth.invalid_credentials");
+            public static readonly KeyString InvalidEmail = new("auth.invalid_email");
+            public static readonly KeyString RefreshTokenInvalid  = new("auth.refresh_token_invalid");
+        }
+
+        public static class ValidationMessages
+        {
+            public static readonly KeyString Required = new("validation.required");
+            public static readonly KeyString MinLength = new("validation.min_length");
+        }
     }
 }

@@ -37,6 +37,11 @@ namespace DAKKN.Domain.Entities
             IsDeleted = false;
         }
 
+        public static ApplicationUser Create(string fullName, string email)
+        {
+            return new ApplicationUser(email, email, fullName, DateTime.UtcNow, Gender.Male);
+        }
+
         public void UpdateProfile(string fullName, DateTime birthDate, Gender gender, string? profilePictureUrl)
         {
             FullName = fullName;
@@ -82,5 +87,7 @@ namespace DAKKN.Domain.Entities
             IsActive = false;
             UpdatedAt = DateTime.UtcNow;
         }
+
+        public virtual ICollection<UserRefreshToken> UserRefreshTokens { get; private set; } = new List<UserRefreshToken>();
     }
 }
