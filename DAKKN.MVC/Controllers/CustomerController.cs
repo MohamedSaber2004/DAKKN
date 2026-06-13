@@ -47,6 +47,13 @@ namespace DAKKN.MVC.Controllers
             return View();
         }
 
+        [HttpGet("cart")]
+        public IActionResult Cart()
+        {
+            ViewData["Title"] = "Shopping Cart";
+            return View();
+        }
+
         [HttpGet("profile")]
         public IActionResult Profile()
         {
