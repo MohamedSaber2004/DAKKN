@@ -1,4 +1,5 @@
 using DAKKN.Application.Interfaces;
+using DAKKN.Application.DTOs;
 using DAKKN.MVC.ViewModels.Customer;
 using DAKKN.MVC.ViewModels.Admin;
 using Microsoft.AspNetCore.Authorization;
@@ -39,6 +40,35 @@ namespace DAKKN.MVC.Controllers
         {
             ViewData["Title"] = "My Orders";
             return View();
+        }
+
+        [HttpGet("favorites")]
+        public IActionResult Favorites()
+        {
+            ViewData["Title"] = "My Favorites";
+            var viewModel = new FavoritesViewModel
+            {
+                FavoriteProducts = new List<ProductDto>
+                {
+                    new ProductDto
+                    {
+                        Id = Guid.Parse("f4d6c75f-2643-4ffc-8199-e94a91d8b617"),
+                        Name = "Retro Cassette",
+                        Price = 70,
+                        ImageUrls = new List<string> { "https://lh3.googleusercontent.com/aida/AP1WRLvk0o2fHlsgnzmZ9xrrRAnUTq9hl5CW063LX44OhYiXj0ZAadSE46fIAmtHQKBEzfk8NKsMl6AwohhVGiDgxsbst33TGFkDW68Y9_d3C1Cvf-mtviXqQYHM-Aqnsunu3Q6Yy2-9A5mXcsO80D173UvbE44Odz0GI41kQbHK_cLtDiruHCKTT15snGH5XT7Y6MLMfFd4rUCTY71ZJwiOba19bKW0Du2pMXYtJtF-I-h5V-wypv1z0Vztp_M" },
+                        FinishOptions = new List<string> { "Holographic" }
+                    },
+                    new ProductDto
+                    {
+                        Id = Guid.Parse("67890abc-def0-1234-5678-90abcdef1234"),
+                        Name = "Pixel Heart",
+                        Price = 60,
+                        ImageUrls = new List<string> { "https://lh3.googleusercontent.com/aida/AP1WRLvk0o2fHlsgnzmZ9xrrRAnUTq9hl5CW063LX44OhYiXj0ZAadSE46fIAmtHQKBEzfk8NKsMl6AwohhVGiDgxsbst33TGFkDW68Y9_d3C1Cvf-mtviXqQYHM-Aqnsunu3Q6Yy2-9A5mXcsO80D173UvbE44Odz0GI41kQbHK_cLtDiruHCKTT15snGH5XT7Y6MLMfFd4rUCTY71ZJwiOba19bKW0Du2pMXYtJtF-I-h5V-wypv1z0Vztp_M" },
+                        FinishOptions = new List<string> { "Clear Vinyl" }
+                    }
+                }
+            };
+            return View(viewModel);
         }
 
         [HttpGet("order-details/{id}")]
