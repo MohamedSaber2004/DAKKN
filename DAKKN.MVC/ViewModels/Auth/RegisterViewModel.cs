@@ -19,5 +19,9 @@ namespace DAKKN.MVC.ViewModels.Auth
         [Required(ErrorMessage = "confirm_required")]
         [Compare(nameof(Password), ErrorMessage = "passwords_mismatch")]
         public string ConfirmPassword { get; set; } = string.Empty;
+
+        public string? ReturnUrl { get; set; }
+
+        public bool RememberMe { get; set; }
     }
 }

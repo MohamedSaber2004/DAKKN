@@ -70,12 +70,7 @@ namespace DAKKN.Infrastructure
             };
             services.AddSingleton(tokenValidationParameters);
 
-            services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
+            services.AddAuthentication()
             .AddJwtBearer(options =>
             {
                 options.SaveToken = true;

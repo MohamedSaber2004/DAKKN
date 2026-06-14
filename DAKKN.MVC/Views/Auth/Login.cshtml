@@ -31,6 +31,7 @@
 
 <form asp-action="Login" asp-controller="Auth" method="post" class="space-y-6" novalidate>
     @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="ReturnUrl" />
 
     <div class="space-y-2">
         <label asp-for="Email" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mr-1 ms-1">
@@ -87,7 +88,7 @@
         <div class="mt-10 text-center">
             <p class="text-slate-600 dark:text-slate-400 font-medium">
                 @Localizer["auth.login.no_account"]
-                <a asp-action="Register" asp-controller="Auth" class="text-primary font-bold mr-1 ms-1 hover:underline">
+                <a asp-action="Register" asp-controller="Auth" asp-route-returnUrl="@Model.ReturnUrl" class="text-primary font-bold mr-1 ms-1 hover:underline">
                     @Localizer["auth.login.register"]
                 </a>
             </p>

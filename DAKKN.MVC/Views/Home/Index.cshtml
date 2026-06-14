@@ -58,9 +58,9 @@
         </button>
 
         <!-- Language Switcher -->
-        <button id="lang-toggle-btn" onclick="toggleLang()" class="lang-pill-premium text-[11px] md:text-[13px] px-3 md:px-4 py-1.5 md:py-2">
-            @(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") ? "English" : "العربية")
-        </button>
+        @await Html.PartialAsync("Partials/_LanguageToggle")
+
+        @await Html.PartialAsync("Partials/_ThemeToggle")
     </div>
 </nav>
 

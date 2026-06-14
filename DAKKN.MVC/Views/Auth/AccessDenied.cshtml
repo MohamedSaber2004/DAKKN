@@ -1,0 +1,42 @@
+@inject IStringLocalizer<Messages> Localizer
+@{
+    Layout = "_LayoutAuth";
+    ViewData["Title"] = Localizer["auth.access_denied.title"];
+}
+
+@section Illustration {
+    <div class="relative w-[400px] h-[400px]">
+        <div class="absolute inset-0 flex items-center justify-center z-20">
+            <span class="material-symbols-outlined text-[200px] text-red-500/20">block</span>
+        </div>
+    </div>
+}
+
+<div class="text-center">
+    <div class="mb-6">
+        <span class="material-symbols-outlined text-6xl text-red-500">gpp_bad</span>
+    </div>
+    <h1 class="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+        @Localizer["auth.access_denied.title"]
+    </h1>
+    <p class="text-slate-500 dark:text-slate-400 mb-8">
+        @Localizer["auth.access_denied.message"]
+    </p>
+
+    <div class="space-y-4">
+        <a asp-action="Index" asp-controller="Home" class="w-full inline-flex items-center justify-center bg-primary hover:bg-[#0c7a77] text-white font-bold py-4 px-6 rounded-xl transition-all shadow-lg shadow-primary/20 gap-3 active:scale-[0.98]">
+            <span class="material-symbols-outlined">home</span>
+            @Localizer["auth.back_to_home"]
+        </a>
+        
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <form asp-action="Logout" asp-controller="Auth" method="post">
+                <button type="submit" class="w-full inline-flex items-center justify-center border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 font-bold py-4 px-6 rounded-xl transition-all hover:bg-slate-50 dark:hover:bg-black gap-3 active:scale-[0.98]">
+                    <span class="material-symbols-outlined">logout</span>
+                    @Localizer["auth.logout"]
+                </button>
+            </form>
+        }
+    </div>
+</div>

@@ -56,6 +56,7 @@ tailwind.config = {
                 "on-surface-variant": "#3d4948",
                 background: "#F8FAFB",
                 "on-background": "#171d1c",
+                "dark-page": "#0A2030",
                 outline: "#6d7979",
                 "outline-variant": "#bcc9c8",
                 "inverse-surface": "#2c3131",

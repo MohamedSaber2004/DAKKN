@@ -1,3 +1,4 @@
+using DAKKN.Application.Common.Exceptions;
 using DAKKN.Application.Common.Interfaces;
 using DAKKN.Application.Common.Options;
 using DAKKN.Application.Features.Auth.DTOs;
@@ -37,13 +38,18 @@ namespace DAKKN.Application.Features.Auth.Comands.SignIn
         {
             var user = await _userManager.FindByEmailAsync(request.Email);
 
+            if (user == null || !await _userManager.CheckPasswordAsync(user, request.Password))
+            {
+                throw new BadRequestException(_localizer[LocalizationKeys.AuthMessages.InvalidCredentials.Key]);
+            }
+
             // Generate Access Token
-            var roles = await _userManager.GetRolesAsync(user!);
-            var accessToken = _jwtTokenService.GenerateAccessToken(user!, roles);
+            var roles = await _userManager.GetRolesAsync(user);
+            var accessToken = _jwtTokenService.GenerateAccessToken(user, roles);
 
             // Check for existing valid refresh token
             var existingToken = await _unitOfWork.GetRepository<UserRefreshToken>()
-                .GetFirstAsync(x => x.UserId == user!.Id && !x.IsRevoked && x.ExpiryDate > DateTime.UtcNow, cancellationToken);
+                .GetFirstAsync(x => x.UserId == user.Id && !x.IsRevoked && x.ExpiryDate > DateTime.UtcNow, cancellationToken);
 
             string refreshToken;
             if (existingToken != null)
@@ -52,13 +58,13 @@ namespace DAKKN.Application.Features.Auth.Comands.SignIn
             }
             else
             {
-                refreshToken = _jwtTokenService.GenerateRefreshToken(user!);
-                var userRefreshToken = UserRefreshToken.Create(user!.Id, refreshToken, DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpiryDays));
+                refreshToken = _jwtTokenService.GenerateRefreshToken(user);
+                var userRefreshToken = UserRefreshToken.Create(user.Id, refreshToken, DateTime.UtcNow.AddDays(_jwtSettings.RefreshTokenExpiryDays));
                 await _unitOfWork.GetRepository<UserRefreshToken>().AddAsync(userRefreshToken);
                 await _unitOfWork.SaveChangesAsync();
             }
 
-            return new AuthResponseDto(accessToken, refreshToken, user!.FullName, user.Email!, user.Id, roles);
+            return new AuthResponseDto(accessToken, refreshToken, user.FullName, user.Email!, user.Id, roles);
         }
     }
 }

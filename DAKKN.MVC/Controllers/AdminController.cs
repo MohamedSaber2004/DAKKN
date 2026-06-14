@@ -4,10 +4,13 @@ using Microsoft.Extensions.Localization;
 using DAKKN.Application.Localization;
 using DAKKN.MVC.ViewModels.Admin;
 
+using DAKKN.Appearence.Filters;
+using DAKKN.Domain.Enums;
+
 namespace DAKKN.MVC.Controllers
 {
     [Route("admin")]
-    // [Authorize(Roles = "Admin")]   // wire up once real auth is implemented
+    [RoleAuthorize(UserType.Admin)]
     public class AdminController : Controller
     {
         private readonly IStringLocalizer<Messages> _localizer;

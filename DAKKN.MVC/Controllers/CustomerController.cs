@@ -5,9 +5,12 @@ using DAKKN.MVC.ViewModels.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using DAKKN.Appearence.Filters;
+using DAKKN.Domain.Enums;
+
 namespace DAKKN.MVC.Controllers
 {
-    [Authorize]
+    [RoleAuthorize(UserType.User, UserType.Admin)]
     [Route("customer")]
     public class CustomerController(IProductService productService, IDashboardService dashboardService) : Controller
     {

@@ -1,0 +1,12 @@
+@{
+    var culture = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("en") ? "en" : "ar";
+    var targetCulture = culture == "en" ? "ar" : "en";
+    var targetLabel = culture == "en" ? "AR" : "EN";
+    var returnUrl = Context.Request.Path + Context.Request.QueryString;
+}
+
+<a asp-controller="Translation" asp-action="SetLanguage" asp-route-culture="@targetCulture" asp-route-returnUrl="@returnUrl" 
+   class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary dark:text-outline dark:hover:text-primary-light transition-colors hover:bg-surface-container dark:hover:bg-surface-container-high font-bold text-sm"
+   title="@(culture == "en" ? "Switch to Arabic" : "التغيير إلى الإنجليزية")">
+    @targetLabel
+</a>

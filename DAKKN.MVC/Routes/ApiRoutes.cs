@@ -19,6 +19,8 @@ namespace DAKKN.Appearence.Routes
         public static class Auth
         {
             public const string Signup = Base + "/auth/signup";
+            public const string Login = Base + "/auth/login";
+            public const string Logout = Base + "/auth/logout";
         }
     }
 }

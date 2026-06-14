@@ -10,7 +10,6 @@ namespace DAKKN.MVC.Controllers
         public IActionResult SetLanguage(string culture, string returnUrl)
         {
             if (string.IsNullOrEmpty(culture)) culture = "ar";
-            if (string.IsNullOrEmpty(returnUrl)) returnUrl = "/";
 
             // Set the ASP.NET Core Culture cookie
             Response.Cookies.Append(
@@ -19,13 +18,18 @@ namespace DAKKN.MVC.Controllers
                 new CookieOptions { 
                     Expires = DateTimeOffset.UtcNow.AddYears(1),
                     HttpOnly = false,
-                    Secure = Request.IsHttps, // Only secure if using HTTPS
+                    Secure = Request.IsHttps,
                     SameSite = SameSiteMode.Lax,
                     Path = "/"
                 }
             );
 
-            return LocalRedirect(returnUrl);
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+
+            return Redirect("/");
         }
     }
 }

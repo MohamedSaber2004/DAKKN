@@ -67,14 +67,24 @@
         LeadingIcon = "lock"
     })
 
-    @await Html.PartialAsync("Partials/_PasswordInput", new DAKKN.MVC.ViewModels.Shared.PasswordInputModel { 
-        For = "ConfirmPassword", 
-        LabelKey = "auth.register.confirm_password",
-        PlaceholderKey = "auth.register.confirm_password_ph",
-        LeadingIcon = "lock"
-    })
+        @await Html.PartialAsync("Partials/_PasswordInput", new DAKKN.MVC.ViewModels.Shared.PasswordInputModel { 
+            For = "ConfirmPassword", 
+            LabelKey = "auth.register.confirm_password",
+            PlaceholderKey = "auth.register.confirm_password_ph",
+            LeadingIcon = "lock"
+        })
 
-    <button class="w-full bg-primary hover:bg-[#0c7a77] text-white font-bold py-4 px-6 rounded-xl transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-3 active:scale-[0.98] group" type="submit">
+        <div class="flex items-center justify-between">
+            <label class="flex items-center gap-2 cursor-pointer group">
+                <input asp-for="RememberMe" type="checkbox"
+                       class="w-5 h-5 rounded-lg border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-primary focus:ring-primary/20 transition-all cursor-pointer">
+                    <span class="text-xs font-bold text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors">
+                        @Localizer["auth.login.remember"]
+                    </span>
+                </label>
+            </div>
+
+            <button class="w-full bg-primary hover:bg-[#0c7a77] text-white font-bold py-4 px-6 rounded-xl transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-3 active:scale-[0.98] group" type="submit">
         <span>@Localizer["auth.register.submit"]</span>
         <span class="material-symbols-outlined text-[20px] rtl:rotate-180 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform">arrow_forward</span>
     </button>
@@ -99,7 +109,7 @@
 
 <p class="mt-10 text-center text-sm font-medium text-slate-600 dark:text-slate-400">
     @Localizer["auth.register.has_account"]
-    <a asp-action="Login" asp-controller="Auth"
+    <a asp-action="Login" asp-controller="Auth" asp-route-returnUrl="@Model.ReturnUrl"
        class="text-primary font-bold hover:underline underline-offset-4 decoration-2 ms-1">
        @Localizer["auth.register.login"]
     </a>

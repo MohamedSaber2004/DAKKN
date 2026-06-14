@@ -28,16 +28,15 @@ namespace DAKKN.MVC.Controllers
         // ──────────────────────────────────────────────
 
         [HttpGet("login")]
-        [OutputCache(Duration = 600)]
-        public IActionResult Login() => View(new LoginViewModel());
+        public IActionResult Login(string? returnUrl = null) => View(new LoginViewModel { ReturnUrl = returnUrl });
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginViewModel vm)
         {
             try
             {
-                var result = await _mediator.Send(new SignInCommand(vm.Email, vm.Password));
-                return await SignInAndRedirect(result, vm.RememberMe);
+                var result = await _mediator.Send(new SignInCommand(vm.Email, vm.Password, vm.RememberMe));
+                return await SignInAndRedirect(result, vm.RememberMe, vm.ReturnUrl);
             }
             catch (ValidationException ex)
             {
@@ -66,8 +65,7 @@ namespace DAKKN.MVC.Controllers
         // ──────────────────────────────────────────────
 
         [HttpGet("register")]
-        [OutputCache(Duration = 600)]
-        public IActionResult Register() => View(new RegisterViewModel());
+        public IActionResult Register(string? returnUrl = null) => View(new RegisterViewModel { ReturnUrl = returnUrl });
 
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterViewModel vm)
@@ -75,7 +73,7 @@ namespace DAKKN.MVC.Controllers
             try
             {
                 var result = await _mediator.Send(new SignupCommand(vm.FullName, vm.Email, vm.Password, vm.ConfirmPassword));
-                return await SignInAndRedirect(result, true);
+                return await SignInAndRedirect(result, vm.RememberMe, vm.ReturnUrl);
             }
             catch (ValidationException ex)
             {
@@ -99,7 +97,7 @@ namespace DAKKN.MVC.Controllers
             return View(vm);
         }
 
-        private async Task<IActionResult> SignInAndRedirect(AuthResponseDto result, bool rememberMe)
+        private async Task<IActionResult> SignInAndRedirect(AuthResponseDto result, bool rememberMe, string? returnUrl = null)
         {
             var claims = new List<Claim>
             {
@@ -113,16 +111,21 @@ namespace DAKKN.MVC.Controllers
                 claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
-            var identity = new ClaimsIdentity(claims, "Cookies");
+            var identity = new ClaimsIdentity(claims, IdentityConstants.ApplicationScheme, ClaimTypes.Name, ClaimTypes.Role);
             var principal = new ClaimsPrincipal(identity);
 
-            await HttpContext.SignInAsync("Cookies", principal, new AuthenticationProperties
+            await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, principal, new AuthenticationProperties
             {
                 IsPersistent = rememberMe,
                 ExpiresUtc = DateTimeOffset.UtcNow.AddDays(7)
             });
 
             TempData["SuccessMessage"] = "login_success";
+
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
 
             if (result.Roles.Contains("Admin"))
             {
@@ -219,7 +222,6 @@ namespace DAKKN.MVC.Controllers
         // ──────────────────────────────────────────────
 
         [HttpGet("forgot-password")]
-        [OutputCache(Duration = 600)]
         public IActionResult ForgotPassword() => View(new ForgotPasswordViewModel());
 
         [HttpPost("forgot-password")]
@@ -255,7 +257,6 @@ namespace DAKKN.MVC.Controllers
         // ──────────────────────────────────────────────
 
         [HttpGet("reset-password")]
-        [OutputCache(Duration = 600)]
         public IActionResult ResetPassword()
         {
             var email = TempData.Peek("ResetEmail") as string;
@@ -291,8 +292,16 @@ namespace DAKKN.MVC.Controllers
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
-            await HttpContext.SignOutAsync("Cookies");
+            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+            TempData.Clear();
+            TempData["SuccessMessage"] = "logout_success";
             return RedirectToAction(nameof(Login));
+        }
+
+        [HttpGet("access-denied")]
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

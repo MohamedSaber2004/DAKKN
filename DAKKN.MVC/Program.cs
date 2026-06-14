@@ -4,9 +4,11 @@ using DAKKN.Appearence.Services;
 using DAKKN.Application;
 using DAKKN.Application.Common.Interfaces;
 using DAKKN.Application.Localization;
+using DAKKN.Domain.Entities;
 using DAKKN.Infrastructure;
 using DAKKN.Persistence;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Localization;
@@ -18,7 +20,7 @@ namespace DAKKN.MVC
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +56,20 @@ namespace DAKKN.MVC
             builder.Services.AddApplication(builder.Configuration);
             builder.Services.AddPersistence(builder.Configuration);
             builder.Services.AddInfrastructure(builder.Configuration, builder.Environment);
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultSignInScheme = IdentityConstants.ApplicationScheme;
+            });
+
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/auth/login";
+                options.LogoutPath = "/auth/logout";
+                options.AccessDeniedPath = "/auth/access-denied";
+            });
 
             builder.Services.AddSingleton<IStringLocalizerFactory, JsonStringLocalizerFactory>();
             builder.Services.AddLocalization();
@@ -104,17 +120,6 @@ namespace DAKKN.MVC
             })
             .AddViewLocalization()
             .AddDataAnnotationsLocalization();
-            builder.Services.AddAuthentication("Cookies")
-                .AddCookie("Cookies", options =>
-                {
-                    options.LoginPath = "/auth/login";
-                    options.LogoutPath = "/auth/logout";
-                    options.AccessDeniedPath = "/auth/login";
-                });
-
-            builder.Services.AddControllersWithViews()
-                .AddViewLocalization()
-                .AddDataAnnotationsLocalization();
 
             builder.Services.AddRateLimiter(options =>
             {
@@ -156,6 +161,22 @@ namespace DAKKN.MVC
             });
 
             var app = builder.Build();
+
+            // Seed Data
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                try
+                {
+                    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                    var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+                    await DAKKNDbContextSeed.SeedAsync(userManager, roleManager);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex, "An error occurred during database seeding.");
+                }
+            }
 
             app.UseForwardedHeaders();
 
@@ -219,6 +240,7 @@ namespace DAKKN.MVC
                         .Self()
                         .CustomSources(
                             "https://lh3.googleusercontent.com",
+                            "https://ui-avatars.com",
                             "data:",
                             "blob:"
                         )
@@ -267,6 +289,7 @@ namespace DAKKN.MVC
                         .Self()
                         .CustomSources(
                             "https://lh3.googleusercontent.com",
+                            "https://ui-avatars.com",
                             "data:"
                         )
                     )

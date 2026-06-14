@@ -6,7 +6,7 @@ using Microsoft.Extensions.Localization;
 
 namespace DAKKN.Application.Features.Auth.Comands.SignIn
 {
-    internal class SignInCommandValidator: AbstractValidator<SignInCommand>
+    public class SignInCommandValidator: AbstractValidator<SignInCommand>
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IStringLocalizer<Messages> _localizer;
@@ -17,18 +17,18 @@ namespace DAKKN.Application.Features.Auth.Comands.SignIn
             _localizer = localizer;
 
             RuleFor(x => x.Email)
-                .NotEmpty().WithMessage(JsonLocalizationProvider.GetLocalizedString(localizer[LocalizationKeys.ValidationMessages.Required.Value]))
-                .EmailAddress().WithMessage(JsonLocalizationProvider.GetLocalizedString(localizer[LocalizationKeys.AuthMessages.InvalidEmail.Value]));
+                .NotEmpty().WithMessage(_localizer[LocalizationKeys.ValidationMessages.Required.Key])
+                .EmailAddress().WithMessage(_localizer[LocalizationKeys.AuthMessages.InvalidEmail.Key]);
 
             RuleFor(x => x.Password)
-                .NotEmpty().WithMessage(JsonLocalizationProvider.GetLocalizedString(localizer[LocalizationKeys.ValidationMessages.Required.Value]));
+                .NotEmpty().WithMessage(_localizer[LocalizationKeys.ValidationMessages.Required.Key]);
             RuleFor(x => x)
                 .CustomAsync(async (request, context, cancellationToken) =>
                 {
                     var user = await _userManager.FindByEmailAsync(request.Email);
                     if (user == null || !await _userManager.CheckPasswordAsync(user, request.Password))
                     {
-                        context.AddFailure(JsonLocalizationProvider.GetLocalizedString(localizer[LocalizationKeys.AuthMessages.InvalidCredentials.Value]));
+                        context.AddFailure(_localizer[LocalizationKeys.AuthMessages.InvalidCredentials.Key]);
                     }
                 });
         }
