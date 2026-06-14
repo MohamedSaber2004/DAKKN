@@ -5,17 +5,45 @@
     var dashboard = Model.Dashboard;
 }
 
-<div class="max-w-7xl mx-auto px-lg py-xl space-y-2xl">
+<div class="max-w-7xl mx-auto px-lg py-xl space-y-3xl">
     <!-- Header & Welcome -->
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-lg">
         <div>
             <h1 class="font-h1 text-h1 font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["Dashboard_Welcome"], @(User.Identity?.Name?.Split(' ')[0] ?? "User")! 👋</h1>
             <p class="text-text-secondary dark:text-outline-variant mt-2">@Localizer["Dashboard_SubHeader"]</p>
         </div>
-        <a asp-action="Products" class="bg-primary text-on-primary px-xl py-md rounded-full font-bold shadow-medium hover:scale-105 transition-all">
-            @Localizer["Dashboard_BrowseNew"]
-        </a>
+        <div class="flex gap-md">
+            <a asp-action="Products" class="bg-primary text-on-primary px-xl py-md rounded-full font-bold shadow-medium hover:scale-105 transition-all">
+                @Localizer["Dashboard_BrowseNew"]
+            </a>
+        </div>
     </div>
+
+    <!-- Custom Order CTA Card -->
+    <section class="bg-gradient-to-br from-primary to-decorative rounded-[40px] p-1 shadow-large">
+        <div class="bg-surface dark:bg-inverse-surface rounded-[38px] p-xl flex flex-col md:flex-row items-center gap-xl relative overflow-hidden">
+            <div class="absolute -right-20 -top-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl"></div>
+            
+            <div class="flex-1 space-y-md relative z-10 text-center md:text-left rtl:md:text-right">
+                <span class="bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest">@Localizer["hero_badge"]</span>
+                <h2 class="text-3xl md:text-4xl font-bold">@Localizer["custom_upload_h"]?</h2>
+                <p class="text-text-secondary text-lg max-w-2xl">@Localizer["custom_upload_p"]</p>
+                <div class="pt-md">
+                    <a asp-action="CustomOrder" class="inline-flex items-center gap-2 bg-primary text-on-primary px-xl py-4 rounded-2xl font-bold text-lg hover:shadow-large hover:-translate-y-1 transition-all">
+                        @Localizer["custom_submit"] <span class="material-symbols-outlined">arrow_forward</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="w-full md:w-80 h-64 bg-surface-container-low dark:bg-white/5 rounded-3xl flex items-center justify-center relative overflow-hidden group">
+                <img src="/images/logo.png" class="w-32 opacity-20 grayscale group-hover:scale-110 group-hover:rotate-12 transition-transform duration-700" alt="DAKKN">
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="w-48 h-48 border-2 border-dashed border-primary/30 rounded-full animate-spin-slow"></div>
+                </div>
+                <span class="material-symbols-outlined text-6xl text-primary animate-bounce">upload_file</span>
+            </div>
+        </div>
+    </section>
 
     @if (dashboard.LastOrder != null)
     {
@@ -55,37 +83,47 @@
 
     <!-- Recommendations Slider (Horizontal) -->
     <section class="space-y-xl">
-        <div class="flex justify-between items-end">
+        <div class="flex justify-between items-end mb-lg">
             <h2 class="font-h2 text-h2 font-bold">@Localizer["Dashboard_Suggested"]</h2>
             <a asp-action="Products" class="text-primary font-bold hover:underline flex items-center gap-1">
                 @Localizer["admin_view_all"] <span class="material-symbols-outlined text-sm">arrow_forward</span>
             </a>
         </div>
         
-        <div class="flex gap-lg overflow-x-auto pb-6 no-scrollbar snap-x">
-            @foreach (var prod in dashboard.Recommendations)
-            {
-                <div class="min-w-[280px] md:min-w-[320px] snap-start group bg-surface dark:bg-inverse-surface rounded-[32px] border border-border dark:border-outline/10 overflow-hidden shadow-medium hover:shadow-large transition-all duration-500">
-                    <a asp-action="ProductDetails" asp-route-id="@prod.Id" class="block">
-                        <div class="aspect-square relative overflow-hidden">
-                            <img src="@prod.ImageUrls.FirstOrDefault()" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                            <div class="absolute bottom-4 left-4 right-4 bg-surface/80 backdrop-blur-md p-4 rounded-2xl translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all">
-                                <div class="flex justify-between items-center">
-                                    <h4 class="font-bold text-sm">@prod.Name</h4>
-                                    <span class="font-bold text-primary">@prod.Price @Localizer["Currency_EGP"]</span>
+        <div class="relative group">
+            <!-- Navigation Arrows -->
+            <button onclick="scrollSlider('recs-slider', -1)" class="slider-arrow absolute ltr:-left-6 rtl:-right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-surface dark:bg-inverse-surface shadow-large flex items-center justify-center text-primary z-20 border border-border dark:border-outline/10">
+                <span class="material-symbols-outlined">chevron_left</span>
+            </button>
+            <button onclick="scrollSlider('recs-slider', 1)" class="slider-arrow absolute ltr:-right-6 rtl:-left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-surface dark:bg-inverse-surface shadow-large flex items-center justify-center text-primary z-20 border border-border dark:border-outline/10">
+                <span class="material-symbols-outlined">chevron_right</span>
+            </button>
+
+            <div id="recs-slider" class="flex gap-lg overflow-x-auto pb-6 no-scrollbar snap-x scroll-smooth">
+                @foreach (var prod in dashboard.Recommendations)
+                {
+                    <div class="min-w-[280px] md:min-w-[320px] snap-start group/card bg-surface dark:bg-inverse-surface rounded-[32px] border border-border dark:border-outline/10 overflow-hidden shadow-medium hover:shadow-large transition-all duration-500">
+                        <a asp-action="ProductDetails" asp-route-id="@prod.Id" class="block">
+                            <div class="aspect-square relative overflow-hidden">
+                                <img src="@prod.ImageUrls.FirstOrDefault()" class="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-700">
+                                <div class="absolute bottom-4 left-4 right-4 bg-surface/80 backdrop-blur-md p-4 rounded-2xl translate-y-4 opacity-0 group-hover/card:translate-y-0 group-hover/card:opacity-100 transition-all">
+                                    <div class="flex justify-between items-center">
+                                        <h4 class="font-bold text-sm">@prod.Name</h4>
+                                        <span class="font-bold text-primary">@prod.Price @Localizer["Currency_EGP"]</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </a>
-                </div>
-            }
+                        </a>
+                    </div>
+                }
+            </div>
         </div>
     </section>
 
     <!-- Programming Stickers Grid -->
     <section class="space-y-xl">
-        <h2 class="font-h2 text-h2 font-bold">@Localizer["Dashboard_Programming"]</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-lg">
+        <h2 class="font-h2 text-h2 font-bold mb-lg">@Localizer["Dashboard_Programming"]</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-xl">
             @foreach (var prod in dashboard.ProgrammingStickers)
             {
                 <div class="product-card group bg-surface dark:bg-inverse-surface rounded-[32px] border border-border dark:border-outline/10 p-lg shadow-small hover:shadow-medium transition-all">
@@ -109,8 +147,8 @@
 
     <!-- Meme Stickers Grid -->
     <section class="space-y-xl">
-        <h2 class="font-h2 text-h2 font-bold">@Localizer["Dashboard_Memes"]</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-lg">
+        <h2 class="font-h2 text-h2 font-bold mb-lg">@Localizer["Dashboard_Memes"]</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-xl">
             @foreach (var prod in dashboard.MemeStickers)
             {
                 <div class="product-card group bg-surface dark:bg-inverse-surface rounded-[32px] border border-border dark:border-outline/10 overflow-hidden shadow-small hover:shadow-medium transition-all">
@@ -131,3 +169,16 @@
         </div>
     </section>
 </div>
+
+@section Scripts {
+    <script>
+        function scrollSlider(id, direction) {
+            const slider = document.getElementById(id);
+            const scrollAmount = slider.clientWidth * 0.8;
+            slider.scrollBy({
+                left: direction * scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+    </script>
+}

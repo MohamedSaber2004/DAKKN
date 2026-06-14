@@ -1,0 +1,69 @@
+@{
+    Layout = "_LayoutCustomer";
+    var orderId = ViewData["OrderId"] as string ?? "DK-9021";
+}
+
+<div class="max-w-4xl mx-auto px-lg py-24 text-center">
+    <!-- Success Celebration -->
+    <div class="relative inline-block mb-xl">
+        <div class="w-32 h-32 bg-success/10 rounded-full flex items-center justify-center mx-auto text-success animate-bounce-slow">
+            <span class="material-symbols-outlined text-6xl">check_circle</span>
+        </div>
+        <!-- Decorative blobs -->
+        <div class="absolute -top-4 -right-4 w-8 h-8 bg-primary/20 rounded-full blur-xl animate-pulse"></div>
+        <div class="absolute -bottom-4 -left-4 w-12 h-12 bg-secondary/20 rounded-full blur-xl animate-pulse delay-700"></div>
+    </div>
+
+    <div class="space-y-md mb-2xl">
+        <h1 class="text-4xl md:text-5xl font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["conf_h1"]</h1>
+        <p class="text-xl text-text-secondary max-w-xl mx-auto leading-relaxed">@Localizer["conf_p"]</p>
+    </div>
+
+    <!-- Order Summary Card -->
+    <div class="bg-surface dark:bg-inverse-surface rounded-[40px] border border-border dark:border-outline/10 p-xl shadow-large inline-block min-w-[320px] md:min-w-[400px] mb-2xl">
+        <div class="text-xs uppercase tracking-[0.2em] text-outline font-bold mb-2">@Localizer["conf_order_no"]</div>
+        <div class="text-3xl font-bold text-primary mb-xl">#@orderId</div>
+        
+        <div class="grid grid-cols-2 gap-lg border-t border-border dark:border-outline/10 pt-xl text-left rtl:text-right">
+            <div>
+                <p class="text-[10px] uppercase font-bold text-outline">Date</p>
+                <p class="font-bold">June 13, 2026</p>
+            </div>
+            <div>
+                <p class="text-[10px] uppercase font-bold text-outline">Payment</p>
+                <p class="font-bold">Cash on Delivery</p>
+            </div>
+            <div class="col-span-2 bg-surface-container dark:bg-white/5 p-4 rounded-2xl flex justify-between items-center mt-md">
+                <span class="font-medium">Total Amount</span>
+                <span class="text-xl font-bold text-primary">290.00 @Html.Raw(Localizer["Currency_EGP"])</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-col sm:flex-row justify-center gap-lg">
+        <a asp-action="Orders" class="bg-primary text-on-primary px-xl py-5 rounded-3xl font-bold text-lg shadow-large hover:scale-105 transition-all flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined">local_shipping</span>
+            @Localizer["conf_track_btn"]
+        </a>
+        <a asp-action="Products" class="bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 px-xl py-5 rounded-3xl font-bold text-lg hover:bg-primary hover:text-on-primary hover:border-primary transition-all flex items-center justify-center gap-2">
+            <span class="material-symbols-outlined">storefront</span>
+            @Localizer["cart_continue_shopping"]
+        </a>
+    </div>
+
+    <!-- Help Notice -->
+    <p class="mt-2xl text-sm text-text-secondary">
+        Need help? <a asp-action="Support" class="text-primary font-bold hover:underline">Contact our support team</a>
+    </p>
+</div>
+
+<style>
+    @@keyframes bounce-slow {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-15px); }
+    }
+    .animate-bounce-slow {
+        animation: bounce-slow 3s ease-in-out infinite;
+    }
+</style>

@@ -1,0 +1,36 @@
+using DAKKN.MVC.ViewModels.Admin;
+using System.ComponentModel.DataAnnotations;
+
+namespace DAKKN.MVC.ViewModels.Customer
+{
+    public class CustomerSupportDashboardViewModel
+    {
+        public List<SupportTicketViewModel> Tickets { get; set; } = new();
+        public ContactInfoViewModel ContactInfo { get; set; } = new();
+    }
+
+    public class ContactInfoViewModel
+    {
+        public string Email { get; set; } = "support@dakkn.com";
+        public string WhatsApp { get; set; } = "+201001234567";
+        public string Instagram { get; set; } = "dakkn_stickers";
+    }
+
+    public class NewTicketViewModel
+    {
+        [Required(ErrorMessage = "Subject is required")]
+        [StringLength(100, MinimumLength = 5)]
+        public string Subject { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Category is required")]
+        public string Category { get; set; } = string.Empty;
+
+        public string? OrderId { get; set; }
+
+        [Required(ErrorMessage = "Message is required")]
+        [StringLength(1000, MinimumLength = 10)]
+        public string Message { get; set; } = string.Empty;
+
+        public List<string> Categories { get; set; } = new() { "Order Issue", "Technical Support", "Shipping", "General Inquiry" };
+    }
+}

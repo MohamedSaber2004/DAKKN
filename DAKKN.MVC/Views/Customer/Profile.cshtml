@@ -8,7 +8,7 @@
     <!-- Header -->
     <div class="mb-xl">
         <h1 class="font-h1 text-h1 font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["admin_profile"]</h1>
-        <p class="text-text-secondary dark:text-outline-variant mt-2">Manage your account settings and preferences.</p>
+        <p class="text-text-secondary dark:text-outline-variant mt-2">@Localizer["profile_p"]</p>
     </div>
 
     <!-- Personal Information Section -->
@@ -16,7 +16,7 @@
         <div class="flex justify-between items-start mb-xl border-b border-border dark:border-outline/20 pb-md">
             <div>
                 <h2 class="font-h3 text-h3 text-text-primary dark:text-inverse-on-surface">@Localizer["admin_basic_info"]</h2>
-                <p class="text-sm text-text-secondary mt-1">Update your personal details.</p>
+                <p class="text-sm text-text-secondary mt-1">@Localizer["profile_basic_p"]</p>
             </div>
         </div>
 
@@ -33,7 +33,7 @@
                 </div>
                 <div>
                     <h4 class="font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["admin_profile_pic"]</h4>
-                    <p class="text-xs text-text-secondary mb-3">Square images work best. Max 5MB.</p>
+                    <p class="text-xs text-text-secondary mb-3">@Localizer["profile_avatar_p"]</p>
                     <button class="px-4 py-2 bg-primary/10 text-primary rounded-xl font-bold text-sm hover:bg-primary/20 transition-colors" type="button">@Localizer["admin_change"]</button>
                 </div>
             </div>
@@ -64,7 +64,7 @@
     <section class="bg-surface dark:bg-inverse-surface rounded-[32px] p-xl shadow-medium border border-border dark:border-outline/10">
         <div class="mb-xl border-b border-border dark:border-outline/20 pb-md">
             <h2 class="font-h3 text-h3 text-text-primary dark:text-inverse-on-surface">@Localizer["admin_security"]</h2>
-            <p class="text-sm text-text-secondary mt-1">Manage your password and account security.</p>
+            <p class="text-sm text-text-secondary mt-1">@Localizer["admin_security_desc"]</p>
         </div>
         
         <div class="space-y-lg">
@@ -74,8 +74,8 @@
                         <span class="material-symbols-outlined">key</span>
                     </div>
                     <div>
-                        <h4 class="font-bold">Change Password</h4>
-                        <p class="text-xs text-text-secondary">Update your login credentials regularly.</p>
+                        <h4 class="font-bold">@Localizer["profile_change_pwd"]</h4>
+                        <p class="text-xs text-text-secondary">@Localizer["profile_change_pwd_p"]</p>
                     </div>
                 </div>
                 <span class="material-symbols-outlined text-outline">chevron_right</span>
@@ -87,8 +87,8 @@
                         <span class="material-symbols-outlined">delete_forever</span>
                     </div>
                     <div>
-                        <h4 class="font-bold text-error">Delete Account</h4>
-                        <p class="text-xs text-error/70">Permanently remove your data and collection.</p>
+                        <h4 class="font-bold text-error">@Localizer["profile_delete_acc"]</h4>
+                        <p class="text-xs text-error/70">@Localizer["profile_delete_acc_p"]</p>
                     </div>
                 </div>
                 <span class="material-symbols-outlined text-error/30">chevron_right</span>

@@ -83,6 +83,8 @@ tailwind.config = {
                 "md": "1rem",
                 "lg": "1.5rem",
                 "xl": "2.5rem",
+                "2xl": "4rem",
+                "3xl": "6rem",
                 "margin-mobile": "1.25rem",
             },
             borderRadius: {
