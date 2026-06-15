@@ -3,10 +3,12 @@ using DAKKN.Appearence.Filters;
 using DAKKN.Appearence.Services;
 using DAKKN.Application;
 using DAKKN.Application.Common.Interfaces;
+using DAKKN.Application.Common.Options;
 using DAKKN.Application.Localization;
 using DAKKN.Domain.Entities;
 using DAKKN.Infrastructure;
 using DAKKN.Persistence;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
@@ -59,9 +61,21 @@ namespace DAKKN.MVC
 
             builder.Services.AddAuthentication(options =>
             {
-                options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
-                options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
-                options.DefaultSignInScheme = IdentityConstants.ApplicationScheme;
+                options.DefaultScheme = "JWT_OR_COOKIE";
+                options.DefaultAuthenticateScheme = "JWT_OR_COOKIE";
+                options.DefaultChallengeScheme = "JWT_OR_COOKIE";
+            })
+            .AddPolicyScheme("JWT_OR_COOKIE", "JWT_OR_COOKIE", options =>
+            {
+                options.ForwardDefaultSelector = context =>
+                {
+                    var path = context.Request.Path.Value;
+                    if (path != null && path.StartsWith("/api/", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return JwtBearerDefaults.AuthenticationScheme;
+                    }
+                    return IdentityConstants.ApplicationScheme;
+                };
             });
 
             builder.Services.ConfigureApplicationCookie(options =>
@@ -120,6 +134,8 @@ namespace DAKKN.MVC
             })
             .AddViewLocalization()
             .AddDataAnnotationsLocalization();
+
+            builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
             builder.Services.AddRateLimiter(options =>
             {
@@ -216,7 +232,7 @@ namespace DAKKN.MVC
                 app.UseCsp(opts => opts
                     .ScriptSources(s => s
                         .Self()
-                        .CustomSources("https://cdn.tailwindcss.com")
+                        .CustomSources("https://cdn.tailwindcss.com", "https://cdn.jsdelivr.net", "https://cdn.jsdelivr.net/npm/")
                         .UnsafeInline()
                         .UnsafeEval()
                     )
@@ -265,7 +281,7 @@ namespace DAKKN.MVC
                 app.UseCsp(opts => opts
                     .ScriptSources(s => s
                         .Self()
-                        .CustomSources("https://cdn.tailwindcss.com")
+                        .CustomSources("https://cdn.tailwindcss.com", "https://cdn.jsdelivr.net", "https://cdn.jsdelivr.net/npm/")
                         .UnsafeInline()
                         .UnsafeEval()
                     )

@@ -8,12 +8,12 @@ namespace DAKKN.MVC.ViewModels.Auth
         public string Purpose { get; set; } = "VerifyEmail"; // "VerifyEmail" | "ForgotPassword"
 
         // Individual digit inputs — joined in the Code property
-        [Required] public string Digit1 { get; set; } = string.Empty;
-        [Required] public string Digit2 { get; set; } = string.Empty;
-        [Required] public string Digit3 { get; set; } = string.Empty;
-        [Required] public string Digit4 { get; set; } = string.Empty;
-        [Required] public string Digit5 { get; set; } = string.Empty;
-        [Required] public string Digit6 { get; set; } = string.Empty;
+        [Required(ErrorMessage = "alert.validation.required")] public string Digit1 { get; set; } = string.Empty;
+        [Required(ErrorMessage = "alert.validation.required")] public string Digit2 { get; set; } = string.Empty;
+        [Required(ErrorMessage = "alert.validation.required")] public string Digit3 { get; set; } = string.Empty;
+        [Required(ErrorMessage = "alert.validation.required")] public string Digit4 { get; set; } = string.Empty;
+        [Required(ErrorMessage = "alert.validation.required")] public string Digit5 { get; set; } = string.Empty;
+        [Required(ErrorMessage = "alert.validation.required")] public string Digit6 { get; set; } = string.Empty;
 
         public string Code => Digit1 + Digit2 + Digit3 + Digit4 + Digit5 + Digit6;
     }

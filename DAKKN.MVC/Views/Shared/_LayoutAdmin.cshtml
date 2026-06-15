@@ -1,8 +1,14 @@
 @inject IStringLocalizer<Messages> Localizer
+@using System.Security.Claims
 @{
     var culture = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("en") ? "en" : "ar";
     var dir = culture == "ar" ? "rtl" : "ltr";
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+    var fullName = User.FindFirstValue("FullName");
+    if (string.IsNullOrWhiteSpace(fullName))
+    {
+        fullName = User.Identity?.Name ?? "Admin";
+    }
 }
 <!DOCTYPE html>
 <html lang="@culture" dir="@dir" id="html-root" data-dakkn-loading="true">
@@ -81,14 +87,17 @@
         // High-priority theme application to prevent light-mode flash
         (function() {
             const savedTheme = localStorage.getItem('dakkn_theme');
-            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const isDark = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
+            const isDark = savedTheme === 'dark';
             
             if (isDark) {
                 document.documentElement.classList.add('dark');
             } else {
                 document.documentElement.classList.remove('dark');
             }
+
+            // Sync language with localStorage
+            const culture = "@culture";
+            localStorage.setItem('dakkn_lang', culture);
 
             // Initialize Sidebar State
             const isCollapsed = localStorage.getItem('dakkn_sidebar_collapsed') === 'true';
@@ -97,7 +106,12 @@
             }
         })();
 
-        window.csrfToken = "@Html.AntiForgeryToken()".match(/value="([^"]+)"/)[1];
+        document.addEventListener('DOMContentLoaded', function() {
+            const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+            if (tokenInput) {
+                window.csrfToken = tokenInput.value;
+            }
+        });
 
         // Failsafe: Ensure preloader is hidden even if scripts fail or hang
         setTimeout(() => {
@@ -159,12 +173,15 @@
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_settings"]</span>
             </a>
 
-            <form asp-controller="Auth" asp-action="Logout" method="post" class="mt-sm">
-                <button type="submit" class="nav-item w-full flex items-center gap-md text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 px-4 py-3 hover:scale-105 transition-all duration-200 rounded-xl" title="@Localizer["auth.logout"]">
-                    <span class="material-symbols-outlined flex-shrink-0">logout</span>
-                    <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["auth.logout"]</span>
-                </button>
-            </form>
+            <div class="mt-sm">
+                <form id="logout-form" asp-controller="Auth" asp-action="Logout" method="post">
+                    <input type="hidden" name="refreshToken" id="logout-refresh-token" />
+                    <button type="button" onclick="submitLogout()" class="nav-item w-full flex items-center gap-md text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 px-4 py-3 hover:scale-105 transition-all duration-200 rounded-xl" title="@Localizer["auth.logout"]">
+                        <span class="material-symbols-outlined flex-shrink-0">logout</span>
+                        <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["auth.logout"]</span>
+                    </button>
+                </form>
+            </div>
         </nav>
         <div class="p-md border-t border-border flex justify-center items-center">
             <a asp-controller="Admin" asp-action="AddProduct" class="add-product-btn w-full bg-primary text-on-primary h-[52px] rounded-[18px] shadow-small font-body-lg text-body-lg flex items-center justify-center gap-sm hover:scale-105 transition-all duration-200 overflow-hidden" title="@Localizer["admin_add_product"]">
@@ -203,7 +220,7 @@
                     </button>
                 </div>
                 <div class="w-10 h-10 rounded-full bg-primary-container overflow-hidden cursor-pointer shadow-small">
-                    <img alt="Admin Avatar" class="w-full h-full object-cover" src="https://ui-avatars.com/api/?name=Admin&background=69d2cf&color=005957">
+                    <img alt="Admin Avatar" class="w-full h-full object-cover" src="https://ui-avatars.com/api/?name=@(fullName)&background=69d2cf&color=005957">
                 </div>
             </div>
         </header>
@@ -233,6 +250,15 @@
             if (icon) {
                 icon.textContent = isCollapsed ? 'menu' : 'menu_open';
             }
+        }
+
+        function submitLogout() {
+            const form = document.getElementById('logout-form');
+            const tokenInput = document.getElementById('logout-refresh-token');
+            const refreshToken = localStorage.getItem('dakkn_refresh_token');
+            
+            if (tokenInput) tokenInput.value = refreshToken || '';
+            form.submit();
         }
 
         // Initialize State on Load

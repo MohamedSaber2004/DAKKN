@@ -30,6 +30,7 @@ namespace DAKKN.Infrastructure
             services.RegisterRepositories();
 
             services.AddScoped<IJwtTokenService, JwtTokenService>();
+            services.AddScoped<IEmailService, EmailService>();
 
             var identityOptionsConfig = new IdentityModel();
             configuration.Bind("IdentityOptions", identityOptionsConfig);
@@ -49,7 +50,9 @@ namespace DAKKN.Infrastructure
                 options.User.RequireUniqueEmail = identityOptionsConfig.RequireUniqueEmail;
             })
             .AddEntityFrameworkStores<DAKKNDbContext>()
-            .AddDefaultTokenProviders();
+            .AddDefaultTokenProviders()
+            .AddClaimsPrincipalFactory<DAKKN.Infrastructure.Identity.ApplicationUserClaimsPrincipalFactory>();
+
 
             services.Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)));
             var jwtSettings = configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>() ?? new JwtSettings();
@@ -79,20 +82,27 @@ namespace DAKKN.Infrastructure
                 {
                     OnChallenge = context =>
                     {
-                        context.HandleResponse();
-                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                        context.Response.ContentType = "application/json";
+                        var isApiRequest = context.HttpContext.Request.Path.Value?.StartsWith("/api/", StringComparison.OrdinalIgnoreCase) ?? false;
 
-                        var localizedMessage = JsonLocalizationProvider.GetLocalizedString(LocalizationKeys.ExceptionMessages.Unauthorized.Value);
-                        var result = System.Text.Json.JsonSerializer.Serialize(new
+                        if (isApiRequest)
                         {
-                            succeeded = false,
-                            message = localizedMessage,
-                            errors = new Dictionary<string, string[]>(),
-                            code = 401
-                        });
+                            context.HandleResponse();
+                            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                            context.Response.ContentType = "application/json";
 
-                        return context.Response.WriteAsync(result);
+                            var localizedMessage = JsonLocalizationProvider.GetLocalizedString(LocalizationKeys.ExceptionMessages.Unauthorized.Value);
+                            var result = System.Text.Json.JsonSerializer.Serialize(new
+                            {
+                                succeeded = false,
+                                message = localizedMessage,
+                                errors = new Dictionary<string, string[]>(),
+                                code = 401
+                            });
+
+                            return context.Response.WriteAsync(result);
+                        }
+
+                        return Task.CompletedTask;
                     }
                 };
             });

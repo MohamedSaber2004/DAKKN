@@ -6,6 +6,7 @@ using DAKKN.MVC.ViewModels.Admin;
 
 using DAKKN.Appearence.Filters;
 using DAKKN.Domain.Enums;
+using System.Security.Claims;
 
 namespace DAKKN.MVC.Controllers
 {
@@ -257,7 +258,39 @@ namespace DAKKN.MVC.Controllers
         public IActionResult Settings()
         {
             ViewData["Title"] = _localizer["admin_settings"];
-            return View();
+            
+            var fullName = User.FindFirstValue("FullName");
+            if (string.IsNullOrWhiteSpace(fullName))
+            {
+                fullName = User.Identity?.Name ?? "Admin";
+            }
+            
+            var nameParts = fullName.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            
+            var viewModel = new AdminSettingsViewModel
+            {
+                FirstName = nameParts.FirstOrDefault() ?? "Admin",
+                LastName = nameParts.Length > 1 ? string.Join(" ", nameParts.Skip(1)) : "",
+                Email = User.Identity?.Name ?? "admin@dakkn.com"
+            };
+
+            return View(viewModel);
+        }
+
+        [HttpPost("settings")]
+        public IActionResult Settings(AdminSettingsViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewData["Title"] = _localizer["admin_settings"];
+                return View(model);
+            }
+
+            // Logic to update user profile would go here
+            // e.g., await _mediator.Send(new UpdateUserProfileCommand { ... });
+
+            TempData["SuccessMessage"] = "profile_updated_success";
+            return RedirectToAction(nameof(Settings));
         }
 
         [HttpGet("add-product")]

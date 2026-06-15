@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using DAKKN.Appearence.Filters;
 using DAKKN.Appearence.Routes;
 using DAKKN.Application.Features.Attachments.Commands.UpdateImage;
 using DAKKN.Application.Features.Attachments.Commands.UploadImage;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DAKKN.Appearence.Controllers.APIs.V1
 {
     [ApiVersion("1.0")]
+    [RoleAuthorize]
     public class AttachmentController:BaseApiController
     {
         public AttachmentController(IMediator mediator): base(mediator) { }

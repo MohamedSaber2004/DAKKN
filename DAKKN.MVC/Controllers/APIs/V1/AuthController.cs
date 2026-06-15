@@ -1,8 +1,11 @@
 ﻿using Asp.Versioning;
 using DAKKN.Appearence.Routes;
+using DAKKN.Application.Features.Auth.Comands.ForgetPassword;
 using DAKKN.Application.Features.Auth.Comands.Logout;
 using DAKKN.Application.Features.Auth.Comands.SignIn;
 using DAKKN.Application.Features.Auth.Comands.SignUp;
+using DAKKN.Application.Features.Auth.Comands.VerifyForgetPasswordOtp;
+using DAKKN.Application.Features.Auth.Commands.ResetPassword;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -63,6 +66,54 @@ namespace DAKKN.Appearence.Controllers.APIs.V1
         {
             var result = await _mediator.Send(command, ct);
             return Ok(result);
+        }
+
+        /// <summary>
+        /// Forgets the password for a user by sending a reset link or OTP to their email.
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route(ApiRoutes.Auth.ForgetPassword)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ForgetPassword(ForgetPasswordCommand command, CancellationToken ct)
+        {
+            var result = await _mediator.Send(command, ct);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Verifies the OTP sent to the user's email for password reset.
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="ct"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route(ApiRoutes.Auth.VerifyForgetPasswordOtp)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> VerifyForgetPasswordOtp(VerifyForgetPasswordOtpCommand command, CancellationToken ct)
+        {
+            var result = await _mediator.Send(command, ct);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Resets the user's password using the provided token and new password.
+        /// </summary>
+        /// <param name="command">The reset password details including token and new password.</param>
+        /// <param name="ct">Cancellation token.</param>
+        /// <returns>A success message.</returns>
+        [HttpPost]
+        [Route(ApiRoutes.Auth.ResetPassword)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ResetPassword(ResetPasswordCommand command, CancellationToken ct)
+        {
+            var result = await _mediator.Send(command, ct);
+            return Ok(result);   
         }
     }
 }

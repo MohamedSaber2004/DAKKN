@@ -1,8 +1,10 @@
 @inject IStringLocalizer<Messages> Localizer
+@using System.Security.Claims
 @{
     var culture = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("en") ? "en" : "ar";
     var dir = culture == "ar" ? "rtl" : "ltr";
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+    var fullName = User.FindFirstValue("FullName") ?? User.Identity?.Name ?? "User";
 }
 <!DOCTYPE html>
 <html lang="@culture" dir="@dir" id="html-root" data-dakkn-loading="true">
@@ -65,14 +67,17 @@
     <script>
         (function() {
             const savedTheme = localStorage.getItem('dakkn_theme');
-            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const isDark = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
+            const isDark = savedTheme === 'dark';
             
             if (isDark) {
                 document.documentElement.classList.add('dark');
             } else {
                 document.documentElement.classList.remove('dark');
             }
+
+            // Sync language with localStorage
+            const culture = "@culture";
+            localStorage.setItem('dakkn_lang', culture);
 
             // Initialize Sidebar State
             const isCollapsed = localStorage.getItem('dakkn_customer_sidebar_collapsed') === 'true';
@@ -154,8 +159,9 @@
         </nav>
 
         <div class="p-md border-t border-border dark:border-outline/10">
-            <form asp-controller="Auth" asp-action="Logout" method="post">
-                <button type="submit" class="w-full flex items-center gap-md text-text-secondary hover:text-error hover:bg-error/5 rounded-2xl px-4 py-3.5 transition-all duration-200" title="Logout">
+            <form id="logout-form" asp-controller="Auth" asp-action="Logout" method="post">
+                <input type="hidden" name="refreshToken" id="logout-refresh-token" />
+                <button type="button" onclick="submitLogout()" class="w-full flex items-center gap-md text-text-secondary hover:text-error hover:bg-error/5 rounded-2xl px-4 py-3.5 transition-all duration-200" title="Logout">
                     <span class="material-symbols-outlined">logout</span>
                     <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["f_logout"]</span>
                 </button>
@@ -192,9 +198,9 @@
 
                     <a asp-action="Profile" class="flex items-center gap-md p-1.5 ltr:pr-4 rtl:pl-4 rounded-full bg-surface-container dark:bg-inverse-surface border border-border dark:border-outline/10 hover:border-primary/30 transition-all">
                         <div class="w-8 h-8 rounded-full overflow-hidden shadow-small">
-                            <img src="https://ui-avatars.com/api/?name=@(User.Identity?.Name ?? "User")&background=69d2cf&color=005957" class="w-full h-full object-cover" alt="User profile avatar">
+                            <img src="https://ui-avatars.com/api/?name=@(fullName)&background=69d2cf&color=005957" class="w-full h-full object-cover" alt="User profile avatar">
                         </div>
-                        <span class="hidden sm:block font-bold text-sm">@(User.Identity?.Name?.Split(' ')[0] ?? "User")</span>
+                        <span class="hidden sm:block font-bold text-sm">@(fullName.Split(' ')[0])</span>
                     </a>
                 </div>
             </div>
@@ -268,6 +274,15 @@
             if (icon) {
                 icon.textContent = isCollapsed ? 'menu' : 'menu_open';
             }
+        }
+
+        function submitLogout() {
+            const form = document.getElementById('logout-form');
+            const tokenInput = document.getElementById('logout-refresh-token');
+            const refreshToken = localStorage.getItem('dakkn_refresh_token');
+            
+            if (tokenInput) tokenInput.value = refreshToken || '';
+            form.submit();
         }
 
         (function() {

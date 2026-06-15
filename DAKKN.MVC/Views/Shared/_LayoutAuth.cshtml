@@ -63,26 +63,72 @@
             animation: spin 0.8s linear infinite;
         }
 
+        /* Button Loading Styles */
+        .btn-loading {
+            position: relative;
+            color: transparent !important;
+            pointer-events: none;
+        }
+
+        .btn-loading::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin-top: -10px;
+            margin-left: -10px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
         @@keyframes spin {
             to { transform: rotate(360deg); }
         }
     </style>
 
+    <!-- Theme/Lang Init Script -->
     <script>
         (function() {
             const savedTheme = localStorage.getItem('dakkn_theme');
-            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const isDark = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
+            const isDark = savedTheme === 'dark';
             
             if (isDark) {
                 document.documentElement.classList.add('dark');
             } else {
                 document.documentElement.classList.remove('dark');
             }
+
+            // Sync language with localStorage
+            const culture = "@culture";
+            localStorage.setItem('dakkn_lang', culture);
         })();
 
         // Inject current translations immediately to avoid flickering
         window.currentTranslations = @Html.Raw(JsonSerializer.Serialize(DAKKN.Application.Localization.JsonLocalizationProvider.GetTranslations(culture)));
+
+        // Handle Form Loaders
+        document.addEventListener('DOMContentLoaded', () => {
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                form.addEventListener('submit', (e) => {
+                    if (form.getAttribute('id') === 'resend-form') return; // Skip resend form if needed or handle separately
+                    
+                    // Only show loader if form is valid (if using jquery validation)
+                    if (typeof $ !== 'undefined' && $(form).length > 0 && $(form).data('validator')) {
+                        if (!$(form).valid()) return;
+                    }
+
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    if (submitBtn) {
+                        submitBtn.classList.add('btn-loading');
+                    }
+                });
+            });
+        });
     </script>
 </head>
 <body class="bg-background-light dark:bg-background-dark text-slate-800 dark:text-slate-100 min-h-screen antialiased selection:bg-primary/10">
@@ -173,6 +219,9 @@
             @await Html.PartialAsync("Partials/_ThemeToggle")
         </div>
     </div>
+
+    @* jQuery is required for validation scripts *@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
     @* Custom Landing Script for i18n & transitions *@
     <script src="~/js/landing.js" asp-append-version="true"></script>

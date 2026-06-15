@@ -1,8 +1,16 @@
+@using System.Security.Claims
 @inject IStringLocalizer<Messages> Localizer
+@model DAKKN.MVC.ViewModels.Admin.AdminSettingsViewModel
 @{
     Layout = "_LayoutAdmin";
     ViewData["Title"] = Localizer["admin_settings"];
     var currentCulture = System.Globalization.CultureInfo.CurrentUICulture.Name;
+    
+    var fullName = User.FindFirstValue("FullName");
+    if (string.IsNullOrWhiteSpace(fullName))
+    {
+        fullName = User.Identity?.Name ?? "Admin";
+    }
 }
 
 <div class="max-w-5xl mx-auto space-y-lg pb-32">
@@ -19,11 +27,15 @@
             </span>
         </div>
 
-        <form class="space-y-xl">
+        @await Html.PartialAsync("Partials/_AuthAlert")
+
+        <form id="settings-form" asp-action="Settings" asp-controller="Admin" method="post" class="space-y-xl">
+            @Html.AntiForgeryToken()
+            
             <div class="flex items-center gap-lg">
                 <div class="relative group">
                     <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-surface dark:border-inverse-surface shadow-small">
-                        <img alt="Admin Avatar" class="w-full h-full object-cover" src="https://ui-avatars.com/api/?name=Admin&background=69d2cf&color=005957&size=200">
+                        <img alt="Admin Avatar" class="w-full h-full object-cover" src="https://ui-avatars.com/api/?name=@(fullName)&background=69d2cf&color=005957&size=200">
                     </div>
                     <button class="absolute bottom-0 right-0 w-8 h-8 bg-surface dark:bg-surface-container-high rounded-full shadow-md flex items-center justify-center text-primary dark:text-primary-light hover:scale-110 transition-transform border border-border dark:border-outline/20" type="button">
                         <span class="material-symbols-outlined text-[18px]">edit</span>
@@ -41,16 +53,18 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
                 <div class="space-y-2">
-                    <label class="block font-body-lg text-body-lg text-text-primary dark:text-inverse-on-surface">@Localizer["admin_first_name"]</label>
-                    <input class="w-full px-4 py-3 bg-surface dark:bg-surface-container-high rounded-[18px] border border-border dark:border-outline/20 focus:border-primary focus:ring-1 focus:ring-primary font-body text-body text-text-primary dark:text-inverse-on-surface transition-colors" type="text" value="أحمد">
+                    <label asp-for="FirstName" class="block font-body-lg text-body-lg text-text-primary dark:text-inverse-on-surface">@Localizer["admin_first_name"]</label>
+                    <input asp-for="FirstName" class="w-full px-4 py-3 bg-surface dark:bg-surface-container-high rounded-[18px] border border-border dark:border-outline/20 focus:border-primary focus:ring-1 focus:ring-primary font-body text-body text-text-primary dark:text-inverse-on-surface transition-colors" type="text">
+                    <span asp-validation-for="FirstName" class="text-xs text-error font-bold block mt-1"></span>
                 </div>
                 <div class="space-y-2">
-                    <label class="block font-body-lg text-body-lg text-text-primary dark:text-inverse-on-surface">@Localizer["admin_last_name"]</label>
-                    <input class="w-full px-4 py-3 bg-surface dark:bg-surface-container-high rounded-[18px] border border-border dark:border-outline/20 focus:border-primary focus:ring-1 focus:ring-primary font-body text-body text-text-primary dark:text-inverse-on-surface transition-colors" type="text" value="محمود">
+                    <label asp-for="LastName" class="block font-body-lg text-body-lg text-text-primary dark:text-inverse-on-surface">@Localizer["admin_last_name"]</label>
+                    <input asp-for="LastName" class="w-full px-4 py-3 bg-surface dark:bg-surface-container-high rounded-[18px] border border-border dark:border-outline/20 focus:border-primary focus:ring-1 focus:ring-primary font-body text-body text-text-primary dark:text-inverse-on-surface transition-colors" type="text">
+                    <span asp-validation-for="LastName" class="text-xs text-error font-bold block mt-1"></span>
                 </div>
                 <div class="space-y-2 md:col-span-2">
-                    <label class="block font-body-lg text-body-lg text-text-primary dark:text-inverse-on-surface">@Localizer["auth.login.email"]</label>
-                    <input class="w-full px-4 py-3 bg-surface dark:bg-surface-container-high rounded-[18px] border border-border dark:border-outline/20 focus:border-primary focus:ring-1 focus:ring-primary font-body text-body text-text-primary dark:text-inverse-on-surface transition-colors" type="email" value="admin@dakkn.com">
+                    <label asp-for="Email" class="block font-body-lg text-body-lg text-text-primary dark:text-inverse-on-surface">@Localizer["auth.login.email"]</label>
+                    <input asp-for="Email" class="w-full px-4 py-3 bg-surface dark:bg-surface-container-low dark:bg-inverse-surface-container rounded-[18px] border border-border dark:border-outline/20 text-text-secondary cursor-not-allowed opacity-70 transition-colors" type="email" readonly>
                 </div>
             </div>
         </form>
@@ -127,8 +141,8 @@
 </div>
 
 <!-- Floating Save Button -->
-<div id="settings-save-bar" class="fixed bottom-lg left-lg z-50">
-    <button class="h-[56px] px-8 bg-primary text-on-primary rounded-full font-body-lg text-body-lg font-bold shadow-medium flex items-center gap-2 hover:scale-103 transition-transform duration-200">
+<div id="settings-save-bar" class="fixed bottom-lg ltr:right-lg rtl:left-lg z-50">
+    <button type="submit" form="settings-form" class="h-[56px] px-8 bg-primary text-on-primary rounded-full font-body-lg text-body-lg font-bold shadow-medium flex items-center gap-2 hover:scale-103 transition-transform duration-200">
         <span class="material-symbols-outlined">save</span>
         @Localizer["admin_save_changes"]
     </button>

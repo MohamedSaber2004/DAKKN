@@ -4,20 +4,20 @@ namespace DAKKN.MVC.ViewModels.Auth
 {
     public class RegisterViewModel
     {
-        [Required(ErrorMessage = "name_required")]
+        [Required(ErrorMessage = "alert.name_required")]
         [MaxLength(200)]
         public string FullName { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "email_required")]
-        [EmailAddress(ErrorMessage = "email_invalid")]
+        [Required(ErrorMessage = "alert.email_required")]
+        [EmailAddress(ErrorMessage = "alert.email_invalid")]
         public string Email { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "password_required")]
-        [MinLength(8, ErrorMessage = "password_min_length")]
+        [Required(ErrorMessage = "alert.password_required")]
+        [MinLength(8, ErrorMessage = "alert.password_min_length")]
         public string Password { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "confirm_required")]
-        [Compare(nameof(Password), ErrorMessage = "passwords_mismatch")]
+        [Required(ErrorMessage = "alert.confirm_required")]
+        [Compare(nameof(Password), ErrorMessage = "alert.passwords_mismatch")]
         public string ConfirmPassword { get; set; } = string.Empty;
 
         public string? ReturnUrl { get; set; }

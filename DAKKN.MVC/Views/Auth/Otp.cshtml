@@ -29,9 +29,10 @@
     <p class="text-slate-500 dark:text-slate-400">@Localizer["otp.subtitle"] <span class="font-bold text-primary">@Model.Email</span></p>
 </div>
 
-<form asp-action="VerifyOtp" asp-controller="Auth" method="post" class="space-y-8" novalidate>
+<form asp-action="Otp" asp-controller="Auth" method="post" class="space-y-8" novalidate id="otp-form">
     @Html.AntiForgeryToken()
     <input type="hidden" asp-for="Email" />
+    <input type="hidden" asp-for="Purpose" />
 
     <div class="space-y-4">
         @await Html.PartialAsync("Partials/_OtpInput")
@@ -48,16 +49,23 @@
                 <span>@Localizer["otp.submit"]</span>
                 <span class="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">verified_user</span>
             </button>
-            
-            <p class="text-sm font-medium text-slate-500">
-                @Localizer["otp.no_code"]
-                <a href="javascript:void(0)" onclick="alert('Resent!')" class="text-primary font-bold hover:underline ms-1">
-                    @Localizer["otp.resend"]
-                </a>
-            </p>
         </div>
     </div>
 </form>
+
+<div class="mt-4 text-center">
+    <p class="text-sm font-medium text-slate-500">
+        @Localizer["otp.no_code"]
+        <form asp-action="ResendOtp" asp-controller="Auth" method="post" id="resend-form" class="inline">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="email" value="@Model.Email" />
+            <input type="hidden" name="purpose" value="@Model.Purpose" />
+            <button type="submit" class="text-primary font-bold hover:underline ms-1 bg-transparent border-none p-0 cursor-pointer">
+                @Localizer["otp.resend"]
+            </button>
+        </form>
+    </p>
+</div>
 
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")

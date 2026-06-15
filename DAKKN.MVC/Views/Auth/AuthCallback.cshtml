@@ -1,0 +1,34 @@
+@model DAKKN.Application.Features.Auth.DTOs.AuthResponseDto
+@{
+    Layout = "_LayoutAuth";
+    ViewData["Title"] = "Syncing...";
+}
+
+<div class="flex flex-col items-center justify-center py-20">
+    <div class="preloader-spinner mb-6"></div>
+    <p class="text-slate-500 font-bold animate-pulse">@Localizer["auth.syncing_session"]</p>
+</div>
+
+@section Scripts {
+    <script>
+        (function() {
+            // Securely transfer tokens from Server Model to Client Storage
+            const accessToken = '@Model.AccessToken';
+            const refreshToken = '@Model.RefreshToken';
+            
+            if (accessToken) localStorage.setItem('dakkn_access_token', accessToken);
+            if (refreshToken) localStorage.setItem('dakkn_refresh_token', refreshToken);
+
+            // Determine redirect path
+            const roles = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Roles));
+            let targetUrl = '/Customer';
+            
+            if (roles.includes('Admin')) {
+                targetUrl = '/Admin/Dashboard';
+            }
+
+            // Perform final redirect
+            window.location.href = targetUrl;
+        })();
+    </script>
+}

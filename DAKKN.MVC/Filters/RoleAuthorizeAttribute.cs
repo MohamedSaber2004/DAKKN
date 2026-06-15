@@ -1,6 +1,7 @@
 using DAKKN.Application.Common.Models;
 using DAKKN.Application.Localization;
 using DAKKN.Domain.Enums;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -52,7 +53,8 @@ namespace DAKKN.Appearence.Filters
             }
             else
             {
-                context.Result = new ChallengeResult(IdentityConstants.ApplicationScheme);
+                // For MVC, use default challenge which should redirect to login
+                context.Result = new ChallengeResult();
             }
         }
 
@@ -68,7 +70,6 @@ namespace DAKKN.Appearence.Filters
             }
             else
             {
-                // Redirect to an Access Denied page or back to Home with an error
                 context.Result = new ForbidResult();
             }
         }

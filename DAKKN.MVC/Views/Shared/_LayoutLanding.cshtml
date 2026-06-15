@@ -72,14 +72,17 @@
     <script>
         (function() {
             const savedTheme = localStorage.getItem('dakkn_theme');
-            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const isDark = savedTheme === 'dark' || (!savedTheme && systemPrefersDark);
+            const isDark = savedTheme === 'dark';
             
             if (isDark) {
                 document.documentElement.classList.add('dark');
             } else {
                 document.documentElement.classList.remove('dark');
             }
+
+            // Sync language with localStorage
+            const culture = "@culture";
+            localStorage.setItem('dakkn_lang', culture);
         })();
 
         // Inject current translations immediately to avoid flickering

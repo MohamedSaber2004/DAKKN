@@ -47,6 +47,9 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString RefreshTokenInvalid  = new("auth.refresh_token_invalid");
             public static readonly KeyString LogoutSuccess = new("auth.logout_success");
             public static readonly KeyString RefreshTokenRequired = new("auth.refresh_token_required");
+            public static readonly KeyString UserNotFound = new("auth.user_not_found");
+            public static readonly KeyString ResetTokenInvalid = new("auth.reset_token_invalid");
+            public static readonly KeyString PasswordSameAsOld = new("auth.password_same_as_old");
         }
 
         public static class ValidationMessages
