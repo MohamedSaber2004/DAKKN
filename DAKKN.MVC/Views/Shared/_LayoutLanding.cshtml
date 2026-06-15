@@ -71,14 +71,9 @@
 
     <script>
         (function() {
-            const savedTheme = localStorage.getItem('dakkn_theme');
-            const isDark = savedTheme === 'dark';
-            
-            if (isDark) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
+            // Force dark mode for landing page
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('dakkn_theme', 'dark');
 
             // Sync language with localStorage
             const culture = "@culture";
@@ -91,7 +86,7 @@
 
     @await RenderSectionAsync("HeadStyles", required: false)
 </head>
-<body class="bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col antialiased overflow-x-hidden selection:bg-primary/10">
+<body class="bg-white dark:bg-black text-slate-900 dark:text-slate-100 min-h-screen flex flex-col antialiased overflow-x-hidden selection:bg-primary/10">
 
     <!-- Preloader Overlay -->
     <div id="dakkn-preloader">
