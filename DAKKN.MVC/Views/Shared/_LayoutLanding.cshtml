@@ -71,9 +71,15 @@
 
     <script>
         (function() {
-            // Force dark mode for landing page
-            document.documentElement.classList.add('dark');
-            localStorage.setItem('dakkn_theme', 'dark');
+            // Apply theme from localStorage
+            const savedTheme = localStorage.getItem('dakkn_theme');
+            const isDark = savedTheme === 'dark';
+            
+            if (isDark) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
 
             // Sync language with localStorage
             const culture = "@culture";

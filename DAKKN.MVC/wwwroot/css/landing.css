@@ -175,6 +175,12 @@ section {
     backdrop-filter: blur(20px) !important;
 }
 
+.dark .navbar-scrolled {
+    background-color: rgba(15, 23, 42, 0.9) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+    border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
 @media (max-width: 767px) {
     .navbar-scrolled {
         height: 54px !important;
@@ -572,6 +578,12 @@ section {
     padding-bottom: env(safe-area-inset-bottom);
     animation: slideUpNav 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
     animation-delay: 0.3s;
+}
+
+.dark .mobile-bottom-nav {
+    background: rgba(15, 23, 42, 0.9);
+    border-top-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
 }
 
 .mob-nav-item {
