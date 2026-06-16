@@ -94,6 +94,14 @@ namespace DAKKN.MVC.Controllers
             try
             {
                 var result = await _mediator.Send(new SignupCommand(vm.FullName, vm.Email, vm.Password, vm.ConfirmPassword));
+
+                // Sign in via Identity Cookies to support MVC page requests (Auto-login after signup)
+                var user = await _userManager.FindByEmailAsync(vm.Email);
+                if (user != null)
+                {
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                }
+
                 return View("AuthCallback", result);
             }
             catch (ValidationException ex)
