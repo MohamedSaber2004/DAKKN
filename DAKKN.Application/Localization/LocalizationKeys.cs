@@ -54,12 +54,30 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString GoogleEmailRequired = new("auth.google_email_required");
             public static readonly KeyString GoogleUserCreationFailed = new("auth.google_user_creation_failed");
             public static readonly KeyString GoogleTokenRequired = new("auth.google_token_required");
+            public static readonly KeyString PhoneNumberRequired = new("auth.phone_number_required");
+            public static readonly KeyString PhoneNumberFoundBefore = new("auth.phone_number_found_before");
         }
 
         public static class ValidationMessages
         {
             public static readonly KeyString Required = new("validation.required");
             public static readonly KeyString MinLength = new("validation.min_length");
+            public static readonly KeyString MaxLength = new("validation.max_length");
+            public static readonly KeyString Range = new("validation.range");
+            public static readonly KeyString GreaterThanOrEqual = new("validation.greater_than_or_equal");
+        }
+
+        public static class Admin
+        {
+            public static readonly KeyString UsersTotal = new("admin_users_total");
+            public static readonly KeyString UsersActive = new("admin_users_active");
+            public static readonly KeyString UsersDeleted = new("admin_users_deleted");
+        }
+
+        public static class Users
+        {
+            public static readonly KeyString InvalidRole = new("users.invalid_role");
+            public static readonly KeyString InvalidStatus = new("users.invalid_status");
         }
     }
 }

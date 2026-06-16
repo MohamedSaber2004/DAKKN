@@ -38,9 +38,11 @@ namespace DAKKN.Domain.Entities
             IsDeleted = false;
         }
 
-        public static ApplicationUser Create(string fullName, string email)
+        public static ApplicationUser Create(string fullName, string email, string phoneNumber)
         {
-            return new ApplicationUser(email, email, fullName, DateTime.UtcNow, Gender.Male);
+            var user = new ApplicationUser(email, email, fullName, DateTime.UtcNow, Gender.Male);
+            user.PhoneNumber = phoneNumber;
+            return user;
         }
 
         public void UpdateProfile(string fullName, DateTime birthDate, Gender gender, string? profilePictureUrl)

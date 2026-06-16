@@ -59,13 +59,27 @@ namespace DAKKN.Application.Features.Auth.Comands.LoginWithGoogle
 
                 if (user == null)
                 {
+                    if (string.IsNullOrEmpty(request.PhoneNumber))
+                    {
+                        throw new BadRequestException(JsonLocalizationProvider.GetLocalizedString(_localizer[LocalizationKeys.AuthMessages.PhoneNumberRequired.Value]));
+                    }
+
+                    if (await _userManager.Users.AnyAsync(x => x.PhoneNumber == request.PhoneNumber, cancellationToken))
+                    {
+                        throw new BadRequestException(JsonLocalizationProvider.GetLocalizedString(_localizer[LocalizationKeys.AuthMessages.PhoneNumberFoundBefore.Value]));
+                    }
+
                     user = ApplicationUser.Create(
                         payload.Name ?? payload.GivenName ?? email,
-                        email
+                        email,
+                        request.PhoneNumber
                     );
                     user.SetGoogleUserId(payload.Subject);
+                    user.EmailConfirmed = true;
 
-                    var createResult = await _userManager.CreateAsync(user);
+                    // Generate a strong random password to avoid NULL hash in database
+                    var randomPassword = Guid.NewGuid().ToString("N") + Guid.NewGuid().ToString("N").ToUpper() + "!@#";
+                    var createResult = await _userManager.CreateAsync(user, randomPassword);
                     if (!createResult.Succeeded)
                         throw new BadRequestException(JsonLocalizationProvider.GetLocalizedString(_localizer[LocalizationKeys.AuthMessages.GoogleUserCreationFailed.Value]));
 
@@ -73,9 +87,45 @@ namespace DAKKN.Application.Features.Auth.Comands.LoginWithGoogle
                 }
                 else
                 {
+                    if (string.IsNullOrEmpty(user.PhoneNumber))
+                    {
+                        if (string.IsNullOrEmpty(request.PhoneNumber))
+                        {
+                            throw new BadRequestException(JsonLocalizationProvider.GetLocalizedString(_localizer[LocalizationKeys.AuthMessages.PhoneNumberRequired.Value]));
+                        }
+
+                        if (await _userManager.Users.AnyAsync(x => x.PhoneNumber == request.PhoneNumber && x.Id != user.Id, cancellationToken))
+                        {
+                            throw new BadRequestException(JsonLocalizationProvider.GetLocalizedString(_localizer[LocalizationKeys.AuthMessages.PhoneNumberFoundBefore.Value]));
+                        }
+
+                        user.PhoneNumber = request.PhoneNumber;
+                    }
+
                     user.SetGoogleUserId(payload.Subject);
+                    user.EmailConfirmed = true;
                     await _userManager.UpdateAsync(user);
                 }
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(user.PhoneNumber))
+                {
+                    if (string.IsNullOrEmpty(request.PhoneNumber))
+                    {
+                        throw new BadRequestException(JsonLocalizationProvider.GetLocalizedString(_localizer[LocalizationKeys.AuthMessages.PhoneNumberRequired.Value]));
+                    }
+
+                    if (await _userManager.Users.AnyAsync(x => x.PhoneNumber == request.PhoneNumber && x.Id != user.Id, cancellationToken))
+                    {
+                        throw new BadRequestException(JsonLocalizationProvider.GetLocalizedString(_localizer[LocalizationKeys.AuthMessages.PhoneNumberFoundBefore.Value]));
+                    }
+
+                    user.PhoneNumber = request.PhoneNumber;
+                }
+
+                user.EmailConfirmed = true;
+                await _userManager.UpdateAsync(user);
             }
 
             var roles = await _userManager.GetRolesAsync(user);

@@ -466,6 +466,8 @@
   "auth.layout.tagline": "Express Yourself",
   "auth.register.name": "Full name",
   "auth.register.name_ph": "Your full name",
+  "auth.register.phone": "Phone Number",
+  "auth.register.phone_ph": "0 1xx xxx xxxx",
   "auth.register.confirm_password": "Confirm password",
   "auth.register.confirm_password_ph": "Repeat your password",
   "auth.register.submit": "Create Account",
@@ -504,6 +506,8 @@
   "alert.password_min_length": "Password must be at least 8 characters.",
   "alert.confirm_required": "Please confirm your password.",
   "alert.passwords_mismatch": "Passwords do not match.",
+  "alert.phone_required": "Phone number is required.",
+  "alert.phone_invalid": "Please enter a valid phone number (10-15 digits).",
   "alert.name_required": "Full name is required.",
   "alert.generic_error": "An unexpected error occurred.",
   "alert.auth.password_same_as_old": "New password cannot be the same as your old password.",
@@ -550,10 +554,15 @@
     "invalid_google_token": "Invalid Google token.",
     "google_email_required": "Email is required from Google account.",
     "google_user_creation_failed": "Failed to create user from Google account.",
-    "google_token_required": "Google token is required for this operation."
+    "google_token_required": "Google token is required for this operation.",
+    "phone_number_required": "Phone number is required to complete your registration.",
+    "phone_number_found_before": "This phone number is already registered. Please use another one."
   },
   "validation": {
     "min_length": "Minimum length is {0} characters.",
+    "max_length": "Maximum length is {0} characters.",
+    "range": "Value must be between {0} and {1}.",
+    "greater_than_or_equal": "Value must be greater than or equal to {0}.",
     "required": "This field is required."
   },
   "admin_stat_revenue": "Total Revenue",
@@ -671,9 +680,12 @@
   "role_admin": "Admin",
   "role_designer": "Designer",
   "role_customer": "Customer",
-  "status_active": "Active",
-  "status_blocked": "Blocked",
-  "status_underreview": "Under Review",
+  "status_Active": "Active",
+  "status_Deleted": "Deleted",
+  "status_Blocked": "Blocked",
+  "status_UnderReview": "Under Review",
+  "loading_data": "Loading data...",
+
   "cat_anime": "Anime",
   "cat_gaming": "Gaming",
   "cat_memes": "Memes",
@@ -685,10 +697,14 @@
   "admin_users_active": "Active Users",
   "admin_users_designers": "Designers",
   "admin_users_blocked": "Blocked Users",
+  "admin_users_deleted": "Deleted Users",
   "admin_users_list": "User List",
   "admin_export_csv": "Export CSV",
   "admin_add_user": "Add User",
   "admin_users_search_ph": "Search by name, email or phone...",
+  "admin_users_not_found": "No users found",
+  "admin_users_not_found_desc": "Try adjusting your search or filters to find what you're looking for.",
+  "admin_clear_filters": "Clear all filters",
   "admin_filter_role": "Filter by Role",
   "admin_filter_status": "Filter by Status",
   "admin_th_user": "User",
@@ -965,5 +981,9 @@
   "custom_material_matte_sub": "Elegant, non-glare",
   "custom_free_shipping": "Free shipping on orders over 500 EGP!",
   "custom_terms_notice": "By submitting, you agree to our Custom Print Terms. We will review your design and notify you within 24 hours.",
-  "custom_review_desc": "We support JPG, PNG, PDF, and ZIP files. For best results, use high-resolution images with at least 300 DPI."
+  "custom_review_desc": "We support JPG, PNG, PDF, and ZIP files. For best results, use high-resolution images with at least 300 DPI.",
+  "users": {
+    "invalid_role": "Invalid role provided. Role must be 'Admin' or 'User'.",
+    "invalid_status": "Invalid status provided. Status must be 'Active' or 'Deleted'."
+  }
 }

@@ -13,6 +13,7 @@ namespace DAKKN.MVC.ViewModels.Admin
     public enum UserStatus
     {
         Active,
+        Deleted,
         Blocked,
         UnderReview
     }
@@ -34,7 +35,11 @@ namespace DAKKN.MVC.ViewModels.Admin
         public List<UserListItemViewModel> Users { get; set; } = new();
         public int TotalUsers { get; set; }
         public int ActiveUsers { get; set; }
-        public int DesignersCount { get; set; }
-        public int BlockedUsers { get; set; }
+        public int DeletedUsers { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+        public int TotalPages { get; set; }
+        public bool HasPreviousPage { get; set; }
+        public bool HasNextPage { get; set; }
     }
 }

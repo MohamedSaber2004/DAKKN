@@ -70,7 +70,10 @@ namespace DAKKN.MVC
                 options.ForwardDefaultSelector = context =>
                 {
                     var path = context.Request.Path.Value;
-                    if (path != null && path.StartsWith("/api/", StringComparison.OrdinalIgnoreCase))
+                    var authHeader = context.Request.Headers["Authorization"].ToString();
+                    
+                    if ((path != null && path.StartsWith("/api/", StringComparison.OrdinalIgnoreCase)) 
+                        || authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
                     {
                         return JwtBearerDefaults.AuthenticationScheme;
                     }
@@ -322,11 +325,12 @@ namespace DAKKN.MVC
                 );
             }
 
-            var supportedCultures = new[] { "en", "ar" };
+            var supportedCultures = new[] { "ar", "en" };
             var localizationOptions = new RequestLocalizationOptions()
-                .SetDefaultCulture(supportedCultures[1]) // "ar"
+                .SetDefaultCulture(supportedCultures[0])
                 .AddSupportedCultures(supportedCultures)
                 .AddSupportedUICultures(supportedCultures);
+
 
             // Prioritize Cookie and QueryString providers
             localizationOptions.RequestCultureProviders.Clear();

@@ -42,7 +42,8 @@ namespace DAKKN.Application.Features.Auth.Comands.SignUp
         {
             var user = ApplicationUser.Create(
                 request.FullName,
-                request.Email);
+                request.Email,
+                request.PhoneNumber);
 
             var result = await _userManager.CreateAsync(user, request.Password);
 

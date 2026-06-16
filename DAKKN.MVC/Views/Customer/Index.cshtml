@@ -1,15 +1,18 @@
 @using DAKKN.MVC.ViewModels.Customer
+@using System.Security.Claims
 @model CustomerDashboardViewModel
 @{
     Layout = "_LayoutCustomer";
     var dashboard = Model.Dashboard;
+    var fullName = User.FindFirstValue("FullName") ?? User.Identity?.Name ?? "User";
+    var firstName = fullName.Split(' ')[0];
 }
 
 <div class="max-w-7xl mx-auto px-lg py-xl space-y-3xl">
     <!-- Header & Welcome -->
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-lg">
         <div>
-            <h1 class="font-h1 text-h1 font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["Dashboard_Welcome"], @(User.Identity?.Name?.Split(' ')[0] ?? "User")! 👋</h1>
+            <h1 class="font-h1 text-h1 font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["Dashboard_Welcome"], @firstName! 👋</h1>
             <p class="text-text-secondary dark:text-outline-variant mt-2">@Localizer["Dashboard_SubHeader"]</p>
         </div>
         <div class="flex gap-md">

@@ -7,6 +7,13 @@ using DAKKN.MVC.ViewModels.Admin;
 using DAKKN.Appearence.Filters;
 using DAKKN.Domain.Enums;
 using System.Security.Claims;
+using MediatR;
+using DAKKN.Application.Features.Users.Queries.GetUserStats;
+using DAKKN.Application.Features.Users.Queries.GetAllUsers;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
+using System;
 
 namespace DAKKN.MVC.Controllers
 {
@@ -14,11 +21,15 @@ namespace DAKKN.MVC.Controllers
     [RoleAuthorize(UserType.Admin)]
     public class AdminController : Controller
     {
+        private readonly IWebHostEnvironment _env;
         private readonly IStringLocalizer<Messages> _localizer;
+        private readonly IMediator _mediator;
 
-        public AdminController(IStringLocalizer<Messages> localizer)
+        public AdminController(IWebHostEnvironment env,IStringLocalizer<Messages> localizer, IMediator mediator)
         {
+            _env = env;
             _localizer = localizer;
+            _mediator = mediator;
         }
 
         [HttpGet("")]
@@ -30,41 +41,40 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpGet("users")]
-        public IActionResult Users()
+        public async Task<IActionResult> Users(string? fullName, string? email, string? phoneNumber, string? role, string? status, int pageNumber = 1, int pageSize = 20)
         {
             ViewData["Title"] = _localizer["admin_users"];
 
-            var mockUsers = new List<UserListItemViewModel>
+            var query = new GetAllUsersQuery(fullName, email, phoneNumber, role, status, pageNumber, pageSize);
+            var usersResult = await _mediator.Send(query);
+
+            var userViewModels = usersResult.Items.Select(u => new UserListItemViewModel
             {
-                new UserListItemViewModel { 
-                    Id = "USR-101", Name = "أحمد محمد", Email = "ahmed@example.com", Phone = "01012345678", 
-                    JoinDate = DateTime.Now.AddMonths(-5), Role = UserRole.Customer, Status = UserStatus.Active,
-                    AvatarUrl = "https://ui-avatars.com/api/?name=Ahmed+Mohamed&background=random"
-                },
-                new UserListItemViewModel { 
-                    Id = "USR-102", Name = "سارة أحمد", Email = "sara@example.com", Phone = "01187654321", 
-                    JoinDate = DateTime.Now.AddMonths(-3), Role = UserRole.Designer, Status = UserStatus.Active,
-                    AvatarUrl = "https://ui-avatars.com/api/?name=Sara+Ahmed&background=random"
-                },
-                new UserListItemViewModel { 
-                    Id = "USR-103", Name = "محمود علي", Email = "mahmoud@example.com", Phone = "01234567890", 
-                    JoinDate = DateTime.Now.AddMonths(-8), Role = UserRole.Admin, Status = UserStatus.Active,
-                    AvatarUrl = "https://ui-avatars.com/api/?name=Mahmoud+Ali&background=random"
-                },
-                new UserListItemViewModel { 
-                    Id = "USR-104", Name = "ياسين خالد", Email = "yassin@example.com", Phone = "01599887766", 
-                    JoinDate = DateTime.Now.AddMonths(-1), Role = UserRole.Customer, Status = UserStatus.Blocked,
-                    AvatarUrl = "https://ui-avatars.com/api/?name=Yassin+Khaled&background=random"
-                }
-            };
+                Id = u.Id.ToString(),
+                Name = u.FullName,
+                Email = u.Email,
+                Phone = u.PhoneNumber ?? "",
+                JoinDate = u.JoinDate,
+                AvatarUrl = !string.IsNullOrEmpty(u.ProfilePictureUrl) 
+                    ? $"/files/{u.ProfilePictureUrl}"
+                    : $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(u.FullName ?? "User")}&background=random",
+                Role = u.Roles.Contains("Admin") ? UserRole.Admin : UserRole.Customer,
+                Status = u.Status == "Active" ? UserStatus.Active : UserStatus.Deleted
+            }).ToList();
+
+            var stats = await _mediator.Send(new GetUserStatsQuery());
 
             var viewModel = new UserManagementViewModel
             {
-                Users = mockUsers,
-                TotalUsers = 1280,
-                ActiveUsers = 1245,
-                DesignersCount = 12,
-                BlockedUsers = 23
+                Users = userViewModels,
+                TotalUsers = stats.TotalUsers,
+                ActiveUsers = stats.ActiveUsers,
+                DeletedUsers = stats.DeletedUsers,
+                PageNumber = usersResult.PageNumber,
+                PageSize = usersResult.PageSize,
+                TotalPages = usersResult.TotalPages,
+                HasPreviousPage = usersResult.HasPreviousPage,
+                HasNextPage = usersResult.HasNextPage
             };
 
             return View(viewModel);

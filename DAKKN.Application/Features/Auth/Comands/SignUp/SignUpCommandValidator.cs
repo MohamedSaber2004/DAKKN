@@ -1,4 +1,4 @@
-﻿using DAKKN.Application.Localization;
+using DAKKN.Application.Localization;
 using DAKKN.Domain.Entities;
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
@@ -22,8 +22,13 @@ namespace DAKKN.Application.Features.Auth.Comands.SignUp
 
             RuleFor(x => x.Email)
                 .NotEmpty().WithMessage(_localizer[LocalizationKeys.ValidationMessages.Required.Key])
-                .EmailAddress().WithMessage(_localizer[LocalizationKeys.ValidationMessages.Required.Key]) // Or use a specific email error key if available
-                .MustAsync(EmailNotFoundBefore).WithMessage(_localizer[LocalizationKeys.AuthMessages.EmailFoundBefore.Key]); // Or use a specific email already exists error key if available
+                .EmailAddress().WithMessage(_localizer[LocalizationKeys.ValidationMessages.Required.Key])
+                .MustAsync(EmailNotFoundBefore).WithMessage(_localizer[LocalizationKeys.AuthMessages.EmailFoundBefore.Key]);
+
+            RuleFor(x => x.PhoneNumber)
+                .NotEmpty().WithMessage(_localizer[LocalizationKeys.ValidationMessages.Required.Key])
+                .Matches(@"^0[0-9]{10,15}$").WithMessage(_localizer["alert.phone_invalid"])
+                .MustAsync(PhoneNumberNotFoundBefore).WithMessage(_localizer[LocalizationKeys.AuthMessages.PhoneNumberFoundBefore.Key]);
 
             RuleFor(x => x.Password)
                 .NotEmpty().WithMessage(_localizer[LocalizationKeys.ValidationMessages.Required.Key])
@@ -37,6 +42,11 @@ namespace DAKKN.Application.Features.Auth.Comands.SignUp
         private async Task<bool> EmailNotFoundBefore(string email, CancellationToken cancellationToken)
         {
             return !await _userManager.Users.AnyAsync(u => u.Email == email, cancellationToken);
+        }
+
+        private async Task<bool> PhoneNumberNotFoundBefore(string phoneNumber, CancellationToken cancellationToken)
+        {
+            return !await _userManager.Users.AnyAsync(u => u.PhoneNumber == phoneNumber, cancellationToken);
         }
     }
 }

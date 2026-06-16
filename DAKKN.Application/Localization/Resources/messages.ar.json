@@ -235,7 +235,7 @@
   "contact_form_email_ph": "your@email.com",
   "contact_form_phone_label": "رقم الهاتف",
   "contact_form_phone_opt": "(اختياري)",
-  "contact_form_phone_ph": "+20 1xx xxx xxxx",
+  "contact_form_phone_ph": "0 1xx xxx xxxx",
   "contact_form_order_label": "رقم الطلب",
   "contact_form_order_sub": "(إن وجد)",
   "contact_form_order_ph": "مثال: DAKKN-00123",
@@ -481,6 +481,8 @@
   "auth.layout.tagline": "عبّر عن نفسك",
   "auth.register.name": "الاسم الكامل",
   "auth.register.name_ph": "اسمك الكامل",
+  "auth.register.phone": "رقم الهاتف",
+  "auth.register.phone_ph": "0 1xx xxx xxxx",
   "auth.register.confirm_password": "تأكيد كلمة المرور",
   "auth.register.confirm_password_ph": "كرر كلمة المرور",
   "auth.register.submit": "إنشاء الحساب",
@@ -519,6 +521,8 @@
   "alert.password_min_length": "يجب أن تكون كلمة المرور 8 أحرف على الأقل.",
   "alert.confirm_required": "يرجى تأكيد كلمة المرور.",
   "alert.passwords_mismatch": "كلمات المرور غير متطابقة.",
+  "alert.phone_required": "رقم الهاتف مطلوب.",
+  "alert.phone_invalid": "يرجى إدخال رقم هاتف صحيح (10-15 رقماً).",
   "alert.name_required": "الاسم الكامل مطلوب.",
   "alert.generic_error": "حدث خطأ غير متوقع.",
   "alert.auth.password_same_as_old": "لا يمكن أن تكون كلمة المرور الجديدة هي نفسها كلمة المرور القديمة.",
@@ -671,9 +675,12 @@
   "role_admin": "مدير",
   "role_designer": "مصمم",
   "role_customer": "عميل",
-  "status_active": "نشط",
-  "status_blocked": "محظور",
-  "status_underreview": "قيد المراجعة",
+  "status_Active": "نشط",
+  "status_Deleted": "محذوف",
+  "status_Blocked": "محظور",
+  "status_UnderReview": "قيد المراجعة",
+  "loading_data": "جاري تحميل البيانات...",
+
   "cat_anime": "أنمي",
   "cat_gaming": "جيمنج",
   "cat_memes": "ميمز",
@@ -685,10 +692,14 @@
   "admin_users_active": "المستخدمون النشطون",
   "admin_users_designers": "المصممون",
   "admin_users_blocked": "المستخدمون المحظورون",
+  "admin_users_deleted": "المستخدمون المحذوفون",
   "admin_users_list": "قائمة المستخدمين",
   "admin_export_csv": "تصدير CSV",
   "admin_add_user": "إضافة مستخدم",
   "admin_users_search_ph": "ابحث بالاسم، البريد أو الهاتف...",
+  "admin_users_not_found": "لم يتم العثور على مستخدمين",
+  "admin_users_not_found_desc": "جرّب تعديل البحث أو الفلاتر للعثور على ما تبحث عنه.",
+  "admin_clear_filters": "إزالة جميع الفلاتر",
   "admin_filter_role": "تصفية حسب الدور",
   "admin_filter_status": "تصفية حسب الحالة",
   "admin_th_user": "المستخدم",
@@ -840,11 +851,16 @@
     "invalid_google_token": "رمز جوجل غير صالح.",
     "google_email_required": "البريد الإلكتروني مطلوب من حساب جوجل.",
     "google_user_creation_failed": "فشل إنشاء مستخدم من حساب جوجل.",
-    "google_token_required": "رمز جوجل مطلوب لتسجيل الدخول عبر جوجل."
+    "google_token_required": "رمز جوجل مطلوب لتسجيل الدخول عبر جوجل.",
+    "phone_number_required": "رقم الهاتف مطلوب لإكمال عملية التسجيل.",
+    "phone_number_found_before": "رقم الهاتف هذا مسجل بالفعل. يرجى استخدام رقم آخر."
   },
   "validation": {
     "required": "هذا الحقل مطلوب.",
-    "min_length": "يجب أن يكون هذا الحقل على الأقل {0} أحرف."
+    "min_length": "يجب أن يكون هذا الحقل على الأقل {0} أحرف.",
+    "max_length": "يجب أن لا يتجاوز هذا الحقل {0} حرفاً.",
+    "range": "يجب أن تكون القيمة بين {0} و {1}.",
+    "greater_than_or_equal": "يجب أن تكون القيمة أكبر من أو تساوي {0}."
   },
   "nav_custom_order": "طلب مخصص",
   "nav_cart": "السلة",
@@ -987,5 +1003,9 @@
   "admin_first_name_required": "الاسم الأول مطلوب.",
   "admin_last_name_required": "الاسم الأخير مطلوب.",
   "custom_terms_notice": "بالإتمام، أنت توافق على شروط الطباعة المخصصة. سنراجع تصميمك ونقوم بالرد خلال 24 ساعة.",
-  "custom_review_desc": "نحن ندعم ملفات JPG و PNG و PDF و ZIP. لأفضل النتائج، استخدم صوراً عالية الدقة (300 DPI على الأقل)."
+  "custom_review_desc": "نحن ندعم ملفات JPG و PNG و PDF و ZIP. لأفضل النتائج، استخدم صوراً عالية الدقة (300 DPI على الأقل).",
+  "users": {
+    "invalid_role": "الدور المقدم غير صالح. يجب أن يكون الدور 'مدير' أو 'مستخدم'.",
+    "invalid_status": "الحالة المقدمة غير صالحة. يجب أن تكون الحالة 'نشط' أو 'محذوف'."
+  }
 }

@@ -26,5 +26,10 @@ namespace DAKKN.Appearence.Routes
             public const string ResetPassword = Base + "/auth/reset-password";
             public const string LoginWithGoogle = Base + "/auth/login-google";
         }
+
+        public static class Users
+        {
+            public const string GetAll = Base + "/users";
+        }
     }
 }

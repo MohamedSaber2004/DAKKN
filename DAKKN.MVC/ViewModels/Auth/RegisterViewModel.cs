@@ -12,6 +12,10 @@ namespace DAKKN.MVC.ViewModels.Auth
         [EmailAddress(ErrorMessage = "alert.email_invalid")]
         public string Email { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "alert.phone_required")]
+        [Phone(ErrorMessage = "alert.phone_invalid")]
+        public string PhoneNumber { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "alert.password_required")]
         [MinLength(8, ErrorMessage = "alert.password_min_length")]
         public string Password { get; set; } = string.Empty;

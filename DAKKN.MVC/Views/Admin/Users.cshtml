@@ -6,94 +6,107 @@
     ViewData["Title"] = Localizer["admin_users"];
 }
 
-<div class="space-y-8 pb-12">
+<div class="space-y-6 sm:space-y-8 pb-12">
     <!-- 1. Stats Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="admin-card p-6 flex flex-col gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div class="admin-card p-5 sm:p-6 flex flex-row sm:flex-col items-center sm:items-start gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
                 <span class="material-symbols-outlined text-2xl">group</span>
             </div>
             <div>
-                <p class="text-sm font-semibold text-admin-secondary">@Localizer["admin_users_total"]</p>
-                <h3 class="text-2xl font-black text-admin-primary mt-1">@Model.TotalUsers</h3>
+                <p class="text-xs sm:text-sm font-semibold text-admin-secondary">@Localizer["admin_users_total"]</p>
+                <h3 class="text-xl sm:text-2xl font-black text-admin-primary mt-1">@Model.TotalUsers</h3>
             </div>
         </div>
 
-        <div class="admin-card p-6 flex flex-col gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-green-500/10 flex items-center justify-center text-green-600">
+        <div class="admin-card p-5 sm:p-6 flex flex-row sm:flex-col items-center sm:items-start gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-green-500/10 flex items-center justify-center text-green-600 shrink-0">
                 <span class="material-symbols-outlined text-2xl">person_check</span>
             </div>
             <div>
-                <p class="text-sm font-semibold text-admin-secondary">@Localizer["admin_users_active"]</p>
-                <h3 class="text-2xl font-black text-admin-primary mt-1">@Model.ActiveUsers</h3>
+                <p class="text-xs sm:text-sm font-semibold text-admin-secondary">@Localizer["admin_users_active"]</p>
+                <h3 class="text-xl sm:text-2xl font-black text-admin-primary mt-1">@Model.ActiveUsers</h3>
             </div>
         </div>
 
-        <div class="admin-card p-6 flex flex-col gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-secondary/10 flex items-center justify-center text-secondary">
-                <span class="material-symbols-outlined text-2xl">palette</span>
+        <div class="admin-card p-5 sm:p-6 flex flex-row sm:flex-col items-center sm:items-start gap-4 sm:col-span-2 lg:col-span-1">
+            <div class="w-12 h-12 rounded-2xl bg-red-500/10 flex items-center justify-center text-red-600 shrink-0">
+                <span class="material-symbols-outlined text-2xl">delete</span>
             </div>
             <div>
-                <p class="text-sm font-semibold text-admin-secondary">@Localizer["admin_users_designers"]</p>
-                <h3 class="text-2xl font-black text-admin-primary mt-1">@Model.DesignersCount</h3>
-            </div>
-        </div>
-
-        <div class="admin-card p-6 flex flex-col gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-red-500/10 flex items-center justify-center text-red-600">
-                <span class="material-symbols-outlined text-2xl">block</span>
-            </div>
-            <div>
-                <p class="text-sm font-semibold text-admin-secondary">@Localizer["admin_users_blocked"]</p>
-                <h3 class="text-2xl font-black text-admin-primary mt-1">@Model.BlockedUsers</h3>
+                <p class="text-xs sm:text-sm font-semibold text-admin-secondary">@Localizer["admin_users_deleted"]</p>
+                <h3 class="text-xl sm:text-2xl font-black text-admin-primary mt-1">@Model.DeletedUsers</h3>
             </div>
         </div>
     </div>
 
     <!-- 2. Table and Filters -->
-    <div class="admin-card">
-        <div class="p-8 border-b border-admin-border space-y-6">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div class="admin-card relative overflow-hidden">
+        <!-- Table Loader Overlay -->
+        <div id="tableLoader" class="hidden absolute inset-0 bg-white/60 dark:bg-admin-page/60 z-20 flex items-center justify-center backdrop-blur-[2px] transition-all">
+            <div class="flex flex-col items-center gap-3">
+                <div class="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+                <p class="text-sm font-bold text-admin-primary">@Localizer["loading_data"]</p>
+            </div>
+        </div>
+
+        <form method="get" id="usersFilterForm" class="p-4 sm:p-8 border-b border-admin-border space-y-4 sm:space-y-6">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
                 <h3 class="text-lg font-bold text-admin-primary">@Localizer["admin_users_list"]</h3>
-                <div class="flex gap-3">
-                    <button class="flex items-center gap-2 px-4 py-2 bg-admin-page border border-admin-border text-admin-secondary rounded-xl text-sm font-bold hover:bg-surface-container transition-all">
+                <div class="flex flex-wrap gap-2 sm:gap-3 w-full lg:w-auto">
+                    <button type="button" class="flex-1 lg:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-admin-page border border-admin-border text-admin-secondary rounded-xl text-sm font-bold hover:bg-surface-container transition-all">
                         <span class="material-symbols-outlined text-lg">download</span>
                         @Localizer["admin_export_csv"]
                     </button>
-                    <button class="flex items-center gap-2 px-4 py-2 bg-primary text-on-primary rounded-xl text-sm font-bold shadow-small hover:scale-103 active:scale-95 transition-all">
+                    <button type="button" class="flex-1 lg:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-on-primary rounded-xl text-sm font-bold shadow-small hover:scale-103 active:scale-95 transition-all">
                         <span class="material-symbols-outlined text-lg">person_add</span>
                         @Localizer["admin_add_user"]
                     </button>
                 </div>
             </div>
 
-            <div class="flex flex-col sm:flex-row gap-4">
-                <div class="relative flex-grow">
-                    <input type="text" placeholder="@Localizer["admin_users_search_ph"]" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-2.5 ltr:pl-10 rtl:pr-10 outline-none focus:ring-1 focus:ring-primary text-admin-primary text-sm transition-all" />
+            <div class="flex flex-col md:flex-row gap-3 sm:gap-4">
+                <div class="relative flex-grow group">
+                    <input type="text" name="fullName" id="fullNameSearch" value="@Context.Request.Query["fullName"]" placeholder="@Localizer["admin_users_search_ph"]" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-2.5 ltr:pl-10 rtl:pr-10 ltr:pr-10 rtl:pl-10 outline-none focus:ring-1 focus:ring-primary text-admin-primary text-sm transition-all" />
                     <span class="material-symbols-outlined absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 text-admin-secondary">search</span>
+                    
+                    @if (!string.IsNullOrEmpty(Context.Request.Query["fullName"]))
+                    {
+                        <button type="button" onclick="clearSearch()" class="absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 text-admin-secondary hover:text-red-500 transition-colors">
+                            <span class="material-symbols-outlined text-lg">close</span>
+                        </button>
+                    }
                 </div>
-                <div class="flex gap-4">
-                    <select class="bg-admin-page border border-admin-border text-admin-primary text-sm rounded-xl px-4 py-2.5 outline-none focus:ring-1 focus:ring-primary cursor-pointer min-w-[140px]">
-                        <option value="">@Localizer["admin_filter_role"]</option>
-                        <option value="Admin">@Localizer["role_Admin"]</option>
-                        <option value="Designer">@Localizer["role_Designer"]</option>
-                        <option value="Customer">@Localizer["role_Customer"]</option>
-                    </select>
-                    <select class="bg-admin-page border border-admin-border text-admin-primary text-sm rounded-xl px-4 py-2.5 outline-none focus:ring-1 focus:ring-primary cursor-pointer min-w-[140px]">
-                        <option value="">@Localizer["admin_filter_status"]</option>
-                        <option value="Active">@Localizer["status_Active"]</option>
-                        <option value="Blocked">@Localizer["status_Blocked"]</option>
-                        <option value="UnderReview">@Localizer["status_UnderReview"]</option>
-                    </select>
+                <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                    <div class="relative flex-1 sm:flex-none">
+                        <select name="role" onchange="submitFilter()" class="w-full appearance-none bg-none bg-admin-page border border-admin-border text-admin-primary text-sm rounded-xl px-4 py-2.5 ltr:pr-12 rtl:pl-12 outline-none focus:ring-1 focus:ring-primary cursor-pointer sm:min-w-[140px]">
+                            <option value="">@Localizer["admin_filter_role"]</option>
+                            <option value="Admin" selected="@(Context.Request.Query["role"] == "Admin")">@Localizer["role_Admin"]</option>
+                            <option value="User" selected="@(Context.Request.Query["role"] == "User")">@Localizer["role_Customer"]</option>
+                        </select>
+                        <span class="material-symbols-outlined absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 pointer-events-none text-admin-secondary">expand_more</span>
+                    </div>
+                    
+                    <div class="relative flex-1 sm:flex-none">
+                        <select name="status" onchange="submitFilter()" class="w-full appearance-none bg-none bg-admin-page border border-admin-border text-admin-primary text-sm rounded-xl px-4 py-2.5 ltr:pr-12 rtl:pl-12 outline-none focus:ring-1 focus:ring-primary cursor-pointer sm:min-w-[140px]">
+                            <option value="">@Localizer["admin_filter_status"]</option>
+                            <option value="Active" selected="@(Context.Request.Query["status"] == "Active")">@Localizer["status_Active"]</option>
+                            <option value="Deleted" selected="@(Context.Request.Query["status"] == "Deleted")">@Localizer["status_Deleted"]</option>
+                        </select>
+                        <span class="material-symbols-outlined absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 pointer-events-none text-admin-secondary">expand_more</span>
+                    </div>
                 </div>
             </div>
-        </div>
+            <input type="hidden" name="pageNumber" value="1" />
+            <input type="hidden" name="pageSize" value="20" />
+        </form>
 
-        <div class="overflow-x-auto">
+        <!-- Desktop Table View -->
+        <div class="hidden lg:block overflow-x-auto">
             <table class="w-full text-sm text-left rtl:text-right users-table">
                 <thead class="bg-admin-page/30 text-admin-secondary uppercase text-[11px] font-bold tracking-wider">
                     <tr>
-                        <th class="px-8 py-4"><input type="checkbox" class="rounded border-admin-border text-primary focus:ring-primary" /></th>
+                        <th class="px-8 py-4">#</th>
                         <th class="px-8 py-4">@Localizer["admin_th_user"]</th>
                         <th class="px-8 py-4">@Localizer["admin_th_contact"]</th>
                         <th class="px-8 py-4">@Localizer["admin_th_join_date"]</th>
@@ -103,65 +116,228 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-admin-border">
-                    @foreach (var user in Model.Users)
+                    @if (!Model.Users.Any())
                     {
-                        <tr class="hover:bg-admin-page/50 transition-colors group">
-                            <td class="px-8 py-5"><input type="checkbox" class="rounded border-admin-border text-primary focus:ring-primary" /></td>
-                            <td class="px-8 py-5">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden shadow-small">
-                                        <img src="@user.AvatarUrl" alt="@user.Name" class="w-full h-full object-cover" />
+                        <tr>
+                            <td colspan="7" class="px-8 py-20 text-center">
+                                <div class="flex flex-col items-center gap-4">
+                                    <div class="w-20 h-20 rounded-full bg-admin-page flex items-center justify-center text-admin-secondary">
+                                        <span class="material-symbols-outlined text-5xl">person_search</span>
                                     </div>
-                                    <span class="font-bold text-admin-primary">@user.Name</span>
+                                    <div class="max-w-xs mx-auto">
+                                        <h4 class="text-lg font-bold text-admin-primary">@Localizer["admin_users_not_found"]</h4>
+                                        <p class="text-sm text-admin-secondary mt-1">@Localizer["admin_users_not_found_desc"]</p>
+                                    </div>
+                                    <button type="button" onclick="clearSearch()" class="mt-2 px-6 py-2 bg-surface-container text-primary font-bold text-sm rounded-xl hover:bg-primary/5 transition-colors">
+                                        @Localizer["admin_clear_filters"]
+                                    </button>
                                 </div>
-                            </td>
-                            <td class="px-8 py-5">
-                                <div class="flex flex-col text-xs">
-                                    <span class="text-admin-primary font-medium">@user.Email</span>
-                                    <span class="text-admin-secondary">@user.Phone</span>
-                                </div>
-                            </td>
-                            <td class="px-8 py-5 text-admin-secondary">@user.JoinDate.ToString("yyyy-MM-dd")</td>
-                            <td class="px-8 py-5">
-                                <span class="px-3 py-1 rounded-full text-[11px] font-bold border @(user.Role == UserRole.Admin ? "bg-primary/5 border-primary/20 text-primary" : user.Role == UserRole.Designer ? "bg-secondary/5 border-secondary/20 text-secondary" : "bg-admin-page border-admin-border text-admin-secondary")">
-                                    @Localizer[$"role_{user.Role}"]
-                                </span>
-                            </td>
-                            <td class="px-8 py-5">
-                                <span class="status-badge @(user.Status == UserStatus.Active ? "status-done" : user.Status == UserStatus.Blocked ? "status-cancelled" : "status-pending")">
-                                    @Localizer[$"status_{user.Status}"]
-                                </span>
-                            </td>
-                            <td class="px-8 py-5 text-center">
-                                <button class="w-9 h-9 rounded-xl hover:bg-admin-page flex items-center justify-center text-admin-secondary hover:text-primary transition-all">
-                                    <span class="material-symbols-outlined text-lg">more_vert</span>
-                                </button>
                             </td>
                         </tr>
+                    }
+                    else
+                    {
+                        int rowNum = (Model.PageNumber - 1) * Model.PageSize + 1;
+                        @foreach (var user in Model.Users)
+                        {
+                            <tr class="hover:bg-admin-page/50 transition-colors group">
+                                <td class="px-8 py-5 text-admin-secondary font-bold">@rowNum</td>
+                                <td class="px-8 py-5">
+                                    <div class="flex items-center gap-3 w-[200px]">
+                                        <div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden shadow-small shrink-0">
+                                            <img src="@user.AvatarUrl" alt="@user.Name" class="w-full h-full object-cover" />
+                                        </div>
+                                        <span class="font-bold text-admin-primary truncate">@user.Name</span>
+                                    </div>
+                                </td>
+                                <td class="px-8 py-5">
+                                    <div class="flex flex-col text-xs">
+                                        <span class="text-admin-primary font-medium">@user.Email</span>
+                                        <span class="text-admin-secondary">@user.Phone</span>
+                                    </div>
+                                </td>
+                                <td class="px-8 py-5 text-admin-secondary">@user.JoinDate.ToString("yyyy-MM-dd")</td>
+                                <td class="px-8 py-5">
+                                    <span class="px-3 py-1 rounded-full text-[11px] font-bold border @(user.Role == UserRole.Admin ? "bg-primary/5 border-primary/20 text-primary" : user.Role == UserRole.Designer ? "bg-secondary/5 border-secondary/20 text-secondary" : "bg-admin-page border-admin-border text-admin-secondary")">
+                                        @Localizer[$"role_{user.Role}"]
+                                    </span>
+                                </td>
+                                <td class="px-8 py-5">
+                                    <span class="status-badge @(user.Status == UserStatus.Active ? "status-done" : user.Status == UserStatus.Deleted ? "status-cancelled" : "status-pending")">
+                                        @Localizer[$"status_{user.Status}"]
+                                    </span>
+                                </td>
+                                <td class="px-8 py-5 text-center">
+                                    <button class="w-9 h-9 rounded-xl hover:bg-admin-page flex items-center justify-center text-admin-secondary hover:text-primary transition-all mx-auto">
+                                        <span class="material-symbols-outlined text-lg">more_vert</span>
+                                    </button>
+                                </td>
+                            </tr>
+                            rowNum++;
+                        }
                     }
                 </tbody>
             </table>
         </div>
 
-        <div class="px-8 py-6 border-t border-admin-border flex flex-col sm:flex-row justify-between items-center gap-4">
-            <span class="text-xs font-medium text-admin-secondary">
-                @string.Format(Localizer["admin_pagination_showing"].Value, 1, Model.Users.Count, Model.TotalUsers)
-            </span>
-            <div class="flex items-center gap-2">
-                <button class="p-2 rounded-lg border border-admin-border text-admin-secondary hover:bg-admin-page disabled:opacity-50" disabled>
-                    <span class="material-symbols-outlined text-lg">chevron_right</span>
-                </button>
-                <div class="flex items-center gap-1">
-                    <button class="w-9 h-9 rounded-lg bg-primary text-on-primary text-xs font-bold">1</button>
-                    <button class="w-9 h-9 rounded-lg border border-admin-border text-admin-secondary text-xs font-bold hover:bg-admin-page">2</button>
-                    <button class="w-9 h-9 rounded-lg border border-admin-border text-admin-secondary text-xs font-bold hover:bg-admin-page">3</button>
-                    <span class="mx-1 text-admin-secondary">...</span>
-                    <button class="w-9 h-9 rounded-lg border border-admin-border text-admin-secondary text-xs font-bold hover:bg-admin-page">30</button>
+        <!-- Mobile/Tablet Card View -->
+        <div class="lg:hidden">
+            @if (!Model.Users.Any())
+            {
+                <div class="px-4 py-20 text-center">
+                    <div class="flex flex-col items-center gap-4">
+                        <div class="w-20 h-20 rounded-full bg-admin-page flex items-center justify-center text-admin-secondary">
+                            <span class="material-symbols-outlined text-5xl">person_search</span>
+                        </div>
+                        <div class="max-w-xs mx-auto">
+                            <h4 class="text-lg font-bold text-admin-primary">@Localizer["admin_users_not_found"]</h4>
+                            <p class="text-sm text-admin-secondary mt-1">@Localizer["admin_users_not_found_desc"]</p>
+                        </div>
+                        <button type="button" onclick="clearSearch()" class="mt-2 px-6 py-2 bg-surface-container text-primary font-bold text-sm rounded-xl hover:bg-primary/5 transition-colors">
+                            @Localizer["admin_clear_filters"]
+                        </button>
+                    </div>
                 </div>
-                <button class="p-2 rounded-lg border border-admin-border text-admin-secondary hover:bg-admin-page">
-                    <span class="material-symbols-outlined text-lg">chevron_left</span>
-                </button>
+            }
+            else
+            {
+                <div class="divide-y divide-admin-border">
+                    @foreach (var user in Model.Users)
+                    {
+                        <div class="p-4 space-y-4 hover:bg-admin-page/30 transition-colors">
+                            <div class="flex items-center justify-between gap-3">
+                                <div class="flex items-center gap-3 min-w-0">
+                                    <div class="w-12 h-12 rounded-full bg-surface-container overflow-hidden shadow-small shrink-0">
+                                        <img src="@user.AvatarUrl" alt="@user.Name" class="w-full h-full object-cover" />
+                                    </div>
+                                    <div class="min-w-0">
+                                        <h4 class="font-bold text-admin-primary truncate">@user.Name</h4>
+                                        <p class="text-xs text-admin-secondary truncate">@user.Email</p>
+                                    </div>
+                                </div>
+                                <button class="w-10 h-10 rounded-xl hover:bg-admin-page flex items-center justify-center text-admin-secondary shrink-0 transition-all">
+                                    <span class="material-symbols-outlined text-xl">more_vert</span>
+                                </button>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-y-4 gap-x-2">
+                                <div class="space-y-1">
+                                    <p class="text-[10px] uppercase tracking-wider font-bold text-admin-muted">@Localizer["admin_th_role"]</p>
+                                    <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold border @(user.Role == UserRole.Admin ? "bg-primary/5 border-primary/20 text-primary" : user.Role == UserRole.Designer ? "bg-secondary/5 border-secondary/20 text-secondary" : "bg-admin-page border-admin-border text-admin-secondary")">
+                                        @Localizer[$"role_{user.Role}"]
+                                    </span>
+                                </div>
+                                <div class="space-y-1">
+                                    <p class="text-[10px] uppercase tracking-wider font-bold text-admin-muted">@Localizer["admin_th_status"]</p>
+                                    <span class="status-badge scale-90 origin-left @(user.Status == UserStatus.Active ? "status-done" : user.Status == UserStatus.Deleted ? "status-cancelled" : "status-pending")">
+                                        @Localizer[$"status_{user.Status}"]
+                                    </span>
+                                </div>
+                                <div class="space-y-0.5">
+                                    <p class="text-[10px] uppercase tracking-wider font-bold text-admin-muted">@Localizer["admin_th_contact"]</p>
+                                    <p class="text-xs font-medium text-admin-primary">@user.Phone</p>
+                                </div>
+                                <div class="space-y-0.5">
+                                    <p class="text-[10px] uppercase tracking-wider font-bold text-admin-muted">@Localizer["admin_th_join_date"]</p>
+                                    <p class="text-xs font-medium text-admin-primary">@user.JoinDate.ToString("yyyy-MM-dd")</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+        <!-- Pagination -->
+        <div class="px-4 sm:px-8 py-4 sm:py-6 border-t border-admin-border flex flex-col sm:flex-row justify-between items-center gap-4">
+            <span class="text-xs font-medium text-admin-secondary text-center sm:text-left">
+                @string.Format(Localizer["admin_pagination_showing"].Value, (Model.PageNumber - 1) * Model.PageSize + 1, (Model.PageNumber - 1) * Model.PageSize + Model.Users.Count, Model.TotalUsers)
+            </span>
+            <div class="flex items-center gap-1.5 sm:gap-2">
+                @if (Model.HasPreviousPage)
+                {
+                    <a href="@Url.Action("Users", new { pageNumber = Model.PageNumber - 1, fullName = Context.Request.Query["fullName"], role = Context.Request.Query["role"], status = Context.Request.Query["status"], pageSize = Model.PageSize })" class="w-9 h-9 sm:p-2 rounded-lg border border-admin-border text-admin-secondary hover:bg-admin-page flex items-center justify-center transition-colors">
+                        <span class="material-symbols-outlined text-lg">chevron_right</span>
+                    </a>
+                }
+                else
+                {
+                    <button class="w-9 h-9 sm:p-2 rounded-lg border border-admin-border text-admin-secondary opacity-40 cursor-not-allowed flex items-center justify-center" disabled>
+                        <span class="material-symbols-outlined text-lg">chevron_right</span>
+                    </button>
+                }
+
+                <div class="flex items-center gap-1 overflow-x-auto max-w-[160px] xs:max-w-none no-scrollbar">
+                    @{
+                        int startPage = Math.Max(1, Model.PageNumber - 1);
+                        int endPage = Math.Min(Model.TotalPages, startPage + 2);
+                        if (endPage - startPage < 2) startPage = Math.Max(1, endPage - 2);
+                        
+                        // For larger screens, show more pages
+                        // This logic is simplified for now but works well on mobile
+                    }
+
+                    @if (startPage > 1)
+                    {
+                        <a href="@Url.Action("Users", new { pageNumber = 1, fullName = Context.Request.Query["fullName"], role = Context.Request.Query["role"], status = Context.Request.Query["status"], pageSize = Model.PageSize })" class="w-9 h-9 shrink-0 rounded-lg border border-admin-border text-admin-secondary flex items-center justify-center text-xs font-bold hover:bg-admin-page transition-colors">1</a>
+                        @if (startPage > 2)
+                        {
+                            <span class="px-1 text-admin-secondary text-xs">...</span>
+                        }
+                    }
+
+                    @for (int i = startPage; i <= endPage; i++)
+                    {
+                        if (i == Model.PageNumber)
+                        {
+                            <button class="w-9 h-9 shrink-0 rounded-lg bg-primary text-on-primary text-xs font-bold shadow-sm">@i</button>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Users", new { pageNumber = i, fullName = Context.Request.Query["fullName"], role = Context.Request.Query["role"], status = Context.Request.Query["status"], pageSize = Model.PageSize })" class="w-9 h-9 shrink-0 rounded-lg border border-admin-border text-admin-secondary flex items-center justify-center text-xs font-bold hover:bg-admin-page transition-colors">@i</a>
+                        }
+                    }
+
+                    @if (endPage < Model.TotalPages)
+                    {
+                        @if (endPage < Model.TotalPages - 1)
+                        {
+                            <span class="px-1 text-admin-secondary text-xs">...</span>
+                        }
+                        <a href="@Url.Action("Users", new { pageNumber = Model.TotalPages, fullName = Context.Request.Query["fullName"], role = Context.Request.Query["role"], status = Context.Request.Query["status"], pageSize = Model.PageSize })" class="w-9 h-9 shrink-0 rounded-lg border border-admin-border text-admin-secondary flex items-center justify-center text-xs font-bold hover:bg-admin-page transition-colors">@Model.TotalPages</a>
+                    }
+                </div>
+
+                @if (Model.HasNextPage)
+                {
+                    <a href="@Url.Action("Users", new { pageNumber = Model.PageNumber + 1, fullName = Context.Request.Query["fullName"], role = Context.Request.Query["role"], status = Context.Request.Query["status"], pageSize = Model.PageSize })" class="w-9 h-9 sm:p-2 rounded-lg border border-admin-border text-admin-secondary hover:bg-admin-page flex items-center justify-center transition-colors">
+                        <span class="material-symbols-outlined text-lg">chevron_left</span>
+                    </a>
+                }
+                else
+                {
+                    <button class="w-9 h-9 sm:p-2 rounded-lg border border-admin-border text-admin-secondary opacity-40 cursor-not-allowed flex items-center justify-center" disabled>
+                        <span class="material-symbols-outlined text-lg">chevron_left</span>
+                    </button>
+                }
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    function clearSearch() {
+        document.getElementById('fullNameSearch').value = '';
+        submitFilter();
+    }
+
+    function submitFilter() {
+        document.getElementById('tableLoader').classList.remove('hidden');
+        document.getElementById('usersFilterForm').submit();
+    }
+
+    // Handle form submit for search (on enter)
+    document.getElementById('usersFilterForm').onsubmit = function() {
+        document.getElementById('tableLoader').classList.remove('hidden');
+    };
+</script>

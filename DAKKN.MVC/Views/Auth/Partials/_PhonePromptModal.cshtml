@@ -1,0 +1,108 @@
+@inject IStringLocalizer<Messages> Localizer
+
+<div id="phone-prompt-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 sm:p-6 overflow-y-auto">
+    <!-- Backdrop -->
+    <div class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"></div>
+
+    <!-- Modal Content -->
+    <div class="relative w-full max-w-md transform overflow-hidden rounded-3xl bg-white dark:bg-slate-950 shadow-2xl transition-all border border-slate-200 dark:border-slate-800">
+        <div class="p-8">
+            <div class="mb-6 text-center">
+                <div class="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary mb-4">
+                    <span class="material-symbols-outlined text-[32px]">call</span>
+                </div>
+                <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+                    @Localizer["auth.register.phone"]
+                </h3>
+                <p class="text-slate-500 dark:text-slate-400">
+                    @Localizer["auth.phone_number_required"]
+                </p>
+            </div>
+
+            <div class="space-y-4">
+                <div class="space-y-2">
+                    <label for="modal-phone-input" class="block text-sm font-semibold text-slate-700 dark:text-slate-300 mr-1 ms-1">
+                        @Localizer["auth.register.phone"]
+                    </label>
+                    <div class="relative group">
+                        <input id="modal-phone-input" type="tel" 
+                               class="w-full px-4 py-3.5 pr-12 ltr:ps-12 ltr:pr-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 focus:bg-white dark:focus:bg-black focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none text-right rtl:text-right ltr:text-left" 
+                               placeholder="@Localizer["auth.register.phone_ph"]">
+                        <span class="material-symbols-outlined absolute right-4 ltr:left-4 ltr:right-auto top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
+                            call
+                        </span>
+                    </div>
+                    <span id="modal-phone-error" class="text-xs text-red-500 font-bold hidden mt-1"></span>
+                </div>
+
+                <button id="modal-phone-submit" class="w-full bg-primary hover:bg-[#0c7a77] text-white font-bold py-4 px-6 rounded-xl transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-3 active:scale-[0.98] group">
+                    <span>@Localizer["auth.register.submit"]</span>
+                    <span class="material-symbols-outlined text-[20px] rtl:rotate-180 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform">arrow_forward</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const PhonePromptModal = {
+        modal: null,
+        input: null,
+        error: null,
+        submitBtn: null,
+        callback: null,
+
+        init() {
+            this.modal = document.getElementById('phone-prompt-modal');
+            this.input = document.getElementById('modal-phone-input');
+            this.error = document.getElementById('modal-phone-error');
+            this.submitBtn = document.getElementById('modal-phone-submit');
+
+            if (this.submitBtn) {
+                this.submitBtn.onclick = () => {
+                    const phone = this.input.value.trim();
+                    if (!phone) {
+                        this.showError('@Localizer["alert.phone_required"]');
+                        return;
+                    }
+                    if (phone.length < 10) {
+                        this.showError('@Localizer["alert.phone_invalid"]');
+                        return;
+                    }
+
+                    if (this.callback) {
+                        this.callback(phone);
+                    }
+                };
+            }
+        },
+
+        show(onComplete) {
+            if (!this.modal) this.init();
+            this.callback = onComplete;
+            this.modal.classList.remove('hidden');
+            this.modal.classList.add('flex');
+            this.input.focus();
+        },
+
+        hide() {
+            if (!this.modal) return;
+            this.modal.classList.add('hidden');
+            this.modal.classList.remove('flex');
+            this.input.value = '';
+            this.hideError();
+        },
+
+        showError(msg) {
+            this.error.innerText = msg;
+            this.error.classList.remove('hidden');
+        },
+
+        hideError() {
+            this.error.innerText = '';
+            this.error.classList.add('hidden');
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => PhonePromptModal.init());
+</script>

@@ -99,12 +99,30 @@ namespace DAKKN.MVC.Controllers
             return View(vm);
         }
 
-        [HttpPost("login-google")]
-        public async Task<IActionResult> LoginWithGoogle([FromBody] string idToken, string? returnUrl = null)
+        [HttpPost("check-google-account")]
+        public async Task<IActionResult> CheckGoogleAccount([FromBody] string idToken)
         {
             try
             {
-                var result = await _mediator.Send(new LoginWithGoogleCommand(idToken));
+                var result = await _mediator.Send(new DAKKN.Application.Features.Auth.Queries.CheckGoogleAccount.CheckGoogleAccountQuery(idToken));
+                return Ok(result);
+            }
+            catch (UnAuthorizedException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("login-google")]
+        public async Task<IActionResult> LoginWithGoogle([FromBody] GoogleLoginRequest request, string? returnUrl = null)
+        {
+            try
+            {
+                var result = await _mediator.Send(new LoginWithGoogleCommand(request.IdToken, request.PhoneNumber));
 
                 // Sign in via Identity Cookies
                 var user = await _userManager.FindByIdAsync(result.UserId.ToString());
@@ -133,6 +151,12 @@ namespace DAKKN.MVC.Controllers
             }
         }
 
+        public class GoogleLoginRequest
+        {
+            public string IdToken { get; set; } = null!;
+            public string? PhoneNumber { get; set; }
+        }
+
         // ──────────────────────────────────────────────
         // REGISTER
         // ──────────────────────────────────────────────
@@ -152,7 +176,7 @@ namespace DAKKN.MVC.Controllers
 
             try
             {
-                var result = await _mediator.Send(new SignupCommand(vm.FullName, vm.Email, vm.Password, vm.ConfirmPassword));
+                var result = await _mediator.Send(new SignupCommand(vm.FullName, vm.Email, vm.PhoneNumber, vm.Password, vm.ConfirmPassword));
 
                 // Sign in via Identity Cookies to support MVC page requests (Auto-login after signup)
                 var user = await _userManager.FindByEmailAsync(vm.Email);
