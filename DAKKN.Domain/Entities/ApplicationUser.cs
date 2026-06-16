@@ -19,6 +19,7 @@ namespace DAKKN.Domain.Entities
         public DateTime BirthDate { get; private set; }
         public Gender Gender { get; private set; }
         public string? ProfilePictureUrl { get; private set; }
+        public string? GoogleUserId { get; private set; }
         public string? PasswordResetToken { get; private set; }
         public DateTime? PasswordResetTokenExpiry { get; private set; }
         public LanguageCode Language { get; private set; } = LanguageCode.en;
@@ -48,6 +49,18 @@ namespace DAKKN.Domain.Entities
             BirthDate = birthDate;
             Gender = gender;
             ProfilePictureUrl = profilePictureUrl;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void UpdateFullName(string fullName)
+        {
+            FullName = fullName;
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void SetGoogleUserId(string googleUserId)
+        {
+            GoogleUserId = googleUserId;
             UpdatedAt = DateTime.UtcNow;
         }
 

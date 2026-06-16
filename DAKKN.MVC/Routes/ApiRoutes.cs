@@ -24,6 +24,7 @@ namespace DAKKN.Appearence.Routes
             public const string ForgetPassword = Base + "/auth/forget-password";
             public const string VerifyForgetPasswordOtp = Base + "/auth/verify-forget-password-otp";
             public const string ResetPassword = Base + "/auth/reset-password";
+            public const string LoginWithGoogle = Base + "/auth/login-google";
         }
     }
 }

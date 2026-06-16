@@ -97,7 +97,7 @@
 </div>
 
 <div class="flex gap-4">
-    <button class="flex-1 h-[52px] rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-black hover:border-primary/30 transition-all hover:-translate-y-0.5" type="button" aria-label="@Localizer["auth.login.google"]">
+    <button id="google-login-btn" class="flex-1 h-[52px] rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 flex items-center justify-center hover:bg-slate-50 dark:hover:bg-black hover:border-primary/30 transition-all hover:-translate-y-0.5" type="button" aria-label="@Localizer["auth.login.google"]">
         <svg class="w-6 h-6" viewBox="0 0 24 24">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-3.3 3.28-8.09 3.28-8.09z" fill="#4285F4"/>
             <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -117,4 +117,74 @@
 
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+        function handleCredentialResponse(response) {
+            const idToken = response.credential;
+
+            fetch('/auth/login-google', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                body: JSON.stringify(idToken)
+            })
+            .then(res => {
+                if (res.ok) {
+                    return res.json().then(data => {
+                        let targetUrl = '@(Model.ReturnUrl ?? "/")';
+                        if (targetUrl === '/') {
+                            if (data.roles && data.roles.includes('Admin')) {
+                                targetUrl = '/Admin/Dashboard';
+                            } else {
+                                targetUrl = '/customer';
+                            }
+                        }
+                        window.location.href = targetUrl;
+                    });
+                } else {
+                    return res.json().then(err => { throw err; });
+                }
+            })
+            .catch(err => {
+                console.error('Google login error:', err);
+                alert(err.message || 'An error occurred during Google login');
+            });
+        }
+
+        function initGoogleLogin() {
+            const clientId = "@ViewData["GoogleClientId"]";
+            if (!clientId) {
+                console.error("Google Client ID is missing!");
+                return;
+            }
+
+            if (typeof google === 'undefined' || !google.accounts) {
+                setTimeout(initGoogleLogin, 100);
+                return;
+            }
+
+            google.accounts.id.initialize({
+                client_id: clientId,
+                callback: handleCredentialResponse,
+                auto_select: false,
+                cancel_on_tap_outside: true
+            });
+
+            const btn = document.getElementById('google-login-btn');
+            if (btn) {
+                btn.onclick = (e) => {
+                    e.preventDefault();
+                    google.accounts.id.prompt();
+                };
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initGoogleLogin);
+        } else {
+            initGoogleLogin();
+        }
+    </script>
 }

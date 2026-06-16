@@ -31,6 +31,7 @@ namespace DAKKN.Infrastructure
 
             services.AddScoped<IJwtTokenService, JwtTokenService>();
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IGoogleAuth, GoogleAuth>();
 
             var identityOptionsConfig = new IdentityModel();
             configuration.Bind("IdentityOptions", identityOptionsConfig);
@@ -55,6 +56,7 @@ namespace DAKKN.Infrastructure
 
 
             services.Configure<JwtSettings>(configuration.GetSection(nameof(JwtSettings)));
+            services.Configure<GoogleAuthSettings>(configuration.GetSection("GoogleAuthSettings"));
             var jwtSettings = configuration.GetSection(nameof(JwtSettings)).Get<JwtSettings>() ?? new JwtSettings();
             var secretKey = jwtSettings.Secret;
 
@@ -73,7 +75,17 @@ namespace DAKKN.Infrastructure
             };
             services.AddSingleton(tokenValidationParameters);
 
+            var googleSection = configuration.GetSection("GoogleAuthSettings");
+
             services.AddAuthentication()
+            .AddGoogle(options =>
+            {
+                options.ClientId = googleSection["WebClientId"];
+                options.ClientSecret = googleSection["WebClientSecret"];
+                options.CallbackPath = "/signin-google";
+                options.SaveTokens = true;
+                options.AccessType = "offline";
+            })
             .AddJwtBearer(options =>
             {
                 options.SaveToken = true;

@@ -49,7 +49,7 @@ namespace DAKKN.Application.Common.Services
                     return (false, _localizer[LocalizationKeys.UploadFileMessages.FileNotValid.Value]);
 
                 var x = UploadPaths.GetPath(place);
-                string uploadPlace = Path.Combine(_env.WebRootPath, UploadPaths.GetPath(place));
+                string uploadPlace = Path.Combine(_env.WebRootPath ?? string.Empty, UploadPaths.GetPath(place) ?? string.Empty);
 
                 // Create directory if it doesn't exist
                 if (!Directory.Exists(uploadPlace))
@@ -123,7 +123,7 @@ namespace DAKKN.Application.Common.Services
                 if (string.IsNullOrWhiteSpace(fileName))
                     return false;
 
-                string uploadPlace = Path.Combine(_env.WebRootPath, UploadPaths.GetPath(place));
+                string uploadPlace = Path.Combine(_env.WebRootPath ?? string.Empty, UploadPaths.GetPath(place) ?? string.Empty);
                 string filePath = Path.Combine(uploadPlace, fileName);
 
                 if (File.Exists(filePath))
@@ -198,7 +198,7 @@ namespace DAKKN.Application.Common.Services
             var Result = allowedExtensions.Any(x => ImageName.ToLower().EndsWith(x));
             if (Result)
             {
-                string uploadPlace = Path.Combine(_env.WebRootPath, PlaceHolder);
+                string uploadPlace = Path.Combine(_env.WebRootPath ?? string.Empty, PlaceHolder);
                 string? fullImagePath = Path.Combine(uploadPlace, ImageName);
                 return ImageIsExisted(fullImagePath);
             }

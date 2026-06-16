@@ -1,5 +1,7 @@
 using DAKKN.Application.Common.Exceptions;
+using DAKKN.Application.Common.Options;
 using DAKKN.Application.Features.Auth.Comands.ForgetPassword;
+using DAKKN.Application.Features.Auth.Comands.LoginWithGoogle;
 using DAKKN.Application.Features.Auth.Comands.Logout;
 using DAKKN.Application.Features.Auth.Comands.RefreshToken;
 using DAKKN.Application.Features.Auth.Comands.SignIn;
@@ -16,32 +18,50 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.Extensions.Options;
 using System.Security.Claims;
 
 namespace DAKKN.MVC.Controllers
 {
     [Route("auth")]
     [EnableRateLimiting("auth")]
-    public class AuthController(
-        IWebHostEnvironment env, 
-        IMediator mediator, 
-        UserManager<ApplicationUser> userManager,
-        SignInManager<ApplicationUser> signInManager) : Controller
+    public class AuthController : Controller
     {
-        private readonly IMediator _mediator = mediator;
-        private readonly UserManager<ApplicationUser> _userManager = userManager;
-        private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
+        private readonly IMediator _mediator;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly GoogleAuthSettings _googleAuthSettings;
+        private readonly IWebHostEnvironment _env;
+
+        public AuthController(
+            IWebHostEnvironment env,
+            IMediator mediator,
+            UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager,
+            IOptions<GoogleAuthSettings> googleAuthSettings)
+        {
+            _env = env;
+            _mediator = mediator;
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _googleAuthSettings = googleAuthSettings.Value;
+        }
 
         // ──────────────────────────────────────────────
         // LOGIN
         // ──────────────────────────────────────────────
 
         [HttpGet("login")]
-        public IActionResult Login(string? returnUrl = null) => View(new LoginViewModel { ReturnUrl = returnUrl });
+        public IActionResult Login(string? returnUrl = null)
+        {
+            ViewData["GoogleClientId"] = _googleAuthSettings?.WebClientId;
+            return View(new LoginViewModel { ReturnUrl = returnUrl });
+        }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromForm] LoginViewModel vm)
         {
+            ViewData["GoogleClientId"] = _googleAuthSettings?.WebClientId;
             if (!ModelState.IsValid) return View(vm);
 
             try
@@ -79,16 +99,55 @@ namespace DAKKN.MVC.Controllers
             return View(vm);
         }
 
+        [HttpPost("login-google")]
+        public async Task<IActionResult> LoginWithGoogle([FromBody] string idToken, string? returnUrl = null)
+        {
+            try
+            {
+                var result = await _mediator.Send(new LoginWithGoogleCommand(idToken));
+
+                // Sign in via Identity Cookies
+                var user = await _userManager.FindByIdAsync(result.UserId.ToString());
+                if (user != null)
+                {
+                    await _signInManager.SignInAsync(user, isPersistent: true);
+                }
+
+                return Ok(result);
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(new { errors = ex.Errors });
+            }
+            catch (UnAuthorizedException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (BadRequestException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
+        }
+
         // ──────────────────────────────────────────────
         // REGISTER
         // ──────────────────────────────────────────────
 
         [HttpGet("register")]
-        public IActionResult Register(string? returnUrl = null) => View(new RegisterViewModel { ReturnUrl = returnUrl });
+        public IActionResult Register(string? returnUrl = null)
+        {
+            ViewData["GoogleClientId"] = _googleAuthSettings?.WebClientId;
+            return View(new RegisterViewModel { ReturnUrl = returnUrl });
+        }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromForm] RegisterViewModel vm)
         {
+            ViewData["GoogleClientId"] = _googleAuthSettings?.WebClientId;
             if (!ModelState.IsValid) return View(vm);
 
             try
@@ -243,7 +302,7 @@ namespace DAKKN.MVC.Controllers
             }
             else
             {
-                if (env.IsDevelopment())
+                if (_env.IsDevelopment())
                     TempData["DevOtp"] = AuthMockStore.IssueOtp(email);
                 else
                     AuthMockStore.IssueOtp(email);

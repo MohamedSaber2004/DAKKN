@@ -232,7 +232,7 @@ namespace DAKKN.MVC
                 app.UseCsp(opts => opts
                     .ScriptSources(s => s
                         .Self()
-                        .CustomSources("https://cdn.tailwindcss.com", "https://cdn.jsdelivr.net", "https://cdn.jsdelivr.net/npm/")
+                        .CustomSources("https://cdn.tailwindcss.com", "https://cdn.jsdelivr.net", "https://cdn.jsdelivr.net/npm/", "https://accounts.google.com")
                         .UnsafeInline()
                         .UnsafeEval()
                     )
@@ -241,7 +241,8 @@ namespace DAKKN.MVC
                         .CustomSources(
                             "https://fonts.googleapis.com",
                             "https://fonts.gstatic.com",
-                            "https://cdn.tailwindcss.com"  
+                            "https://cdn.tailwindcss.com",
+                            "https://accounts.google.com"
                         )
                         .UnsafeInline()
                     )
@@ -269,10 +270,12 @@ namespace DAKKN.MVC
                             "http://localhost:*",
                             "https://localhost:*",
                             "ws://localhost:*",
-                            "wss://localhost:*"
+                            "wss://localhost:*",
+                            "https://accounts.google.com",
+                            "https://cdn.jsdelivr.net"
                         )
                     )
-                    .FrameSources(s => s.None())
+                    .FrameSources(s => s.CustomSources("https://accounts.google.com"))
                     .ObjectSources(s => s.None())
                 );
             }
@@ -281,7 +284,7 @@ namespace DAKKN.MVC
                 app.UseCsp(opts => opts
                     .ScriptSources(s => s
                         .Self()
-                        .CustomSources("https://cdn.tailwindcss.com", "https://cdn.jsdelivr.net", "https://cdn.jsdelivr.net/npm/")
+                        .CustomSources("https://cdn.tailwindcss.com", "https://cdn.jsdelivr.net", "https://cdn.jsdelivr.net/npm/", "https://accounts.google.com")
                         .UnsafeInline()
                         .UnsafeEval()
                     )
@@ -290,7 +293,8 @@ namespace DAKKN.MVC
                         .CustomSources(
                             "https://fonts.googleapis.com",
                             "https://fonts.gstatic.com",
-                            "https://cdn.tailwindcss.com" 
+                            "https://cdn.tailwindcss.com",
+                            "https://accounts.google.com"
                         )
                         .UnsafeInline()
                     )
@@ -311,9 +315,9 @@ namespace DAKKN.MVC
                     )
                     .ConnectSources(s => s
                         .Self()
-                        .CustomSources("https://cdn.tailwindcss.com")
+                        .CustomSources("https://cdn.tailwindcss.com", "https://accounts.google.com", "https://cdn.jsdelivr.net")
                     )
-                    .FrameSources(s => s.None())
+                    .FrameSources(s => s.CustomSources("https://accounts.google.com"))
                     .ObjectSources(s => s.None())
                 );
             }

@@ -21,7 +21,7 @@ namespace DAKKN.Persistence
             }
 
             // Seed Admin User
-            var adminEmail = "admin@dakkn.com";
+            var adminEmail = "dev.mohamed104saber@gmail.com";
             var adminUser = await userManager.FindByEmailAsync(adminEmail);
 
             if (adminUser == null)

@@ -58,7 +58,7 @@ namespace DAKKN.MVC.Controllers
                         Id = Guid.Parse("f4d6c75f-2643-4ffc-8199-e94a91d8b617"),
                         Name = "Retro Cassette",
                         Price = 70,
-                        ImageUrls = new List<string> { "https://lh3.googleusercontent.com/aida/AP1WRLvk0o2fHlsgnzmZ9xrrRAnUTq9hl5CW063LX44OhYiXj0ZAadSE46fIAmtHQKBEzfk8NKsMl6AwohhVGiDgxsbst33TGFkDW68Y9_d3C1Cvf-mtviXqQYHM-Aqnsunu3Q6Yy2-9A5mXcsO80D173UvbE44Odz0GI41kQbHK_cLtDiruHCKTT15snGH5XT7Y6MLMfFd4rUCTY71ZJwiOba19bKW0Du2pMXYtJtF-I-h5V-wypv1z0Vztp_M" },
+                        ImageUrls = new List<string> { "https://images.unsplash.com/photo-1605648916319-cf082f7524a1?q=80&w=400&auto=format&fit=crop" },
                         FinishOptions = new List<string> { "Holographic" }
                     },
                     new ProductDto
@@ -66,7 +66,7 @@ namespace DAKKN.MVC.Controllers
                         Id = Guid.Parse("67890abc-def0-1234-5678-90abcdef1234"),
                         Name = "Pixel Heart",
                         Price = 60,
-                        ImageUrls = new List<string> { "https://lh3.googleusercontent.com/aida/AP1WRLvk0o2fHlsgnzmZ9xrrRAnUTq9hl5CW063LX44OhYiXj0ZAadSE46fIAmtHQKBEzfk8NKsMl6AwohhVGiDgxsbst33TGFkDW68Y9_d3C1Cvf-mtviXqQYHM-Aqnsunu3Q6Yy2-9A5mXcsO80D173UvbE44Odz0GI41kQbHK_cLtDiruHCKTT15snGH5XT7Y6MLMfFd4rUCTY71ZJwiOba19bKW0Du2pMXYtJtF-I-h5V-wypv1z0Vztp_M" },
+                        ImageUrls = new List<string> { "https://images.unsplash.com/photo-1599305090598-fe179d501c27?q=80&w=400&auto=format&fit=crop" },
                         FinishOptions = new List<string> { "Clear Vinyl" }
                     }
                 }
@@ -97,7 +97,7 @@ namespace DAKKN.MVC.Controllers
                         Dimensions = "5x5 cm",
                         Quantity = 2,
                         UnitPrice = 70.00m,
-                        ImageUrl = "https://lh3.googleusercontent.com/aida/AP1WRLvk0o2fHlsgnzmZ9xrrRAnUTq9hl5CW063LX44OhYiXj0ZAadSE46fIAmtHQKBEzfk8NKsMl6AwohhVGiDgxsbst33TGFkDW68Y9_d3C1Cvf-mtviXqQYHM-Aqnsunu3Q6Yy2-9A5mXcsO80D173UvbE44Odz0GI41kQbHK_cLtDiruHCKTT15snGH5XT7Y6MLMfFd4rUCTY71ZJwiOba19bKW0Du2pMXYtJtF-I-h5V-wypv1z0Vztp_M"
+                        ImageUrl = "https://images.unsplash.com/photo-1605648916319-cf082f7524a1?q=80&w=400&auto=format&fit=crop"
                     },
                     new OrderItemViewModel {
                         ProductName = "Pixel Heart Sticker",
@@ -105,7 +105,7 @@ namespace DAKKN.MVC.Controllers
                         Dimensions = "4x4 cm",
                         Quantity = 1,
                         UnitPrice = 80.00m,
-                        ImageUrl = "https://lh3.googleusercontent.com/aida/AP1WRLvk0o2fHlsgnzmZ9xrrRAnUTq9hl5CW063LX44OhYiXj0ZAadSE46fIAmtHQKBEzfk8NKsMl6AwohhVGiDgxsbst33TGFkDW68Y9_d3C1Cvf-mtviXqQYHM-Aqnsunu3Q6Yy2-9A5mXcsO80D173UvbE44Odz0GI41kQbHK_cLtDiruHCKTT15snGH5XT7Y6MLMfFd4rUCTY71ZJwiOba19bKW0Du2pMXYtJtF-I-h5V-wypv1z0Vztp_M"
+                        ImageUrl = "https://images.unsplash.com/photo-1599305090598-fe179d501c27?q=80&w=400&auto=format&fit=crop"
                     }
                 },
                 Logs = new List<OrderLogViewModel>

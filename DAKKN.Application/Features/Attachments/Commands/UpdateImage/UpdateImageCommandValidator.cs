@@ -48,7 +48,7 @@ namespace DAKKN.Application.Features.Attachments.Commands.UpdateImage
                     if (string.IsNullOrWhiteSpace(imageName))
                         return true;
 
-                    return _imageValidator.IsValidImage(imageName, UploadPaths.GetPath(command.UploadPlace));
+                    return _imageValidator.IsValidImage(imageName, UploadPaths.GetPath(command.UploadPlace) ?? string.Empty);
                 })
                 .WithMessage(x => _localizer[LocalizationKeys.UploadFileMessages.FileNotFound.Value]);
         }

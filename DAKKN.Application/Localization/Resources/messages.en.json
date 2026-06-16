@@ -546,8 +546,12 @@
     "refresh_token_required": "Refresh token is required for this operation.",
     "user_not_found": "No account found with that email. Please register first.",
     "reset_token_invalid": "The password reset token is invalid or has expired.",
-    "password_same_as_old": "New password cannot be the same as your old password."
-    },
+    "password_same_as_old": "New password cannot be the same as your old password.",
+    "invalid_google_token": "Invalid Google token.",
+    "google_email_required": "Email is required from Google account.",
+    "google_user_creation_failed": "Failed to create user from Google account.",
+    "google_token_required": "Google token is required for this operation."
+  },
   "validation": {
     "min_length": "Minimum length is {0} characters.",
     "required": "This field is required."

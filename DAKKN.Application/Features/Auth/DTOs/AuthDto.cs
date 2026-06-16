@@ -5,7 +5,7 @@
     string? RefreshToken,
     string FullName,
     string Email,
-    Guid id,
+    Guid UserId,
     IEnumerable<string> Roles);
 
     public record RefreshTokenResponseDto(

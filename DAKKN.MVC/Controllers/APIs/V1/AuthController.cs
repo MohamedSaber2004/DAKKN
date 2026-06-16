@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
 using DAKKN.Appearence.Routes;
 using DAKKN.Application.Features.Auth.Comands.ForgetPassword;
+using DAKKN.Application.Features.Auth.Comands.LoginWithGoogle;
 using DAKKN.Application.Features.Auth.Comands.Logout;
 using DAKKN.Application.Features.Auth.Comands.SignIn;
 using DAKKN.Application.Features.Auth.Comands.SignUp;
@@ -114,6 +115,23 @@ namespace DAKKN.Appearence.Controllers.APIs.V1
         {
             var result = await _mediator.Send(command, ct);
             return Ok(result);   
+        }
+
+        /// <summary>
+        /// Logins a user using Google ID token.
+        /// </summary>
+        /// <param name="command">Google ID token.</param>
+        /// <param name="ct">Cancellation token.</param>
+        /// <returns>Authentication tokens and user info.</returns>
+        [HttpPost]
+        [Route(ApiRoutes.Auth.LoginWithGoogle)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> LoginWithGoogle(LoginWithGoogleCommand command, CancellationToken ct)
+        {
+            var result = await _mediator.Send(command, ct);
+            return Ok(result);
         }
     }
 }

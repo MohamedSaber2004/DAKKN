@@ -50,6 +50,10 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString UserNotFound = new("auth.user_not_found");
             public static readonly KeyString ResetTokenInvalid = new("auth.reset_token_invalid");
             public static readonly KeyString PasswordSameAsOld = new("auth.password_same_as_old");
+            public static readonly KeyString InvalidGoogleToken = new("auth.invalid_google_token");
+            public static readonly KeyString GoogleEmailRequired = new("auth.google_email_required");
+            public static readonly KeyString GoogleUserCreationFailed = new("auth.google_user_creation_failed");
+            public static readonly KeyString GoogleTokenRequired = new("auth.google_token_required");
         }
 
         public static class ValidationMessages
