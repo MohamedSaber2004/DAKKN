@@ -72,6 +72,31 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString UsersTotal = new("admin_users_total");
             public static readonly KeyString UsersActive = new("admin_users_active");
             public static readonly KeyString UsersDeleted = new("admin_users_deleted");
+            public static readonly KeyString EditUser = new("admin_edit_user");
+            public static readonly KeyString DeleteUser = new("admin_delete_user");
+            public static readonly KeyString DeleteUserConfirm = new("admin_delete_user_confirm");
+            public static readonly KeyString UserFullName = new("admin_user_full_name");
+            public static readonly KeyString UserEmail = new("admin_user_email");
+            public static readonly KeyString UserPassword = new("admin_user_password");
+            public static readonly KeyString UserPasswordHint = new("admin_user_password_hint");
+            public static readonly KeyString UserRole = new("admin_user_role");
+            public static readonly KeyString UserPhone = new("admin_user_phone");
+            public static readonly KeyString UserGender = new("admin_user_gender");
+            public static readonly KeyString UserBirthDate = new("admin_user_birthdate");
+            public static readonly KeyString UserStatus = new("admin_user_status");
+            public static readonly KeyString UserSave = new("admin_user_save");
+            public static readonly KeyString UserCancel = new("admin_user_cancel");
+            public static readonly KeyString UserDelete = new("admin_user_delete");
+            public static readonly KeyString UserCreatedSuccess = new("admin_user_created_success");
+            public static readonly KeyString UserUpdatedSuccess = new("admin_user_updated_success");
+            public static readonly KeyString UserDeletedSuccess = new("admin_user_deleted_success");
+            public static readonly KeyString ChangePassword = new("admin_change_password");
+            public static readonly KeyString NewPassword = new("admin_new_password");
+            public static readonly KeyString ConfirmPassword = new("admin_confirm_password");
+            public static readonly KeyString UpdatePassword = new("admin_update_password");
+            public static readonly KeyString PasswordMinLength = new("admin_password_min_length");
+            public static readonly KeyString PasswordMismatch = new("admin_password_mismatch");
+            public static readonly KeyString PasswordUpdatedSuccess = new("admin_password_updated_success");
         }
 
         public static class Users

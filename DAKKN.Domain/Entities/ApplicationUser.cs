@@ -40,7 +40,7 @@ namespace DAKKN.Domain.Entities
 
         public static ApplicationUser Create(string fullName, string email, string phoneNumber)
         {
-            var user = new ApplicationUser(email, email, fullName, DateTime.UtcNow, Gender.Male);
+            var user = new ApplicationUser(email, email, fullName, new DateTime(1990, 1, 1), Gender.Male);
             user.PhoneNumber = phoneNumber;
             return user;
         }
@@ -89,6 +89,14 @@ namespace DAKKN.Domain.Entities
             IsDeleted = true;
             DeletedAt = DateTime.UtcNow;
             DeletedBy = deletedBy;
+        }
+
+        public void Restore()
+        {
+            IsDeleted = false;
+            DeletedAt = null;
+            DeletedBy = null;
+            UpdatedAt = DateTime.UtcNow;
         }
 
         public void Activate()

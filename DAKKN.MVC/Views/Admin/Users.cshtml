@@ -6,338 +6,652 @@
     ViewData["Title"] = Localizer["admin_users"];
 }
 
-<div class="space-y-6 sm:space-y-8 pb-12">
-    <!-- 1. Stats Grid -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        <div class="admin-card p-5 sm:p-6 flex flex-row sm:flex-col items-center sm:items-start gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                <span class="material-symbols-outlined text-2xl">group</span>
-            </div>
-            <div>
-                <p class="text-xs sm:text-sm font-semibold text-admin-secondary">@Localizer["admin_users_total"]</p>
-                <h3 class="text-xl sm:text-2xl font-black text-admin-primary mt-1">@Model.TotalUsers</h3>
-            </div>
-        </div>
+<div id="statsGridContainer" class="pb-6 sm:pb-8">
+    @await Html.PartialAsync("_UserStatsPartial", Model)
+</div>
 
-        <div class="admin-card p-5 sm:p-6 flex flex-row sm:flex-col items-center sm:items-start gap-4">
-            <div class="w-12 h-12 rounded-2xl bg-green-500/10 flex items-center justify-center text-green-600 shrink-0">
-                <span class="material-symbols-outlined text-2xl">person_check</span>
-            </div>
-            <div>
-                <p class="text-xs sm:text-sm font-semibold text-admin-secondary">@Localizer["admin_users_active"]</p>
-                <h3 class="text-xl sm:text-2xl font-black text-admin-primary mt-1">@Model.ActiveUsers</h3>
-            </div>
-        </div>
-
-        <div class="admin-card p-5 sm:p-6 flex flex-row sm:flex-col items-center sm:items-start gap-4 sm:col-span-2 lg:col-span-1">
-            <div class="w-12 h-12 rounded-2xl bg-red-500/10 flex items-center justify-center text-red-600 shrink-0">
-                <span class="material-symbols-outlined text-2xl">delete</span>
-            </div>
-            <div>
-                <p class="text-xs sm:text-sm font-semibold text-admin-secondary">@Localizer["admin_users_deleted"]</p>
-                <h3 class="text-xl sm:text-2xl font-black text-admin-primary mt-1">@Model.DeletedUsers</h3>
-            </div>
+<!-- 2. Table and Filters -->
+<div class="admin-card relative overflow-hidden">
+    <!-- Table Loader Overlay -->
+    <div id="tableLoader" class="hidden absolute inset-0 bg-white/60 dark:bg-admin-page/60 z-20 flex items-center justify-center backdrop-blur-[2px] transition-all">
+        <div class="flex flex-col items-center gap-3">
+            <div class="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+            <p class="text-sm font-bold text-admin-primary">@Localizer["loading_data"]</p>
         </div>
     </div>
 
-    <!-- 2. Table and Filters -->
-    <div class="admin-card relative overflow-hidden">
-        <!-- Table Loader Overlay -->
-        <div id="tableLoader" class="hidden absolute inset-0 bg-white/60 dark:bg-admin-page/60 z-20 flex items-center justify-center backdrop-blur-[2px] transition-all">
-            <div class="flex flex-col items-center gap-3">
-                <div class="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
-                <p class="text-sm font-bold text-admin-primary">@Localizer["loading_data"]</p>
+    <form id="usersFilterForm" class="p-4 sm:p-8 border-b border-admin-border space-y-4 sm:space-y-6">
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+            <h3 class="text-lg font-bold text-admin-primary">@Localizer["admin_users_list"]</h3>
+            <div class="flex flex-wrap gap-2 sm:gap-3 w-full lg:w-auto">
+                <button type="button" onclick="downloadExportCsv()" class="flex-1 lg:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-admin-page border border-admin-border text-admin-secondary rounded-xl text-sm font-bold hover:bg-surface-container transition-all">
+                    <span class="material-symbols-outlined text-lg">download</span>
+                    @Localizer["admin_export_csv"]
+                </button>
+                <button type="button" onclick="openUserModal()" class="flex-1 lg:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-on-primary rounded-xl text-sm font-bold shadow-small hover:scale-103 active:scale-95 transition-all">
+                    <span class="material-symbols-outlined text-lg">person_add</span>
+                    @Localizer["admin_add_user"]
+                </button>
             </div>
         </div>
 
-        <form method="get" id="usersFilterForm" class="p-4 sm:p-8 border-b border-admin-border space-y-4 sm:space-y-6">
-            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-                <h3 class="text-lg font-bold text-admin-primary">@Localizer["admin_users_list"]</h3>
-                <div class="flex flex-wrap gap-2 sm:gap-3 w-full lg:w-auto">
-                    <button type="button" class="flex-1 lg:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-admin-page border border-admin-border text-admin-secondary rounded-xl text-sm font-bold hover:bg-surface-container transition-all">
-                        <span class="material-symbols-outlined text-lg">download</span>
-                        @Localizer["admin_export_csv"]
-                    </button>
-                    <button type="button" class="flex-1 lg:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-primary text-on-primary rounded-xl text-sm font-bold shadow-small hover:scale-103 active:scale-95 transition-all">
-                        <span class="material-symbols-outlined text-lg">person_add</span>
-                        @Localizer["admin_add_user"]
-                    </button>
+        <div class="flex flex-col md:flex-row gap-3 sm:gap-4">
+            <div class="relative flex-grow group">
+                <input type="text" name="fullName" id="fullNameSearch" value="@Context.Request.Query["fullName"]" onkeyup="handleSearchKeyUp(event)" placeholder="@Localizer["admin_users_search_ph"]" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-2.5 ltr:pl-10 rtl:pr-10 ltr:pr-10 rtl:pl-10 outline-none focus:ring-1 focus:ring-primary text-admin-primary text-sm transition-all" />
+                <span class="material-symbols-outlined absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 text-admin-secondary">search</span>
+                
+                <button type="button" id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 text-admin-secondary hover:text-red-500 transition-colors">
+                    <span class="material-symbols-outlined text-lg">close</span>
+                </button>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <div class="relative flex-1 sm:flex-none">
+                    <select name="role" id="roleFilter" onchange="refreshUserList(1)" class="w-full appearance-none bg-none bg-admin-page border border-admin-border text-admin-primary text-sm rounded-xl px-4 py-2.5 ltr:pr-12 rtl:pl-12 outline-none focus:ring-1 focus:ring-primary cursor-pointer sm:min-w-[140px]">
+                        <option value="">@Localizer["admin_filter_role"]</option>
+                        <option value="Admin">@Localizer["role_Admin"]</option>
+                        <option value="User">@Localizer["role_Customer"]</option>
+                    </select>
+                    <span class="material-symbols-outlined absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 pointer-events-none text-admin-secondary">expand_more</span>
+                </div>
+                
+                <div class="relative flex-1 sm:flex-none">
+                    <select name="status" id="statusFilter" onchange="refreshUserList(1)" class="w-full appearance-none bg-none bg-admin-page border border-admin-border text-admin-primary text-sm rounded-xl px-4 py-2.5 ltr:pr-12 rtl:pl-12 outline-none focus:ring-1 focus:ring-primary cursor-pointer sm:min-w-[140px]">
+                        <option value="">@Localizer["admin_filter_status"]</option>
+                        <option value="Active">@Localizer["status_Active"]</option>
+                        <option value="Deleted">@Localizer["status_Deleted"]</option>
+                    </select>
+                    <span class="material-symbols-outlined absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 pointer-events-none text-admin-secondary">expand_more</span>
+                </div>
+            </div>
+        </div>
+        <input type="hidden" name="pageSize" value="@Model.PageSize" />
+    </form>
+
+    <div id="dynamicListContainer">
+        @await Html.PartialAsync("_UserTablePartial", Model)
+    </div>
+</div>
+
+<!-- Modals -->
+
+<!-- User Modal -->
+<div id="userModal" class="hidden fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4 backdrop-blur-sm transition-all duration-300">
+    <div class="bg-surface dark:bg-inverse-surface w-full max-w-lg rounded-[2rem] shadow-2xl overflow-hidden scale-95 opacity-0 transition-all duration-300" id="userModalContent">
+        <!-- Modal Header -->
+        <div class="p-6 border-b border-border dark:border-outline/10 flex justify-between items-center bg-primary/5">
+            <h3 id="modalTitle" class="text-xl font-black text-primary">@Localizer["admin_add_user"]</h3>
+            <button onclick="closeUserModal()" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:bg-surface-container transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        
+        <!-- Modal Body -->
+        <form id="userForm" class="p-6 space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
+            <input type="hidden" id="userId" name="id" />
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-text-secondary px-1">@Localizer["admin_user_full_name"]</label>
+                    <input type="text" id="userFullName" name="fullName" required class="w-full bg-surface-container dark:bg-surface-container-high border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none transition-all" />
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-text-secondary px-1">@Localizer["admin_user_email"]</label>
+                    <input type="email" id="userEmail" name="email" required class="w-full bg-surface-container dark:bg-surface-container-high border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none transition-all" />
                 </div>
             </div>
 
-            <div class="flex flex-col md:flex-row gap-3 sm:gap-4">
-                <div class="relative flex-grow group">
-                    <input type="text" name="fullName" id="fullNameSearch" value="@Context.Request.Query["fullName"]" placeholder="@Localizer["admin_users_search_ph"]" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-2.5 ltr:pl-10 rtl:pr-10 ltr:pr-10 rtl:pl-10 outline-none focus:ring-1 focus:ring-primary text-admin-primary text-sm transition-all" />
-                    <span class="material-symbols-outlined absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 text-admin-secondary">search</span>
-                    
-                    @if (!string.IsNullOrEmpty(Context.Request.Query["fullName"]))
-                    {
-                        <button type="button" onclick="clearSearch()" class="absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 text-admin-secondary hover:text-red-500 transition-colors">
-                            <span class="material-symbols-outlined text-lg">close</span>
-                        </button>
-                    }
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div id="passwordFieldContainer" class="space-y-1.5">
+                    <label class="text-xs font-bold text-text-secondary px-1">@Localizer["admin_user_password"]</label>
+                    <input type="password" id="userPassword" name="password" class="w-full bg-surface-container dark:bg-surface-container-high border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none transition-all" />
+                    <p id="passwordHint" class="hidden text-[10px] text-text-secondary px-1">@Localizer["admin_user_password_hint"]</p>
                 </div>
-                <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                    <div class="relative flex-1 sm:flex-none">
-                        <select name="role" onchange="submitFilter()" class="w-full appearance-none bg-none bg-admin-page border border-admin-border text-admin-primary text-sm rounded-xl px-4 py-2.5 ltr:pr-12 rtl:pl-12 outline-none focus:ring-1 focus:ring-primary cursor-pointer sm:min-w-[140px]">
-                            <option value="">@Localizer["admin_filter_role"]</option>
-                            <option value="Admin" selected="@(Context.Request.Query["role"] == "Admin")">@Localizer["role_Admin"]</option>
-                            <option value="User" selected="@(Context.Request.Query["role"] == "User")">@Localizer["role_Customer"]</option>
-                        </select>
-                        <span class="material-symbols-outlined absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 pointer-events-none text-admin-secondary">expand_more</span>
-                    </div>
-                    
-                    <div class="relative flex-1 sm:flex-none">
-                        <select name="status" onchange="submitFilter()" class="w-full appearance-none bg-none bg-admin-page border border-admin-border text-admin-primary text-sm rounded-xl px-4 py-2.5 ltr:pr-12 rtl:pl-12 outline-none focus:ring-1 focus:ring-primary cursor-pointer sm:min-w-[140px]">
-                            <option value="">@Localizer["admin_filter_status"]</option>
-                            <option value="Active" selected="@(Context.Request.Query["status"] == "Active")">@Localizer["status_Active"]</option>
-                            <option value="Deleted" selected="@(Context.Request.Query["status"] == "Deleted")">@Localizer["status_Deleted"]</option>
-                        </select>
-                        <span class="material-symbols-outlined absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 pointer-events-none text-admin-secondary">expand_more</span>
-                    </div>
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-text-secondary px-1">@Localizer["admin_user_phone"]</label>
+                    <input type="text" id="userPhone" name="phoneNumber" class="w-full bg-surface-container dark:bg-surface-container-high border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none transition-all" />
                 </div>
             </div>
-            <input type="hidden" name="pageNumber" value="1" />
-            <input type="hidden" name="pageSize" value="20" />
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-text-secondary px-1">@Localizer["admin_user_role"]</label>
+                    <div class="relative">
+                        <select id="userRole" name="role" required class="w-full bg-surface-container dark:bg-surface-container-high border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none transition-all appearance-none cursor-pointer bg-none">
+                            <option value="Admin">@Localizer["role_Admin"]</option>
+                            <option value="User">@Localizer["role_Customer"]</option>
+                        </select>
+                        <span class="material-symbols-outlined absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 pointer-events-none text-text-secondary">expand_more</span>
+                    </div>
+                </div>
+                <div id="joinDateField" class="hidden space-y-1.5">
+                    <label class="text-xs font-bold text-text-secondary px-1">@Localizer["admin_th_join_date"]</label>
+                    <input type="date" id="userJoinDate" disabled class="w-full bg-surface-container/50 dark:bg-surface-container-high/50 border-none rounded-2xl px-4 py-3 text-sm outline-none cursor-not-allowed" />
+                </div>
+            </div>
+
+            <div id="statusField" class="hidden space-y-1.5">
+                <label class="text-xs font-bold text-text-secondary px-1">@Localizer["admin_user_status"]</label>
+                <div class="flex items-center gap-4 py-2 px-1">
+                    <label class="inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="userIsActive" name="isActive" class="sr-only peer" checked>
+                        <div class="relative w-11 h-6 bg-border peer-focus:outline-none rounded-full peer dark:bg-outline/20 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:ltr:left-[2px] after:rtl:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+                        <span class="ltr:ml-3 rtl:mr-3 text-sm font-medium text-admin-primary">@Localizer["admin_active"]</span>
+                    </label>
+                </div>
+            </div>
         </form>
-
-        <!-- Desktop Table View -->
-        <div class="hidden lg:block overflow-x-auto">
-            <table class="w-full text-sm text-left rtl:text-right users-table">
-                <thead class="bg-admin-page/30 text-admin-secondary uppercase text-[11px] font-bold tracking-wider">
-                    <tr>
-                        <th class="px-8 py-4">#</th>
-                        <th class="px-8 py-4">@Localizer["admin_th_user"]</th>
-                        <th class="px-8 py-4">@Localizer["admin_th_contact"]</th>
-                        <th class="px-8 py-4">@Localizer["admin_th_join_date"]</th>
-                        <th class="px-8 py-4">@Localizer["admin_th_role"]</th>
-                        <th class="px-8 py-4">@Localizer["admin_th_status"]</th>
-                        <th class="px-8 py-4 text-center">@Localizer["admin_th_action"]</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-admin-border">
-                    @if (!Model.Users.Any())
-                    {
-                        <tr>
-                            <td colspan="7" class="px-8 py-20 text-center">
-                                <div class="flex flex-col items-center gap-4">
-                                    <div class="w-20 h-20 rounded-full bg-admin-page flex items-center justify-center text-admin-secondary">
-                                        <span class="material-symbols-outlined text-5xl">person_search</span>
-                                    </div>
-                                    <div class="max-w-xs mx-auto">
-                                        <h4 class="text-lg font-bold text-admin-primary">@Localizer["admin_users_not_found"]</h4>
-                                        <p class="text-sm text-admin-secondary mt-1">@Localizer["admin_users_not_found_desc"]</p>
-                                    </div>
-                                    <button type="button" onclick="clearSearch()" class="mt-2 px-6 py-2 bg-surface-container text-primary font-bold text-sm rounded-xl hover:bg-primary/5 transition-colors">
-                                        @Localizer["admin_clear_filters"]
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                    else
-                    {
-                        int rowNum = (Model.PageNumber - 1) * Model.PageSize + 1;
-                        @foreach (var user in Model.Users)
-                        {
-                            <tr class="hover:bg-admin-page/50 transition-colors group">
-                                <td class="px-8 py-5 text-admin-secondary font-bold">@rowNum</td>
-                                <td class="px-8 py-5">
-                                    <div class="flex items-center gap-3 w-[200px]">
-                                        <div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden shadow-small shrink-0">
-                                            <img src="@user.AvatarUrl" alt="@user.Name" class="w-full h-full object-cover" />
-                                        </div>
-                                        <span class="font-bold text-admin-primary truncate">@user.Name</span>
-                                    </div>
-                                </td>
-                                <td class="px-8 py-5">
-                                    <div class="flex flex-col text-xs">
-                                        <span class="text-admin-primary font-medium">@user.Email</span>
-                                        <span class="text-admin-secondary">@user.Phone</span>
-                                    </div>
-                                </td>
-                                <td class="px-8 py-5 text-admin-secondary">@user.JoinDate.ToString("yyyy-MM-dd")</td>
-                                <td class="px-8 py-5">
-                                    <span class="px-3 py-1 rounded-full text-[11px] font-bold border @(user.Role == UserRole.Admin ? "bg-primary/5 border-primary/20 text-primary" : user.Role == UserRole.Designer ? "bg-secondary/5 border-secondary/20 text-secondary" : "bg-admin-page border-admin-border text-admin-secondary")">
-                                        @Localizer[$"role_{user.Role}"]
-                                    </span>
-                                </td>
-                                <td class="px-8 py-5">
-                                    <span class="status-badge @(user.Status == UserStatus.Active ? "status-done" : user.Status == UserStatus.Deleted ? "status-cancelled" : "status-pending")">
-                                        @Localizer[$"status_{user.Status}"]
-                                    </span>
-                                </td>
-                                <td class="px-8 py-5 text-center">
-                                    <button class="w-9 h-9 rounded-xl hover:bg-admin-page flex items-center justify-center text-admin-secondary hover:text-primary transition-all mx-auto">
-                                        <span class="material-symbols-outlined text-lg">more_vert</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            rowNum++;
-                        }
-                    }
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Mobile/Tablet Card View -->
-        <div class="lg:hidden">
-            @if (!Model.Users.Any())
-            {
-                <div class="px-4 py-20 text-center">
-                    <div class="flex flex-col items-center gap-4">
-                        <div class="w-20 h-20 rounded-full bg-admin-page flex items-center justify-center text-admin-secondary">
-                            <span class="material-symbols-outlined text-5xl">person_search</span>
-                        </div>
-                        <div class="max-w-xs mx-auto">
-                            <h4 class="text-lg font-bold text-admin-primary">@Localizer["admin_users_not_found"]</h4>
-                            <p class="text-sm text-admin-secondary mt-1">@Localizer["admin_users_not_found_desc"]</p>
-                        </div>
-                        <button type="button" onclick="clearSearch()" class="mt-2 px-6 py-2 bg-surface-container text-primary font-bold text-sm rounded-xl hover:bg-primary/5 transition-colors">
-                            @Localizer["admin_clear_filters"]
-                        </button>
-                    </div>
-                </div>
-            }
-            else
-            {
-                <div class="divide-y divide-admin-border">
-                    @foreach (var user in Model.Users)
-                    {
-                        <div class="p-4 space-y-4 hover:bg-admin-page/30 transition-colors">
-                            <div class="flex items-center justify-between gap-3">
-                                <div class="flex items-center gap-3 min-w-0">
-                                    <div class="w-12 h-12 rounded-full bg-surface-container overflow-hidden shadow-small shrink-0">
-                                        <img src="@user.AvatarUrl" alt="@user.Name" class="w-full h-full object-cover" />
-                                    </div>
-                                    <div class="min-w-0">
-                                        <h4 class="font-bold text-admin-primary truncate">@user.Name</h4>
-                                        <p class="text-xs text-admin-secondary truncate">@user.Email</p>
-                                    </div>
-                                </div>
-                                <button class="w-10 h-10 rounded-xl hover:bg-admin-page flex items-center justify-center text-admin-secondary shrink-0 transition-all">
-                                    <span class="material-symbols-outlined text-xl">more_vert</span>
-                                </button>
-                            </div>
-                            
-                            <div class="grid grid-cols-2 gap-y-4 gap-x-2">
-                                <div class="space-y-1">
-                                    <p class="text-[10px] uppercase tracking-wider font-bold text-admin-muted">@Localizer["admin_th_role"]</p>
-                                    <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold border @(user.Role == UserRole.Admin ? "bg-primary/5 border-primary/20 text-primary" : user.Role == UserRole.Designer ? "bg-secondary/5 border-secondary/20 text-secondary" : "bg-admin-page border-admin-border text-admin-secondary")">
-                                        @Localizer[$"role_{user.Role}"]
-                                    </span>
-                                </div>
-                                <div class="space-y-1">
-                                    <p class="text-[10px] uppercase tracking-wider font-bold text-admin-muted">@Localizer["admin_th_status"]</p>
-                                    <span class="status-badge scale-90 origin-left @(user.Status == UserStatus.Active ? "status-done" : user.Status == UserStatus.Deleted ? "status-cancelled" : "status-pending")">
-                                        @Localizer[$"status_{user.Status}"]
-                                    </span>
-                                </div>
-                                <div class="space-y-0.5">
-                                    <p class="text-[10px] uppercase tracking-wider font-bold text-admin-muted">@Localizer["admin_th_contact"]</p>
-                                    <p class="text-xs font-medium text-admin-primary">@user.Phone</p>
-                                </div>
-                                <div class="space-y-0.5">
-                                    <p class="text-[10px] uppercase tracking-wider font-bold text-admin-muted">@Localizer["admin_th_join_date"]</p>
-                                    <p class="text-xs font-medium text-admin-primary">@user.JoinDate.ToString("yyyy-MM-dd")</p>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                </div>
-            }
-        </div>
-
-        <!-- Pagination -->
-        <div class="px-4 sm:px-8 py-4 sm:py-6 border-t border-admin-border flex flex-col sm:flex-row justify-between items-center gap-4">
-            <span class="text-xs font-medium text-admin-secondary text-center sm:text-left">
-                @string.Format(Localizer["admin_pagination_showing"].Value, (Model.PageNumber - 1) * Model.PageSize + 1, (Model.PageNumber - 1) * Model.PageSize + Model.Users.Count, Model.TotalUsers)
-            </span>
-            <div class="flex items-center gap-1.5 sm:gap-2">
-                @if (Model.HasPreviousPage)
-                {
-                    <a href="@Url.Action("Users", new { pageNumber = Model.PageNumber - 1, fullName = Context.Request.Query["fullName"], role = Context.Request.Query["role"], status = Context.Request.Query["status"], pageSize = Model.PageSize })" class="w-9 h-9 sm:p-2 rounded-lg border border-admin-border text-admin-secondary hover:bg-admin-page flex items-center justify-center transition-colors">
-                        <span class="material-symbols-outlined text-lg">chevron_right</span>
-                    </a>
-                }
-                else
-                {
-                    <button class="w-9 h-9 sm:p-2 rounded-lg border border-admin-border text-admin-secondary opacity-40 cursor-not-allowed flex items-center justify-center" disabled>
-                        <span class="material-symbols-outlined text-lg">chevron_right</span>
-                    </button>
-                }
-
-                <div class="flex items-center gap-1 overflow-x-auto max-w-[160px] xs:max-w-none no-scrollbar">
-                    @{
-                        int startPage = Math.Max(1, Model.PageNumber - 1);
-                        int endPage = Math.Min(Model.TotalPages, startPage + 2);
-                        if (endPage - startPage < 2) startPage = Math.Max(1, endPage - 2);
-                        
-                        // For larger screens, show more pages
-                        // This logic is simplified for now but works well on mobile
-                    }
-
-                    @if (startPage > 1)
-                    {
-                        <a href="@Url.Action("Users", new { pageNumber = 1, fullName = Context.Request.Query["fullName"], role = Context.Request.Query["role"], status = Context.Request.Query["status"], pageSize = Model.PageSize })" class="w-9 h-9 shrink-0 rounded-lg border border-admin-border text-admin-secondary flex items-center justify-center text-xs font-bold hover:bg-admin-page transition-colors">1</a>
-                        @if (startPage > 2)
-                        {
-                            <span class="px-1 text-admin-secondary text-xs">...</span>
-                        }
-                    }
-
-                    @for (int i = startPage; i <= endPage; i++)
-                    {
-                        if (i == Model.PageNumber)
-                        {
-                            <button class="w-9 h-9 shrink-0 rounded-lg bg-primary text-on-primary text-xs font-bold shadow-sm">@i</button>
-                        }
-                        else
-                        {
-                            <a href="@Url.Action("Users", new { pageNumber = i, fullName = Context.Request.Query["fullName"], role = Context.Request.Query["role"], status = Context.Request.Query["status"], pageSize = Model.PageSize })" class="w-9 h-9 shrink-0 rounded-lg border border-admin-border text-admin-secondary flex items-center justify-center text-xs font-bold hover:bg-admin-page transition-colors">@i</a>
-                        }
-                    }
-
-                    @if (endPage < Model.TotalPages)
-                    {
-                        @if (endPage < Model.TotalPages - 1)
-                        {
-                            <span class="px-1 text-admin-secondary text-xs">...</span>
-                        }
-                        <a href="@Url.Action("Users", new { pageNumber = Model.TotalPages, fullName = Context.Request.Query["fullName"], role = Context.Request.Query["role"], status = Context.Request.Query["status"], pageSize = Model.PageSize })" class="w-9 h-9 shrink-0 rounded-lg border border-admin-border text-admin-secondary flex items-center justify-center text-xs font-bold hover:bg-admin-page transition-colors">@Model.TotalPages</a>
-                    }
-                </div>
-
-                @if (Model.HasNextPage)
-                {
-                    <a href="@Url.Action("Users", new { pageNumber = Model.PageNumber + 1, fullName = Context.Request.Query["fullName"], role = Context.Request.Query["role"], status = Context.Request.Query["status"], pageSize = Model.PageSize })" class="w-9 h-9 sm:p-2 rounded-lg border border-admin-border text-admin-secondary hover:bg-admin-page flex items-center justify-center transition-colors">
-                        <span class="material-symbols-outlined text-lg">chevron_left</span>
-                    </a>
-                }
-                else
-                {
-                    <button class="w-9 h-9 sm:p-2 rounded-lg border border-admin-border text-admin-secondary opacity-40 cursor-not-allowed flex items-center justify-center" disabled>
-                        <span class="material-symbols-outlined text-lg">chevron_left</span>
-                    </button>
-                }
-            </div>
+        
+        <!-- Modal Footer -->
+        <div class="p-6 border-t border-border dark:border-outline/10 flex gap-3 bg-surface-container/30">
+            <button onclick="closeUserModal()" class="flex-1 px-6 py-3 border border-border dark:border-outline/20 text-text-secondary rounded-2xl text-sm font-bold hover:bg-surface-container transition-all">
+                @Localizer["admin_user_cancel"]
+            </button>
+            <button onclick="saveUser()" class="flex-1 px-6 py-3 bg-primary text-on-primary rounded-2xl text-sm font-bold shadow-medium hover:scale-102 active:scale-98 transition-all flex items-center justify-center gap-2">
+                <span id="saveBtnText">@Localizer["admin_user_save"]</span>
+                <div id="saveLoader" class="hidden w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+            </button>
         </div>
     </div>
 </div>
 
+<!-- Change Password Modal -->
+<div id="changePasswordModal" class="hidden fixed inset-0 bg-black/50 z-[110] flex items-center justify-center p-4 backdrop-blur-sm transition-all duration-300">
+    <div class="bg-surface dark:bg-inverse-surface w-full max-w-sm rounded-[2rem] shadow-2xl overflow-hidden scale-95 opacity-0 transition-all duration-300" id="changePasswordModalContent">
+        <!-- Modal Header -->
+        <div class="p-6 border-b border-border dark:border-outline/10 flex justify-between items-center bg-amber-500/5">
+            <h3 class="text-xl font-black text-amber-600">@Localizer["admin_change_password"]</h3>
+            <button onclick="closeChangePasswordModal()" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:bg-surface-container transition-colors">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        
+        <!-- Modal Body -->
+        <div class="p-6 space-y-4">
+            <input type="hidden" id="changePasswordUserId" />
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-text-secondary px-1">@Localizer["admin_new_password"]</label>
+                <input type="password" id="newPassword" class="w-full bg-surface-container dark:bg-surface-container-high border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-500 outline-none transition-all" />
+            </div>
+            <div class="space-y-1.5">
+                <label class="text-xs font-bold text-text-secondary px-1">@Localizer["admin_confirm_password"]</label>
+                <input type="password" id="confirmPassword" class="w-full bg-surface-container dark:bg-surface-container-high border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-500 outline-none transition-all" />
+            </div>
+        </div>
+        
+        <!-- Modal Footer -->
+        <div class="p-6 border-t border-border dark:border-outline/10 flex gap-3 bg-amber-500/5">
+            <button onclick="closeChangePasswordModal()" class="flex-1 px-6 py-3 border border-border dark:border-outline/20 text-text-secondary rounded-2xl text-sm font-bold hover:bg-surface-container transition-all">
+                @Localizer["admin_user_cancel"]
+            </button>
+            <button onclick="confirmChangePassword()" class="flex-1 px-6 py-3 bg-amber-500 text-white rounded-2xl text-sm font-bold shadow-medium hover:bg-amber-600 transition-all flex items-center justify-center gap-2">
+                <span id="changePassBtnText">@Localizer["admin_update_password"]</span>
+                <div id="changePassLoader" class="hidden w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="hidden fixed inset-0 bg-black/50 z-[110] flex items-center justify-center p-4 backdrop-blur-sm transition-all duration-300">
+    <div class="bg-surface dark:bg-inverse-surface w-full max-w-sm rounded-[2rem] shadow-2xl overflow-hidden scale-95 opacity-0 transition-all duration-300" id="deleteModalContent">
+        <div class="p-8 text-center space-y-4">
+            <div class="w-20 h-20 bg-red-50 dark:bg-red-900/10 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
+                <span class="material-symbols-outlined text-4xl">delete_forever</span>
+            </div>
+            <h3 class="text-xl font-black text-admin-primary">@Localizer["admin_delete_user"]</h3>
+            <p class="text-sm text-admin-secondary leading-relaxed px-2">@Localizer["admin_delete_user_confirm"]</p>
+        </div>
+        <div class="p-6 border-t border-border dark:border-outline/10 flex gap-3 bg-red-50/30 dark:bg-red-900/5">
+            <button onclick="closeDeleteModal()" class="flex-1 px-6 py-3 border border-border dark:border-outline/20 text-text-secondary rounded-2xl text-sm font-bold hover:bg-surface-container transition-all">
+                @Localizer["admin_user_cancel"]
+            </button>
+            <button onclick="confirmDeleteUser()" class="flex-1 px-6 py-3 bg-red-500 text-white rounded-2xl text-sm font-bold shadow-medium hover:bg-red-600 transition-all flex items-center justify-center gap-2">
+                <span id="deleteBtnText">@Localizer["admin_user_delete"]</span>
+                <div id="deleteLoader" class="hidden w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toastContainer" class="fixed bottom-8 ltr:right-8 rtl:left-8 z-[200] flex flex-col gap-3"></div>
+
 <script>
+    let currentDeleteUserId = null;
+    let searchTimer = null;
+
+    function handleSearchKeyUp(event) {
+        const clearBtn = document.getElementById('clearSearchBtn');
+        clearBtn.classList.toggle('hidden', event.target.value === '');
+        
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => {
+            refreshUserList(1);
+        }, 500);
+    }
+
     function clearSearch() {
         document.getElementById('fullNameSearch').value = '';
-        submitFilter();
+        document.getElementById('clearSearchBtn').classList.add('hidden');
+        refreshUserList(1);
     }
 
-    function submitFilter() {
-        document.getElementById('tableLoader').classList.remove('hidden');
-        document.getElementById('usersFilterForm').submit();
+    async function refreshUserList(pageNumber = 1) {
+        const statsContainer = document.getElementById('statsGridContainer');
+        const listContainer = document.getElementById('dynamicListContainer');
+        const loader = document.getElementById('tableLoader');
+        
+        if (loader) loader.classList.remove('hidden');
+        
+        const fullName = document.getElementById('fullNameSearch').value;
+        const role = document.getElementById('roleFilter').value;
+        const status = document.getElementById('statusFilter').value;
+        const pageSize = document.querySelector('input[name="pageSize"]')?.value || 10;
+        
+        const url = new URL(window.location.origin + '@Url.Action("Users")');
+        url.searchParams.set('fullName', fullName);
+        url.searchParams.set('role', role);
+        url.searchParams.set('status', status);
+        url.searchParams.set('pageNumber', pageNumber);
+        url.searchParams.set('pageSize', pageSize);
+        url.searchParams.set('_', Date.now()); // Cache buster
+
+        // Update URL in browser without reload
+        window.history.pushState({}, '', url);
+
+        try {
+            const response = await fetch(url, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                cache: 'no-store'
+            });
+
+            if (response.ok) {
+                const html = await response.text();
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                const statsPart = doc.getElementById('statsPart');
+                const tablePart = doc.getElementById('tablePart');
+                
+                if (statsPart && statsContainer) {
+                    statsContainer.innerHTML = statsPart.innerHTML;
+                }
+                if (tablePart && listContainer) {
+                    listContainer.innerHTML = tablePart.innerHTML;
+                }
+            } else {
+                showToast('Error refreshing list', 'error');
+            }
+        } catch (error) {
+            console.error('Refresh error:', error);
+            showToast('Connection error', 'error');
+        } finally {
+            if (loader) loader.classList.add('hidden');
+        }
     }
 
-    // Handle form submit for search (on enter)
-    document.getElementById('usersFilterForm').onsubmit = function() {
-        document.getElementById('tableLoader').classList.remove('hidden');
-    };
+    function loadPage(pageNumber) {
+        refreshUserList(pageNumber);
+    }
+
+    function downloadExportCsv() {
+        const fullName = document.getElementById('fullNameSearch').value;
+        const role = document.getElementById('roleFilter').value;
+        const status = document.getElementById('statusFilter').value;
+        
+        const url = new URL(window.location.origin + '@Url.Action("ExportUsers")');
+        url.searchParams.set('fullName', fullName);
+        url.searchParams.set('role', role);
+        url.searchParams.set('status', status);
+        
+        window.location.href = url.toString();
+    }
+
+    /* ── User Modal Logic ──────────────────────────── */
+
+    function openUserModal(userId = null) {
+        const modal = document.getElementById('userModal');
+        const content = document.getElementById('userModalContent');
+        const form = document.getElementById('userForm');
+        const title = document.getElementById('modalTitle');
+        const passHint = document.getElementById('passwordHint');
+        const statusField = document.getElementById('statusField');
+        const joinDateField = document.getElementById('joinDateField');
+        const passInput = document.getElementById('userPassword');
+        const passwordFieldContainer = document.getElementById('passwordFieldContainer');
+        
+        form.reset();
+        document.getElementById('userId').value = userId || '';
+        
+        if (userId) {
+            title.textContent = "@Localizer["admin_edit_user"]";
+            passHint.classList.remove('hidden');
+            statusField.classList.remove('hidden');
+            joinDateField.classList.remove('hidden');
+            passwordFieldContainer.classList.add('hidden');
+            passInput.required = false;
+            fetchUserDetails(userId);
+        } else {
+            title.textContent = "@Localizer["admin_add_user"]";
+            passHint.classList.add('hidden');
+            statusField.classList.add('hidden');
+            joinDateField.classList.add('hidden');
+            passwordFieldContainer.classList.remove('hidden');
+            passInput.required = true;
+        }
+
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            content.classList.remove('scale-95', 'opacity-0');
+            content.classList.add('scale-100', 'opacity-100');
+        }, 10);
+    }
+
+    function closeUserModal() {
+        const modal = document.getElementById('userModal');
+        const content = document.getElementById('userModalContent');
+        content.classList.add('scale-95', 'opacity-0');
+        content.classList.remove('scale-100', 'opacity-100');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
+
+    async function fetchUserDetails(userId) {
+        try {
+            const response = await fetch(`/api/v1/users/${userId}?_=${Date.now()}`);
+            const result = await response.json();
+            
+            if (result.success) {
+                const user = result.data;
+                document.getElementById('userFullName').value = user.fullName;
+                document.getElementById('userEmail').value = user.email;
+                document.getElementById('userPhone').value = user.phoneNumber || '';
+                // Inactive is Deleted in our business
+                document.getElementById('userIsActive').checked = user.isActive && !user.isDeleted;
+
+                if (user.joinDate) {
+                    document.getElementById('userJoinDate').value = user.joinDate.split('T')[0];
+                }
+                
+                // Handle Role (assuming first role for simplicity)
+                if (user.roles && user.roles.length > 0) {
+                    document.getElementById('userRole').value = user.roles[0];
+                }
+            } else {
+                showToast(result.message || 'Error fetching user', 'error');
+            }
+        } catch (error) {
+            console.error('Fetch user details error:', error);
+            showToast('Connection error', 'error');
+        }
+    }
+
+    async function saveUser() {
+        const userId = document.getElementById('userId').value;
+        const form = document.getElementById('userForm');
+        
+        if (!form.reportValidity()) return;
+
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+        data.isActive = document.getElementById('userIsActive').checked;
+        
+        // MediatR command expectations
+        if (userId) data.id = userId;
+
+        const method = userId ? 'PUT' : 'POST';
+        const url = userId ? `/api/v1/users/${userId}` : '/api/v1/users';
+
+        setSaveLoading(true);
+        // Show table loader to indicate refresh
+        const tableLoader = document.getElementById('tableLoader');
+        if (tableLoader) tableLoader.classList.remove('hidden');
+
+        try {
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': window.csrfToken
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                showToast(userId ? "@Localizer["admin_user_updated_success"]" : "@Localizer["admin_user_created_success"]", 'success');
+                closeUserModal();
+                // Get current page from URL
+                const currentPage = new URLSearchParams(window.location.search).get('pageNumber') || 1;
+                await refreshUserList(currentPage); 
+            } else {
+                let errorMsg = result.message || 'Validation error';
+                if (result.errors) {
+                    errorMsg = Object.values(result.errors).flat().join('<br>');
+                }
+                showToast(errorMsg, 'error');
+                if (tableLoader) tableLoader.classList.add('hidden');
+            }
+        } catch (error) {
+            showToast('Server connection failed', 'error');
+            if (tableLoader) tableLoader.classList.add('hidden');
+        } finally {
+            setSaveLoading(false);
+        }
+    }
+
+    function setSaveLoading(loading) {
+        document.getElementById('saveBtnText').classList.toggle('hidden', loading);
+        document.getElementById('saveLoader').classList.toggle('hidden', !loading);
+        document.querySelector('button[onclick="saveUser()"]').disabled = loading;
+    }
+
+    /* ── Change Password Logic ─────────────────────── */
+
+    function openChangePasswordModal(userId) {
+        document.getElementById('changePasswordUserId').value = userId;
+        document.getElementById('newPassword').value = '';
+        document.getElementById('confirmPassword').value = '';
+        
+        const modal = document.getElementById('changePasswordModal');
+        const content = document.getElementById('changePasswordModalContent');
+        
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            content.classList.remove('scale-95', 'opacity-0');
+            content.classList.add('scale-100', 'opacity-100');
+        }, 10);
+    }
+
+    function closeChangePasswordModal() {
+        const modal = document.getElementById('changePasswordModal');
+        const content = document.getElementById('changePasswordModalContent');
+        content.classList.add('scale-95', 'opacity-0');
+        content.classList.remove('scale-100', 'opacity-100');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
+
+    async function confirmChangePassword() {
+        const userId = document.getElementById('changePasswordUserId').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        if (!newPassword || newPassword.length < 6) {
+            showToast("@Localizer["admin_password_min_length"]", 'error');
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            showToast("@Localizer["admin_password_mismatch"]", 'error');
+            return;
+        }
+
+        setChangePassLoading(true);
+        const tableLoader = document.getElementById('tableLoader');
+        if (tableLoader) tableLoader.classList.remove('hidden');
+
+        try {
+            const response = await fetch(`/api/v1/users/${userId}/change-password`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': window.csrfToken
+                },
+                body: JSON.stringify({ password: newPassword })
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                showToast("@Localizer["admin_password_updated_success"]", 'success');
+                closeChangePasswordModal();
+                await refreshUserList(); 
+            } else {
+                showToast(result.message || 'Error updating password', 'error');
+                if (tableLoader) tableLoader.classList.add('hidden');
+            }
+        } catch (error) {
+            showToast('Connection error', 'error');
+            if (tableLoader) tableLoader.classList.add('hidden');
+        } finally {
+            setChangePassLoading(false);
+        }
+    }
+
+    function setChangePassLoading(loading) {
+        document.getElementById('changePassBtnText').classList.toggle('hidden', loading);
+        document.getElementById('changePassLoader').classList.toggle('hidden', !loading);
+        document.querySelector('button[onclick="confirmChangePassword()"]').disabled = loading;
+    }
+
+    /* ── Delete Logic ──────────────────────────────── */
+
+    function openDeleteModal(userId) {
+        currentDeleteUserId = userId;
+        const modal = document.getElementById('deleteModal');
+        const content = document.getElementById('deleteModalContent');
+        
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            content.classList.remove('scale-95', 'opacity-0');
+            content.classList.add('scale-100', 'opacity-100');
+        }, 10);
+    }
+
+    function closeDeleteModal() {
+        const modal = document.getElementById('deleteModal');
+        const content = document.getElementById('deleteModalContent');
+        content.classList.add('scale-95', 'opacity-0');
+        content.classList.remove('scale-100', 'opacity-100');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            currentDeleteUserId = null;
+        }, 300);
+    }
+
+    async function confirmDeleteUser() {
+        if (!currentDeleteUserId) return;
+
+        setDeleteLoading(true);
+        const tableLoader = document.getElementById('tableLoader');
+        if (tableLoader) tableLoader.classList.remove('hidden');
+
+        try {
+            const response = await fetch(`/api/v1/users/${currentDeleteUserId}`, {
+                method: 'DELETE',
+                headers: {
+                    'RequestVerificationToken': window.csrfToken
+                }
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+                showToast("@Localizer["admin_user_deleted_success"]", 'success');
+                closeDeleteModal();
+                const currentPage = new URLSearchParams(window.location.search).get('pageNumber') || 1;
+                await refreshUserList(currentPage); 
+            } else {
+                showToast(result.message || 'Error deleting user', 'error');
+                if (tableLoader) tableLoader.classList.add('hidden');
+            }
+        } catch (error) {
+            showToast('Connection error', 'error');
+            if (tableLoader) tableLoader.classList.add('hidden');
+        } finally {
+            setDeleteLoading(false);
+        }
+    }
+
+    function setDeleteLoading(loading) {
+        document.getElementById('deleteBtnText').classList.toggle('hidden', loading);
+        document.getElementById('deleteLoader').classList.toggle('hidden', !loading);
+        document.querySelector('button[onclick="confirmDeleteUser()"]').disabled = loading;
+    }
+
+    /* ── Toast Logic ────────────────────────────────── */
+
+    function showToast(message, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        
+        const bgColor = type === 'success' ? 'bg-primary' : 'bg-red-500';
+        const icon = type === 'success' ? 'check_circle' : 'error';
+        
+        toast.className = `${bgColor} text-white px-6 py-4 rounded-2xl shadow-xl flex items-center gap-3 animate-slide-in opacity-0 translate-y-4 transition-all duration-300`;
+        toast.innerHTML = `
+            <span class="material-symbols-outlined">${icon}</span>
+            <span class="text-sm font-bold">${message}</span>
+        `;
+        
+        container.appendChild(toast);
+        
+        // Trigger animation
+        setTimeout(() => {
+            toast.classList.remove('opacity-0', 'translate-y-4');
+            toast.classList.add('opacity-100', 'translate-y-0');
+        }, 10);
+        
+        // Auto-remove
+        setTimeout(() => {
+            toast.classList.add('opacity-0', 'translate-y--4');
+            setTimeout(() => toast.remove(), 300);
+        }, 4000);
+    }
 </script>
+
+<style>
+    @@keyframes slide-in {
+        from { opacity: 0; transform: translateY(1rem); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-slide-in {
+        animation: slide-in 0.3s ease-out forwards;
+    }
+    @@keyframes scale-up {
+        from { opacity: 0; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1); }
+    }
+    .animate-scale-up {
+        animation: scale-up 0.3s ease-out forwards;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 4px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(0,0,0,0.1);
+        border-radius: 10px;
+    }
+    .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,0.1);
+    }
+</style>

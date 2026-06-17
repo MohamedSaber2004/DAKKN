@@ -1,9 +1,10 @@
 using DAKKN.Application.Common.Extensions;
+using DAKKN.Application.Common.Interfaces;
 using DAKKN.Application.Common.Models;
-using DAKKN.Domain.Entities;
 using MediatR;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,50 +13,64 @@ namespace DAKKN.Application.Features.Users.Queries.GetAllUsers
 {
     public class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, PagginatedResult<UserListItemDto>>
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IApplicationDbContext _context;
 
-        public GetAllUsersQueryHandler(UserManager<ApplicationUser> userManager)
+        public GetAllUsersQueryHandler(IApplicationDbContext context)
         {
-            _userManager = userManager;
+            _context = context;
         }
 
         public async Task<PagginatedResult<UserListItemDto>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
         {
-            var query = _userManager.Users.AsNoTracking();
+            var query = _context.Users.AsNoTracking();
 
             // Apply Filters
             query = query.WhereIf(!string.IsNullOrWhiteSpace(request.FullName), u => u.FullName.Contains(request.FullName!))
                          .WhereIf(!string.IsNullOrWhiteSpace(request.Email), u => u.Email.Contains(request.Email!))
-                         .WhereIf(!string.IsNullOrWhiteSpace(request.PhoneNumber), u => u.PhoneNumber.Contains(request.PhoneNumber!))
-                         .WhereIf(!string.IsNullOrWhiteSpace(request.Status), u => u.IsDeleted == (request.Status == "Deleted"));
+                         .WhereIf(!string.IsNullOrWhiteSpace(request.PhoneNumber), u => u.PhoneNumber.Contains(request.PhoneNumber!));
+
+            // Status logic: Inactive is Deleted in this business
+            if (!string.IsNullOrWhiteSpace(request.Status))
+            {
+                if (request.Status == "Deleted")
+                    query = query.Where(u => u.IsDeleted || !u.IsActive);
+                else if (request.Status == "Active")
+                    query = query.Where(u => !u.IsDeleted && u.IsActive);
+            }
 
             if (!string.IsNullOrWhiteSpace(request.Role))
             {
-                var usersInRole = await _userManager.GetUsersInRoleAsync(request.Role);
-                var userIds = usersInRole.Select(u => u.Id).ToList();
-                query = query.Where(u => userIds.Contains(u.Id));
+                var roleId = await _context.Roles
+                    .Where(r => r.Name == request.Role)
+                    .Select(r => r.Id)
+                    .FirstOrDefaultAsync(cancellationToken);
+
+                if (roleId != Guid.Empty)
+                {
+                    query = query.Where(u => _context.UserRoles.Any(ur => ur.UserId == u.Id && ur.RoleId == roleId));
+                }
             }
 
-            var paginatedUsers = await query.AsPagginatedListAsync(request.PageNumber, request.PageSize, cancellationToken);
+            query = query.OrderByDescending(u => u.CreatedAt);
 
-            var items = new List<UserListItemDto>();
-            foreach (var u in paginatedUsers.Items)
-            {
-                var roles = await _userManager.GetRolesAsync(u);
-                items.Add(new UserListItemDto
+            var paginatedUsers = await query
+                .Select(u => new UserListItemDto
                 {
                     Id = u.Id,
                     FullName = u.FullName,
                     Email = u.Email,
                     PhoneNumber = u.PhoneNumber,
                     ProfilePictureUrl = u.ProfilePictureUrl,
-                    Roles = roles,
                     JoinDate = u.CreatedAt,
-                    Status = u.IsDeleted ? "Deleted" : "Active"
-                });
-            }
+                    Status = (u.IsDeleted || !u.IsActive) ? "Deleted" : "Active",
+                    Roles = _context.UserRoles
+                        .Where(ur => ur.UserId == u.Id)
+                        .Join(_context.Roles, ur => ur.RoleId, r => r.Id, (ur, r) => r.Name!)
+                        .ToList()
+                })
+                .AsPagginatedListAsync(request.PageNumber, request.PageSize, cancellationToken);
 
-            return PagginatedResult<UserListItemDto>.Create(items, paginatedUsers.TotalCount, request.PageNumber, request.PageSize);
+            return paginatedUsers;
         }
     }
 }

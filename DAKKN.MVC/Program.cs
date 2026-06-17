@@ -69,11 +69,9 @@ namespace DAKKN.MVC
             {
                 options.ForwardDefaultSelector = context =>
                 {
-                    var path = context.Request.Path.Value;
                     var authHeader = context.Request.Headers["Authorization"].ToString();
                     
-                    if ((path != null && path.StartsWith("/api/", StringComparison.OrdinalIgnoreCase)) 
-                        || authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                    if (authHeader.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
                     {
                         return JwtBearerDefaults.AuthenticationScheme;
                     }

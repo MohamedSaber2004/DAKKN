@@ -1,0 +1,10 @@
+@model DAKKN.MVC.ViewModels.Admin.UserManagementViewModel
+
+<div id="userManagementCombinedPartial">
+    <div id="statsPart">
+        @await Html.PartialAsync("_UserStatsPartial", Model)
+    </div>
+    <div id="tablePart">
+        @await Html.PartialAsync("_UserTablePartial", Model)
+    </div>
+</div>

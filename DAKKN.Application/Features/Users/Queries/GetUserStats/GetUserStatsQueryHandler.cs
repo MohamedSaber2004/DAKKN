@@ -16,9 +16,9 @@ namespace DAKKN.Application.Features.Users.Queries.GetUserStats
 
         public async Task<GetUserStatsResponse> Handle(GetUserStatsQuery request, CancellationToken cancellationToken)
         {
-            var totalUsers = await _userManager.Users.CountAsync(cancellationToken);
-            var activeUsers = await _userManager.Users.CountAsync(u => !u.IsDeleted && u.IsActive, cancellationToken);
-            var deletedUsers = await _userManager.Users.CountAsync(u => u.IsDeleted, cancellationToken);
+            var totalUsers = await _userManager.Users.AsNoTracking().CountAsync(cancellationToken);
+            var activeUsers = await _userManager.Users.AsNoTracking().CountAsync(u => !u.IsDeleted && u.IsActive, cancellationToken);
+            var deletedUsers = await _userManager.Users.AsNoTracking().CountAsync(u => u.IsDeleted || !u.IsActive, cancellationToken);
 
             return new GetUserStatsResponse(totalUsers, activeUsers, deletedUsers);
         }

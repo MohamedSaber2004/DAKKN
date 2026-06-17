@@ -1,0 +1,237 @@
+@model DAKKN.MVC.ViewModels.Admin.UserManagementViewModel
+@using DAKKN.MVC.ViewModels.Admin
+@inject IStringLocalizer<Messages> Localizer
+
+<div id="usersTableContainer">
+    <!-- Desktop Table View -->
+    <div class="hidden lg:block overflow-x-auto">
+        <table class="w-full text-sm text-left rtl:text-right users-table">
+            <thead class="bg-admin-page/30 text-admin-secondary uppercase text-[11px] font-bold tracking-wider">
+                <tr>
+                    <th class="px-8 py-4">#</th>
+                    <th class="px-8 py-4">@Localizer["admin_th_user"]</th>
+                    <th class="px-8 py-4">@Localizer["admin_th_contact"]</th>
+                    <th class="px-8 py-4">@Localizer["admin_th_join_date"]</th>
+                    <th class="px-8 py-4">@Localizer["admin_th_role"]</th>
+                    <th class="px-8 py-4">@Localizer["admin_th_status"]</th>
+                    <th class="px-8 py-4 text-center">@Localizer["admin_th_action"]</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-admin-border">
+                @if (!Model.Users.Any())
+                {
+                    <tr>
+                        <td colspan="7" class="px-8 py-20 text-center">
+                            <div class="flex flex-col items-center gap-4">
+                                <div class="w-20 h-20 rounded-full bg-admin-page flex items-center justify-center text-admin-secondary">
+                                    <span class="material-symbols-outlined text-5xl">person_search</span>
+                                </div>
+                                <div class="max-w-xs mx-auto">
+                                    <h4 class="text-lg font-bold text-admin-primary">@Localizer["admin_users_not_found"]</h4>
+                                    <p class="text-sm text-admin-secondary mt-1">@Localizer["admin_users_not_found_desc"]</p>
+                                </div>
+                                <button type="button" onclick="clearSearch()" class="mt-2 px-6 py-2 bg-surface-container text-primary font-bold text-sm rounded-xl hover:bg-primary/5 transition-colors">
+                                    @Localizer["admin_clear_filters"]
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                else
+                {
+                    int rowNum = (Model.PageNumber - 1) * Model.PageSize + 1;
+                    @foreach (var user in Model.Users)
+                    {
+                        <tr class="hover:bg-admin-page/50 transition-colors group">
+                            <td class="px-8 py-5 text-admin-secondary font-bold">@rowNum</td>
+                            <td class="px-8 py-5">
+                                <div class="flex items-center gap-3 w-[200px]">
+                                    <div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden shadow-small shrink-0">
+                                        <img src="@user.AvatarUrl" alt="@user.Name" class="w-full h-full object-cover" />
+                                    </div>
+                                    <span class="font-bold text-admin-primary truncate">@user.Name</span>
+                                </div>
+                            </td>
+                            <td class="px-8 py-5">
+                                <div class="flex flex-col text-xs">
+                                    <span class="text-admin-primary font-medium">@user.Email</span>
+                                    <span class="text-admin-secondary">@user.Phone</span>
+                                </div>
+                            </td>
+                            <td class="px-8 py-5 text-admin-secondary">@user.JoinDate.ToString("yyyy-MM-dd")</td>
+                            <td class="px-8 py-5">
+                                <span class="px-3 py-1 rounded-full text-[11px] font-bold border @(user.Role == UserRole.Admin ? "bg-primary/5 border-primary/20 text-primary" : user.Role == UserRole.Designer ? "bg-secondary/5 border-secondary/20 text-secondary" : "bg-admin-page border-admin-border text-admin-secondary")">
+                                    @Localizer[$"role_{user.Role}"]
+                                </span>
+                            </td>
+                            <td class="px-8 py-5">
+                                <span class="status-badge @(user.Status == UserStatus.Active ? "status-done" : "status-cancelled")">
+                                    @Localizer[$"status_{user.Status}"]
+                                </span>
+                            </td>
+                            <td class="px-8 py-5">
+                                <div class="flex items-center justify-center gap-2">
+                                    <button onclick="openChangePasswordModal('@user.Id')" class="w-9 h-9 rounded-xl hover:bg-amber-500/10 flex items-center justify-center text-admin-secondary hover:text-amber-500 transition-all shadow-sm border border-transparent hover:border-amber-500/20" title="@Localizer["admin_change_password"]">
+                                        <span class="material-symbols-outlined text-lg">key</span>
+                                    </button>
+                                    <button onclick="openUserModal('@user.Id')" class="w-9 h-9 rounded-xl hover:bg-primary/10 flex items-center justify-center text-admin-secondary hover:text-primary transition-all shadow-sm border border-transparent hover:border-primary/20" title="@Localizer["admin_edit"]">
+                                        <span class="material-symbols-outlined text-lg">edit</span>
+                                    </button>
+                                    <button onclick="openDeleteModal('@user.Id')" class="w-9 h-9 rounded-xl hover:bg-red-500/10 flex items-center justify-center text-admin-secondary hover:text-red-500 transition-all shadow-sm border border-transparent hover:border-red-500/20" title="@Localizer["admin_delete_user"]">
+                                        <span class="material-symbols-outlined text-lg">delete</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        rowNum++;
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Mobile/Tablet Card View -->
+    <div class="lg:hidden">
+        @if (!Model.Users.Any())
+        {
+            <div class="px-4 py-20 text-center">
+                <div class="flex flex-col items-center gap-4">
+                    <div class="w-20 h-20 rounded-full bg-admin-page flex items-center justify-center text-admin-secondary">
+                        <span class="material-symbols-outlined text-5xl">person_search</span>
+                    </div>
+                    <div class="max-w-xs mx-auto">
+                        <h4 class="text-lg font-bold text-admin-primary">@Localizer["admin_users_not_found"]</h4>
+                        <p class="text-sm text-admin-secondary mt-1">@Localizer["admin_users_not_found_desc"]</p>
+                    </div>
+                    <button type="button" onclick="clearSearch()" class="mt-2 px-6 py-2 bg-surface-container text-primary font-bold text-sm rounded-xl hover:bg-primary/5 transition-colors">
+                        @Localizer["admin_clear_filters"]
+                    </button>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="divide-y divide-admin-border">
+                @foreach (var user in Model.Users)
+                {
+                    <div class="p-4 space-y-4 hover:bg-admin-page/30 transition-colors">
+                        <div class="flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-3 min-w-0">
+                                <div class="w-12 h-12 rounded-full bg-surface-container overflow-hidden shadow-small shrink-0">
+                                    <img src="@user.AvatarUrl" alt="@user.Name" class="w-full h-full object-cover" />
+                                </div>
+                                <div class="min-w-0">
+                                    <h4 class="font-bold text-admin-primary truncate">@user.Name</h4>
+                                    <p class="text-xs text-admin-secondary truncate">@user.Email</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="openUserModal('@user.Id')" class="w-10 h-10 rounded-xl bg-admin-page border border-admin-border flex items-center justify-center text-admin-secondary hover:text-primary transition-all">
+                                    <span class="material-symbols-outlined text-xl">edit</span>
+                                </button>
+                                <button onclick="openDeleteModal('@user.Id')" class="w-10 h-10 rounded-xl bg-admin-page border border-admin-border flex items-center justify-center text-admin-secondary hover:text-red-500 transition-all">
+                                    <span class="material-symbols-outlined text-xl">delete</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-y-4 gap-x-2">
+                            <div class="space-y-1">
+                                <p class="text-[10px] uppercase tracking-wider font-bold text-admin-muted">@Localizer["admin_th_role"]</p>
+                                <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold border @(user.Role == UserRole.Admin ? "bg-primary/5 border-primary/20 text-primary" : user.Role == UserRole.Designer ? "bg-secondary/5 border-secondary/20 text-secondary" : "bg-admin-page border-admin-border text-admin-secondary")">
+                                    @Localizer[$"role_{user.Role}"]
+                                </span>
+                            </div>
+                            <div class="space-y-1">
+                                <p class="text-[10px] uppercase tracking-wider font-bold text-admin-muted">@Localizer["admin_th_status"]</p>
+                                <span class="status-badge scale-90 origin-left @(user.Status == UserStatus.Active ? "status-done" : user.Status == UserStatus.Deleted ? "status-cancelled" : "status-pending")">
+                                    @Localizer[$"status_{user.Status}"]
+                                </span>
+                            </div>
+                            <div class="space-y-0.5">
+                                <p class="text-[10px] uppercase tracking-wider font-bold text-admin-muted">@Localizer["admin_th_contact"]</p>
+                                <p class="text-xs font-medium text-admin-primary">@user.Phone</p>
+                            </div>
+                            <div class="space-y-0.5">
+                                <p class="text-[10px] uppercase tracking-wider font-bold text-admin-muted">@Localizer["admin_th_join_date"]</p>
+                                <p class="text-xs font-medium text-admin-primary">@user.JoinDate.ToString("yyyy-MM-dd")</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <!-- Pagination -->
+    <div class="px-4 sm:px-8 py-4 sm:py-6 border-t border-admin-border flex flex-col sm:flex-row justify-between items-center gap-4">
+        <span class="text-xs font-medium text-admin-secondary text-center sm:text-left">
+            @string.Format(Localizer["admin_pagination_showing"].Value, (Model.PageNumber - 1) * Model.PageSize + 1, (Model.PageNumber - 1) * Model.PageSize + Model.Users.Count, Model.TotalUsers)
+        </span>
+        <div class="flex items-center gap-1.5 sm:gap-2">
+            @if (Model.HasPreviousPage)
+            {
+                <button onclick="loadPage(@(Model.PageNumber - 1))" class="w-9 h-9 sm:p-2 rounded-lg border border-admin-border text-admin-secondary hover:bg-admin-page flex items-center justify-center transition-colors">
+                    <span class="material-symbols-outlined text-lg">chevron_right</span>
+                </button>
+            }
+            else
+            {
+                <button class="w-9 h-9 sm:p-2 rounded-lg border border-admin-border text-admin-secondary opacity-40 cursor-not-allowed flex items-center justify-center" disabled>
+                    <span class="material-symbols-outlined text-lg">chevron_right</span>
+                </button>
+            }
+
+            <div class="flex items-center gap-1 overflow-x-auto max-w-[160px] xs:max-w-none no-scrollbar">
+                @{
+                    int startPage = Math.Max(1, Model.PageNumber - 1);
+                    int endPage = Math.Min(Model.TotalPages, startPage + 2);
+                    if (endPage - startPage < 2) startPage = Math.Max(1, endPage - 2);
+                }
+
+                @if (startPage > 1)
+                {
+                    <button onclick="loadPage(1)" class="w-9 h-9 shrink-0 rounded-lg border border-admin-border text-admin-secondary flex items-center justify-center text-xs font-bold hover:bg-admin-page transition-colors">1</button>
+                    @if (startPage > 2)
+                    {
+                        <span class="px-1 text-admin-secondary text-xs">...</span>
+                    }
+                }
+
+                @for (int i = startPage; i <= endPage; i++)
+                {
+                    if (i == Model.PageNumber)
+                    {
+                        <button class="w-9 h-9 shrink-0 rounded-lg bg-primary text-on-primary text-xs font-bold shadow-sm">@i</button>
+                    }
+                    else
+                    {
+                        <button onclick="loadPage(@i)" class="w-9 h-9 shrink-0 rounded-lg border border-admin-border text-admin-secondary flex items-center justify-center text-xs font-bold hover:bg-admin-page transition-colors">@i</button>
+                    }
+                }
+
+                @if (endPage < Model.TotalPages)
+                {
+                    @if (endPage < Model.TotalPages - 1)
+                    {
+                        <span class="px-1 text-admin-secondary text-xs">...</span>
+                    }
+                    <button onclick="loadPage(@Model.TotalPages)" class="w-9 h-9 shrink-0 rounded-lg border border-admin-border text-admin-secondary flex items-center justify-center text-xs font-bold hover:bg-admin-page transition-colors">@Model.TotalPages</button>
+                }
+            </div>
+
+            @if (Model.HasNextPage)
+            {
+                <button onclick="loadPage(@(Model.PageNumber + 1))" class="w-9 h-9 sm:p-2 rounded-lg border border-admin-border text-admin-secondary hover:bg-admin-page flex items-center justify-center transition-colors">
+                    <span class="material-symbols-outlined text-lg">chevron_left</span>
+                </button>
+            }
+            else
+            {
+                <button class="w-9 h-9 sm:p-2 rounded-lg border border-admin-border text-admin-secondary opacity-40 cursor-not-allowed flex items-center justify-center" disabled>
+                    <span class="material-symbols-outlined text-lg">chevron_left</span>
+                </button>
+            }
+        </div>
+    </div>
+</div>

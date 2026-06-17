@@ -4,6 +4,7 @@ using DAKKN.Application.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace DAKKN.Appearence.Filters
 {
@@ -11,18 +12,22 @@ namespace DAKKN.Appearence.Filters
     {
         private readonly IDictionary<Type, Action<ExceptionContext>> _exceptionHandlers;
         private readonly ILogger<ApiExceptionFilterAttribute> _logger;
+        private readonly IStringLocalizer<Messages> _localizer;
 
-        public ApiExceptionFilterAttribute(ILogger<ApiExceptionFilterAttribute> logger)
+        public ApiExceptionFilterAttribute(
+            ILogger<ApiExceptionFilterAttribute> logger,
+            IStringLocalizer<Messages> localizer)
         {
             _exceptionHandlers = new Dictionary<Type, Action<ExceptionContext>>
-        {
-            { typeof(ValidationException), HandleValidationException },
-            { typeof(NotFoundException), HandleNotFoundException },
-            { typeof(BadRequestException), HandleBadRequestException },
-            { typeof(UnAuthorizedException), HandleUnauthorizedException },
-            { typeof(DbUpdateConcurrencyException), HandleDbUpdateConcurrencyException },
-        };
+            {
+                { typeof(ValidationException), HandleValidationException },
+                { typeof(NotFoundException), HandleNotFoundException },
+                { typeof(BadRequestException), HandleBadRequestException },
+                { typeof(UnAuthorizedException), HandleUnauthorizedException },
+                { typeof(DbUpdateConcurrencyException), HandleDbUpdateConcurrencyException },
+            };
             _logger = logger;
+            _localizer = localizer;
         }
 
         public override void OnException(ExceptionContext context)
@@ -54,7 +59,7 @@ namespace DAKKN.Appearence.Filters
         {
             var exception = context.Exception as ValidationException;
 
-            var message = JsonLocalizationProvider.GetLocalizedString(LocalizationKeys.ExceptionMessages.Validation.Key);
+            var message = _localizer[LocalizationKeys.ExceptionMessages.Validation.Key];
             var details = ApiResponse<object>.Error(exception?.Errors, message, StatusCodes.Status400BadRequest);
 
             context.Result = new BadRequestObjectResult(details);
@@ -69,7 +74,7 @@ namespace DAKKN.Appearence.Filters
                                 kvp => kvp.Value?.Errors.Select(e => e.ErrorMessage).ToArray() ?? Array.Empty<string>()
                             );
 
-            var message = JsonLocalizationProvider.GetLocalizedString(LocalizationKeys.ExceptionMessages.InvalidModelState.Key);
+            var message = _localizer[LocalizationKeys.ExceptionMessages.InvalidModelState.Key];
             var details = ApiResponse<object>.Error(errors, message, StatusCodes.Status400BadRequest);
 
             context.Result = new BadRequestObjectResult(details);
@@ -80,7 +85,11 @@ namespace DAKKN.Appearence.Filters
         private void HandleNotFoundException(ExceptionContext context)
         {
             var exception = context.Exception as NotFoundException;
-            var message = JsonLocalizationProvider.GetLocalizedString(exception?.Message ?? LocalizationKeys.ExceptionMessages.NotFound.Key);
+
+            var message = string.IsNullOrEmpty(exception?.Message)
+                ? _localizer[LocalizationKeys.ExceptionMessages.NotFound.Key]
+                : exception.Message;
+
             var details = ApiResponse<object>.Error(message, StatusCodes.Status404NotFound);
 
             context.Result = new NotFoundObjectResult(details);
@@ -91,20 +100,28 @@ namespace DAKKN.Appearence.Filters
         private void HandleBadRequestException(ExceptionContext context)
         {
             var exception = context.Exception as BadRequestException;
-            var message = JsonLocalizationProvider.GetLocalizedString(exception?.Message ?? LocalizationKeys.ExceptionMessages.BadRequest.Key);
+
+            var message = string.IsNullOrEmpty(exception?.Message)
+                ? _localizer[LocalizationKeys.ExceptionMessages.BadRequest.Key]
+                : exception.Message;
+
             var details = ApiResponse<object>.Error(message, StatusCodes.Status400BadRequest);
 
             context.Result = new BadRequestObjectResult(details);
 
             context.ExceptionHandled = true;
 
-            _logger.LogError(exception, "{Message}", exception?.Message);
+            _logger.LogError(exception, "{Message}", message);
         }
 
         private void HandleUnauthorizedException(ExceptionContext context)
         {
             var exception = context.Exception as UnAuthorizedException;
-            var message = JsonLocalizationProvider.GetLocalizedString(exception?.Message ?? LocalizationKeys.ExceptionMessages.Unauthorized.Key);
+
+            var message = string.IsNullOrEmpty(exception?.Message)
+                ? _localizer[LocalizationKeys.ExceptionMessages.Unauthorized.Key]
+                : exception.Message;
+
             var details = ApiResponse<object>.Error(new Dictionary<string, string[]>(), message, StatusCodes.Status401Unauthorized);
 
             context.Result = new UnauthorizedObjectResult(details);
@@ -116,7 +133,7 @@ namespace DAKKN.Appearence.Filters
         {
             _logger.LogError(context.Exception, "An unhandled exception has occurred while executing the request.");
 
-            var message = JsonLocalizationProvider.GetLocalizedString(LocalizationKeys.ExceptionMessages.UnknownException.Key);
+            var message = _localizer[LocalizationKeys.ExceptionMessages.UnknownException.Key];
             var details = ApiResponse<object>.Error(message, StatusCodes.Status500InternalServerError);
 
             context.Result = new ObjectResult(details)

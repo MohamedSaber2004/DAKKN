@@ -10,6 +10,6 @@ namespace DAKKN.Application.Features.Users.Queries.GetAllUsers
         string? Role = null,  
         string? Status = null,      
         int PageNumber = 1,
-        int PageSize = 20
-    ) : IRequest<PagginatedResult<UserListItemDto>>;
+        int PageSize = 10
+        ) : IRequest<PagginatedResult<UserListItemDto>>;
 }

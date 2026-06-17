@@ -13,9 +13,7 @@ namespace DAKKN.MVC.ViewModels.Admin
     public enum UserStatus
     {
         Active,
-        Deleted,
-        Blocked,
-        UnderReview
+        Deleted
     }
 
     public class UserListItemViewModel

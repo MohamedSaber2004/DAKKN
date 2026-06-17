@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using DAKKN.Application.Features.Users.Queries.ExportUsers;
 
 namespace DAKKN.MVC.Controllers
 {
@@ -41,7 +42,8 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpGet("users")]
-        public async Task<IActionResult> Users(string? fullName, string? email, string? phoneNumber, string? role, string? status, int pageNumber = 1, int pageSize = 20)
+        [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
+        public async Task<IActionResult> Users(string? fullName, string? email, string? phoneNumber, string? role, string? status, int pageNumber = 1, int pageSize = 10)
         {
             ViewData["Title"] = _localizer["admin_users"];
 
@@ -55,11 +57,16 @@ namespace DAKKN.MVC.Controllers
                 Email = u.Email,
                 Phone = u.PhoneNumber ?? "",
                 JoinDate = u.JoinDate,
-                AvatarUrl = !string.IsNullOrEmpty(u.ProfilePictureUrl) 
+                AvatarUrl = !string.IsNullOrEmpty(u.ProfilePictureUrl)
                     ? $"/files/{u.ProfilePictureUrl}"
                     : $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(u.FullName ?? "User")}&background=random",
                 Role = u.Roles.Contains("Admin") ? UserRole.Admin : UserRole.Customer,
-                Status = u.Status == "Active" ? UserStatus.Active : UserStatus.Deleted
+                Status = u.Status switch
+                {
+                    "Active" => UserStatus.Active,
+                    "Deleted" => UserStatus.Deleted,
+                    _ => UserStatus.Active
+                }
             }).ToList();
 
             var stats = await _mediator.Send(new GetUserStatsQuery());
@@ -77,7 +84,29 @@ namespace DAKKN.MVC.Controllers
                 HasNextPage = usersResult.HasNextPage
             };
 
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_UserListPartial", viewModel);
+            }
+
             return View(viewModel);
+        }
+        [HttpGet("users/export")]
+        public async Task<IActionResult> ExportUsers(string? fullName, string? role, string? status)
+        {
+            var query = new ExportUsersQuery(fullName, role, status);
+            var users = await _mediator.Send(query);
+
+            var builder = new System.Text.StringBuilder();
+            builder.AppendLine("Full Name,Email,Phone,Join Date,Role,Status");
+
+            foreach (var user in users)
+            {
+                builder.AppendLine($"\"{user.FullName}\",\"{user.Email}\",\"{user.PhoneNumber}\",\"{user.JoinDate:yyyy-MM-dd}\",\"{string.Join("|", user.Roles)}\",\"{user.Status}\"");
+            }
+
+            var csvData = System.Text.Encoding.UTF8.GetPreamble().Concat(System.Text.Encoding.UTF8.GetBytes(builder.ToString())).ToArray();
+            return File(csvData, "text/csv", $"users_{DateTime.Now:yyyyMMddHHmmss}.csv");
         }
 
         [HttpGet("orders")]

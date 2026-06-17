@@ -30,6 +30,11 @@ namespace DAKKN.Appearence.Routes
         public static class Users
         {
             public const string GetAll = Base + "/users";
+            public const string GetById = Base + "/users/{id}";
+            public const string Create = Base + "/users";
+            public const string Update = Base + "/users/{id}";
+            public const string Delete = Base + "/users/{id}";
+            public const string ChangePassword = Base + "/users/{id}/change-password";
         }
     }
 }
