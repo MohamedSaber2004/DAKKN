@@ -25,9 +25,12 @@ namespace DAKKN.Application.Features.Users.Queries.GetAllUsers
             var query = _context.Users.AsNoTracking();
 
             // Apply Filters
-            query = query.WhereIf(!string.IsNullOrWhiteSpace(request.FullName), u => u.FullName.Contains(request.FullName!))
-                         .WhereIf(!string.IsNullOrWhiteSpace(request.Email), u => u.Email.Contains(request.Email!))
-                         .WhereIf(!string.IsNullOrWhiteSpace(request.PhoneNumber), u => u.PhoneNumber.Contains(request.PhoneNumber!));
+            if (!string.IsNullOrWhiteSpace(request.SearchTerm))
+            {
+                query = query.Where(u => u.FullName.Contains(request.SearchTerm) || 
+                                         u.Email.Contains(request.SearchTerm) || 
+                                         u.PhoneNumber.Contains(request.SearchTerm));
+            }
 
             // Status logic: Inactive is Deleted in this business
             if (!string.IsNullOrWhiteSpace(request.Status))

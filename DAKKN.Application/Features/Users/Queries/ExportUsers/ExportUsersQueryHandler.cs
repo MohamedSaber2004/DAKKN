@@ -24,7 +24,12 @@ namespace DAKKN.Application.Features.Users.Queries.ExportUsers
             var query = _context.Users.AsNoTracking();
 
             // Apply Filters (same as GetAllUsersQueryHandler)
-            query = query.WhereIf(!string.IsNullOrWhiteSpace(request.FullName), u => u.FullName.Contains(request.FullName!));
+            if (!string.IsNullOrWhiteSpace(request.SearchTerm))
+            {
+                query = query.Where(u => u.FullName.Contains(request.SearchTerm) || 
+                                         u.Email.Contains(request.SearchTerm) || 
+                                         u.PhoneNumber.Contains(request.SearchTerm));
+            }
 
             if (!string.IsNullOrWhiteSpace(request.Status))
             {

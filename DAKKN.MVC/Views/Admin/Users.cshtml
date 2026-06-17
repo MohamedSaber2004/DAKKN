@@ -37,7 +37,7 @@
 
         <div class="flex flex-col md:flex-row gap-3 sm:gap-4">
             <div class="relative flex-grow group">
-                <input type="text" name="fullName" id="fullNameSearch" value="@Context.Request.Query["fullName"]" onkeyup="handleSearchKeyUp(event)" placeholder="@Localizer["admin_users_search_ph"]" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-2.5 ltr:pl-10 rtl:pr-10 ltr:pr-10 rtl:pl-10 outline-none focus:ring-1 focus:ring-primary text-admin-primary text-sm transition-all" />
+                <input type="text" name="searchTerm" id="searchTermSearch" value="@Context.Request.Query["searchTerm"]" onkeyup="handleSearchKeyUp(event)" placeholder="@Localizer["admin_users_search_ph"]" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-2.5 ltr:pl-10 rtl:pr-10 ltr:pr-10 rtl:pl-10 outline-none focus:ring-1 focus:ring-primary text-admin-primary text-sm transition-all" />
                 <span class="material-symbols-outlined absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 text-admin-secondary">search</span>
                 
                 <button type="button" id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 text-admin-secondary hover:text-red-500 transition-colors">
@@ -231,7 +231,7 @@
     }
 
     function clearSearch() {
-        document.getElementById('fullNameSearch').value = '';
+        document.getElementById('searchTermSearch').value = '';
         document.getElementById('clearSearchBtn').classList.add('hidden');
         refreshUserList(1);
     }
@@ -243,13 +243,13 @@
         
         if (loader) loader.classList.remove('hidden');
         
-        const fullName = document.getElementById('fullNameSearch').value;
+        const searchTerm = document.getElementById('searchTermSearch').value;
         const role = document.getElementById('roleFilter').value;
         const status = document.getElementById('statusFilter').value;
         const pageSize = document.querySelector('input[name="pageSize"]')?.value || 10;
         
         const url = new URL(window.location.origin + '@Url.Action("Users")');
-        url.searchParams.set('fullName', fullName);
+        url.searchParams.set('searchTerm', searchTerm);
         url.searchParams.set('role', role);
         url.searchParams.set('status', status);
         url.searchParams.set('pageNumber', pageNumber);
@@ -297,12 +297,12 @@
     }
 
     function downloadExportCsv() {
-        const fullName = document.getElementById('fullNameSearch').value;
+        const searchTerm = document.getElementById('searchTermSearch').value;
         const role = document.getElementById('roleFilter').value;
         const status = document.getElementById('statusFilter').value;
         
         const url = new URL(window.location.origin + '@Url.Action("ExportUsers")');
-        url.searchParams.set('fullName', fullName);
+        url.searchParams.set('searchTerm', searchTerm);
         url.searchParams.set('role', role);
         url.searchParams.set('status', status);
         

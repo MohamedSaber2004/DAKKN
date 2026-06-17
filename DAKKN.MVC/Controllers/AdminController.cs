@@ -43,13 +43,12 @@ namespace DAKKN.MVC.Controllers
 
         [HttpGet("users")]
         [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
-        public async Task<IActionResult> Users(string? fullName, string? email, string? phoneNumber, string? role, string? status, int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> Users(string? searchTerm, string? role, string? status, int pageNumber = 1, int pageSize = 10)
         {
             ViewData["Title"] = _localizer["admin_users"];
 
-            var query = new GetAllUsersQuery(fullName, email, phoneNumber, role, status, pageNumber, pageSize);
+            var query = new GetAllUsersQuery(searchTerm, role, status, pageNumber, pageSize);
             var usersResult = await _mediator.Send(query);
-
             var userViewModels = usersResult.Items.Select(u => new UserListItemViewModel
             {
                 Id = u.Id.ToString(),
@@ -92,9 +91,9 @@ namespace DAKKN.MVC.Controllers
             return View(viewModel);
         }
         [HttpGet("users/export")]
-        public async Task<IActionResult> ExportUsers(string? fullName, string? role, string? status)
+        public async Task<IActionResult> ExportUsers(string? searchTerm, string? role, string? status)
         {
-            var query = new ExportUsersQuery(fullName, role, status);
+            var query = new ExportUsersQuery(searchTerm, role, status);
             var users = await _mediator.Send(query);
 
             var builder = new System.Text.StringBuilder();

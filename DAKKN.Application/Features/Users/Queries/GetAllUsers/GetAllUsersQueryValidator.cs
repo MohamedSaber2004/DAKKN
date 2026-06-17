@@ -19,17 +19,9 @@ namespace DAKKN.Application.Features.Users.Queries.GetAllUsers
                 .InclusiveBetween(1, 100)
                 .WithMessage(localizer[LocalizationKeys.ValidationMessages.Range.Value, 1, 100]);
 
-            RuleFor(x => x.FullName)
+            RuleFor(x => x.SearchTerm)
                 .MaximumLength(100)
                 .WithMessage(localizer[LocalizationKeys.ValidationMessages.MaxLength.Value, 100]);
-
-            RuleFor(x => x.Email)
-                .MaximumLength(100)
-                .WithMessage(localizer[LocalizationKeys.ValidationMessages.MaxLength.Value, 100]);
-
-            RuleFor(x => x.PhoneNumber)
-                .MaximumLength(20)
-                .WithMessage(localizer[LocalizationKeys.ValidationMessages.MaxLength.Value, 20]);
 
             var validRoles = Enum.GetNames(typeof(UserType));
             RuleFor(x => x.Role)
