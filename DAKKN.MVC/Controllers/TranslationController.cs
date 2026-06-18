@@ -1,13 +1,22 @@
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+using MediatR;
+using DAKKN.Application.Features.Users.Commands.UpdateUserSettings;
 
 namespace DAKKN.MVC.Controllers
 {
     public class TranslationController : Controller
     {
+        private readonly IMediator _mediator;
+
+        public TranslationController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
+
         [HttpGet]
-        public IActionResult SetLanguage(string culture, string returnUrl)
+        public async Task<IActionResult> SetLanguage(string culture, string returnUrl)
         {
             if (string.IsNullOrEmpty(culture)) culture = "ar";
 
@@ -23,6 +32,19 @@ namespace DAKKN.MVC.Controllers
                     Path = "/"
                 }
             );
+
+            // If user is logged in, sync the preference to the database
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                try
+                {
+                    await _mediator.Send(new UpdateUserSettingsCommand(null, culture, null, null, null, null));
+                }
+                catch
+                {
+                    // Ignore background sync errors to not block the UI
+                }
+            }
 
             if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
             {

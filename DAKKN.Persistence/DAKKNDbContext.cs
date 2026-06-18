@@ -16,6 +16,8 @@ namespace DAKKN.Persistence
         {
         }
 
+        public DbSet<UserSettings> UserSettings => Set<UserSettings>();
+
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
             builder.ConfigureWarnings(action =>

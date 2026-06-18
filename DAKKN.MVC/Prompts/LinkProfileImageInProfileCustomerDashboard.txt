@@ -1,0 +1,325 @@
+Use this prompt for the Customer Dashboard Profile Page:
+
+You are a Senior ASP.NET Core 8 MVC + Clean Architecture + MediatR + Entity Framework Core engineer working on the DAKKN project.
+
+Context:
+I have a Customer Profile page in the Customer Dashboard where authenticated users can manage their personal profile information.
+
+Database:
+- ASP.NET Identity is used.
+- User data is stored in ApplicationUser.
+- ApplicationUser contains a ProfileImageUrl property.
+- Existing functionality must continue working.
+- Customer users should only be able to update their own profile image.
+
+Image Storage Architecture:
+- Images are physically stored on the server.
+- ApplicationUser.ProfileImageUrl stores only the image file name.
+- Images are accessed through:
+
+  {BaseUrl}/files/{imageName}
+
+Example:
+- ProfileImageUrl = "a1b2c3d4.png"
+- Display URL = "{BaseUrl}/files/a1b2c3d4.png"
+
+Never store:
+- Absolute URLs
+- Physical paths
+- Full server URLs
+
+Goal:
+Implement a complete customer profile image management system.
+
+Requirements:
+
+1. Profile Image Display
+
+Load current logged-in customer.
+
+If ProfileImageUrl exists:
+- Build image URL using:
+  BaseUrl + "/files/" + ProfileImageUrl
+
+If ProfileImageUrl is null:
+- Show default avatar image.
+
+Display:
+- Circular profile image
+- Proper image cropping
+- Responsive image sizing
+- Loading placeholder
+
+2. Change Profile Image
+
+When user clicks:
+
+- Change Image
+- Edit Image
+- Camera Icon Overlay
+
+Open file picker.
+
+Allow:
+
+- JPG
+- JPEG
+- PNG
+- WEBP
+
+Validate:
+
+- Maximum size 5MB
+- Image files only
+
+Show validation errors without page refresh.
+
+3. Upload Flow
+
+After image selection:
+
+Backend:
+
+- Generate unique file name:
+  Guid + extension
+
+Example:
+- 3fa85f64-5717-4562-b3fc-2c963f66afa6.jpg
+
+Store image in configured profile image storage.
+
+Database:
+
+Store only:
+- 3fa85f64-5717-4562-b3fc-2c963f66afa6.jpg
+
+inside:
+
+ApplicationUser.ProfileImageUrl
+
+If previous image exists:
+
+- Delete old image
+- Save new image
+- Update ApplicationUser.ProfileImageUrl
+
+4. Remove Image
+
+Provide:
+
+Remove Image button
+
+When clicked:
+
+Backend:
+
+- Delete existing image file
+- Set ApplicationUser.ProfileImageUrl = null
+
+Frontend:
+
+- Instantly replace image with default avatar
+- Show success message
+
+5. CQRS Implementation
+
+Follow DAKKN architecture.
+
+Create:
+
+UpdateCustomerProfileImageCommand
+
+RemoveCustomerProfileImageCommand
+
+Handlers:
+
+- Validate current user
+- Upload image
+- Delete image
+- Update ApplicationUser.ProfileImageUrl
+- Save changes
+
+Controller:
+
+- Use MediatR only
+- No direct DbContext access
+- No repository access from controller
+
+6. Security
+
+Customer can only update:
+
+Current authenticated user's image
+
+Prevent:
+
+- Editing other users
+- Path traversal attacks
+- Executable uploads
+- Invalid file extensions
+- Large files
+
+Validate:
+
+- Authentication
+- Authorization
+- File size
+- File extension
+- File content type
+
+7. File Retrieval Integration
+
+Verify existing endpoint:
+
+GET /files/{imageName}
+
+Requirements:
+
+- Returns image correctly
+- Supports profile images
+- Returns 404 if image missing
+- Prevents path traversal
+- Supports caching
+
+If endpoint does not exist:
+
+Generate:
+- Controller
+- Service
+- File streaming implementation
+
+following DAKKN architecture.
+
+8. Customer Profile UI
+
+Improve Profile Header:
+
+- Circular avatar
+- Camera icon overlay
+- Upload image action
+- Remove image action
+- Loading spinner
+- Success message
+- Error message
+
+Use modern Tailwind CSS.
+
+Design should be similar to:
+
+- LinkedIn Profile
+- GitHub Profile
+- Google Account Profile
+
+9. Responsive Design
+
+Ensure perfect display on:
+
+- Mobile
+- Tablet
+- Laptop
+- Desktop
+
+Fix:
+
+- Image scaling
+- Button wrapping
+- Layout overflow
+- Touch interactions
+
+10. Dark Mode
+
+Support:
+
+- Light Mode
+- Dark Mode
+
+Ensure:
+
+- Avatar visibility
+- Proper contrast
+- Consistent colors
+
+11. Localization
+
+Support:
+
+English and Arabic.
+
+Localize:
+
+- Change Image
+- Remove Image
+- Upload Success
+- Upload Failed
+- Image Removed
+- Invalid File Type
+- File Too Large
+
+12. ViewModel Updates
+
+Add:
+
+- ProfileImageUrl
+- ProfileImageFullUrl
+- HasProfileImage
+
+Generate:
+
+ProfileImageFullUrl =
+BaseUrl + "/files/" + ProfileImageUrl
+
+Use this property in Razor views.
+
+13. Reusable Service
+
+Create reusable image service:
+
+Responsibilities:
+
+- Upload image
+- Delete image
+- Generate image URL
+- Validate image
+- Manage profile image storage
+
+This service should be reusable by:
+
+- Customer Dashboard
+- Admin Dashboard
+- Future mobile app APIs
+
+14. Deliverables
+
+Generate complete implementation:
+
+- Commands
+- Handlers
+- DTOs
+- Services
+- ViewModels
+- Controller actions
+- Razor View updates
+- Tailwind CSS improvements
+- Validation logic
+- Upload logic
+- Delete logic
+- Image URL generation
+
+Provide:
+
+1. File paths
+2. Before code
+3. After code
+4. Explanation of each change
+5. Testing checklist
+
+Important:
+
+- Preserve existing Customer Profile functionality.
+- Follow DAKKN Clean Architecture.
+- Use MediatR for all operations.
+- Store only image file names in ApplicationUser.ProfileImageUrl.
+- Display images through:
+  {BaseUrl}/files/{imageName}
+- Customers may update only their own profile image.
+- Ensure implementation is production-ready, secure, responsive, localized, and reusable

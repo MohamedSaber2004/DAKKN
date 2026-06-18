@@ -104,5 +104,20 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString InvalidRole = new("users.invalid_role");
             public static readonly KeyString InvalidStatus = new("users.invalid_status");
         }
+
+        public static class UserSettings
+        {
+            public static readonly KeyString InvalidLanguage = new("usersettings.invalid_language");
+            public static readonly KeyString InvalidTheme = new("usersettings.invalid_theme");
+            public static readonly KeyString InvalidColor = new("usersettings.invalid_color");
+        }
+
+        public static class ProfileImageMessages
+        {
+            public static readonly KeyString FileTooLarge    = new("profile_image.file_too_large");
+            public static readonly KeyString UploadSuccess   = new("profile_image.upload_success");
+            public static readonly KeyString RemoveSuccess   = new("profile_image.remove_success");
+            public static readonly KeyString UploadFailed    = new("profile_image.upload_failed");
+        }
     }
 }

@@ -7,16 +7,21 @@ using Microsoft.AspNetCore.Mvc;
 
 using DAKKN.Appearence.Filters;
 using DAKKN.Domain.Enums;
+using Microsoft.Extensions.Localization;
+using DAKKN.Application.Localization;
+using MediatR;
+using DAKKN.Application.Features.Users.Queries.GetUserSettings;
+using DAKKN.Application.Features.Users.Commands.UpdateUserSettings;
 
 namespace DAKKN.MVC.Controllers
 {
     [RoleAuthorize(UserType.User, UserType.Admin)]
     [Route("customer")]
-    public class CustomerController(IProductService productService, IDashboardService dashboardService) : Controller
+    public class CustomerController(IProductService productService, IDashboardService dashboardService, IStringLocalizer<Messages> localizer, IMediator mediator) : Controller
     {
         public async Task<IActionResult> Index()
         {
-            ViewData["Title"] = "Customer Dashboard";
+            ViewData["Title"] = localizer["Dashboard_Welcome"];
             var dashboardData = await dashboardService.GetCustomerDashboardDataAsync(Guid.Empty); // Using empty Guid for mock
             return View(new CustomerDashboardViewModel { Dashboard = dashboardData });
         }
@@ -24,7 +29,7 @@ namespace DAKKN.MVC.Controllers
         [HttpGet("products")]
         public IActionResult Products()
         {
-            ViewData["Title"] = "Browse Stickers";
+            ViewData["Title"] = localizer["nav_shop"];
             return View();
         }
 
@@ -41,14 +46,14 @@ namespace DAKKN.MVC.Controllers
         [HttpGet("orders")]
         public IActionResult Orders()
         {
-            ViewData["Title"] = "My Orders";
+            ViewData["Title"] = localizer["admin_orders"];
             return View();
         }
 
         [HttpGet("favorites")]
         public IActionResult Favorites()
         {
-            ViewData["Title"] = "My Favorites";
+            ViewData["Title"] = localizer["nav_favorites"];
             var viewModel = new FavoritesViewModel
             {
                 FavoriteProducts = new List<ProductDto>
@@ -77,7 +82,7 @@ namespace DAKKN.MVC.Controllers
         [HttpGet("order-details/{id}")]
         public IActionResult OrderDetails(string id)
         {
-            ViewData["Title"] = "Order Details #" + id;
+            ViewData["Title"] = localizer["orders_details_title"] + " #" + id;
 
             var viewModel = new CustomerOrderDetailsViewModel
             {
@@ -121,43 +126,94 @@ namespace DAKKN.MVC.Controllers
         [HttpGet("custom-order")]
         public IActionResult CustomOrder()
         {
-            ViewData["Title"] = "Custom Sticker Order";
+            ViewData["Title"] = localizer["nav_custom_order"];
             return View();
         }
 
         [HttpGet("cart")]
         public IActionResult Cart()
         {
-            ViewData["Title"] = "Shopping Cart";
+            ViewData["Title"] = localizer["nav_cart"];
             return View();
         }
 
         [HttpGet("checkout")]
         public IActionResult Checkout()
         {
-            ViewData["Title"] = "Secure Checkout";
+            ViewData["Title"] = localizer["checkout_h1"];
             return View();
         }
 
         [HttpGet("confirmation")]
         public IActionResult OrderConfirmation(string orderId = "DK-9021")
         {
-            ViewData["Title"] = "Order Received";
+            ViewData["Title"] = localizer["conf_h1"];
             ViewData["OrderId"] = orderId;
             return View();
         }
 
         [HttpGet("profile")]
-        public IActionResult Profile()
+        public async Task<IActionResult> Profile()
         {
-            ViewData["Title"] = "My Profile";
-            return View();
+            ViewData["Title"] = localizer["nav_profile"];
+            UserSettingsDto settings;
+            try
+            {
+                settings = await mediator.Send(new GetUserSettingsQuery());
+            }
+            catch
+            {
+                settings = new UserSettingsDto();
+            }
+
+            return View(new CustomerProfileViewModel
+            {
+                FullName = settings.FullName,
+                Email = settings.Email,
+                ProfilePictureUrl = settings.ProfilePictureUrl
+            });
+        }
+
+        [HttpPost("profile/update-image")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProfileImage(IFormFile profileImage)
+        {
+            if (profileImage == null || profileImage.Length == 0)
+                return BadRequest(new { success = false, message = localizer[LocalizationKeys.UploadFileMessages.Requried.Value] });
+
+            var result = await mediator.Send(new UpdateUserSettingsCommand(
+                null, null, null, null, null, null,
+                ProfileImage: profileImage));
+
+            return Json(new
+            {
+                success = true,
+                message = localizer[LocalizationKeys.ProfileImageMessages.UploadSuccess.Value].ToString(),
+                imageUrl = !string.IsNullOrEmpty(result.ProfilePictureUrl)
+                    ? $"/files/{result.ProfilePictureUrl}"
+                    : string.Empty
+            });
+        }
+
+        [HttpPost("profile/remove-image")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveProfileImage()
+        {
+            await mediator.Send(new UpdateUserSettingsCommand(
+                null, null, null, null, null, null,
+                RemoveProfileImage: true));
+
+            return Json(new
+            {
+                success = true,
+                message = localizer[LocalizationKeys.ProfileImageMessages.RemoveSuccess.Value].ToString()
+            });
         }
 
         [HttpGet("support")]
         public IActionResult Support()
         {
-            ViewData["Title"] = "Support Center";
+            ViewData["Title"] = localizer["nav_support"];
             var viewModel = new CustomerSupportDashboardViewModel
             {
                 Tickets = new List<SupportTicketViewModel>
@@ -172,7 +228,7 @@ namespace DAKKN.MVC.Controllers
         [HttpGet("support/new")]
         public IActionResult NewTicket(string? orderId)
         {
-            ViewData["Title"] = "Open New Ticket";
+            ViewData["Title"] = localizer["supp_new_ticket"];
             return View(new NewTicketViewModel { OrderId = orderId });
         }
 
@@ -181,7 +237,7 @@ namespace DAKKN.MVC.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewData["Title"] = "Open New Ticket";
+                ViewData["Title"] = localizer["supp_new_ticket"];
                 return View("NewTicket", model);
             }
 

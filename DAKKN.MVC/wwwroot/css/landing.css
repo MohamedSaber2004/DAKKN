@@ -46,7 +46,7 @@ section {
     background: rgba(255, 255, 255, 0.45);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(8, 145, 178, 0.10);
+    border: 1px solid rgba(var(--primary-rgb), 0.10);
 }
 
 .dark .glass-panel {
@@ -56,17 +56,17 @@ section {
 
 /* ── Hero gradient glow ─────────────────────────────── */
 .hero-glow {
-    background-image: radial-gradient(ellipse 80% 60% at 70% 30%, rgba(8, 145, 178, 0.10) 0%, transparent 70%);
+    background-image: radial-gradient(ellipse 80% 60% at 70% 30%, rgba(var(--primary-rgb), 0.10) 0%, transparent 70%);
 }
 [dir="rtl"] .hero-glow {
-    background-image: radial-gradient(ellipse 80% 60% at 30% 30%, rgba(8, 145, 178, 0.10) 0%, transparent 70%);
+    background-image: radial-gradient(ellipse 80% 60% at 30% 30%, rgba(var(--primary-rgb), 0.10) 0%, transparent 70%);
 }
 
 .dark .hero-glow {
-    background-image: radial-gradient(ellipse 80% 60% at 70% 30%, rgba(14, 144, 140, 0.08) 0%, transparent 70%);
+    background-image: radial-gradient(ellipse 80% 60% at 70% 30%, rgba(var(--primary-rgb), 0.08) 0%, transparent 70%);
 }
 .dark[dir="rtl"] .hero-glow {
-    background-image: radial-gradient(ellipse 80% 60% at 30% 30%, rgba(14, 144, 140, 0.08) 0%, transparent 70%);
+    background-image: radial-gradient(ellipse 80% 60% at 30% 30%, rgba(var(--primary-rgb), 0.08) 0%, transparent 70%);
 }
 
 /* ── Scroll Animations ───────────────────────────────── */
@@ -139,7 +139,7 @@ section {
 }
 .product-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 32px rgba(8, 145, 178, 0.15);
+    box-shadow: 0 12px 32px rgba(var(--primary-rgb), 0.15);
 }
 
 /* ── Category card overlay ──────────────────────────── */
@@ -171,7 +171,7 @@ section {
 .navbar-scrolled {
     height: 60px !important;
     background-color: rgba(255, 255, 255, 0.94) !important;
-    box-shadow: 0 4px 20px rgba(8, 145, 178, 0.08) !important;
+    box-shadow: 0 4px 20px rgba(var(--primary-rgb), 0.08) !important;
     backdrop-filter: blur(20px) !important;
 }
 
@@ -204,15 +204,15 @@ section {
     left: 14px;
     right: 14px;
     height: 2px;
-    background: linear-gradient(90deg, #0891B2, #00b4d8);
+    background: linear-gradient(90deg, var(--primary-color), #00b4d8);
     border-radius: 9999px;
     transform: scaleX(0);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .nav-link-premium:hover {
-    color: #0891B2;
-    background-color: rgba(8, 145, 178, 0.05);
+    color: var(--primary-color);
+    background-color: rgba(var(--primary-rgb), 0.05);
 }
 
 .nav-link-premium:hover::after {
@@ -220,8 +220,8 @@ section {
 }
 
 .nav-link-premium.active {
-    color: #0891B2;
-    background-color: rgba(8, 145, 178, 0.08);
+    color: var(--primary-color);
+    background-color: rgba(var(--primary-rgb), 0.08);
 }
 
 .nav-link-premium.active::after {
@@ -242,9 +242,9 @@ section {
 
 .search-container:focus-within {
     width: 260px;
-    border-color: #0891B2;
+    border-color: var(--primary-color);
     background-color: #ffffff;
-    box-shadow: 0 4px 14px rgba(8, 145, 178, 0.15);
+    box-shadow: 0 4px 14px rgba(var(--primary-rgb), 0.15);
 }
 
 /* Icon Buttons with Hover Micro-animations */
@@ -256,12 +256,12 @@ section {
     width: 40px;
     height: 40px;
     border-radius: 9999px;
-    color: #0891B2;
+    color: var(--primary-color);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .navbar-icon-btn:hover {
-    background-color: rgba(8, 145, 178, 0.08);
+    background-color: rgba(var(--primary-rgb), 0.08);
     transform: scale(1.1) translateY(-1px);
 }
 
@@ -279,20 +279,20 @@ section {
     cursor: pointer;
     font-size: 13px;
     font-weight: 700;
-    border: 1.5px solid rgba(8, 145, 178, 0.15);
+    border: 1.5px solid rgba(var(--primary-rgb), 0.15);
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(239, 249, 251, 0.9));
-    color: #0891B2;
-    box-shadow: 0 2px 10px rgba(8, 145, 178, 0.06);
+    color: var(--primary-color);
+    box-shadow: 0 2px 10px rgba(var(--primary-rgb), 0.06);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     user-select: none;
 }
 
 .lang-pill-premium:hover {
-    border-color: #0891B2;
-    background: #0891B2;
+    border-color: var(--primary-color);
+    background: var(--primary-color);
     color: #ffffff;
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(8, 145, 178, 0.25);
+    box-shadow: 0 6px 15px rgba(var(--primary-rgb), 0.25);
 }
 
 .lang-pill-premium:active {
@@ -316,7 +316,7 @@ section {
     background: linear-gradient(
         90deg,
         transparent,
-        rgba(8, 145, 178, 0.20),
+        rgba(var(--primary-rgb), 0.20),
         transparent
     );
     transition: all 0.6s ease;
@@ -394,7 +394,7 @@ section {
 /* Rotating Thin Rings */
 .deco-ring {
     position: absolute;
-    border: 2px dashed rgba(8, 145, 178, 0.12);
+    border: 2px dashed rgba(var(--primary-rgb), 0.12);
     border-radius: 50%;
     pointer-events: none;
     z-index: 0;
@@ -403,7 +403,7 @@ section {
 
 .deco-ring-solid {
     position: absolute;
-    border: 1px solid rgba(8, 145, 178, 0.08);
+    border: 1px solid rgba(var(--primary-rgb), 0.08);
     border-radius: 50%;
     pointer-events: none;
     z-index: 0;
@@ -432,7 +432,7 @@ section {
     position: absolute;
     width: 14px;
     height: 14px;
-    background-color: rgba(8, 145, 178, 0.12);
+    background-color: rgba(var(--primary-rgb), 0.12);
     transform: rotate(45deg);
     border-radius: 3px;
     pointer-events: none;
@@ -455,7 +455,7 @@ section {
     position: absolute;
     width: 200px;
     height: 150px;
-    background-image: radial-gradient(rgba(8, 145, 178, 0.10) 1.5px, transparent 1.5px);
+    background-image: radial-gradient(rgba(var(--primary-rgb), 0.10) 1.5px, transparent 1.5px);
     background-size: 16px 16px;
     pointer-events: none;
     z-index: 0;
@@ -573,8 +573,8 @@ section {
     background: rgba(255, 255, 255, 0.88);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-top: 1px solid rgba(8, 145, 178, 0.12);
-    box-shadow: 0 -4px 24px rgba(8, 145, 178, 0.08);
+    border-top: 1px solid rgba(var(--primary-rgb), 0.12);
+    box-shadow: 0 -4px 24px rgba(var(--primary-rgb), 0.08);
     padding-bottom: env(safe-area-inset-bottom);
     animation: slideUpNav 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
     animation-delay: 0.3s;
@@ -611,8 +611,8 @@ section {
 }
 
 .mob-nav-item:hover {
-    color: #0891B2;
-    background-color: rgba(8, 145, 178, 0.06);
+    color: var(--primary-color);
+    background-color: rgba(var(--primary-rgb), 0.06);
 }
 
 .mob-nav-item:hover .material-symbols-outlined {
@@ -620,14 +620,14 @@ section {
 }
 
 .mob-nav-item.active {
-    color: #0891B2;
-    background-color: rgba(8, 145, 178, 0.04);
+    color: var(--primary-color);
+    background-color: rgba(var(--primary-rgb), 0.04);
 }
 
 .mob-nav-item.active .material-symbols-outlined {
     font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 24;
     transform: translateY(-2px) scale(1.1);
-    text-shadow: 0 0 12px rgba(8, 145, 178, 0.3);
+    text-shadow: 0 0 12px rgba(var(--primary-rgb), 0.3);
 }
 
 .mob-nav-item.active::before {
@@ -638,7 +638,7 @@ section {
     transform: translateX(-50%);
     width: 28px;
     height: 3px;
-    background: linear-gradient(90deg, #0891B2, #00b4d8);
+    background: linear-gradient(90deg, var(--primary-color), #00b4d8);
     border-radius: 0 0 4px 4px;
 }
 

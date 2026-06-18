@@ -838,12 +838,19 @@
   "admin_unselect": "Deselect",
   "admin_appearance": "Appearance",
   "admin_appearance_desc": "Customize your dashboard theme and language preferences.",
+  "admin_primary_color": "Brand Primary Color",
   "admin_basic_info": "Basic Information",
   "admin_basic_info_desc": "Update your personal details and how others see you.",
   "admin_active": "Active",
   "admin_profile_pic": "Profile Picture",
   "admin_change": "Change",
   "admin_remove": "Remove",
+  "admin_change_photo": "Change Photo",
+  "admin_remove_photo": "Remove Photo",
+  "profile_image.file_too_large": "Image must be smaller than 5 MB.",
+  "profile_image.upload_success": "Profile picture updated successfully.",
+  "profile_image.remove_success": "Profile picture removed successfully.",
+  "profile_image.upload_failed": "Failed to update profile picture. Please try again.",
   "admin_first_name": "First Name",
   "admin_last_name": "Last Name",
   "admin_first_name_required": "First name is required.",
@@ -1010,5 +1017,23 @@
   "users": {
     "invalid_role": "Invalid role provided. Role must be 'Admin' or 'User'.",
     "invalid_status": "Invalid status provided. Status must be 'Active' or 'Deleted'."
+  },
+  "admin_appearance": "Appearance",
+  "admin_appearance_desc": "Customize your dashboard theme and language preferences.",
+  "admin_theme_select": "Dashboard Theme",
+  "admin_theme_light": "Light Mode",
+  "admin_theme_light_desc": "Clean classic look with high contrast text.",
+  "admin_theme_dark": "Dark Mode",
+  "admin_theme_dark_desc": "Easier on the eyes for late night management.",
+  "admin_lang_select": "System Language",
+  "admin_lang_en": "English",
+  "admin_lang_en_sub": "United States",
+  "admin_lang_ar": "Arabic",
+  "admin_lang_ar_sub": "Middle East",
+  "admin_save_changes": "Save Changes",
+  "usersettings": {
+    "invalid_language": "Supported languages are 'ar' and 'en'",
+    "invalid_theme": "Supported themes are 'light', 'dark', and 'system'",
+    "invalid_color": "Invalid Hex color format"
   }
-}
+  }

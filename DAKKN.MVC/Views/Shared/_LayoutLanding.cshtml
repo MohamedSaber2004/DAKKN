@@ -86,6 +86,13 @@
             localStorage.setItem('dakkn_lang', culture);
         })();
 
+        document.addEventListener('DOMContentLoaded', function() {
+            const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+            if (tokenInput) {
+                window.csrfToken = tokenInput.value;
+            }
+        });
+
         // Inject current translations immediately to avoid flickering
         window.currentTranslations = @Html.Raw(JsonSerializer.Serialize(DAKKN.Application.Localization.JsonLocalizationProvider.GetTranslations(culture)));
     </script>

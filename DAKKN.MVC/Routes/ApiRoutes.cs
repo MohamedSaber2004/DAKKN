@@ -36,5 +36,11 @@ namespace DAKKN.Appearence.Routes
             public const string Delete = Base + "/users/{id}";
             public const string ChangePassword = Base + "/users/{id}/change-password";
         }
+
+        public static class Settings
+        {
+            public const string Get = Base + "/settings";
+            public const string Update = Base + "/settings";
+        }
     }
 }

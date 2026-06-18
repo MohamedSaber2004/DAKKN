@@ -15,7 +15,7 @@
 
 <!-- KPI Cards -->
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-lg mb-lg">
-    <div class="bg-surface dark:bg-surface-container rounded-2xl p-lg shadow-sm border border-border dark:border-outline/20 flex items-center justify-between transition-colors">
+    <div class="premium-card p-lg flex items-center justify-between">
         <div>
             <p class="font-body text-body text-text-secondary dark:text-outline-variant mb-xs">@Localizer["admin_orders_total"]</p>
             <p class="font-h2 text-h2 text-text-primary dark:text-inverse-on-surface">@Model.TotalOrders</p>
@@ -25,7 +25,7 @@
             <span class="material-symbols-outlined filled-icon">shopping_cart</span>
         </div>
     </div>
-    <div class="bg-surface dark:bg-surface-container rounded-2xl p-lg shadow-sm border border-border dark:border-outline/20 flex items-center justify-between transition-colors">
+    <div class="premium-card p-lg flex items-center justify-between">
         <div>
             <p class="font-body text-body text-text-secondary dark:text-outline-variant mb-xs">@Localizer["admin_orders_processing"]</p>
             <p class="font-h2 text-h2 text-text-primary dark:text-inverse-on-surface">@Model.ProcessingCount</p>
@@ -34,7 +34,7 @@
             <span class="material-symbols-outlined filled-icon">pending_actions</span>
         </div>
     </div>
-    <div class="bg-surface dark:bg-surface-container rounded-2xl p-lg shadow-sm border border-border dark:border-outline/20 flex items-center justify-between transition-colors">
+    <div class="premium-card p-lg flex items-center justify-between">
         <div>
             <p class="font-body text-body text-text-secondary dark:text-outline-variant mb-xs">@Localizer["admin_orders_shipped"]</p>
             <p class="font-h2 text-h2 text-text-primary dark:text-inverse-on-surface">@Model.ShippedCount</p>
@@ -44,7 +44,7 @@
             <span class="material-symbols-outlined filled-icon">local_shipping</span>
         </div>
     </div>
-    <div class="bg-surface dark:bg-surface-container rounded-2xl p-lg shadow-sm border border-border dark:border-outline/20 flex items-center justify-between transition-colors">
+    <div class="premium-card p-lg flex items-center justify-between">
         <div>
             <p class="font-body text-body text-text-secondary dark:text-outline-variant mb-xs">@Localizer["admin_orders_revenue"]</p>
             <p class="font-h2 text-h2 text-text-primary dark:text-inverse-on-surface">@Model.MonthlyRevenue</p>
@@ -57,7 +57,7 @@
 </div>
 
 <!-- Orders Table -->
-<div class="bg-surface dark:bg-surface-container rounded-2xl shadow-small border border-border dark:border-outline/20 overflow-hidden transition-colors">
+<div class="premium-card overflow-hidden">
     <div class="p-lg border-b border-border dark:border-outline/10 flex flex-col sm:flex-row justify-between items-center gap-md bg-surface-bright dark:bg-surface-container-high">
         <h3 class="font-h3 text-h3 text-text-primary dark:text-inverse-on-surface">@Localizer["admin_recent_orders"]</h3>
         <div class="relative w-full sm:w-64">

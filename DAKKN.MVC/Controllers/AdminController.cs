@@ -15,6 +15,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using DAKKN.Application.Features.Users.Queries.ExportUsers;
+using DAKKN.Application.Features.Users.Queries.GetUserSettings;
+using DAKKN.Application.Features.Users.Commands.UpdateUserSettings;
+using Microsoft.AspNetCore.Http;
 
 namespace DAKKN.MVC.Controllers
 {
@@ -293,30 +296,29 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpGet("settings")]
-        public IActionResult Settings()
+        public async Task<IActionResult> Settings()
         {
             ViewData["Title"] = _localizer["admin_settings"];
-            
-            var fullName = User.FindFirstValue("FullName");
-            if (string.IsNullOrWhiteSpace(fullName))
-            {
-                fullName = User.Identity?.Name ?? "Admin";
-            }
-            
-            var nameParts = fullName.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            
+
+            var settings = await _mediator.Send(new GetUserSettingsQuery());
+
             var viewModel = new AdminSettingsViewModel
             {
-                FirstName = nameParts.FirstOrDefault() ?? "Admin",
-                LastName = nameParts.Length > 1 ? string.Join(" ", nameParts.Skip(1)) : "",
-                Email = User.Identity?.Name ?? "admin@dakkn.com"
+                FullName         = settings.FullName,
+                Email            = settings.Email,
+                Language         = settings.Language,
+                Theme            = settings.Theme,
+                PrimaryColor     = settings.PrimaryColor,
+                IsDarkMode       = settings.IsDarkMode,
+                LayoutMode       = settings.LayoutMode,
+                ProfilePictureUrl = settings.ProfilePictureUrl
             };
 
             return View(viewModel);
         }
 
         [HttpPost("settings")]
-        public IActionResult Settings(AdminSettingsViewModel model)
+        public async Task<IActionResult> Settings(AdminSettingsViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -324,11 +326,68 @@ namespace DAKKN.MVC.Controllers
                 return View(model);
             }
 
-            // Logic to update user profile would go here
-            // e.g., await _mediator.Send(new UpdateUserProfileCommand { ... });
+            // Get current settings to check if language changed
+            var currentSettings = await _mediator.Send(new GetUserSettingsQuery());
+
+            await _mediator.Send(new UpdateUserSettingsCommand(
+                model.FullName,
+                model.Language,
+                model.Theme,
+                model.PrimaryColor,
+                model.IsDarkMode,
+                model.LayoutMode
+            ));
 
             TempData["SuccessMessage"] = "profile_updated_success";
+
+            // If language changed, redirect through SetLanguage to update cookie
+            if (currentSettings.Language != model.Language)
+            {
+                return RedirectToAction("SetLanguage", "Translation", new { 
+                    culture = model.Language, 
+                    returnUrl = Url.Action(nameof(Settings)) 
+                });
+            }
+
             return RedirectToAction(nameof(Settings));
+        }
+
+        /// <summary>AJAX – upload/replace profile picture.</summary>
+        [HttpPost("settings/update-profile-image")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProfileImage(IFormFile profileImage)
+        {
+            if (profileImage == null || profileImage.Length == 0)
+                return BadRequest(new { success = false, message = _localizer[LocalizationKeys.UploadFileMessages.Requried.Value] });
+
+            var result = await _mediator.Send(new UpdateUserSettingsCommand(
+                null, null, null, null, null, null,
+                ProfileImage: profileImage));
+
+            return Json(new
+            {
+                success = true,
+                message = _localizer[LocalizationKeys.ProfileImageMessages.UploadSuccess.Value].ToString(),
+                imageUrl = !string.IsNullOrEmpty(result.ProfilePictureUrl)
+                    ? $"/files/{result.ProfilePictureUrl}"
+                    : string.Empty
+            });
+        }
+
+        /// <summary>AJAX – remove profile picture.</summary>
+        [HttpPost("settings/remove-profile-image")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveProfileImage()
+        {
+            await _mediator.Send(new UpdateUserSettingsCommand(
+                null, null, null, null, null, null,
+                RemoveProfileImage: true));
+
+            return Json(new
+            {
+                success = true,
+                message = _localizer[LocalizationKeys.ProfileImageMessages.RemoveSuccess.Value].ToString()
+            });
         }
 
         [HttpGet("add-product")]

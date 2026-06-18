@@ -11,9 +11,9 @@
 </div>
 
 <!-- 2. Table and Filters -->
-<div class="admin-card relative overflow-hidden">
+<div class="premium-card relative overflow-hidden">
     <!-- Table Loader Overlay -->
-    <div id="tableLoader" class="hidden absolute inset-0 bg-white/60 dark:bg-admin-page/60 z-20 flex items-center justify-center backdrop-blur-[2px] transition-all">
+    <div id="tableLoader" class="hidden absolute inset-0 bg-surface/60 dark:bg-admin-page/60 z-20 flex items-center justify-center backdrop-blur-[2px] transition-all">
         <div class="flex flex-col items-center gap-3">
             <div class="w-10 h-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
             <p class="text-sm font-bold text-admin-primary">@Localizer["loading_data"]</p>
@@ -24,7 +24,7 @@
         <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
             <h3 class="text-lg font-bold text-admin-primary">@Localizer["admin_users_list"]</h3>
             <div class="flex flex-wrap gap-2 sm:gap-3 w-full lg:w-auto">
-                <button type="button" onclick="downloadExportCsv()" class="flex-1 lg:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-admin-page border border-admin-border text-admin-secondary rounded-xl text-sm font-bold hover:bg-surface-container transition-all">
+                <button type="button" onclick="downloadExportCsv()" class="flex-1 lg:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-admin-page border border-admin-border text-admin-secondary rounded-xl text-sm font-bold hover:bg-surface-container dark:hover:bg-slate-800 transition-all">
                     <span class="material-symbols-outlined text-lg">download</span>
                     @Localizer["admin_export_csv"]
                 </button>
@@ -75,12 +75,12 @@
 <!-- Modals -->
 
 <!-- User Modal -->
-<div id="userModal" class="hidden fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4 backdrop-blur-sm transition-all duration-300">
-    <div class="bg-surface dark:bg-inverse-surface w-full max-w-lg rounded-[2rem] shadow-2xl overflow-hidden scale-95 opacity-0 transition-all duration-300" id="userModalContent">
+<div id="userModal" class="hidden fixed inset-0 bg-black/60 dark:bg-black/80 z-[100] flex items-center justify-center p-4 backdrop-blur-sm transition-all duration-300">
+    <div class="bg-surface dark:bg-[#161d27] w-full max-w-lg rounded-[2rem] shadow-2xl overflow-hidden scale-95 opacity-0 transition-all duration-300 border border-transparent dark:border-white/5" id="userModalContent">
         <!-- Modal Header -->
-        <div class="p-6 border-b border-border dark:border-outline/10 flex justify-between items-center bg-primary/5">
+        <div class="p-6 border-b border-border dark:border-outline/10 flex justify-between items-center bg-primary/5 dark:bg-primary/10">
             <h3 id="modalTitle" class="text-xl font-black text-primary">@Localizer["admin_add_user"]</h3>
-            <button onclick="closeUserModal()" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:bg-surface-container transition-colors">
+            <button onclick="closeUserModal()" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:bg-surface-container dark:hover:bg-white/5 transition-colors">
                 <span class="material-symbols-outlined">close</span>
             </button>
         </div>
@@ -91,32 +91,32 @@
             
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-text-secondary px-1">@Localizer["admin_user_full_name"]</label>
-                    <input type="text" id="userFullName" name="fullName" required class="w-full bg-surface-container dark:bg-surface-container-high border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none transition-all" />
+                    <label class="text-xs font-bold text-text-secondary dark:text-admin-text-secondary px-1">@Localizer["admin_user_full_name"]</label>
+                    <input type="text" id="userFullName" name="fullName" required class="w-full bg-surface-container dark:bg-[#1a2535] border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none transition-all text-admin-primary" />
                 </div>
                 <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-text-secondary px-1">@Localizer["admin_user_email"]</label>
-                    <input type="email" id="userEmail" name="email" required class="w-full bg-surface-container dark:bg-surface-container-high border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none transition-all" />
+                    <label class="text-xs font-bold text-text-secondary dark:text-admin-text-secondary px-1">@Localizer["admin_user_email"]</label>
+                    <input type="email" id="userEmail" name="email" required class="w-full bg-surface-container dark:bg-[#1a2535] border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none transition-all text-admin-primary" />
                 </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div id="passwordFieldContainer" class="space-y-1.5">
-                    <label class="text-xs font-bold text-text-secondary px-1">@Localizer["admin_user_password"]</label>
-                    <input type="password" id="userPassword" name="password" class="w-full bg-surface-container dark:bg-surface-container-high border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none transition-all" />
+                    <label class="text-xs font-bold text-text-secondary dark:text-admin-text-secondary px-1">@Localizer["admin_user_password"]</label>
+                    <input type="password" id="userPassword" name="password" class="w-full bg-surface-container dark:bg-[#1a2535] border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none transition-all text-admin-primary" />
                     <p id="passwordHint" class="hidden text-[10px] text-text-secondary px-1">@Localizer["admin_user_password_hint"]</p>
                 </div>
                 <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-text-secondary px-1">@Localizer["admin_user_phone"]</label>
-                    <input type="text" id="userPhone" name="phoneNumber" class="w-full bg-surface-container dark:bg-surface-container-high border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none transition-all" />
+                    <label class="text-xs font-bold text-text-secondary dark:text-admin-text-secondary px-1">@Localizer["admin_user_phone"]</label>
+                    <input type="text" id="userPhone" name="phoneNumber" class="w-full bg-surface-container dark:bg-[#1a2535] border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none transition-all text-admin-primary" />
                 </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-text-secondary px-1">@Localizer["admin_user_role"]</label>
+                    <label class="text-xs font-bold text-text-secondary dark:text-admin-text-secondary px-1">@Localizer["admin_user_role"]</label>
                     <div class="relative">
-                        <select id="userRole" name="role" required class="w-full bg-surface-container dark:bg-surface-container-high border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none transition-all appearance-none cursor-pointer bg-none">
+                        <select id="userRole" name="role" required class="w-full bg-surface-container dark:bg-[#1a2535] border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none transition-all appearance-none cursor-pointer bg-none text-admin-primary">
                             <option value="Admin">@Localizer["role_Admin"]</option>
                             <option value="User">@Localizer["role_Customer"]</option>
                         </select>
@@ -124,13 +124,13 @@
                     </div>
                 </div>
                 <div id="joinDateField" class="hidden space-y-1.5">
-                    <label class="text-xs font-bold text-text-secondary px-1">@Localizer["admin_th_join_date"]</label>
-                    <input type="date" id="userJoinDate" disabled class="w-full bg-surface-container/50 dark:bg-surface-container-high/50 border-none rounded-2xl px-4 py-3 text-sm outline-none cursor-not-allowed" />
+                    <label class="text-xs font-bold text-text-secondary dark:text-admin-text-secondary px-1">@Localizer["admin_th_join_date"]</label>
+                    <input type="date" id="userJoinDate" disabled class="w-full bg-surface-container/50 dark:bg-[#1a2535]/50 border-none rounded-2xl px-4 py-3 text-sm outline-none cursor-not-allowed text-admin-primary" />
                 </div>
             </div>
 
             <div id="statusField" class="hidden space-y-1.5">
-                <label class="text-xs font-bold text-text-secondary px-1">@Localizer["admin_user_status"]</label>
+                <label class="text-xs font-bold text-text-secondary dark:text-admin-text-secondary px-1">@Localizer["admin_user_status"]</label>
                 <div class="flex items-center gap-4 py-2 px-1">
                     <label class="inline-flex items-center cursor-pointer">
                         <input type="checkbox" id="userIsActive" name="isActive" class="sr-only peer" checked>
@@ -142,8 +142,8 @@
         </form>
         
         <!-- Modal Footer -->
-        <div class="p-6 border-t border-border dark:border-outline/10 flex gap-3 bg-surface-container/30">
-            <button onclick="closeUserModal()" class="flex-1 px-6 py-3 border border-border dark:border-outline/20 text-text-secondary rounded-2xl text-sm font-bold hover:bg-surface-container transition-all">
+        <div class="p-6 border-t border-border dark:border-outline/10 flex gap-3 bg-surface-container/30 dark:bg-black/20">
+            <button onclick="closeUserModal()" class="flex-1 px-6 py-3 border border-border dark:border-outline/20 text-text-secondary hover:bg-surface-container dark:hover:bg-white/5 rounded-2xl text-sm font-bold transition-all">
                 @Localizer["admin_user_cancel"]
             </button>
             <button onclick="saveUser()" class="flex-1 px-6 py-3 bg-primary text-on-primary rounded-2xl text-sm font-bold shadow-medium hover:scale-102 active:scale-98 transition-all flex items-center justify-center gap-2">
@@ -155,12 +155,12 @@
 </div>
 
 <!-- Change Password Modal -->
-<div id="changePasswordModal" class="hidden fixed inset-0 bg-black/50 z-[110] flex items-center justify-center p-4 backdrop-blur-sm transition-all duration-300">
-    <div class="bg-surface dark:bg-inverse-surface w-full max-w-sm rounded-[2rem] shadow-2xl overflow-hidden scale-95 opacity-0 transition-all duration-300" id="changePasswordModalContent">
+<div id="changePasswordModal" class="hidden fixed inset-0 bg-black/60 dark:bg-black/80 z-[110] flex items-center justify-center p-4 backdrop-blur-sm transition-all duration-300">
+    <div class="bg-surface dark:bg-[#161d27] w-full max-w-sm rounded-[2rem] shadow-2xl overflow-hidden scale-95 opacity-0 transition-all duration-300 border border-transparent dark:border-white/5" id="changePasswordModalContent">
         <!-- Modal Header -->
-        <div class="p-6 border-b border-border dark:border-outline/10 flex justify-between items-center bg-amber-500/5">
+        <div class="p-6 border-b border-border dark:border-outline/10 flex justify-between items-center bg-amber-500/5 dark:bg-amber-500/10">
             <h3 class="text-xl font-black text-amber-600">@Localizer["admin_change_password"]</h3>
-            <button onclick="closeChangePasswordModal()" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:bg-surface-container transition-colors">
+            <button onclick="closeChangePasswordModal()" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:bg-surface-container dark:hover:bg-white/5 transition-colors">
                 <span class="material-symbols-outlined">close</span>
             </button>
         </div>
@@ -169,18 +169,18 @@
         <div class="p-6 space-y-4">
             <input type="hidden" id="changePasswordUserId" />
             <div class="space-y-1.5">
-                <label class="text-xs font-bold text-text-secondary px-1">@Localizer["admin_new_password"]</label>
-                <input type="password" id="newPassword" class="w-full bg-surface-container dark:bg-surface-container-high border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-500 outline-none transition-all" />
+                <label class="text-xs font-bold text-text-secondary dark:text-admin-text-secondary px-1">@Localizer["admin_new_password"]</label>
+                <input type="password" id="newPassword" class="w-full bg-surface-container dark:bg-[#1a2535] border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-500 outline-none transition-all text-admin-primary" />
             </div>
             <div class="space-y-1.5">
-                <label class="text-xs font-bold text-text-secondary px-1">@Localizer["admin_confirm_password"]</label>
-                <input type="password" id="confirmPassword" class="w-full bg-surface-container dark:bg-surface-container-high border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-500 outline-none transition-all" />
+                <label class="text-xs font-bold text-text-secondary dark:text-admin-text-secondary px-1">@Localizer["admin_confirm_password"]</label>
+                <input type="password" id="confirmPassword" class="w-full bg-surface-container dark:bg-[#1a2535] border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-500 outline-none transition-all text-admin-primary" />
             </div>
         </div>
         
         <!-- Modal Footer -->
-        <div class="p-6 border-t border-border dark:border-outline/10 flex gap-3 bg-amber-500/5">
-            <button onclick="closeChangePasswordModal()" class="flex-1 px-6 py-3 border border-border dark:border-outline/20 text-text-secondary rounded-2xl text-sm font-bold hover:bg-surface-container transition-all">
+        <div class="p-6 border-t border-border dark:border-outline/10 flex gap-3 bg-amber-500/5 dark:bg-black/20">
+            <button onclick="closeChangePasswordModal()" class="flex-1 px-6 py-3 border border-border dark:border-outline/20 text-text-secondary hover:bg-surface-container dark:hover:bg-white/5 rounded-2xl text-sm font-bold transition-all">
                 @Localizer["admin_user_cancel"]
             </button>
             <button onclick="confirmChangePassword()" class="flex-1 px-6 py-3 bg-amber-500 text-white rounded-2xl text-sm font-bold shadow-medium hover:bg-amber-600 transition-all flex items-center justify-center gap-2">
@@ -192,8 +192,8 @@
 </div>
 
 <!-- Delete Confirmation Modal -->
-<div id="deleteModal" class="hidden fixed inset-0 bg-black/50 z-[110] flex items-center justify-center p-4 backdrop-blur-sm transition-all duration-300">
-    <div class="bg-surface dark:bg-inverse-surface w-full max-w-sm rounded-[2rem] shadow-2xl overflow-hidden scale-95 opacity-0 transition-all duration-300" id="deleteModalContent">
+<div id="deleteModal" class="hidden fixed inset-0 bg-black/60 dark:bg-black/80 z-[110] flex items-center justify-center p-4 backdrop-blur-sm transition-all duration-300">
+    <div class="bg-surface dark:bg-[#161d27] w-full max-w-sm rounded-[2rem] shadow-2xl overflow-hidden scale-95 opacity-0 transition-all duration-300 border border-transparent dark:border-white/5" id="deleteModalContent">
         <div class="p-8 text-center space-y-4">
             <div class="w-20 h-20 bg-red-50 dark:bg-red-900/10 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
                 <span class="material-symbols-outlined text-4xl">delete_forever</span>
@@ -201,8 +201,8 @@
             <h3 class="text-xl font-black text-admin-primary">@Localizer["admin_delete_user"]</h3>
             <p class="text-sm text-admin-secondary leading-relaxed px-2">@Localizer["admin_delete_user_confirm"]</p>
         </div>
-        <div class="p-6 border-t border-border dark:border-outline/10 flex gap-3 bg-red-50/30 dark:bg-red-900/5">
-            <button onclick="closeDeleteModal()" class="flex-1 px-6 py-3 border border-border dark:border-outline/20 text-text-secondary rounded-2xl text-sm font-bold hover:bg-surface-container transition-all">
+        <div class="p-6 border-t border-border dark:border-outline/10 flex gap-3 bg-red-50/30 dark:bg-black/20">
+            <button onclick="closeDeleteModal()" class="flex-1 px-6 py-3 border border-border dark:border-outline/20 text-text-secondary hover:bg-surface-container dark:hover:bg-white/5 rounded-2xl text-sm font-bold transition-all">
                 @Localizer["admin_user_cancel"]
             </button>
             <button onclick="confirmDeleteUser()" class="flex-1 px-6 py-3 bg-red-500 text-white rounded-2xl text-sm font-bold shadow-medium hover:bg-red-600 transition-all flex items-center justify-center gap-2">

@@ -7,14 +7,10 @@ tailwind.config = {
                 "primary-old":            "#0891B2",   
 
                 /* ── New Brand Palette ──────────────────────────── */
-                primary:                  "#0E908C",   /* New primary teal */
-                decorative:               "#69D2CF",   /* Soft decorative teal */
-                "background-light":       "#FFFFFF",
-                "background-dark":        "#121212",
-
-                "primary-container":      "#CFFAFE",
-                "primary-fixed":          "#E0F7FA",
-                "primary-fixed-dim":      "#A5F3FC",
+                primary:                  "var(--primary-color, #0E908C)",   
+                decorative:               "rgba(var(--primary-rgb, 14, 144, 140), 0.5)",   
+                "primary-container":      "rgba(var(--primary-rgb, 14, 144, 140), 0.15)",
+                "primary-light":          "rgba(var(--primary-rgb, 14, 144, 140), 0.3)",
                 "on-primary":             "#FFFFFF",
                 "on-primary-container":   "#164E63",
                 "inverse-primary":        "#67E8F9",

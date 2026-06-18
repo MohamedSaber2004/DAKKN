@@ -1,5 +1,6 @@
 @inject IStringLocalizer<Messages> Localizer
 @using System.Security.Claims
+@inject IMediator Mediator
 @{
     var culture = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("en") ? "en" : "ar";
     var dir = culture == "ar" ? "rtl" : "ltr";
@@ -9,9 +10,33 @@
     {
         fullName = User.Identity?.Name ?? "Admin";
     }
+
+    var isDarkMode = false;
+    var themeName = "light";
+    var primaryColor = "#0E908C";
+    var primaryRgb = "14, 144, 140";
+    if (User.Identity?.IsAuthenticated == true)
+    {
+        try 
+        {
+            var settings = await Mediator.Send(new GetUserSettingsQuery());
+            isDarkMode = settings.IsDarkMode;
+            themeName = settings.Theme;
+            primaryColor = settings.PrimaryColor ?? "#0E908C";
+
+            if (primaryColor.StartsWith("#") && primaryColor.Length == 7)
+            {
+                var r = Convert.ToInt32(primaryColor.Substring(1, 2), 16);
+                var g = Convert.ToInt32(primaryColor.Substring(3, 2), 16);
+                var b = Convert.ToInt32(primaryColor.Substring(5, 2), 16);
+                primaryRgb = $"{r}, {g}, {b}";
+            }
+        }
+        catch { /* Fallback to default */ }
+    }
 }
 <!DOCTYPE html>
-<html lang="@culture" dir="@dir" id="html-root" data-dakkn-loading="true">
+<html lang="@culture" dir="@dir" id="html-root" class="@(isDarkMode ? "dark" : "")" data-dakkn-loading="true" style="--primary-color: @primaryColor; --primary-rgb: @primaryRgb;">
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -86,13 +111,24 @@
     <script>
         // High-priority theme application to prevent light-mode flash
         (function() {
-            const savedTheme = localStorage.getItem('dakkn_theme');
-            const isDark = savedTheme === 'dark';
+            // Server-side values
+            const serverTheme = "@themeName";
+            const serverIsDark = @(isDarkMode.ToString().ToLower());
             
-            if (isDark) {
-                document.documentElement.classList.add('dark');
+            // Priority: Use server-side value if available to ensure synchronization
+            if (serverTheme) {
+                localStorage.setItem('dakkn_theme', serverTheme);
+                if (serverIsDark) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
             } else {
-                document.documentElement.classList.remove('dark');
+                // Fallback to localStorage for guest or if server fails
+                const savedTheme = localStorage.getItem('dakkn_theme');
+                if (savedTheme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                }
             }
 
             // Sync language with localStorage
@@ -126,14 +162,17 @@
         }, 2000);
     </script>
 </head>
-<body class="text-text-primary dark:text-inverse-on-surface h-screen overflow-hidden flex bg-background dark:bg-dark-page transition-colors duration-300">
+<body class="text-text-primary dark:text-white h-screen overflow-hidden flex bg-background dark:bg-[#0F172A] transition-colors duration-300">
     
     <!-- Preloader Overlay -->
     @await Html.PartialAsync("Partials/_Preloader")
 
+    <!-- Sidebar Overlay for Mobile -->
+    <div id="sidebar-overlay" class="sidebar-overlay md:hidden" onclick="toggleSidebar()"></div>
+
     <!-- SideNavBar -->
-    <aside id="admin-sidebar" class="hidden md:flex flex-col admin-sidebar ltr:left-0 ltr:border-r rtl:right-0 rtl:border-l h-screen w-64 shadow-medium z-40 relative flex-shrink-0 transition-all duration-300 bg-surface dark:bg-inverse-surface border-border dark:border-outline/20">
-        <div class="p-lg border-b border-border dark:border-outline/20 flex flex-col items-center justify-center gap-sm group cursor-pointer overflow-hidden">
+    <aside id="admin-sidebar" class="hidden md:flex flex-col admin-sidebar ltr:left-0 ltr:border-r rtl:right-0 rtl:border-l h-screen w-64 shadow-medium z-40 relative flex-shrink-0 transition-all duration-300 bg-surface dark:bg-[#1E293B] border-border dark:border-white/5">
+        <div class="p-lg border-b border-border dark:border-white/5 flex flex-col items-center justify-center gap-sm group cursor-pointer overflow-hidden">
             <div class="admin-logo-container transition-all duration-300">
                 <img src="/images/logo.png" alt="DAKKN Logo" class="h-16 admin-logo-img dark:brightness-125 transition-all duration-300" />
             </div>
@@ -143,32 +182,32 @@
             </div>
         </div>
         <nav class="flex-1 overflow-y-auto custom-scrollbar py-md px-sm flex flex-col gap-sm">
-            <a asp-controller="Admin" asp-action="Index" class="nav-item flex items-center gap-md @(currentAction == "Index" ? "active bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") rounded-xl px-4 py-3 scale-100 hover:scale-103 transition-all duration-200" title="@Localizer["admin_overview"]">
+            <a asp-controller="Admin" asp-action="Index" class="nav-item flex items-center gap-md @(currentAction == "Index" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-xl px-4 py-3 transition-all duration-200" title="@Localizer["admin_overview"]">
                 <span class="material-symbols-outlined @(currentAction == "Index" ? "filled-icon" : "") flex-shrink-0">dashboard</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_overview"]</span>
             </a>
-            <a asp-controller="Admin" asp-action="Users" class="nav-item flex items-center gap-md @(currentAction == "Users" ? "active bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl" title="@Localizer["admin_users"]">
+            <a asp-controller="Admin" asp-action="Users" class="nav-item flex items-center gap-md @(currentAction == "Users" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_users"]">
                 <span class="material-symbols-outlined @(currentAction == "Users" ? "filled-icon" : "") flex-shrink-0">group</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_users"]</span>
             </a>
-            <a asp-controller="Admin" asp-action="Orders" class="nav-item flex items-center gap-md @(currentAction == "Orders" ? "active bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl" title="@Localizer["admin_orders"]">
+            <a asp-controller="Admin" asp-action="Orders" class="nav-item flex items-center gap-md @(currentAction == "Orders" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_orders"]">
                 <span class="material-symbols-outlined @(currentAction == "Orders" ? "filled-icon" : "") flex-shrink-0">shopping_cart</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_orders"]</span>
             </a>
-            <a asp-controller="Admin" asp-action="Inventory" class="nav-item flex items-center gap-md @(currentAction == "Inventory" ? "active bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl" title="@Localizer["admin_inventory"]">
+            <a asp-controller="Admin" asp-action="Inventory" class="nav-item flex items-center gap-md @(currentAction == "Inventory" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_inventory"]">
                 <span class="material-symbols-outlined @(currentAction == "Inventory" ? "filled-icon" : "") flex-shrink-0">inventory_2</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_inventory"]</span>
             </a>
-            <a asp-controller="Admin" asp-action="Support" class="nav-item flex items-center gap-md @(currentAction == "Support" ? "active bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl" title="@Localizer["admin_support"]">
+            <a asp-controller="Admin" asp-action="Support" class="nav-item flex items-center gap-md @(currentAction == "Support" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_support"]">
                 <span class="material-symbols-outlined @(currentAction == "Support" ? "filled-icon" : "") flex-shrink-0">support_agent</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_support"]</span>
             </a>
-            <a asp-controller="Admin" asp-action="Content" class="nav-item flex items-center gap-md @(currentAction == "Content" ? "active bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl" title="@Localizer["admin_content_mgmt"]">
+            <a asp-controller="Admin" asp-action="Content" class="nav-item flex items-center gap-md @(currentAction == "Content" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_content_mgmt"]">
                 <span class="material-symbols-outlined @(currentAction == "Content" ? "filled-icon" : "") flex-shrink-0">edit_note</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_content_mgmt"]</span>
             </a>
 
-            <a asp-controller="Admin" asp-action="Settings" class="nav-item flex items-center gap-md @(currentAction == "Settings" ? "active bg-primary-container text-on-primary-container" : "text-text-secondary hover:text-primary") px-4 py-3 hover:scale-105 transition-transform duration-200 rounded-xl mt-auto" title="@Localizer["admin_settings"]">
+            <a asp-controller="Admin" asp-action="Settings" class="nav-item flex items-center gap-md @(currentAction == "Settings" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl mt-auto transition-all duration-200" title="@Localizer["admin_settings"]">
                 <span class="material-symbols-outlined @(currentAction == "Settings" ? "filled-icon" : "") flex-shrink-0">settings</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_settings"]</span>
             </a>
@@ -176,14 +215,14 @@
             <div class="mt-sm">
                 <form id="logout-form" asp-controller="Auth" asp-action="Logout" method="post">
                     <input type="hidden" name="refreshToken" id="logout-refresh-token" />
-                    <button type="button" onclick="submitLogout()" class="nav-item w-full flex items-center gap-md text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 px-4 py-3 hover:scale-105 transition-all duration-200 rounded-xl" title="@Localizer["auth.logout"]">
+                    <button type="button" onclick="submitLogout()" class="nav-item w-full flex items-center gap-md text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 px-4 py-3 transition-all duration-200 rounded-xl" title="@Localizer["auth.logout"]">
                         <span class="material-symbols-outlined flex-shrink-0">logout</span>
                         <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["auth.logout"]</span>
                     </button>
                 </form>
             </div>
         </nav>
-        <div class="p-md border-t border-border flex justify-center items-center">
+        <div class="p-md border-t border-border dark:border-white/5 flex justify-center items-center">
             <a asp-controller="Admin" asp-action="AddProduct" class="add-product-btn w-full bg-primary text-on-primary h-[52px] rounded-[18px] shadow-small font-body-lg text-body-lg flex items-center justify-center gap-sm hover:scale-105 transition-all duration-200 overflow-hidden" title="@Localizer["admin_add_product"]">
                 <span class="material-symbols-outlined flex-shrink-0">add</span>
                 <span class="sidebar-text whitespace-nowrap">@Localizer["admin_add_product"]</span>
@@ -192,41 +231,41 @@
     </aside>
 
     <!-- Main Content Area -->
-    <main class="flex-1 flex flex-col h-screen overflow-hidden bg-background dark:bg-on-background transition-colors duration-300">
+    <main class="flex-1 flex flex-col h-screen overflow-hidden bg-background dark:bg-[#0F172A] transition-colors duration-300">
         <!-- TopNavBar -->
-        <header class="flex justify-between items-center w-full px-lg py-md z-30 bg-surface/80 dark:bg-inverse-surface/80 backdrop-blur-md flex-shrink-0 border-b border-border dark:border-outline/10 transition-colors duration-300">
+        <header class="flex justify-between items-center w-full px-lg py-md z-30 bg-surface/80 dark:bg-[#1E293B]/80 backdrop-blur-md flex-shrink-0 border-b border-border dark:border-white/5 transition-colors duration-300">
             <div class="flex items-center gap-md">
                 <!-- Sidebar Toggle -->
-                <button onclick="toggleSidebar()" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary dark:text-outline dark:hover:text-primary-light transition-colors hover:bg-surface-container dark:hover:bg-surface-container-high">
+                <button onclick="toggleSidebar()" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary dark:text-outline-variant dark:hover:text-primary-light transition-colors hover:bg-primary/5 dark:hover:bg-white/5">
                     <span class="material-symbols-outlined" id="sidebar-toggle-icon">menu_open</span>
                 </button>
                 <div class="admin-logo-container md:hidden">
                     <img src="/images/logo.png" alt="DAKKN Logo" class="h-10 admin-logo-img dark:brightness-125" />
                 </div>
                 <div class="hidden md:block">
-                    <h2 class="font-h3 text-h3 font-bold text-text-primary dark:text-inverse-on-surface">@ViewData["Title"]</h2>
+                    <h2 class="font-h3 text-h3 font-bold text-text-primary dark:text-white">@ViewData["Title"]</h2>
                 </div>
             </div>
             <div class="flex items-center gap-lg">
                 <div class="relative hidden sm:block">
-                    <input class="bg-surface-container dark:bg-surface-container-high rounded-full py-2 px-4 ltr:pl-10 ltr:pr-4 rtl:pr-10 rtl:pl-4 text-body font-body border-none focus:ring-2 focus:ring-primary dark:focus:ring-primary-light outline-none w-64 text-text-primary dark:text-inverse-on-surface placeholder:text-text-secondary dark:placeholder:text-outline transition-all" placeholder="@Localizer["admin_search"]" type="text">
+                    <input class="bg-surface-container dark:bg-white/5 rounded-full py-2 px-4 ltr:pl-10 ltr:pr-4 rtl:pr-10 rtl:pl-4 text-body font-body border border-transparent dark:border-white/5 focus:ring-2 focus:ring-primary dark:focus:ring-primary-light focus:bg-surface dark:focus:bg-white/10 outline-none w-64 text-text-primary dark:text-white placeholder:text-text-secondary dark:placeholder:text-outline transition-all" placeholder="@Localizer["admin_search"]" type="text">
                     <span class="material-symbols-outlined absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 text-text-secondary dark:text-outline">search</span>
                 </div>
                 <div class="flex items-center gap-sm">
                     @await Html.PartialAsync("Partials/_LanguageToggle")
                     @await Html.PartialAsync("Partials/_ThemeToggle")
-                    <button class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary dark:text-outline dark:hover:text-primary-light transition-colors hover:bg-surface-container dark:hover:bg-surface-container-high">
+                    <button class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary dark:text-outline-variant dark:hover:text-primary-light transition-colors hover:bg-primary/5 dark:hover:bg-white/5 relative">
                         <span class="material-symbols-outlined">notifications</span>
                     </button>
                 </div>
-                <div class="w-10 h-10 rounded-full bg-primary-container overflow-hidden cursor-pointer shadow-small">
+                <div class="w-10 h-10 rounded-full bg-primary-container overflow-hidden cursor-pointer shadow-small border border-border dark:border-white/10">
                     <img alt="Admin Avatar" class="w-full h-full object-cover" src="https://ui-avatars.com/api/?name=@(fullName)&background=69d2cf&color=005957">
                 </div>
             </div>
         </header>
 
         <!-- Scrollable Canvas -->
-        <div class="flex-1 overflow-y-auto p-margin-mobile md:p-xl custom-scrollbar">
+        <div id="admin-canvas" class="flex-1 overflow-y-auto p-margin-mobile md:p-xl custom-scrollbar">
             @RenderBody()
             <!-- Spacer for bottom scrolling -->
             <div class="h-xl"></div>
@@ -240,9 +279,13 @@
     <script>
         // Sidebar Toggle Logic
         function toggleSidebar() {
-            const isCollapsed = document.documentElement.classList.toggle('sidebar-is-collapsed');
-            localStorage.setItem('dakkn_sidebar_collapsed', isCollapsed);
-            updateSidebarIcon(isCollapsed);
+            if (window.innerWidth < 768) {
+                document.documentElement.classList.toggle('mobile-sidebar-open');
+            } else {
+                const isCollapsed = document.documentElement.classList.toggle('sidebar-is-collapsed');
+                localStorage.setItem('dakkn_sidebar_collapsed', isCollapsed);
+                updateSidebarIcon(isCollapsed);
+            }
         }
 
         function updateSidebarIcon(isCollapsed) {

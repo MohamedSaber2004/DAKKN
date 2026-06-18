@@ -30,7 +30,7 @@
                                     <h4 class="text-lg font-bold text-admin-primary">@Localizer["admin_users_not_found"]</h4>
                                     <p class="text-sm text-admin-secondary mt-1">@Localizer["admin_users_not_found_desc"]</p>
                                 </div>
-                                <button type="button" onclick="clearSearch()" class="mt-2 px-6 py-2 bg-surface-container text-primary font-bold text-sm rounded-xl hover:bg-primary/5 transition-colors">
+                                <button type="button" onclick="clearSearch()" class="mt-2 px-6 py-2 bg-surface-container dark:bg-white/5 text-primary font-bold text-sm rounded-xl hover:bg-primary/5 transition-colors">
                                     @Localizer["admin_clear_filters"]
                                 </button>
                             </div>
@@ -46,7 +46,7 @@
                             <td class="px-8 py-5 text-admin-secondary font-bold">@rowNum</td>
                             <td class="px-8 py-5">
                                 <div class="flex items-center gap-3 w-[200px]">
-                                    <div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden shadow-small shrink-0">
+                                    <div class="w-10 h-10 rounded-full bg-surface-container dark:bg-white/5 overflow-hidden shadow-small shrink-0">
                                         <img src="@user.AvatarUrl" alt="@user.Name" class="w-full h-full object-cover" />
                                     </div>
                                     <span class="font-bold text-admin-primary truncate">@user.Name</span>

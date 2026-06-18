@@ -17,6 +17,30 @@ function toggleDarkMode() {
         key: 'dakkn_theme',
         newValue: theme
     }));
+
+    // Sync with database if CSRF token is present (user likely logged in)
+    const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value || window.csrfToken;
+    if (token) {
+        syncSettingsToDatabase({ isDarkMode: isDark, theme: theme }, token);
+    }
+}
+
+async function syncSettingsToDatabase(settings, token) {
+    try {
+        const response = await fetch('/api/v1/settings', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': token
+            },
+            body: JSON.stringify(settings)
+        });
+        if (!response.ok) {
+            console.warn('Failed to sync settings:', await response.text());
+        }
+    } catch (error) {
+        console.error('Error syncing settings to database:', error);
+    }
 }
 
 // Sync theme across tabs

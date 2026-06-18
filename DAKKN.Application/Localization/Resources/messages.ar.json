@@ -470,6 +470,12 @@
   "admin_max_size": "الحد الأقصى للحجم",
   "admin_change": "تغيير",
   "admin_remove": "إزالة",
+  "admin_change_photo": "تغيير الصورة",
+  "admin_remove_photo": "إزالة الصورة",
+  "profile_image.file_too_large": "يجب أن يكون حجم الصورة أقل من 5 ميجابايت.",
+  "profile_image.upload_success": "تم تحديث صورة الملف الشخصي بنجاح.",
+  "profile_image.remove_success": "تم حذف صورة الملف الشخصي بنجاح.",
+  "profile_image.upload_failed": "فشل تحديث صورة الملف الشخصي. يرجى المحاولة مرة أخرى.",
   "admin_first_name": "الاسم الأول",
   "admin_last_name": "اسم العائلة",
   "admin_role": "الدور الوظيفي",
@@ -1032,5 +1038,10 @@
   "users": {
     "invalid_role": "الدور المقدم غير صالح. يجب أن يكون الدور 'مدير' أو 'مستخدم'.",
     "invalid_status": "الحالة المقدمة غير صالحة. يجب أن تكون الحالة 'نشط' أو 'محذوف'."
+  },
+  "usersettings": {
+    "invalid_language": "اللغات المدعومة هي 'ar' و 'en'",
+    "invalid_theme": "السمات المدعومة هي 'light' و 'dark' و 'system'",
+    "invalid_color": "تنسيق لون Hex غير صالح"
   }
 }

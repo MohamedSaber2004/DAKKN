@@ -1,0 +1,165 @@
+You are a Senior ASP.NET Core 8 MVC + Clean Architecture + MediatR + Entity Framework Core engineer working on the DAKKN project.
+
+## Context
+
+I have an Admin Settings page where administrators can edit their profile information. The backend is fully implemented — I only need **frontend wiring**: update the Razor View and JavaScript to display the actual profile image and handle upload/remove via AJAX.
+
+**Critical: Do NOT change any backend code.** Everything below is just context so you understand the architecture; do not create new commands, handlers, validators, DTOs, services, controllers, or ViewModels. Only the view file and its inline scripts need changes.
+
+---
+
+## Project Architecture (for reference)
+
+### Solution Structure
+```
+DAKKN.sln
+├── DAKKN.Domain           # Entities, Enums, Repository Interfaces
+├── DAKKN.Application      # CQRS via MediatR, DTOs, Interfaces, Validators, Localization
+├── DAKKN.Infrastructure   # JWT, Email, Identity setup
+├── DAKKN.Persistence      # EF Core DbContext, Migrations, Seeding, Audit Interceptor
+└── DAKKN.MVC              # Controllers, Views, Layouts, wwwroot
+```
+
+**Dependency direction (strict):** `Domain ← Application ← Infrastructure / Persistence ← MVC`
+
+### Application Layer Rules
+- All business logic lives in `DAKKN.Application` via MediatR Commands/Queries
+- Handlers use `IUnitOfWork` — never inject `DbContext` directly
+- Exceptions: only `ValidationException` (400), `BadRequestException` (400), `NotFoundException` (404), `UnAuthorizedException` (401)
+- ApiResponse wrapper: `ApiResponse<TData>.Ok(data, message)`
+- All user-facing strings use `IStringLocalizer<Messages>` with keys from `LocalizationKeys` static class — never hard-code raw strings
+
+### MVC/Presentation Layer Rules
+- Admin controllers: `[RoleAuthorize(UserType.Admin)]` (not `[Authorize]`)
+- CSRF: `@Html.AntiForgeryToken()` on every form
+- Tailwind via CDN, dark mode via `class` strategy
+
+### Image Upload Rules (already implemented, do NOT change)
+- Allowed extensions: `.jpg`, `.jpeg`, `.webp`, `.bmp`, `.png`, `.gif`, `.jfif`
+- Max file size: **10 MB**
+- Upload paths mapped by integer: 0=Root, 1=Products, 2=Categories, **3=Users**, 4=Invoices, 5=Reviews
+- File naming: `{place}{timestamp}{ext}` (e.g., `320260618123000001.png`)
+- `IImageValidator` service handles upload, delete, validation
+- `CustomFileProvider` serves files at `/files/{filename}` URL
+
+---
+
+## Existing Implementation (already complete — DO NOT re-create)
+
+### Database
+- `ApplicationUser.ProfilePictureUrl` stores only the filename (e.g., `320260618123000001.png`)
+
+### File Serving
+- Files accessible at `{BaseUrl}/files/{ProfilePictureUrl}`
+- Example: `https://localhost:44308/files/320260618123000001.png`
+
+### CQRS (already exists — do NOT touch)
+- `GetUserSettingsQuery` / handler — loads settings including `ProfilePictureUrl`
+- `UpdateUserSettingsCommand` / handler — accepts optional `ProfileImage` (IFormFile) and `RemoveProfileImage` (bool)
+
+### Controller Actions (already exist — do NOT touch)
+| Route | Method | Purpose |
+|-------|--------|---------|
+| `GET admin/settings` | `Settings()` | Shows settings page |
+| `POST admin/settings` | `Settings(model)` | Saves name/language/theme |
+| `POST admin/settings/update-profile-image` | `UpdateProfileImage(profileImage)` | AJAX — upload/replace image |
+| `POST admin/settings/remove-profile-image` | `RemoveProfileImage()` | AJAX — remove image |
+
+### ViewModel (already exists — do NOT touch)
+`AdminSettingsViewModel` has:
+- `ProfilePictureUrl` — filename only
+- `HasProfileImage` — bool, true if `ProfilePictureUrl` is not null/empty
+- `ProfileImageSrc` — returns `$"/files/{ProfilePictureUrl}"` or empty string
+
+### Localization Keys (already exist — do NOT touch)
+- `LocalizationKeys.ProfileImageMessages.UploadSuccess`
+- `LocalizationKeys.ProfileImageMessages.RemoveSuccess`
+- `LocalizationKeys.ProfileImageMessages.UploadFailed`
+- `LocalizationKeys.ProfileImageMessages.FileTooLarge`
+
+---
+
+## What Needs to Be Done (view-only changes)
+
+File to modify: **`E:\DAKKN\DAKKN.MVC\Views\Admin\Settings.cshtml`**
+
+### 1. Profile Image Display
+- Replace the hard-coded `ui-avatars.com` fallback URL in the `<img>` tag
+- Use `Model.ProfileImageSrc` when `Model.HasProfileImage` is true
+- Show a default Material Symbols icon avatar (`person` or `account_circle`) when `Model.HasProfileImage` is false — do NOT use external services like `ui-avatars.com`
+- Image should be `w-20 h-20 rounded-full` with `object-cover`
+- Support cache busting: append `?v=<timestamp>` to the image URL when the image changes
+
+### 2. File Picker
+- Clicking the **edit icon button** (camera/edit icon overlay on avatar) should open a file picker
+- Allow: `.jpg`, `.jpeg`, `.png`, `.webp`
+- Accept only image files
+- Validate max size 5MB on the client side (optional enhancement)
+
+### 3. Upload Flow (AJAX)
+- When user selects a file → immediately upload via `fetch()` POST to `/admin/settings/update-profile-image`
+- Include anti-forgery token in the request
+- Show a loading spinner/state on the avatar during upload
+- On success: update the `<img>` src with the new URL (add cache-busting query param `?v=<timestamp>`), hide spinner, show success toast
+- On error: hide spinner, show error toast
+- The backend already handles old file deletion — no frontend work needed there
+
+### 4. Remove Image (AJAX)
+- "Remove" button → POST to `/admin/settings/remove-profile-image`
+- Include anti-forgery token
+- On success: replace `<img>` with the default avatar icon, show success toast
+- On error: show error toast
+
+### 5. UI Requirements
+- **Avatar section**: Circular image with upload and remove buttons
+- **Buttons**: "Change Photo" and "Remove Photo" (using existing localization keys `admin_change`, `admin_remove`)
+- **Loading state**: Replace avatar area with a pulsing skeleton or a spinner overlay during upload
+- **Success toast**: Brief green notification at top-right
+- **Error toast**: Brief red notification at top-right
+- Update the text "JPG, GIF or PNG. Max 8MB." to accurately reflect: "JPG, JPEG, PNG or WEBP. Max 5MB."
+- All existing functionality (name, email, theme, language, color pickers) must continue working
+- Responsive design: works on mobile, tablet, desktop
+
+### 6. Client-side Validation
+- Allowed extensions: `.jpg`, `.jpeg`, `.png`, `.webp`
+- Max file size: **5 MB**
+
+### 7. CSS / Styling
+- Use the same Tailwind conventions already in the file (premium-card, bg-surface-container, etc.)
+- Do not add external CSS files — use inline `<style>` in the view or Tailwind classes
+
+### 8. Security
+- Anti-forgery token on all POST requests
+- No inline raw JavaScript from user input (use encoding)
+
+### 9. Responsive Design
+- Layout must work on mobile, tablet, and desktop
+
+---
+
+## Files to Modify (only these)
+
+1. **`DAKKN.MVC/Views/Admin/Settings.cshtml`** — update the avatar section HTML + add upload/remove JavaScript
+
+---
+
+## Verification
+
+1. The Settings page loads the admin's current profile image correctly
+2. Clicking the edit/camera button opens the file picker
+3. Selecting a valid image uploads it via AJAX and updates the avatar without page reload
+4. Clicking Remove Photo removes the image and shows the default avatar
+5. Toast notifications appear for success and error states
+6. All existing form fields (name, theme, language, color) continue to work
+7. The page looks correct in both light and dark modes
+8. No backend changes were made
+
+---
+
+**Important constraints (from project rules):**
+- Do NOT inject DbContext from views or controllers
+- Do NOT add business logic in MVC controllers — dispatch via `_mediator.Send()` only
+- Do NOT hard-code localization strings — use `IStringLocalizer<Messages>` and the existing keys
+- Do NOT use `[Authorize]` — use `[RoleAuthorize]` instead
+- Do NOT break Clean Architecture layer dependencies
+- All POST forms must include `@Html.AntiForgeryToken()`

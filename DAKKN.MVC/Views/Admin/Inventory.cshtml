@@ -8,7 +8,7 @@
 <div class="space-y-8 pb-12">
     <!-- 1. Inventory Stats -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="admin-card p-6 flex flex-col gap-4">
+        <div class="premium-card p-6 flex flex-col gap-4">
             <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
                 <span class="material-symbols-outlined text-2xl">inventory_2</span>
             </div>
@@ -18,7 +18,7 @@
             </div>
         </div>
 
-        <div class="admin-card p-6 flex flex-col gap-4">
+        <div class="premium-card p-6 flex flex-col gap-4">
             <div class="w-12 h-12 rounded-2xl bg-red-500/10 flex items-center justify-center text-red-600">
                 <span class="material-symbols-outlined text-2xl">error</span>
             </div>
@@ -28,7 +28,7 @@
             </div>
         </div>
 
-        <div class="admin-card p-6 flex flex-col gap-4">
+        <div class="premium-card p-6 flex flex-col gap-4">
             <div class="w-12 h-12 rounded-2xl bg-secondary/10 flex items-center justify-center text-secondary">
                 <span class="material-symbols-outlined text-2xl">category</span>
             </div>
@@ -38,7 +38,7 @@
             </div>
         </div>
 
-        <div class="admin-card p-6 flex flex-col gap-4">
+        <div class="premium-card p-6 flex flex-col gap-4">
             <div class="w-12 h-12 rounded-2xl bg-tertiary/10 flex items-center justify-center text-tertiary">
                 <span class="material-symbols-outlined text-2xl">account_balance_wallet</span>
             </div>
@@ -74,7 +74,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         @foreach (var product in Model.Products)
         {
-            <div class="admin-card group flex flex-col overflow-hidden">
+            <div class="premium-card group flex flex-col overflow-hidden">
                 <div class="relative aspect-square bg-surface-container overflow-hidden">
                     <img src="@product.ImageUrl" alt="@product.Name" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
                     <div class="absolute top-4 ltr:right-4 rtl:left-4">

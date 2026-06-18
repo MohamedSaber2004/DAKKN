@@ -32,7 +32,7 @@
             <!-- Left Column: Main Info -->
             <div class="lg:col-span-2 space-y-8">
                 <!-- 1. General Information -->
-                <div class="admin-card p-8 space-y-6">
+                <div class="premium-card p-8 space-y-6">
                     <h4 class="text-lg font-bold text-admin-primary flex items-center gap-2">
                         <span class="material-symbols-outlined text-primary">info</span>
                         @Localizer["admin_product_sec_general"]
@@ -69,7 +69,7 @@
                 </div>
 
                 <!-- 2. Media Upload -->
-                <div class="admin-card p-8 space-y-6">
+                <div class="premium-card p-8 space-y-6">
                     <h4 class="text-lg font-bold text-admin-primary flex items-center gap-2">
                         <span class="material-symbols-outlined text-primary">image</span>
                         @Localizer["admin_product_sec_media"]
@@ -100,7 +100,7 @@
                 </div>
 
                 <!-- 3. Pricing & Inventory -->
-                <div class="admin-card p-8 space-y-6">
+                <div class="premium-card p-8 space-y-6">
                     <h4 class="text-lg font-bold text-admin-primary flex items-center gap-2">
                         <span class="material-symbols-outlined text-primary">payments</span>
                         @Localizer["admin_product_sec_pricing"]
@@ -149,7 +149,7 @@
             <!-- Right Column: Settings & Attributes -->
             <div class="space-y-8">
                 <!-- 4. Material Options -->
-                <div class="admin-card p-8 space-y-6">
+                <div class="premium-card p-8 space-y-6">
                     <h4 class="text-lg font-bold text-admin-primary">@Localizer["admin_product_sec_material"]</h4>
                     <div class="space-y-3">
                         @foreach (var material in Model.AvailableMaterials)
@@ -163,7 +163,7 @@
                 </div>
 
                 <!-- 5. Size Options -->
-                <div class="admin-card p-8 space-y-6">
+                <div class="premium-card p-8 space-y-6">
                     <h4 class="text-lg font-bold text-admin-primary">@Localizer["admin_product_sec_size"]</h4>
                     <div class="grid grid-cols-2 gap-3">
                         @foreach (var size in Model.AvailableSizes)

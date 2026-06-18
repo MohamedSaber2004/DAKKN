@@ -86,6 +86,9 @@ namespace DAKKN.MVC
                 options.AccessDeniedPath = "/auth/access-denied";
             });
 
+            builder.Services.AddSingleton<System.Text.Encodings.Web.HtmlEncoder>(
+                System.Text.Encodings.Web.HtmlEncoder.Create(System.Text.Unicode.UnicodeRanges.All));
+
             builder.Services.AddSingleton<IStringLocalizerFactory, JsonStringLocalizerFactory>();
             builder.Services.AddLocalization();
 
@@ -96,7 +99,8 @@ namespace DAKKN.MVC
                     policy.Expire(TimeSpan.FromMinutes(10));
                     policy.VaryByValue((context, ct) => 
                     {
-                        var culture = context.Request.Cookies[".AspNetCore.Culture"] ?? "default";
+                        var cultureFeature = context.Features.Get<IRequestCultureFeature>();
+                        var culture = cultureFeature?.RequestCulture.Culture.Name ?? "default";
                         return ValueTask.FromResult(new KeyValuePair<string, string>("culture", culture));
                     });
                 });
@@ -330,23 +334,25 @@ namespace DAKKN.MVC
                 .AddSupportedUICultures(supportedCultures);
 
 
-            // Prioritize Cookie and QueryString providers
+            // Prioritize Cookie and QueryString providers for immediate feedback
             localizationOptions.RequestCultureProviders.Clear();
             localizationOptions.RequestCultureProviders.Add(new QueryStringRequestCultureProvider());
             localizationOptions.RequestCultureProviders.Add(new CookieRequestCultureProvider());
+            localizationOptions.RequestCultureProviders.Add(new DAKKN.MVC.Localization.UserPreferenceRequestCultureProvider());
             localizationOptions.RequestCultureProviders.Add(new AcceptLanguageHeaderRequestCultureProvider());
 
-            app.UseRequestLocalization(localizationOptions);
-
             app.UseRouting();
-
-            app.UseOutputCache();
 
             app.UseCors("CQRS");
 
             app.UseRateLimiter();
 
             app.UseAuthentication();
+
+            app.UseRequestLocalization(localizationOptions);
+
+            app.UseOutputCache();
+
             app.UseAuthorization();
 
             app.MapControllers();

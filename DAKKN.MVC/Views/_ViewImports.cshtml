@@ -1,6 +1,10 @@
 ﻿@using DAKKN.MVC
 @using DAKKN.MVC.Models
+@using DAKKN.MVC.ViewModels.Customer
+@using DAKKN.MVC.ViewModels.Admin
 @using Microsoft.Extensions.Localization
 @using DAKKN.Application.Localization
+@using MediatR
+@using DAKKN.Application.Features.Users.Queries.GetUserSettings
 @inject IStringLocalizer<Messages> Localizer
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers

@@ -1,13 +1,40 @@
 @inject IStringLocalizer<Messages> Localizer
 @using System.Security.Claims
+@inject IMediator Mediator
 @{
     var culture = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("en") ? "en" : "ar";
     var dir = culture == "ar" ? "rtl" : "ltr";
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
     var fullName = User.FindFirstValue("FullName") ?? User.Identity?.Name ?? "User";
+
+    var isDarkMode = false;
+    var themeName = "light";
+    var primaryColor = "#0E908C";
+    var primaryRgb = "14, 144, 140";
+    var profilePictureUrl = string.Empty;
+    if (User.Identity?.IsAuthenticated == true)
+    {
+        try 
+        {
+            var settings = await Mediator.Send(new GetUserSettingsQuery());
+            isDarkMode = settings.IsDarkMode;
+            themeName = settings.Theme;
+            primaryColor = settings.PrimaryColor ?? "#0E908C";
+            profilePictureUrl = settings.ProfilePictureUrl ?? string.Empty;
+            
+            if (primaryColor.StartsWith("#") && primaryColor.Length == 7)
+            {
+                var r = Convert.ToInt32(primaryColor.Substring(1, 2), 16);
+                var g = Convert.ToInt32(primaryColor.Substring(3, 2), 16);
+                var b = Convert.ToInt32(primaryColor.Substring(5, 2), 16);
+                primaryRgb = $"{r}, {g}, {b}";
+            }
+        }
+        catch { /* Fallback to default */ }
+    }
 }
 <!DOCTYPE html>
-<html lang="@culture" dir="@dir" id="html-root" data-dakkn-loading="true">
+<html lang="@culture" dir="@dir" id="html-root" class="@(isDarkMode ? "dark" : "")" data-dakkn-loading="true" style="--primary-color: @primaryColor; --primary-rgb: @primaryRgb;">
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -106,14 +133,17 @@
         }, 1500);
     </script>
 </head>
-<body class="text-text-primary dark:text-inverse-on-surface bg-background dark:bg-dark-page transition-colors duration-300 h-screen overflow-hidden flex font-sans">
+<body class="text-text-primary dark:text-white bg-background dark:bg-[#0F172A] transition-colors duration-300 h-screen overflow-hidden flex font-sans">
     
     <!-- Preloader Overlay -->
     @await Html.PartialAsync("Partials/_Preloader")
 
+    <!-- Sidebar Overlay for Mobile -->
+    <div id="sidebar-overlay" class="sidebar-overlay md:hidden" onclick="toggleCustomerSidebar()"></div>
+
     <!-- Sidebar -->
-    <aside id="customer-sidebar" class="hidden md:flex flex-col customer-sidebar h-screen w-64 shadow-medium z-40 relative flex-shrink-0 transition-all duration-300 bg-surface dark:bg-inverse-surface border-r border-border dark:border-outline/10">
-        <div class="p-lg border-b border-border dark:border-outline/10 flex flex-col items-center justify-center gap-sm group cursor-pointer overflow-hidden">
+    <aside id="customer-sidebar" class="hidden md:flex flex-col customer-sidebar h-screen w-64 shadow-medium z-40 relative flex-shrink-0 transition-all duration-300 bg-surface dark:bg-[#1E293B] border-r border-border dark:border-white/5">
+        <div class="p-lg border-b border-border dark:border-white/5 flex flex-col items-center justify-center gap-sm group cursor-pointer overflow-hidden">
             <div class="logo-container transition-all duration-300">
                 <img src="/images/logo.png" alt="DAKKN Logo" class="h-16 logo-img dark:brightness-125 transition-all duration-300" />
             </div>
@@ -124,44 +154,44 @@
         </div>
 
         <nav class="flex-1 overflow-y-auto no-scrollbar py-md px-sm flex flex-col gap-sm">
-            <a asp-controller="Customer" asp-action="Index" class="nav-item flex items-center gap-md @(currentAction == "Index" ? "bg-primary text-on-primary shadow-medium" : "text-text-secondary hover:text-primary hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["Dashboard_Welcome"]">
+            <a asp-controller="Customer" asp-action="Index" class="nav-item flex items-center gap-md @(currentAction == "Index" ? "bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["Dashboard_Welcome"]">
                 <span class="material-symbols-outlined @(currentAction == "Index" ? "filled-icon" : "")">grid_view</span>
                 <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["Dashboard_Welcome"]</span>
             </a>
-            <a asp-controller="Customer" asp-action="Products" class="nav-item flex items-center gap-md @(currentAction == "Products" ? "bg-primary text-on-primary shadow-medium" : "text-text-secondary hover:text-primary hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["nav_shop"]">
+            <a asp-controller="Customer" asp-action="Products" class="nav-item flex items-center gap-md @(currentAction == "Products" ? "bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["nav_shop"]">
                 <span class="material-symbols-outlined @(currentAction == "Products" ? "filled-icon" : "")">shopping_bag</span>
                 <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["nav_shop"]</span>
             </a>
-            <a asp-controller="Customer" asp-action="Favorites" class="nav-item flex items-center gap-md @(currentAction == "Favorites" ? "bg-primary text-on-primary shadow-medium" : "text-text-secondary hover:text-primary hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["nav_favorites"]">
+            <a asp-controller="Customer" asp-action="Favorites" class="nav-item flex items-center gap-md @(currentAction == "Favorites" ? "bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["nav_favorites"]">
                 <span class="material-symbols-outlined @(currentAction == "Favorites" ? "filled-icon" : "")">favorite</span>
                 <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["nav_favorites"]</span>
             </a>
-            <a asp-controller="Customer" asp-action="Cart" class="nav-item flex items-center gap-md @(currentAction == "Cart" ? "bg-primary text-on-primary shadow-medium" : "text-text-secondary hover:text-primary hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["nav_cart"]">
+            <a asp-controller="Customer" asp-action="Cart" class="nav-item flex items-center gap-md @(currentAction == "Cart" ? "bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["nav_cart"]">
                 <span class="material-symbols-outlined @(currentAction == "Cart" ? "filled-icon" : "")">shopping_cart</span>
                 <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["nav_cart"]</span>
             </a>
-            <a asp-controller="Customer" asp-action="CustomOrder" class="nav-item flex items-center gap-md @(currentAction == "CustomOrder" ? "bg-primary text-on-primary shadow-medium" : "text-text-secondary hover:text-primary hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["nav_custom_order"]">
+            <a asp-controller="Customer" asp-action="CustomOrder" class="nav-item flex items-center gap-md @(currentAction == "CustomOrder" ? "bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["nav_custom_order"]">
                 <span class="material-symbols-outlined @(currentAction == "CustomOrder" ? "filled-icon" : "")">brush</span>
                 <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["nav_custom_order"]</span>
             </a>
-            <a asp-controller="Customer" asp-action="Orders" class="nav-item flex items-center gap-md @(currentAction == "Orders" ? "bg-primary text-on-primary shadow-medium" : "text-text-secondary hover:text-primary hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["admin_orders"]">
+            <a asp-controller="Customer" asp-action="Orders" class="nav-item flex items-center gap-md @(currentAction == "Orders" ? "bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["admin_orders"]">
                 <span class="material-symbols-outlined @(currentAction == "Orders" ? "filled-icon" : "")">receipt_long</span>
                 <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["admin_orders"]</span>
             </a>
-            <a asp-controller="Customer" asp-action="Support" class="nav-item flex items-center gap-md @(currentAction == "Support" ? "bg-primary text-on-primary shadow-medium" : "text-text-secondary hover:text-primary hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["nav_support"]">
+            <a asp-controller="Customer" asp-action="Support" class="nav-item flex items-center gap-md @(currentAction == "Support" ? "bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["nav_support"]">
                 <span class="material-symbols-outlined @(currentAction == "Support" ? "filled-icon" : "")">support_agent</span>
                 <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["nav_support"]</span>
             </a>
-            <a asp-controller="Customer" asp-action="Profile" class="nav-item flex items-center gap-md @(currentAction == "Profile" ? "bg-primary text-on-primary shadow-medium" : "text-text-secondary hover:text-primary hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200 mt-auto" title="@Localizer["nav_profile"]">
+            <a asp-controller="Customer" asp-action="Profile" class="nav-item flex items-center gap-md @(currentAction == "Profile" ? "bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200 mt-auto" title="@Localizer["nav_profile"]">
                 <span class="material-symbols-outlined @(currentAction == "Profile" ? "filled-icon" : "")">person</span>
                 <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["nav_profile"]</span>
             </a>
         </nav>
 
-        <div class="p-md border-t border-border dark:border-outline/10">
+        <div class="p-md border-t border-border dark:border-white/5">
             <form id="logout-form" asp-controller="Auth" asp-action="Logout" method="post">
                 <input type="hidden" name="refreshToken" id="logout-refresh-token" />
-                <button type="button" onclick="submitLogout()" class="w-full flex items-center gap-md text-text-secondary hover:text-error hover:bg-error/5 rounded-2xl px-4 py-3.5 transition-all duration-200" title="Logout">
+                <button type="button" onclick="submitLogout()" class="w-full flex items-center gap-md text-text-secondary dark:text-outline-variant hover:text-error dark:hover:text-error-light hover:bg-error/5 rounded-2xl px-4 py-3.5 transition-all duration-200" title="Logout">
                     <span class="material-symbols-outlined">logout</span>
                     <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["f_logout"]</span>
                 </button>
@@ -170,37 +200,37 @@
     </aside>
 
     <!-- Main Content Area -->
-    <main class="flex-1 flex flex-col h-screen overflow-hidden bg-background dark:bg-on-background transition-colors duration-300">
+    <main class="flex-1 flex flex-col h-screen overflow-hidden bg-background dark:bg-[#0F172A] transition-colors duration-300">
         <!-- Top Appbar -->
-        <header class="flex justify-between items-center w-full px-lg h-20 z-30 bg-surface/80 dark:bg-inverse-surface/80 backdrop-blur-md flex-shrink-0 border-b border-border dark:border-outline/10">
+        <header class="flex justify-between items-center w-full px-lg h-20 z-30 bg-surface/80 dark:bg-[#1E293B]/80 backdrop-blur-md flex-shrink-0 border-b border-border dark:border-white/5">
             <div class="flex items-center gap-md">
-                <button onclick="toggleCustomerSidebar()" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary hover:bg-primary/5 transition-all">
-                    <span class="material-symbols-outlined" id="sidebar-toggle-icon">menu_open</span>
+                <button onclick="toggleCustomerSidebar()" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5 transition-all">
+                    <span class="material-symbols-outlined rtl:rotate-180" id="sidebar-toggle-icon">menu_open</span>
                 </button>
-                <h2 class="hidden md:block font-h3 text-h3 font-bold text-text-primary dark:text-inverse-on-surface">@ViewData["Title"]</h2>
+                <h2 class="hidden md:block font-h3 text-h3 font-bold text-text-primary dark:text-white">@ViewData["Title"]</h2>
             </div>
 
             <div class="flex items-center gap-lg">
                 <div class="relative hidden sm:block">
-                    <input class="bg-surface-container dark:bg-surface-container-high rounded-full py-2.5 px-5 ltr:pl-11 rtl:pr-11 text-sm font-medium border-none focus:ring-2 focus:ring-primary outline-none w-64 lg:w-80 transition-all" placeholder="@Localizer["search_placeholder"]" type="text">
-                    <span class="material-symbols-outlined absolute ltr:left-4 rtl:right-4 top-1/2 -translate-y-1/2 text-text-secondary text-lg">search</span>
+                    <input class="bg-surface-container dark:bg-white/5 rounded-full py-2.5 px-5 ltr:pl-11 rtl:pr-11 text-sm font-medium border border-transparent dark:border-white/5 focus:ring-2 focus:ring-primary focus:bg-surface dark:focus:bg-white/10 outline-none w-64 lg:w-80 transition-all text-text-primary dark:text-white placeholder:text-text-secondary dark:placeholder:text-outline" placeholder="@Localizer["search_placeholder"]" type="text">
+                    <span class="material-symbols-outlined absolute ltr:left-4 rtl:right-4 top-1/2 -translate-y-1/2 text-text-secondary dark:text-outline text-lg">search</span>
                 </div>
 
                 <div class="flex items-center gap-sm">
                     @await Html.PartialAsync("Partials/_LanguageToggle")
                     @await Html.PartialAsync("Partials/_ThemeToggle")
-                    <button class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary transition-colors relative hover:bg-primary/5">
+                    <button class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light transition-colors relative hover:bg-primary/5 dark:hover:bg-white/5">
                         <span class="material-symbols-outlined">notifications</span>
-                        <span class="absolute top-2.5 right-2.5 w-2 h-2 bg-error rounded-full border-2 border-surface"></span>
+                        <span class="absolute top-2.5 right-2.5 w-2 h-2 bg-error rounded-full border-2 border-surface dark:border-[#1E293B]"></span>
                     </button>
                     
-                    <div class="h-10 w-[1px] bg-border dark:bg-outline/10 mx-2 hidden sm:block"></div>
+                    <div class="h-10 w-[1px] bg-border dark:bg-white/10 mx-2 hidden sm:block"></div>
 
-                    <a asp-action="Profile" class="flex items-center gap-md p-1.5 ltr:pr-4 rtl:pl-4 rounded-full bg-surface-container dark:bg-inverse-surface border border-border dark:border-outline/10 hover:border-primary/30 transition-all">
+                    <a asp-action="Profile" class="flex items-center gap-md p-1.5 ltr:pr-4 rtl:pl-4 rounded-full bg-surface-container dark:bg-white/5 border border-border dark:border-white/10 hover:border-primary/30 transition-all">
                         <div class="w-8 h-8 rounded-full overflow-hidden shadow-small">
-                            <img src="https://ui-avatars.com/api/?name=@(fullName)&background=69d2cf&color=005957" class="w-full h-full object-cover" alt="User profile avatar">
+                            <img src="@(!string.IsNullOrEmpty(profilePictureUrl) ? $"/files/{profilePictureUrl}" : $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(fullName)}&background=69d2cf&color=005957")" class="w-full h-full object-cover" alt="User profile avatar">
                         </div>
-                        <span class="hidden sm:block font-bold text-sm">@(fullName.Split(' ')[0])</span>
+                        <span class="hidden sm:block font-bold text-sm text-text-primary dark:text-white">@(fullName.Split(' ')[0])</span>
                     </a>
                 </div>
             </div>
@@ -210,12 +240,12 @@
         <div class="flex-1 overflow-y-auto custom-scrollbar">
             @RenderBody()
             <!-- Footer -->
-            <footer class="bg-surface dark:bg-inverse-surface border-t border-border dark:border-outline/10 py-lg mt-xl">
+            <footer class="bg-surface dark:bg-[#1E293B] border-t border-border dark:border-white/5 py-lg mt-xl">
                 <div class="max-w-7xl mx-auto px-lg flex flex-col md:flex-row justify-between items-center gap-md">
-                    <p class="text-sm text-text-secondary">@Localizer["footer_copy"]</p>
+                    <p class="text-sm text-text-secondary dark:text-outline-variant">@Localizer["footer_copy"]</p>
                     <div class="flex gap-lg">
-                        <a asp-controller="Home" asp-action="Privacy" class="text-sm text-text-secondary hover:text-primary transition-colors">@Localizer["nav_privacy"]</a>
-                        <a asp-controller="Home" asp-action="Terms" class="text-sm text-text-secondary hover:text-primary transition-colors">@Localizer["f_terms"]</a>
+                        <a asp-controller="Home" asp-action="Privacy" class="text-sm text-text-secondary dark:text-outline-variant hover:text-primary transition-colors">@Localizer["nav_privacy"]</a>
+                        <a asp-controller="Home" asp-action="Terms" class="text-sm text-text-secondary dark:text-outline-variant hover:text-primary transition-colors">@Localizer["f_terms"]</a>
                     </div>
                 </div>
             </footer>
@@ -226,11 +256,11 @@
     <nav class="mobile-bottom-nav md:hidden">
         <a asp-controller="Customer" asp-action="Index" class="mob-nav-item @(currentAction == "Index" ? "active" : "")">
             <span class="material-symbols-outlined">grid_view</span>
-            <span>Dashboard</span>
+            <span>@Localizer["admin_overview"]</span>
         </a>
         <a asp-controller="Customer" asp-action="Products" class="mob-nav-item @(currentAction == "Products" ? "active" : "")">
             <span class="material-symbols-outlined">shopping_bag</span>
-            <span>Shop</span>
+            <span>@Localizer["nav_shop"]</span>
         </a>
         <a asp-controller="Customer" asp-action="Favorites" class="mob-nav-item @(currentAction == "Favorites" ? "active" : "")">
             <span class="material-symbols-outlined">favorite</span>
@@ -246,15 +276,15 @@
         </a>
         <a asp-controller="Customer" asp-action="Orders" class="mob-nav-item @(currentAction == "Orders" ? "active" : "")">
             <span class="material-symbols-outlined">receipt_long</span>
-            <span>Orders</span>
+            <span>@Localizer["admin_orders"]</span>
         </a>
         <a asp-controller="Customer" asp-action="Support" class="mob-nav-item @(currentAction == "Support" ? "active" : "")">
             <span class="material-symbols-outlined">support_agent</span>
-            <span>Support</span>
+            <span>@Localizer["nav_support"]</span>
         </a>
         <a asp-controller="Customer" asp-action="Profile" class="mob-nav-item @(currentAction == "Profile" ? "active" : "")">
             <span class="material-symbols-outlined">person</span>
-            <span>Profile</span>
+            <span>@Localizer["nav_profile"]</span>
         </a>
     </nav>
 
@@ -264,9 +294,13 @@
 
     <script>
         function toggleCustomerSidebar() {
-            const isCollapsed = document.documentElement.classList.toggle('sidebar-is-collapsed');
-            localStorage.setItem('dakkn_customer_sidebar_collapsed', isCollapsed);
-            updateSidebarIcon(isCollapsed);
+            if (window.innerWidth < 768) {
+                document.documentElement.classList.toggle('mobile-sidebar-open');
+            } else {
+                const isCollapsed = document.documentElement.classList.toggle('sidebar-is-collapsed');
+                localStorage.setItem('dakkn_customer_sidebar_collapsed', isCollapsed);
+                updateSidebarIcon(isCollapsed);
+            }
         }
 
         function updateSidebarIcon(isCollapsed) {

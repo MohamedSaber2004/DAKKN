@@ -112,5 +112,6 @@ namespace DAKKN.Domain.Entities
         }
 
         public virtual ICollection<UserRefreshToken> UserRefreshTokens { get; private set; } = new List<UserRefreshToken>();
+        public virtual UserSettings? UserSettings { get; private set; }
     }
 }

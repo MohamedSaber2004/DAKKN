@@ -68,10 +68,10 @@
                 </a>
             </div>
 
-            <button class="w-full bg-primary hover:bg-[#0c7a77] text-white font-bold py-4 px-6 rounded-xl transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-3 active:scale-[0.98] group" type="submit">
-                <span>@Localizer["auth.login.submit"]</span>
-                <span class="material-symbols-outlined text-[20px] rtl:rotate-180 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform">arrow_forward</span>
-            </button>
+        <button class="w-full py-4 rounded-xl bg-primary text-white font-bold shadow-lg shadow-primary/30 flex items-center justify-center gap-3 hover:brightness-105 hover:shadow-xl hover:shadow-primary/40 active:scale-[0.98] transition-all duration-300 group" type="submit">
+            <span>@Localizer["auth.login.submit"]</span>
+            <span class="material-symbols-outlined text-[22px] rtl:rotate-180 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform">arrow_forward</span>
+        </button>
 
             <div class="flex items-center gap-4 my-8">
                 <div class="h-px bg-slate-200 dark:bg-slate-800 flex-1"></div>
@@ -150,6 +150,11 @@
                             if (res.ok) {
                                 return res.json().then(data => {
                                     PhonePromptModal.hide();
+                                    
+                                    // Securely save tokens to localStorage
+                                    if (data.accessToken) localStorage.setItem('dakkn_access_token', data.accessToken);
+                                    if (data.refreshToken) localStorage.setItem('dakkn_refresh_token', data.refreshToken);
+
                                     let targetUrl = '@(Model.ReturnUrl ?? "/")';
                                     if (targetUrl === '/') {
                                         if (data.roles && data.roles.includes('Admin')) {
