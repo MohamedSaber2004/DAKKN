@@ -1043,5 +1043,19 @@
     "invalid_language": "اللغات المدعومة هي 'ar' و 'en'",
     "invalid_theme": "السمات المدعومة هي 'light' و 'dark' و 'system'",
     "invalid_color": "تنسيق لون Hex غير صالح"
+  },
+  "products": {
+    "not_found": "المنتج غير موجود",
+    "created": "تم إنشاء المنتج بنجاح",
+    "updated": "تم تحديث المنتج بنجاح",
+    "deleted": "تم حذف المنتج بنجاح",
+    "category_not_found": "الفئة غير موجودة"
+  },
+  "categories": {
+    "not_found": "الفئة غير موجودة",
+    "created": "تم إنشاء الفئة بنجاح",
+    "updated": "تم تحديث الفئة بنجاح",
+    "deleted": "تم حذف الفئة بنجاح",
+    "name_exists": "يوجد فئة بهذا الاسم بالفعل"
   }
 }

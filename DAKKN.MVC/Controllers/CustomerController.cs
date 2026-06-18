@@ -1,8 +1,7 @@
-using DAKKN.Application.Interfaces;
 using DAKKN.Application.DTOs;
+using DAKKN.Application.Common.Exceptions;
 using DAKKN.MVC.ViewModels.Customer;
 using DAKKN.MVC.ViewModels.Admin;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 using DAKKN.Appearence.Filters;
@@ -12,18 +11,28 @@ using DAKKN.Application.Localization;
 using MediatR;
 using DAKKN.Application.Features.Users.Queries.GetUserSettings;
 using DAKKN.Application.Features.Users.Commands.UpdateUserSettings;
+using DAKKN.Application.Features.Products.Queries.GetProducts;
+using DAKKN.Application.Features.Products.Queries.GetProductById;
 
 namespace DAKKN.MVC.Controllers
 {
     [RoleAuthorize(UserType.User, UserType.Admin)]
     [Route("customer")]
-    public class CustomerController(IProductService productService, IDashboardService dashboardService, IStringLocalizer<Messages> localizer, IMediator mediator) : Controller
+    public class CustomerController(IStringLocalizer<Messages> localizer, IMediator mediator) : Controller
     {
         public async Task<IActionResult> Index()
         {
             ViewData["Title"] = localizer["Dashboard_Welcome"];
-            var dashboardData = await dashboardService.GetCustomerDashboardDataAsync(Guid.Empty); // Using empty Guid for mock
-            return View(new CustomerDashboardViewModel { Dashboard = dashboardData });
+
+            var products = await mediator.Send(new GetProductsQuery(null, null, 1, 10));
+            var dashboard = new DashboardDto
+            {
+                Recommendations = products.Items.Take(4).ToList(),
+                ProgrammingStickers = new List<ProductDto>(),
+                MemeStickers = new List<ProductDto>()
+            };
+
+            return View(new CustomerDashboardViewModel { Dashboard = dashboard });
         }
 
         [HttpGet("products")]
@@ -36,11 +45,16 @@ namespace DAKKN.MVC.Controllers
         [HttpGet("product/{id}")]
         public async Task<IActionResult> ProductDetails(Guid id)
         {
-            var product = await productService.GetProductByIdAsync(id);
-            if (product == null) return NotFound();
-
-            ViewData["Title"] = product.Name;
-            return View(new ProductDetailsViewModel { Product = product });
+            try
+            {
+                var product = await mediator.Send(new GetProductByIdQuery(id));
+                ViewData["Title"] = product.Name;
+                return View(new ProductDetailsViewModel { Product = product });
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
         }
 
         [HttpGet("orders")]
@@ -63,7 +77,7 @@ namespace DAKKN.MVC.Controllers
                         Id = Guid.Parse("f4d6c75f-2643-4ffc-8199-e94a91d8b617"),
                         Name = "Retro Cassette",
                         Price = 70,
-                        ImageUrls = new List<string> { "https://images.unsplash.com/photo-1605648916319-cf082f7524a1?q=80&w=400&auto=format&fit=crop" },
+                        ImageUrl = "https://images.unsplash.com/photo-1605648916319-cf082f7524a1?q=80&w=400&auto=format&fit=crop",
                         FinishOptions = new List<string> { "Holographic" }
                     },
                     new ProductDto
@@ -71,7 +85,7 @@ namespace DAKKN.MVC.Controllers
                         Id = Guid.Parse("67890abc-def0-1234-5678-90abcdef1234"),
                         Name = "Pixel Heart",
                         Price = 60,
-                        ImageUrls = new List<string> { "https://images.unsplash.com/photo-1599305090598-fe179d501c27?q=80&w=400&auto=format&fit=crop" },
+                        ImageUrl = "https://images.unsplash.com/photo-1599305090598-fe179d501c27?q=80&w=400&auto=format&fit=crop",
                         FinishOptions = new List<string> { "Clear Vinyl" }
                     }
                 }

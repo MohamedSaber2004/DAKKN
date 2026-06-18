@@ -17,6 +17,8 @@ namespace DAKKN.Persistence
         }
 
         public DbSet<UserSettings> UserSettings => Set<UserSettings>();
+        public DbSet<Product> Products => Set<Product>();
+        public DbSet<Category> Categories => Set<Category>();
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
@@ -31,7 +33,7 @@ namespace DAKKN.Persistence
             base.OnModelCreating(builder);
 
             builder.ApplyConfigurationsFromAssembly(typeof(DAKKNDbContext).Assembly,
-                type => type.Namespace is not null && type.Namespace.EndsWith("Configurations"));
+                type => type.Namespace is not null && (type.Namespace.EndsWith("Configurations") || type.Namespace.EndsWith("Configuration")));
 
             builder.HasDefaultSchema("dbo");
         }

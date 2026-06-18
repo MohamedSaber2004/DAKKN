@@ -1,0 +1,167 @@
+[
+  {
+    "name": "Galaxy Dreamscape Sticker",
+    "description": "A breathtaking galactic scene with swirling nebulas and twinkling stars. Captures the beauty of deep space with rich purples, blues, and pinks.",
+    "price": 4.99,
+    "averageRating": 4.8,
+    "reviewCount": 42,
+    "imageUrl": "/images/products/galaxy-dreamscape.jpg",
+    "categoryName": "Vinyl Stickers",
+    "finishOptions": ["Glossy", "Matte", "Holographic"],
+    "sizeOptions": ["3\"", "4\"", "5\"", "6\""]
+  },
+  {
+    "name": "Mountain Sunset Sticker",
+    "description": "A serene mountain landscape at sunset with vivid orange and purple skies. Perfect for nature lovers and outdoor enthusiasts.",
+    "price": 3.99,
+    "averageRating": 4.6,
+    "reviewCount": 35,
+    "imageUrl": "/images/products/mountain-sunset.jpg",
+    "categoryName": "Vinyl Stickers",
+    "finishOptions": ["Glossy", "Matte"],
+    "sizeOptions": ["3\"", "4\"", "5\""]
+  },
+  {
+    "name": "Cute Cat Collection Sticker",
+    "description": "An adorable collection of playful cats in various poses. Each cat is lovingly illustrated with charming detail and personality.",
+    "price": 5.49,
+    "averageRating": 4.9,
+    "reviewCount": 67,
+    "imageUrl": "/images/products/cute-cat-collection.jpg",
+    "categoryName": "Die-Cut Stickers",
+    "finishOptions": ["Glossy", "Matte", "Holographic"],
+    "sizeOptions": ["2\"", "3\"", "4\""]
+  },
+  {
+    "name": "Rainbow Holographic Pack",
+    "description": "A set of 10 vibrant holographic rainbow designs. Each sticker shimmers and shifts color as you move it in the light.",
+    "price": 7.99,
+    "averageRating": 4.7,
+    "reviewCount": 53,
+    "imageUrl": "/images/products/rainbow-holographic-pack.jpg",
+    "categoryName": "Holographic Stickers",
+    "finishOptions": ["Holographic"],
+    "sizeOptions": ["2\"", "3\"", "4\""]
+  },
+  {
+    "name": "Botanical Garden Collection",
+    "description": "Elegant botanical illustrations of leaves, flowers, and herbs. A touch of nature for your journal, laptop, or wall.",
+    "price": 4.49,
+    "averageRating": 4.5,
+    "reviewCount": 29,
+    "imageUrl": "/images/products/botanical-garden.jpg",
+    "categoryName": "Matte Stickers",
+    "finishOptions": ["Matte"],
+    "sizeOptions": ["3\"", "4\"", "5\""]
+  },
+  {
+    "name": "Neon City Nights Sticker",
+    "description": "Vibrant neon cityscapes inspired by Tokyo and cyberpunk aesthetics. Bold colors and striking night-time imagery.",
+    "price": 5.99,
+    "averageRating": 4.4,
+    "reviewCount": 31,
+    "imageUrl": "/images/products/neon-city-nights.jpg",
+    "categoryName": "Glossy Stickers",
+    "finishOptions": ["Glossy"],
+    "sizeOptions": ["3\"", "4\"", "5\"", "6\""]
+  },
+  {
+    "name": "Ocean Life Bundle",
+    "description": "A beautiful collection of marine life including whales, dolphins, sea turtles, and colorful fish. Part of our ocean conservation series.",
+    "price": 6.49,
+    "averageRating": 4.8,
+    "reviewCount": 44,
+    "imageUrl": "/images/products/ocean-life-bundle.jpg",
+    "categoryName": "Vinyl Stickers",
+    "finishOptions": ["Glossy", "Matte", "Holographic"],
+    "sizeOptions": ["3\"", "4\"", "5\""]
+  },
+  {
+    "name": "Minimalist Line Art Sticker",
+    "description": "Elegant minimalist line art designs featuring faces, flowers, and abstract shapes. Clean, modern, and sophisticated.",
+    "price": 3.49,
+    "averageRating": 4.3,
+    "reviewCount": 22,
+    "imageUrl": "/images/products/minimalist-line-art.jpg",
+    "categoryName": "Matte Stickers",
+    "finishOptions": ["Matte"],
+    "sizeOptions": ["3\"", "4\""]
+  },
+  {
+    "name": "Fantasy Creatures Set",
+    "description": "Mythical creatures including dragons, unicorns, phoenixes, and mermaids. Each design is intricately detailed and beautifully colored.",
+    "price": 5.99,
+    "averageRating": 4.7,
+    "reviewCount": 38,
+    "imageUrl": "/images/products/fantasy-creatures.jpg",
+    "categoryName": "Glossy Stickers",
+    "finishOptions": ["Glossy", "Holographic"],
+    "sizeOptions": ["3\"", "4\"", "5\""]
+  },
+  {
+    "name": "Tropical Paradise Sticker Pack",
+    "description": "Lush tropical leaves, exotic flowers, and vibrant parrots. Bring a touch of paradise to your everyday items.",
+    "price": 4.99,
+    "averageRating": 4.6,
+    "reviewCount": 25,
+    "imageUrl": "/images/products/tropical-paradise.jpg",
+    "categoryName": "Kiss-Cut Stickers",
+    "finishOptions": ["Glossy", "Matte"],
+    "sizeOptions": ["2\"", "3\"", "4\""]
+  },
+  {
+    "name": "Clear Crystal Collection",
+    "description": "Beautiful transparent stickers that appear to float on any surface. Crystal clear background with vibrant printed designs.",
+    "price": 3.99,
+    "averageRating": 4.2,
+    "reviewCount": 18,
+    "imageUrl": "/images/products/clear-crystal.jpg",
+    "categoryName": "Clear Stickers",
+    "finishOptions": ["Glossy"],
+    "sizeOptions": ["3\"", "4\""]
+  },
+  {
+    "name": "Retro Gaming Icons Sticker",
+    "description": "Nostalgic retro gaming icons from the 8-bit and 16-bit era. Controllers, cartridges, and classic game references.",
+    "price": 4.49,
+    "averageRating": 4.9,
+    "reviewCount": 71,
+    "imageUrl": "/images/products/retro-gaming.jpg",
+    "categoryName": "Die-Cut Stickers",
+    "finishOptions": ["Glossy", "Matte", "Holographic"],
+    "sizeOptions": ["2\"", "3\"", "4\""]
+  },
+  {
+    "name": "Spring Seasonal Sticker Pack",
+    "description": "A delightful spring-themed sticker pack with blooming flowers, butterflies, and pastel colors. Perfect for seasonal journaling.",
+    "price": 3.99,
+    "averageRating": 4.5,
+    "reviewCount": 16,
+    "imageUrl": "/images/products/seasonal-spring.jpg",
+    "categoryName": "Removable Stickers",
+    "finishOptions": ["Matte"],
+    "sizeOptions": ["3\"", "4\""]
+  },
+  {
+    "name": "Abstract Geometry Sticker",
+    "description": "Modern abstract geometric patterns with bold colors and clean lines. A contemporary addition to any sticker collection.",
+    "price": 4.99,
+    "averageRating": 4.4,
+    "reviewCount": 20,
+    "imageUrl": "/images/products/abstract-geometry.jpg",
+    "categoryName": "Vinyl Stickers",
+    "finishOptions": ["Glossy", "Matte", "Holographic"],
+    "sizeOptions": ["3\"", "4\"", "5\""]
+  },
+  {
+    "name": "Custom Pet Portrait Sticker",
+    "description": "A customizable pet portrait sticker. Upload your pet's photo and we will turn it into a beautiful illustrated sticker. Digital proof provided before printing.",
+    "price": 9.99,
+    "averageRating": 4.9,
+    "reviewCount": 89,
+    "imageUrl": "/images/products/custom-pet-portrait.jpg",
+    "categoryName": "Die-Cut Stickers",
+    "finishOptions": ["Glossy", "Matte"],
+    "sizeOptions": ["3\"", "4\"", "5\"", "6\""]
+  }
+]

@@ -1035,5 +1035,19 @@
     "invalid_language": "Supported languages are 'ar' and 'en'",
     "invalid_theme": "Supported themes are 'light', 'dark', and 'system'",
     "invalid_color": "Invalid Hex color format"
+  },
+  "products": {
+    "not_found": "Product not found",
+    "created": "Product created successfully",
+    "updated": "Product updated successfully",
+    "deleted": "Product deleted successfully",
+    "category_not_found": "Category not found"
+  },
+  "categories": {
+    "not_found": "Category not found",
+    "created": "Category created successfully",
+    "updated": "Category updated successfully",
+    "deleted": "Category deleted successfully",
+    "name_exists": "A category with this name already exists"
   }
   }

@@ -1,0 +1,293 @@
+Use this prompt to refactor and improve your Product and Category entities while preserving Clean Architecture and Entity Framework best practices:
+
+You are a Senior ASP.NET Core 8, Entity Framework Core, Clean Architecture, and Domain-Driven Design engineer working on the DAKKN project.
+
+Context:
+
+I need to refine the Product and Category entities and their relationships.
+
+Current Requirements:
+
+- A Product belongs to exactly one Category.
+- A Category can contain many Products.
+- Category should only store category information.
+- Product should store all product-related information.
+
+Goal:
+
+Implement a proper one-to-many relationship between Category and Product following Clean Architecture, Entity Framework Core best practices, and DDD principles.
+
+Entity Requirements
+
+Category Entity
+
+Category should contain only:
+
+- Id
+- CategoryName
+
+Navigation:
+
+- ICollection<Product> Products
+
+Example:
+
+Category
+{
+    Id
+    CategoryName
+    Products
+}
+
+Product Entity
+
+Product should contain:
+
+- Id
+- Name
+- Description
+- Price
+- RatingCount
+- ImageUrl
+- CategoryId
+- Category Navigation Property
+
+Example:
+
+Product
+{
+    Id
+    Name
+    Description
+    Price
+    RatingCount
+    ImageUrl
+    CategoryId
+    Category
+}
+
+Relationship Requirements
+
+Configure:
+
+Category (1) ----> (*) Product
+
+Rules:
+
+- Product must always belong to a Category.
+- Category can have multiple Products.
+- Category deletion behavior must be explicitly configured.
+- Avoid circular serialization issues.
+- Use proper navigation properties.
+
+Entity Framework Configuration
+
+Create Fluent API configurations:
+
+CategoryConfiguration
+ProductConfiguration
+
+Configure:
+
+- Required fields
+- Max lengths
+- Relationships
+- Indexes
+- Delete behavior
+
+Suggested Constraints
+
+Category:
+
+CategoryName
+- Required
+- MaxLength(100)
+
+Product:
+
+Name
+- Required
+- MaxLength(200)
+
+Description
+- Required
+- MaxLength(2000)
+
+Price
+- Decimal(18,2)
+- Required
+
+RatingCount
+- Default 0
+
+ImageUrl
+- Required
+- MaxLength(500)
+
+CategoryId
+- Required
+
+Database Migration
+
+Generate:
+
+- Migration changes
+- Foreign key relationship
+- Indexes
+
+DTO Updates
+
+Generate:
+
+CreateProductDto
+UpdateProductDto
+ProductDetailsDto
+ProductListDto
+CategoryDto
+
+ProductDetailsDto should include:
+
+- Id
+- Name
+- Description
+- Price
+- RatingCount
+- ImageUrl
+- CategoryId
+- CategoryName
+
+CQRS Updates
+
+Create/Update handlers:
+
+CreateProductCommand
+UpdateProductCommand
+DeleteProductCommand
+GetProductByIdQuery
+GetProductsQuery
+
+Requirements:
+
+- Validate CategoryId exists before creating/updating Product.
+- Return proper validation messages.
+- Use MediatR.
+
+Validation
+
+Create FluentValidation validators.
+
+Product:
+
+- Name required
+- Description required
+- Price > 0
+- CategoryId required
+- ImageUrl required
+
+Category:
+
+- CategoryName required
+- CategoryName unique
+
+Admin Dashboard
+
+Update Product Management UI:
+
+Create Product Form:
+
+Fields:
+
+- Product Name
+- Description
+- Price
+- Category Dropdown
+- Rating Count
+- Product Image URL
+
+Edit Product Form:
+
+- Load existing Category
+- Allow Category change
+
+Product Table:
+
+Columns:
+
+- Image
+- Name
+- Category
+- Price
+- Rating Count
+- Actions
+
+Customer Dashboard / Store
+
+Product cards should display:
+
+- Product Image
+- Product Name
+- Category Name
+- Price
+- Rating Count
+
+API Response Example
+
+{
+  "id": 1,
+  "name": "Gaming Laptop",
+  "description": "High performance laptop",
+  "price": 1500,
+  "ratingCount": 120,
+  "imageUrl": "/files/laptop.jpg",
+  "categoryId": 2,
+  "categoryName": "Electronics"
+}
+
+Deliverables
+
+Generate complete implementation:
+
+1. Updated Category Entity
+2. Updated Product Entity
+3. Entity Configurations
+4. DbContext updates
+5. Migrations
+6. DTOs
+7. CQRS Commands
+8. CQRS Queries
+9. Handlers
+10. Validators
+11. AutoMapper Profiles
+12. Admin UI updates
+13. API response models
+
+For every change provide:
+
+- File path
+- Before code
+- After code
+- Explanation
+
+Important:
+
+- Follow DAKKN Clean Architecture.
+- Use MediatR.
+- Use Entity Framework Core Fluent Configuration.
+- Do not break existing functionality.
+- Keep Category entity minimal with only CategoryName.
+- Product must contain:
+  Name,
+  Description,
+  Price,
+  RatingCount,
+  ImageUrl,
+  CategoryId,
+  Category.
+- Ensure production-ready code.
+
+One improvement I'd recommend for e-commerce readiness is replacing RatingCount with both:
+
+AverageRating (decimal)
+ReviewCount (int)
+
+because "120" alone doesn't tell whether the rating is 4.8/5 or 2.1/5. This gives much richer product data for future reviews and recommendations.

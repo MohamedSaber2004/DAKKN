@@ -1,23 +1,21 @@
-using Microsoft.AspNetCore.Authorization;
+using DAKKN.Appearence.Filters;
+using DAKKN.Application.Common.Exceptions;
+using DAKKN.Application.Features.Categories.Queries.GetCategories;
+using DAKKN.Application.Features.Products.Commands.CreateProduct;
+using DAKKN.Application.Features.Products.Commands.UpdateProduct;
+using DAKKN.Application.Features.Products.Queries.GetProductById;
+using DAKKN.Application.Features.Products.Queries.GetProducts;
+using DAKKN.Application.Features.Users.Commands.UpdateUserSettings;
+using DAKKN.Application.Features.Users.Queries.ExportUsers;
+using DAKKN.Application.Features.Users.Queries.GetAllUsers;
+using DAKKN.Application.Features.Users.Queries.GetUserSettings;
+using DAKKN.Application.Features.Users.Queries.GetUserStats;
+using DAKKN.Application.Localization;
+using DAKKN.Domain.Enums;
+using DAKKN.MVC.ViewModels.Admin;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
-using DAKKN.Application.Localization;
-using DAKKN.MVC.ViewModels.Admin;
-
-using DAKKN.Appearence.Filters;
-using DAKKN.Domain.Enums;
-using System.Security.Claims;
-using MediatR;
-using DAKKN.Application.Features.Users.Queries.GetUserStats;
-using DAKKN.Application.Features.Users.Queries.GetAllUsers;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Linq;
-using System;
-using DAKKN.Application.Features.Users.Queries.ExportUsers;
-using DAKKN.Application.Features.Users.Queries.GetUserSettings;
-using DAKKN.Application.Features.Users.Commands.UpdateUserSettings;
-using Microsoft.AspNetCore.Http;
 
 namespace DAKKN.MVC.Controllers
 {
@@ -198,33 +196,16 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpGet("inventory")]
-        public IActionResult Inventory()
+        public async Task<IActionResult> Inventory(int pageNumber = 1, int pageSize = 10)
         {
             ViewData["Title"] = _localizer["admin_inventory"];
 
-            var mockProducts = new List<InventoryProductViewModel>
-            {
-                new InventoryProductViewModel { 
-                    Id = "PRD-001", Name = "كاسيت ريترو", Category = "Anime", Price = 70, StockLevel = 150, Sku = "STK-RETR-01",
-                    ImageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuBdJqwUIJElF6yKiAthjzqbJT3oybHZLiBv1kJqmbuD5er1OlaDE6e1hoP4RbXI68dtTm9QrVrdOu4_L3gIbRZzTfdPkJLIImwJgtfFOblkSv-zMbSFfD_U6GblKhzSYn6aZ6UMAQTaHHAv7ja5lVj5JQ_0eA60WnQU6Tdn8_-P_aPc-MlDlgr3RCXgvrDq7VwR6wWvaxjG5_se3JpJkYk1JpuDc-70Yt9bnuSg2R_zVgHYwNGlkw_-8bAWpGARNWW3NW7GDdgZKL8"
-                },
-                new InventoryProductViewModel { 
-                    Id = "PRD-002", Name = "جمجمة نيون", Category = "Gaming", Price = 80, StockLevel = 5, Sku = "STK-NEON-02",
-                    ImageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuAYqCGBR3sHhdqe1mdJisODxn5Q3mYWRwLi66x75IT4A9Yxij9GP1QnCZjiAUbcOSFgViSTcKrRe02xppzY4S8p2-kPQOJMDgqlv2RT4QI2eFpHWZBASZagZoaX61ZEZKFfuufofS4xvl9pMujFf1iGLw_v3AvaaNeVwVJhlVSUwYUZoFpvIHFOFBAgAYLevbS7VwjTYNJ_NDmU3Mf3ggAVKxNHE7vl2mY5kv_zNm-ME8QUmPaEUO243hcgumpk5LD8o9Gl1101g10"
-                },
-                new InventoryProductViewModel { 
-                    Id = "PRD-003", Name = "قلب بكسل", Category = "Gaming", Price = 60, StockLevel = 85, Sku = "STK-PIXL-03",
-                    ImageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuBdJqwUIJElF6yKiAthjzqbJT3oybHZLiBv1kJqmbuD5er1OlaDE6e1hoP4RbXI68dtTm9QrVrdOu4_L3gIbRZzTfdPkJLIImwJgtfFOblkSv-zMbSFfD_U6GblKhzSYn6aZ6UMAQTaHHAv7ja5lVj5JQ_0eA60WnQU6Tdn8_-P_aPc-MlDlgr3RCXgvrDq7VwR6wWvaxjG5_se3JpJkYk1JpuDc-70Yt9bnuSg2R_zVgHYwNGlkw_-8bAWpGARNWW3NW7GDdgZKL8"
-                }
-            };
+            var result = await _mediator.Send(new GetProductsQuery(null, null, pageNumber, pageSize));
 
             var viewModel = new InventoryViewModel
             {
-                Products = mockProducts,
-                TotalProducts = 1248,
-                LowStockAlerts = 23,
-                CategoriesCount = 14,
-                TotalStockValue = "85,400 ج.م"
+                Products = result.Items.ToList(),
+                TotalProducts = result.TotalCount
             };
 
             return View(viewModel);
@@ -391,47 +372,101 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpGet("add-product")]
-        public IActionResult AddProduct()
+        public async Task<IActionResult> AddProduct()
         {
             ViewData["Title"] = _localizer["admin_add_product"];
-            var viewModel = new AddProductViewModel();
+
+            var categories = await _mediator.Send(new GetCategoriesQuery());
+            var viewModel = new AddProductViewModel
+            {
+                AvailableCategories = categories
+            };
+
             return View(viewModel);
         }
 
+        [HttpPost("add-product")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddProduct(AddProductViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewData["Title"] = _localizer["admin_add_product"];
+                model.AvailableCategories = await _mediator.Send(new GetCategoriesQuery());
+                return View(model);
+            }
+
+            var command = new CreateProductCommand(
+                model.Name,
+                model.Description,
+                model.Price,
+                model.ExistingImageUrl ?? string.Empty,
+                new List<string>(),
+                new List<string>(),
+                model.CategoryId
+            );
+
+            await _mediator.Send(command);
+
+            TempData["SuccessMessage"] = _localizer[LocalizationKeys.Products.Created.Value];
+            return RedirectToAction(nameof(Inventory));
+        }
+
         [HttpGet("edit-product/{id}")]
-        public IActionResult EditProduct(string id)
+        public async Task<IActionResult> EditProduct(Guid id)
         {
             ViewData["Title"] = _localizer["admin_product_edit_title"];
 
-            // Fetch mock product details
-            var viewModel = new AddProductViewModel
+            try
             {
-                Id = id,
-                Name = "كاسيت ريترو",
-                Description = "ملصق فينيل عالي الجودة بتصميم كاسيت كلاسيكي.",
-                Category = "Anime",
-                Price = 70,
-                Sku = "STK-RETR-01",
-                Quantity = 150,
-                TrackInventory = true,
-                Tags = "ريترو, كلاسيك, أنمي",
-                ExistingImageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuBdJqwUIJElF6yKiAthjzqbJT3oybHZLiBv1kJqmbuD5er1OlaDE6e1hoP4RbXI68dtTm9QrVrdOu4_L3gIbRZzTfdPkJLIImwJgtfFOblkSv-zMbSFfD_U6GblKhzSYn6aZ6UMAQTaHHAv7ja5lVj5JQ_0eA60WnQU6Tdn8_-P_aPc-MlDlgr3RCXgvrDq7VwR6wWvaxjG5_se3JpJkYk1JpuDc-70Yt9bnuSg2R_zVgHYwNGlkw_-8bAWpGARNWW3NW7GDdgZKL8"
-            };
+                var product = await _mediator.Send(new GetProductByIdQuery(id));
+                var categories = await _mediator.Send(new GetCategoriesQuery());
 
-            return View("AddProduct", viewModel);
+                var viewModel = new AddProductViewModel
+                {
+                    Id = product.Id,
+                    Name = product.Name,
+                    Description = product.Description,
+                    Price = product.Price,
+                    CategoryId = product.CategoryId,
+                    ExistingImageUrl = product.ImageUrl,
+                    AvailableCategories = categories
+                };
+
+                return View("AddProduct", viewModel);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
         }
 
         [HttpPost("edit-product/{id}")]
-        public IActionResult EditProduct(AddProductViewModel model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditProduct(Guid id, AddProductViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 ViewData["Title"] = _localizer["admin_product_edit_title"];
+                model.AvailableCategories = await _mediator.Send(new GetCategoriesQuery());
                 return View("AddProduct", model);
             }
 
-            // Logic to overwrite current product details would go here
-            return RedirectToAction("Inventory");
+            var command = new UpdateProductCommand(
+                id,
+                model.Name,
+                model.Description,
+                model.Price,
+                model.ExistingImageUrl ?? string.Empty,
+                new List<string>(),
+                new List<string>(),
+                model.CategoryId
+            );
+
+            await _mediator.Send(command);
+
+            TempData["SuccessMessage"] = _localizer[LocalizationKeys.Products.Updated.Value];
+            return RedirectToAction(nameof(Inventory));
         }
     }
 }

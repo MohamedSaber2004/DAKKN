@@ -17,7 +17,7 @@
         <!-- Image Gallery -->
         <div class="space-y-lg">
             <div class="aspect-square rounded-[48px] bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 overflow-hidden shadow-large group relative">
-                <img src="@product.ImageUrls.FirstOrDefault()" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="@product.Name">
+                <img src="@product.ImageUrl" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="@product.Name">
                 <div class="absolute top-8 right-8 flex flex-col gap-sm">
                     <button class="w-12 h-12 rounded-full bg-surface/90 backdrop-blur-md shadow-medium flex items-center justify-center text-text-secondary hover:text-error transition-all">
                         <span class="material-symbols-outlined">favorite</span>
@@ -27,14 +27,17 @@
                     </button>
                 </div>
             </div>
-            <div class="grid grid-cols-4 gap-md">
-                @foreach (var imageUrl in product.ImageUrls)
+            @if (product.SizeOptions.Any() || product.FinishOptions.Any())
+            {
+            <div class="flex flex-wrap gap-2">
+                @if (!string.IsNullOrEmpty(product.ImageUrl))
                 {
-                    <div class="aspect-square rounded-2xl bg-surface-container dark:bg-inverse-surface border-2 border-primary overflow-hidden cursor-pointer hover:opacity-80 transition-all">
-                        <img src="@imageUrl" class="w-full h-full object-cover" alt="@product.Name">
+                    <div class="aspect-square rounded-2xl bg-surface-container dark:bg-inverse-surface border-2 border-primary overflow-hidden" style="width:80px;height:80px">
+                        <img src="@product.ImageUrl" class="w-full h-full object-cover" alt="@product.Name">
                     </div>
                 }
             </div>
+            }
         </div>
 
         <!-- Product Info -->
@@ -46,7 +49,7 @@
                     <span class="text-3xl font-bold text-primary">@product.Price @Localizer["Currency_EGP"]</span>
                     <div class="flex items-center gap-1 text-yellow-500">
                         <span class="material-symbols-outlined text-lg filled-icon">star</span>
-                        <span class="font-bold">@product.Rating</span>
+                        <span class="font-bold">@product.AverageRating.ToString("F1")</span>
                         <span class="text-text-secondary text-sm font-medium ml-1">(@product.ReviewCount @Localizer["Product_Reviews"])</span>
                     </div>
                 </div>
@@ -115,17 +118,32 @@
 
     <!-- Features Grid (Trust builder) -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-lg mt-3xl pt-2xl border-t border-border dark:border-outline/10">
-        @foreach (var feature in product.Features)
-        {
-            <div class="flex items-center gap-lg">
-                <div class="w-14 h-14 rounded-full bg-primary/10 text-primary flex items-center justify-center">
-                    <span class="material-symbols-outlined">@feature.Icon</span>
-                </div>
-                <div>
-                    <h4 class="font-bold">@feature.Title</h4>
-                    <p class="text-sm text-text-secondary">@feature.Description</p>
-                </div>
+        <div class="flex items-center gap-lg">
+            <div class="w-14 h-14 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                <span class="material-symbols-outlined">water_drop</span>
             </div>
-        }
+            <div>
+                <h4 class="font-bold">@Localizer["waterproof"]</h4>
+                <p class="text-sm text-text-secondary">@Localizer["feat3_p"]</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-lg">
+            <div class="w-14 h-14 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                <span class="material-symbols-outlined">wb_sunny</span>
+            </div>
+            <div>
+                <h4 class="font-bold">@Localizer["uv"]</h4>
+                <p class="text-sm text-text-secondary">@Localizer["feat3_p"]</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-lg">
+            <div class="w-14 h-14 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                <span class="material-symbols-outlined">verified</span>
+            </div>
+            <div>
+                <h4 class="font-bold">@Localizer["Product_BestSeller"]</h4>
+                <p class="text-sm text-text-secondary">@Localizer["hero_badge"]</p>
+            </div>
+        </div>
     </div>
 </div>

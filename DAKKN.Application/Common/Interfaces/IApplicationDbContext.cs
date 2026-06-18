@@ -10,6 +10,8 @@ namespace DAKKN.Application.Common.Interfaces
         DbSet<IdentityRole<Guid>> Roles { get; }
         DbSet<IdentityUserRole<Guid>> UserRoles { get; }
         DbSet<UserSettings> UserSettings { get; }
+        DbSet<Product> Products { get; }
+        DbSet<Category> Categories { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

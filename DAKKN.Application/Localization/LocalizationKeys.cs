@@ -119,5 +119,23 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString RemoveSuccess   = new("profile_image.remove_success");
             public static readonly KeyString UploadFailed    = new("profile_image.upload_failed");
         }
+
+        public static class Products
+        {
+            public static readonly KeyString NotFound = new("products.not_found");
+            public static readonly KeyString Created = new("products.created");
+            public static readonly KeyString Updated = new("products.updated");
+            public static readonly KeyString Deleted = new("products.deleted");
+            public static readonly KeyString CategoryNotFound = new("products.category_not_found");
+        }
+
+        public static class Categories
+        {
+            public static readonly KeyString NotFound = new("categories.not_found");
+            public static readonly KeyString Created = new("categories.created");
+            public static readonly KeyString Updated = new("categories.updated");
+            public static readonly KeyString Deleted = new("categories.deleted");
+            public static readonly KeyString NameExists = new("categories.name_exists");
+        }
     }
 }

@@ -1,8 +1,6 @@
 using DAKKN.Application.Common.Behaviours;
 using DAKKN.Application.Common.Interfaces;
 using DAKKN.Application.Common.Services;
-using DAKKN.Application.Interfaces;
-using DAKKN.Application.Services;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.StaticFiles;
@@ -25,12 +23,8 @@ namespace DAKKN.Application
 
             services.AddScoped<IImageValidator, ImageValidator>();
 
-            services.AddScoped<IProductService, MockProductService>();
-            services.AddScoped<IDashboardService, MockDashboardService>();
-
             services.AddSingleton<FileExtensionContentTypeProvider>(sp => new FileExtensionContentTypeProvider());
             services.AddSingleton<IContentTypeProvider, FileExtensionContentTypeProvider>();
-
 
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
