@@ -18,9 +18,17 @@ namespace DAKKN.Application.Features.Products.Commands.CreateProduct
                 .NotEmpty().WithMessage(localizer[LocalizationKeys.ValidationMessages.Required.Value])
                 .MaximumLength(200).WithMessage(localizer[LocalizationKeys.ValidationMessages.MaxLength.Value, 200]);
 
+            RuleFor(v => v.ArName)
+                .NotEmpty().WithMessage(localizer[LocalizationKeys.ValidationMessages.Required.Value])
+                .MaximumLength(200).WithMessage(localizer[LocalizationKeys.ValidationMessages.MaxLength.Value, 200]);
+
             RuleFor(v => v.Description)
                 .NotEmpty().WithMessage(localizer[LocalizationKeys.ValidationMessages.Required.Value])
-                .MaximumLength(2000).WithMessage(localizer[LocalizationKeys.ValidationMessages.MaxLength.Value, 2000]);
+                .MaximumLength(3000).WithMessage(localizer[LocalizationKeys.ValidationMessages.MaxLength.Value, 3000]);
+
+            RuleFor(v => v.ArDescription)
+                .NotEmpty().WithMessage(localizer[LocalizationKeys.ValidationMessages.Required.Value])
+                .MaximumLength(3000).WithMessage(localizer[LocalizationKeys.ValidationMessages.MaxLength.Value, 3000]);
 
             RuleFor(v => v.Price)
                 .GreaterThan(0).WithMessage(localizer[LocalizationKeys.ValidationMessages.GreaterThanOrEqual.Value, 0]);

@@ -28,15 +28,20 @@ namespace DAKKN.Application.Features.Products.Queries.GetProductById
             {
                 Id = product.Id,
                 Name = product.Name,
+                ArName = product.ArName,
                 Description = product.Description,
+                ArDescription = product.ArDescription,
                 Price = product.Price,
                 AverageRating = product.AverageRating,
                 ReviewCount = product.ReviewCount,
-                ImageUrl = product.ImageUrl,
+                ImageUrl = string.IsNullOrEmpty(product.ImageUrl) || product.ImageUrl.StartsWith("http") || product.ImageUrl.StartsWith("/")
+                    ? product.ImageUrl
+                    : $"/files/{product.ImageUrl}",
                 FinishOptions = product.FinishOptions,
                 SizeOptions = product.SizeOptions,
                 CategoryId = product.CategoryId,
-                CategoryName = category?.CategoryName ?? string.Empty
+                CategoryName = category?.CategoryName ?? string.Empty,
+                CategoryArName = category?.ArName ?? string.Empty
             };
         }
     }

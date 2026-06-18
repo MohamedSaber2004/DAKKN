@@ -198,6 +198,10 @@
                 <span class="material-symbols-outlined @(currentAction == "Inventory" ? "filled-icon" : "") flex-shrink-0">inventory_2</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_inventory"]</span>
             </a>
+            <a asp-controller="Admin" asp-action="Categories" class="nav-item flex items-center gap-md @(currentAction == "Categories" || currentAction == "CreateCategory" || currentAction == "EditCategory" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_categories"]">
+                <span class="material-symbols-outlined @(currentAction == "Categories" || currentAction == "CreateCategory" || currentAction == "EditCategory" ? "filled-icon" : "") flex-shrink-0">category</span>
+                <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_categories"]</span>
+            </a>
             <a asp-controller="Admin" asp-action="Support" class="nav-item flex items-center gap-md @(currentAction == "Support" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_support"]">
                 <span class="material-symbols-outlined @(currentAction == "Support" ? "filled-icon" : "") flex-shrink-0">support_agent</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_support"]</span>

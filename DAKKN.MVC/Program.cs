@@ -192,6 +192,9 @@ namespace DAKKN.MVC
                     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
                     await DAKKNDbContextSeed.SeedAsync(userManager, roleManager);
+
+                    var context = services.GetRequiredService<DAKKNDbContext>();
+                    await DAKKNDbContextSeed.SeedCategoriesAndProductsAsync(context);
                 }
                 catch (Exception ex)
                 {
@@ -263,6 +266,9 @@ namespace DAKKN.MVC
                         .CustomSources(
                             "https://lh3.googleusercontent.com",
                             "https://ui-avatars.com",
+                            "https://flagcdn.com",
+                            "https://picsum.photos",
+                            "https://placehold.co",
                             "data:",
                             "blob:"
                         )
@@ -315,7 +321,11 @@ namespace DAKKN.MVC
                         .CustomSources(
                             "https://lh3.googleusercontent.com",
                             "https://ui-avatars.com",
-                            "data:"
+                            "https://flagcdn.com",
+                            "https://picsum.photos",
+                            "https://placehold.co",
+                            "data:",
+                            "blob:"
                         )
                     )
                     .ConnectSources(s => s

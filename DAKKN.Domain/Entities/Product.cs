@@ -7,7 +7,9 @@ namespace DAKKN.Domain.Entities
     public class Product : BaseEntity<Guid>
     {
         public string Name { get; set; } = string.Empty;
+        public string ArName { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
+        public string ArDescription { get; set; } = string.Empty;
         public decimal Price { get; set; }
         public double AverageRating { get; set; }
         public int ReviewCount { get; set; }

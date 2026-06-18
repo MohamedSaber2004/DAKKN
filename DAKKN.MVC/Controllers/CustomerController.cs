@@ -1,3 +1,4 @@
+using DAKKN.Application.Common.Models;
 using DAKKN.Application.DTOs;
 using DAKKN.Application.Common.Exceptions;
 using DAKKN.MVC.ViewModels.Customer;
@@ -13,6 +14,7 @@ using DAKKN.Application.Features.Users.Queries.GetUserSettings;
 using DAKKN.Application.Features.Users.Commands.UpdateUserSettings;
 using DAKKN.Application.Features.Products.Queries.GetProducts;
 using DAKKN.Application.Features.Products.Queries.GetProductById;
+using DAKKN.Application.Features.Categories.Queries.GetCategories;
 
 namespace DAKKN.MVC.Controllers
 {
@@ -36,10 +38,21 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpGet("products")]
-        public IActionResult Products()
+        public async Task<IActionResult> Products(int pageNumber = 1, int pageSize = 12)
         {
             ViewData["Title"] = localizer["nav_shop"];
-            return View();
+            var productsResult = await mediator.Send(new GetProductsQuery(null, null, pageNumber, pageSize));
+            var categories = await mediator.Send(new GetCategoriesQuery());
+            var viewModel = new ProductsViewModel
+            {
+                Products = productsResult.Items.ToList(),
+                Categories = categories,
+                PageNumber = productsResult.PageNumber,
+                TotalPages = productsResult.TotalPages,
+                HasPreviousPage = productsResult.HasPreviousPage,
+                HasNextPage = productsResult.HasNextPage
+            };
+            return View(viewModel);
         }
 
         [HttpGet("product/{id}")]
@@ -65,30 +78,13 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpGet("favorites")]
-        public IActionResult Favorites()
+        public async Task<IActionResult> Favorites()
         {
             ViewData["Title"] = localizer["nav_favorites"];
+            var products = await mediator.Send(new GetProductsQuery(null, null, 1, 10));
             var viewModel = new FavoritesViewModel
             {
-                FavoriteProducts = new List<ProductDto>
-                {
-                    new ProductDto
-                    {
-                        Id = Guid.Parse("f4d6c75f-2643-4ffc-8199-e94a91d8b617"),
-                        Name = "Retro Cassette",
-                        Price = 70,
-                        ImageUrl = "https://images.unsplash.com/photo-1605648916319-cf082f7524a1?q=80&w=400&auto=format&fit=crop",
-                        FinishOptions = new List<string> { "Holographic" }
-                    },
-                    new ProductDto
-                    {
-                        Id = Guid.Parse("67890abc-def0-1234-5678-90abcdef1234"),
-                        Name = "Pixel Heart",
-                        Price = 60,
-                        ImageUrl = "https://images.unsplash.com/photo-1599305090598-fe179d501c27?q=80&w=400&auto=format&fit=crop",
-                        FinishOptions = new List<string> { "Clear Vinyl" }
-                    }
-                }
+                FavoriteProducts = products.Items.ToList()
             };
             return View(viewModel);
         }

@@ -6,7 +6,7 @@
 }
 
 <div class="max-w-5xl mx-auto pb-12">
-    <form asp-action="@(Model.IsEdit ? "EditProduct" : "AddProduct")" asp-route-id="@Model.Id" method="post" class="space-y-8">
+    <form asp-action="@(Model.IsEdit ? "EditProduct" : "AddProduct")" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" class="space-y-8">
         <input type="hidden" asp-for="Id" />
         
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -40,13 +40,23 @@
                     
                     <div class="space-y-4">
                         <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_product_name"]</label>
-                            <input asp-for="Name" type="text" placeholder="@Localizer["admin_product_name_ph"]" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all" />
+                            <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_product_name"] (@Localizer["admin_lang_en"])</label>
+                            <input asp-for="Name" type="text" placeholder="e.g. Retro Sticker Pack" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all" />
                         </div>
 
                         <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_product_desc"]</label>
-                            <textarea asp-for="Description" rows="5" placeholder="@Localizer["admin_product_desc_ph"]" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all resize-none"></textarea>
+                            <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_product_name"] (@Localizer["admin_lang_ar"])</label>
+                            <input asp-for="ArName" type="text" placeholder="مثال: حزمة ملصقات ريترو" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all" />
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_product_desc"] (@Localizer["admin_lang_en"])</label>
+                            <textarea asp-for="Description" rows="5" placeholder="Write a detailed product description here..." class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all resize-none"></textarea>
+                        </div>
+
+                        <div class="space-y-1.5">
+                            <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_product_desc"] (@Localizer["admin_lang_ar"])</label>
+                            <textarea asp-for="ArDescription" rows="5" placeholder="اكتب وصفاً تفصيلياً للمنتج هنا..." class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all resize-none"></textarea>
                         </div>
 
                         <div class="space-y-1.5">
@@ -55,7 +65,7 @@
                                 <option value="">@Localizer["admin_product_cat_select"]</option>
                                 @foreach (var cat in Model.AvailableCategories)
                                 {
-                                    <option value="@cat.Id">@cat.CategoryName</option>
+                                    <option value="@cat.Id">@cat.CategoryName — @cat.ArName</option>
                                 }
                             </select>
                         </div>
@@ -68,7 +78,7 @@
                         <span class="material-symbols-outlined text-primary">image</span>
                         @Localizer["admin_product_sec_media"]
                     </h4>
-                    
+
                     @if (Model.IsEdit && !string.IsNullOrEmpty(Model.ExistingImageUrl))
                     {
                         <div class="relative w-40 h-40 rounded-2xl overflow-hidden border border-admin-border group">
@@ -81,8 +91,16 @@
 
                     <div class="space-y-1.5">
                         <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_product_media_title"]</label>
-                        <input asp-for="ExistingImageUrl" type="text" placeholder="https://example.com/image.jpg" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all" />
+                        <div class="flex items-center gap-4">
+                            <label class="flex-1 flex items-center gap-3 bg-admin-page border border-dashed border-admin-border rounded-xl px-4 py-6 cursor-pointer hover:border-primary transition-all">
+                                <span class="material-symbols-outlined text-admin-secondary">upload</span>
+                                <span class="text-sm text-admin-secondary">@Localizer["admin_product_media_subtitle"]</span>
+                                <input asp-for="ImageFile" type="file" accept="image/*" class="hidden" onchange="this.closest('.flex-1').querySelector('.file-name').textContent = this.files[0]?.name || ''" />
+                                <span class="file-name text-xs text-primary font-medium ml-auto"></span>
+                            </label>
+                        </div>
                     </div>
+                    <input type="hidden" asp-for="ExistingImageUrl" />
                 </div>
 
                 <!-- 3. Pricing -->
@@ -100,7 +118,54 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- 4. Size Options -->
+                <div class="premium-card p-8 space-y-6">
+                    <h4 class="text-lg font-bold text-admin-primary flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">straighten</span>
+                        @Localizer["admin_product_sec_size"]
+                    </h4>
+
+                    <div id="size-options-container" class="space-y-3">
+                        @for (var i = 0; i < Model.SizeOptions.Count; i++)
+                        {
+                            <div class="size-option flex items-center gap-2">
+                                <input type="text" name="SizeOptions" value="@Model.SizeOptions[i]" class="flex-1 bg-admin-page border border-admin-border rounded-xl px-4 py-2.5 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all" />
+                                <button type="button" onclick="this.closest('.size-option').remove()" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-all">
+                                    <span class="material-symbols-outlined text-lg">close</span>
+                                </button>
+                            </div>
+                        }
+
+                        <div class="size-option flex items-center gap-2">
+                            <input type="text" placeholder="@Localizer["admin_product_size_add"]" class="flex-1 bg-admin-page border border-admin-border rounded-xl px-4 py-2.5 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all" />
+                            <button type="button" onclick="addSizeOption(this)" class="px-4 py-2.5 bg-primary text-on-primary rounded-xl text-sm font-bold shadow-small hover:scale-103 active:scale-95 transition-all">
+                                <span class="material-symbols-outlined text-lg">add</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </form>
 </div>
+
+<script>
+    function addSizeOption(btn) {
+        const container = document.getElementById('size-options-container');
+        const row = btn.closest('.size-option');
+        const input = row.querySelector('input');
+        const val = input.value.trim();
+        if (!val) return;
+
+        const newRow = document.createElement('div');
+        newRow.className = 'size-option flex items-center gap-2';
+        newRow.innerHTML = '<input type="text" name="SizeOptions" value="' + val.replace(/"/g, '&quot;') + '" class="flex-1 bg-admin-page border border-admin-border rounded-xl px-4 py-2.5 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all" />' +
+            '<button type="button" onclick="this.closest(\'.size-option\').remove()" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-all">' +
+            '<span class="material-symbols-outlined text-lg">close</span></button>';
+
+        container.insertBefore(newRow, row);
+        input.value = '';
+        input.focus();
+    }
+</script>

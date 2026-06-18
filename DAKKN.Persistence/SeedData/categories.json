@@ -1,34 +1,27 @@
 [
   {
     "categoryName": "Vinyl Stickers",
-    "description": "Durable vinyl stickers perfect for laptops, water bottles, journals, and any smooth surface. Weather-resistant and long-lasting."
+    "arName": "ملصقات فينيل",
+    "description": "Durable vinyl stickers perfect for laptops, water bottles, journals, and any smooth surface."
   },
   {
     "categoryName": "Holographic Stickers",
-    "description": "Mesmerizing holographic stickers that shift colors in the light. A rainbow effect that makes any design pop."
+    "arName": "ملصقات هولوغرام",
+    "description": "Mesmerizing holographic stickers that shift colors in the light with a rainbow effect."
   },
   {
     "categoryName": "Matte Stickers",
-    "description": "Smooth, non-reflective matte finish stickers with a premium feel. Perfect for a sophisticated, understated look."
+    "arName": "ملصقات مطفي",
+    "description": "Smooth, non-reflective matte finish stickers with a premium, sophisticated look."
   },
   {
     "categoryName": "Glossy Stickers",
-    "description": "High-gloss shiny stickers with vibrant colors that really stand out. A classic finish for maximum visual impact."
+    "arName": "ملصقات لامعة",
+    "description": "High-gloss shiny stickers with vibrant colors that really stand out."
   },
   {
     "categoryName": "Die-Cut Stickers",
-    "description": "Custom-shaped stickers cut precisely to the outline of your design. No background, just your artwork."
-  },
-  {
-    "categoryName": "Kiss-Cut Stickers",
-    "description": "Stickers on a backing sheet, cut through the sticker layer but not the backing. Easy to peel and apply."
-  },
-  {
-    "categoryName": "Clear Stickers",
-    "description": "Transparent vinyl stickers with a crystal-clear background. The design appears to float on any surface."
-  },
-  {
-    "categoryName": "Removable Stickers",
-    "description": "Temporary stickers designed to be removed without leaving residue. Perfect for seasonal decorations and events."
+    "arName": "ملصقات مقطوعة",
+    "description": "Custom-shaped stickers cut precisely to the outline of your design with no background."
   }
 ]

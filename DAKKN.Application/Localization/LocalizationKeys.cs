@@ -135,6 +135,7 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString Created = new("categories.created");
             public static readonly KeyString Updated = new("categories.updated");
             public static readonly KeyString Deleted = new("categories.deleted");
+            public static readonly KeyString Restored = new("categories.restored");
             public static readonly KeyString NameExists = new("categories.name_exists");
         }
     }

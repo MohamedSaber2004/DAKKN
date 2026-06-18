@@ -39,7 +39,9 @@ namespace DAKKN.Application.Features.Products.Queries.GetProducts
             {
                 Id = p.Id,
                 Name = p.Name,
+                ArName = p.ArName,
                 Description = p.Description,
+                ArDescription = p.ArDescription,
                 Price = p.Price,
                 AverageRating = p.AverageRating,
                 ReviewCount = p.ReviewCount,
@@ -47,10 +49,19 @@ namespace DAKKN.Application.Features.Products.Queries.GetProducts
                 FinishOptions = p.FinishOptions,
                 SizeOptions = p.SizeOptions,
                 CategoryId = p.CategoryId,
-                CategoryName = p.Category.CategoryName
+                CategoryName = p.Category.CategoryName,
+                CategoryArName = p.Category.ArName
             });
 
-            return await projected.AsPagginatedListAsync(request.PageNumber, request.PageSize);
+            var result = await projected.AsPagginatedListAsync(request.PageNumber, request.PageSize);
+
+            foreach (var item in result.Items)
+            {
+                if (!string.IsNullOrEmpty(item.ImageUrl) && !item.ImageUrl.StartsWith("http") && !item.ImageUrl.StartsWith("/"))
+                    item.ImageUrl = $"/files/{item.ImageUrl}";
+            }
+
+            return result;
         }
     }
 }

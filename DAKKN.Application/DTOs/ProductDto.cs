@@ -7,7 +7,9 @@ namespace DAKKN.Application.DTOs
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
+        public string ArName { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
+        public string ArDescription { get; set; } = string.Empty;
         public decimal Price { get; set; }
         public double AverageRating { get; set; }
         public int ReviewCount { get; set; }
@@ -16,5 +18,6 @@ namespace DAKKN.Application.DTOs
         public List<string> SizeOptions { get; set; } = new();
         public Guid CategoryId { get; set; }
         public string CategoryName { get; set; } = string.Empty;
+        public string CategoryArName { get; set; } = string.Empty;
     }
 }

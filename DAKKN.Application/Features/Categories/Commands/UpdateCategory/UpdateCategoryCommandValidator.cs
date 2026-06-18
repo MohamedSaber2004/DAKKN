@@ -13,7 +13,11 @@ namespace DAKKN.Application.Features.Categories.Commands.UpdateCategory
 
             RuleFor(v => v.CategoryName)
                 .NotEmpty().WithMessage(localizer[LocalizationKeys.ValidationMessages.Required.Value])
-                .MaximumLength(100).WithMessage(localizer[LocalizationKeys.ValidationMessages.MaxLength.Value, 100]);
+                .MaximumLength(150).WithMessage(localizer[LocalizationKeys.ValidationMessages.MaxLength.Value, 150]);
+
+            RuleFor(v => v.ArName)
+                .NotEmpty().WithMessage(localizer[LocalizationKeys.ValidationMessages.Required.Value])
+                .MaximumLength(150).WithMessage(localizer[LocalizationKeys.ValidationMessages.MaxLength.Value, 150]);
         }
     }
 }

@@ -13,11 +13,16 @@ namespace DAKKN.Persistence.Configuration
 
             builder.Property(x => x.CategoryName)
                 .IsRequired()
-                .HasMaxLength(100)
-                .HasColumnType("nvarchar(100)");
+                .HasMaxLength(150)
+                .HasColumnType("nvarchar(150)");
 
             builder.HasIndex(x => x.CategoryName)
                 .IsUnique();
+
+            builder.Property(x => x.ArName)
+                .IsRequired()
+                .HasMaxLength(150)
+                .HasColumnType("nvarchar(150)");
 
             builder.HasMany(x => x.Products)
                 .WithOne(x => x.Category)

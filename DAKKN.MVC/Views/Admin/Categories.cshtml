@@ -1,0 +1,151 @@
+@model List<DAKKN.Application.DTOs.CategoryDto>
+@inject IStringLocalizer<Messages> Localizer
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = Localizer["admin_categories"];
+    var culture = System.Globalization.CultureInfo.CurrentCulture.Name;
+    var isArabic = culture.StartsWith("ar");
+    var searchTerm = ViewData["SearchTerm"] as string;
+}
+
+<div class="space-y-6 pb-12">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+            <h3 class="text-2xl font-black text-admin-primary">@Localizer["admin_categories"]</h3>
+            <p class="text-sm text-admin-secondary">@Localizer["admin_categories_add_new"]</p>
+        </div>
+        <a asp-action="CreateCategory" class="px-6 py-2.5 bg-primary text-on-primary rounded-xl text-sm font-bold shadow-small hover:scale-103 active:scale-95 transition-all flex items-center gap-2 shrink-0">
+            <span class="material-symbols-outlined text-lg">add</span>
+            @Localizer["admin_categories_add_new"]
+        </a>
+    </div>
+
+    <form method="get" class="relative max-w-sm">
+        <input type="text" name="searchTerm" value="@searchTerm" placeholder="@Localizer["admin_inventory_search_ph"]" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-2.5 ltr:pl-10 rtl:pr-10 outline-none focus:ring-2 focus:ring-primary/40 text-admin-primary text-sm transition-all" />
+        <span class="material-symbols-outlined absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 text-admin-secondary text-lg">search</span>
+        @if (!string.IsNullOrEmpty(searchTerm))
+        {
+            <a asp-action="Categories" class="absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 text-admin-secondary hover:text-red-500 transition-colors" title="@Localizer["admin_reset_filter"]">
+                <span class="material-symbols-outlined text-lg">close</span>
+            </a>
+        }
+    </form>
+
+    @if (!Model.Any())
+    {
+        <div class="premium-card p-12 text-center">
+            <span class="material-symbols-outlined text-5xl text-admin-secondary mb-4">category</span>
+            <p class="text-admin-secondary">@Localizer["admin_categories_no_categories"]</p>
+        </div>
+    }
+    else
+    {
+        <div class="premium-card overflow-hidden">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="bg-admin-page border-b border-admin-border">
+                        <th class="text-start px-6 py-4 text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_category_name"]</th>
+                        <th class="text-start px-6 py-4 text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_category_arname"]</th>
+                        <th class="text-center px-6 py-4 text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_categories_products"]</th>
+                        <th class="text-center px-6 py-4 text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_categories_status"]</th>
+                        <th class="text-end px-6 py-4 text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_categories_actions"]</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-admin-border">
+                    @foreach (var cat in Model)
+                    {
+                        <tr class="hover:bg-admin-page/50 transition-colors @(cat.IsDeleted ? "opacity-60" : "")">
+                            <td class="px-6 py-4 text-admin-primary font-medium">@cat.CategoryName</td>
+                            <td class="px-6 py-4 text-admin-primary" dir="rtl">@cat.ArName</td>
+                            <td class="px-6 py-4 text-center text-admin-secondary">@cat.ProductsCount</td>
+                            <td class="px-6 py-4 text-center">
+                                @if (cat.IsDeleted)
+                                {
+                                    <span class="status-badge status-cancelled">@Localizer["admin_categories_status_deleted"]</span>
+                                }
+                                else
+                                {
+                                    <span class="status-badge status-done">@Localizer["admin_categories_status_active"]</span>
+                                }
+                            </td>
+                            <td class="px-6 py-4 text-end">
+                                <div class="flex items-center justify-end gap-2">
+                                    @if (cat.IsDeleted)
+                                    {
+                                        <form asp-action="ToggleCategoryStatus" asp-route-id="@cat.Id" method="post" class="inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="p-2 text-green-500 hover:bg-green-50 rounded-lg transition-all" title="@Localizer["admin_categories_restore"]">
+                                                <span class="material-symbols-outlined text-lg">restore_from_trash</span>
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <a asp-action="EditCategory" asp-route-id="@cat.Id" class="p-2 text-admin-secondary hover:text-primary hover:bg-primary/5 rounded-lg transition-all">
+                                            <span class="material-symbols-outlined text-lg">edit</span>
+                                        </a>
+                                        <button type="button" onclick="openDeleteModal('@cat.Id', '@cat.CategoryName')" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-all">
+                                            <span class="material-symbols-outlined text-lg">delete</span>
+                                        </button>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+<div id="deleteModal" class="fixed inset-0 z-50 hidden flex items-center justify-center">
+    <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" onclick="closeDeleteModal()"></div>
+    <div class="relative bg-white dark:bg-[#161d27] rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 border border-admin-border z-10">
+        <div class="text-center">
+            <div class="mx-auto w-14 h-14 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center mb-4">
+                <span class="material-symbols-outlined text-3xl text-red-500">delete_forever</span>
+            </div>
+            <h3 class="text-xl font-bold text-admin-primary mb-2">@Localizer["admin_delete_confirm_title"]</h3>
+            <p class="text-admin-secondary text-sm mb-1" id="deleteModalMessage">@Localizer["admin_delete_confirm_message"]</p>
+            <p class="text-admin-primary font-semibold text-base mb-6" id="deleteModalName"></p>
+        </div>
+        <form id="deleteForm" method="post" class="flex gap-3">
+            @Html.AntiForgeryToken()
+            <button type="button" onclick="closeDeleteModal()" class="flex-1 px-4 py-2.5 rounded-xl border border-admin-border text-admin-primary font-medium text-sm hover:bg-admin-page transition-all">
+                @Localizer["admin_cancel"]
+            </button>
+            <button type="submit" class="flex-1 px-4 py-2.5 rounded-xl bg-red-500 text-white font-medium text-sm hover:bg-red-600 transition-all">
+                @Localizer["admin_categories_actions"]
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    var deleteModal = document.getElementById('deleteModal');
+    var deleteForm = document.getElementById('deleteForm');
+    var deleteModalName = document.getElementById('deleteModalName');
+    var deleteModalMessage = document.getElementById('deleteModalMessage');
+
+    function openDeleteModal(id, name) {
+        deleteForm.action = '/admin/categories/delete/' + id;
+        deleteModalName.textContent = '"' + name + '"';
+        deleteModal.classList.remove('hidden');
+    }
+
+    function closeDeleteModal() {
+        deleteModal.classList.add('hidden');
+    }
+
+    deleteModal.addEventListener('click', function(e) {
+        if (e.target === deleteModal) {
+            closeDeleteModal();
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeDeleteModal();
+        }
+    });
+</script>

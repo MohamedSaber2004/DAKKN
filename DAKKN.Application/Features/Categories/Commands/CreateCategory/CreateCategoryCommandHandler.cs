@@ -27,14 +27,15 @@ namespace DAKKN.Application.Features.Categories.Commands.CreateCategory
             if (existing != null)
                 throw new BadRequestException(_localizer[LocalizationKeys.Categories.NameExists.Value]);
 
-            var category = new Category { CategoryName = request.CategoryName };
+            var category = new Category { CategoryName = request.CategoryName, ArName = request.ArName };
             await repo.AddAsync(category);
             await _unitOfWork.SaveChangesAsync();
 
             return new CategoryDto
             {
                 Id = category.Id,
-                CategoryName = category.CategoryName
+                CategoryName = category.CategoryName,
+                ArName = category.ArName
             };
         }
     }

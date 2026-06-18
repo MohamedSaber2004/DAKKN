@@ -31,6 +31,13 @@ namespace DAKKN.Domain.Common
             DeletedAt = DateTime.UtcNow;
             DeletedBy = deletedBy;
         }
+
+        public void MarkAsRestored()
+        {
+            IsDeleted = false;
+            DeletedAt = null;
+            DeletedBy = null;
+        }
     }
 
     public abstract class BaseEntity<TKey> : BaseEntity, IBaseEntity<TKey>

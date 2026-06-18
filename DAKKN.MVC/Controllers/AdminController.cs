@@ -1,6 +1,11 @@
 using DAKKN.Appearence.Filters;
 using DAKKN.Application.Common.Exceptions;
+using DAKKN.Application.Common.Interfaces;
+using DAKKN.Application.Features.Categories.Commands.CreateCategory;
+using DAKKN.Application.Features.Categories.Commands.DeleteCategory;
+using DAKKN.Application.Features.Categories.Commands.UpdateCategory;
 using DAKKN.Application.Features.Categories.Queries.GetCategories;
+using DAKKN.Application.Features.Attachments.Commands.UpdateImage;
 using DAKKN.Application.Features.Products.Commands.CreateProduct;
 using DAKKN.Application.Features.Products.Commands.UpdateProduct;
 using DAKKN.Application.Features.Products.Queries.GetProductById;
@@ -26,12 +31,14 @@ namespace DAKKN.MVC.Controllers
         private readonly IWebHostEnvironment _env;
         private readonly IStringLocalizer<Messages> _localizer;
         private readonly IMediator _mediator;
+        private readonly IImageValidator _imageValidator;
 
-        public AdminController(IWebHostEnvironment env,IStringLocalizer<Messages> localizer, IMediator mediator)
+        public AdminController(IWebHostEnvironment env,IStringLocalizer<Messages> localizer, IMediator mediator, IImageValidator imageValidator)
         {
             _env = env;
             _localizer = localizer;
             _mediator = mediator;
+            _imageValidator = imageValidator;
         }
 
         [HttpGet("")]
@@ -196,16 +203,22 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpGet("inventory")]
-        public async Task<IActionResult> Inventory(int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> Inventory(string? searchTerm, Guid? categoryId, int pageNumber = 1, int pageSize = 10)
         {
             ViewData["Title"] = _localizer["admin_inventory"];
 
-            var result = await _mediator.Send(new GetProductsQuery(null, null, pageNumber, pageSize));
+            var result = await _mediator.Send(new GetProductsQuery(searchTerm, categoryId, pageNumber, pageSize));
+            var categories = await _mediator.Send(new GetCategoriesQuery());
 
             var viewModel = new InventoryViewModel
             {
                 Products = result.Items.ToList(),
-                TotalProducts = result.TotalCount
+                Categories = categories,
+                TotalProducts = result.TotalCount,
+                SelectedCategoryId = categoryId,
+                SearchTerm = searchTerm,
+                PageNumber = result.PageNumber,
+                TotalPages = result.TotalPages
             };
 
             return View(viewModel);
@@ -371,6 +384,151 @@ namespace DAKKN.MVC.Controllers
             });
         }
 
+        [HttpGet("categories")]
+        public async Task<IActionResult> Categories(string? searchTerm)
+        {
+            ViewData["Title"] = _localizer["admin_categories"];
+            ViewData["SearchTerm"] = searchTerm;
+            var categories = await _mediator.Send(new GetCategoriesQuery(searchTerm));
+            return View(categories);
+        }
+
+        [HttpGet("categories/create")]
+        public IActionResult CreateCategory()
+        {
+            ViewData["Title"] = _localizer["admin_categories_add_new"];
+            return View("AddCategory", new CategoryFormViewModel());
+        }
+
+        [HttpPost("categories/create")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateCategory(CategoryFormViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewData["Title"] = _localizer["admin_categories_add_new"];
+                return View("AddCategory", model);
+            }
+
+            try
+            {
+                await _mediator.Send(new CreateCategoryCommand(model.CategoryName, model.ArName));
+                TempData["SuccessMessage"] = _localizer[LocalizationKeys.Categories.Created.Value].ToString();
+                return RedirectToAction(nameof(Categories));
+            }
+            catch (BadRequestException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+            }
+            catch (ValidationException ex)
+            {
+                foreach (var kvp in ex.Errors)
+                {
+                    foreach (var error in kvp.Value)
+                    {
+                        ModelState.AddModelError(kvp.Key, error);
+                    }
+                }
+            }
+
+            ViewData["Title"] = _localizer["admin_categories_add_new"];
+            return View("AddCategory", model);
+        }
+
+        [HttpGet("categories/edit/{id}")]
+        public async Task<IActionResult> EditCategory(Guid id)
+        {
+            ViewData["Title"] = _localizer["admin_categories_edit"];
+
+            var categories = await _mediator.Send(new GetCategoriesQuery());
+            var category = categories.FirstOrDefault(c => c.Id == id);
+            if (category == null)
+                return NotFound();
+
+            var viewModel = new CategoryFormViewModel
+            {
+                Id = category.Id,
+                CategoryName = category.CategoryName,
+                ArName = category.ArName
+            };
+
+            return View("AddCategory", viewModel);
+        }
+
+        [HttpPost("categories/edit/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditCategory(Guid id, CategoryFormViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewData["Title"] = _localizer["admin_categories_edit"];
+                return View("AddCategory", model);
+            }
+
+            try
+            {
+                await _mediator.Send(new UpdateCategoryCommand(id, model.CategoryName, model.ArName, IsActive: true));
+                TempData["SuccessMessage"] = _localizer[LocalizationKeys.Categories.Updated.Value].ToString();
+                return RedirectToAction(nameof(Categories));
+            }
+            catch (BadRequestException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+            }
+            catch (ValidationException ex)
+            {
+                foreach (var kvp in ex.Errors)
+                {
+                    foreach (var error in kvp.Value)
+                    {
+                        ModelState.AddModelError(kvp.Key, error);
+                    }
+                }
+            }
+
+            ViewData["Title"] = _localizer["admin_categories_edit"];
+            return View("AddCategory", model);
+        }
+
+        [HttpPost("categories/delete/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteCategory(Guid id)
+        {
+            try
+            {
+                await _mediator.Send(new DeleteCategoryCommand(id));
+                TempData["SuccessMessage"] = _localizer[LocalizationKeys.Categories.Deleted.Value].ToString();
+            }
+            catch (NotFoundException)
+            {
+                TempData["ErrorMessage"] = _localizer[LocalizationKeys.Categories.NotFound.Value].ToString();
+            }
+
+            return RedirectToAction(nameof(Categories));
+        }
+
+        [HttpPost("categories/toggle-status/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleCategoryStatus(Guid id)
+        {
+            try
+            {
+                var categories = await _mediator.Send(new GetCategoriesQuery());
+                var category = categories.FirstOrDefault(c => c.Id == id);
+                if (category == null)
+                    throw new NotFoundException("Category", id);
+
+                await _mediator.Send(new UpdateCategoryCommand(id, category.CategoryName, category.ArName, IsActive: category.IsDeleted));
+                TempData["SuccessMessage"] = _localizer[category.IsDeleted ? LocalizationKeys.Categories.Restored.Value : LocalizationKeys.Categories.Deleted.Value].ToString();
+            }
+            catch (NotFoundException)
+            {
+                TempData["ErrorMessage"] = _localizer[LocalizationKeys.Categories.NotFound.Value].ToString();
+            }
+
+            return RedirectToAction(nameof(Categories));
+        }
+
         [HttpGet("add-product")]
         public async Task<IActionResult> AddProduct()
         {
@@ -396,19 +554,34 @@ namespace DAKKN.MVC.Controllers
                 return View(model);
             }
 
+            var imageUrl = string.IsNullOrEmpty(model.ExistingImageUrl) ? string.Empty : model.ExistingImageUrl;
+
+            if (model.ImageFile != null)
+            {
+                var result = await _mediator.Send(new UpdateImageCommand
+                {
+                    File = model.ImageFile,
+                    UploadPlace = 1
+                });
+                var baseUrl = $"{Request.Scheme}://{Request.Host}";
+                imageUrl = $"{baseUrl}/files/{result}";
+            }
+
             var command = new CreateProductCommand(
                 model.Name,
+                model.ArName,
                 model.Description,
+                model.ArDescription,
                 model.Price,
-                model.ExistingImageUrl ?? string.Empty,
+                imageUrl,
                 new List<string>(),
-                new List<string>(),
+                model.SizeOptions,
                 model.CategoryId
             );
 
             await _mediator.Send(command);
 
-            TempData["SuccessMessage"] = _localizer[LocalizationKeys.Products.Created.Value];
+            TempData["SuccessMessage"] = _localizer[LocalizationKeys.Products.Created.Value].ToString();
             return RedirectToAction(nameof(Inventory));
         }
 
@@ -426,10 +599,15 @@ namespace DAKKN.MVC.Controllers
                 {
                     Id = product.Id,
                     Name = product.Name,
+                    ArName = product.ArName,
                     Description = product.Description,
+                    ArDescription = product.ArDescription,
                     Price = product.Price,
                     CategoryId = product.CategoryId,
-                    ExistingImageUrl = product.ImageUrl,
+                    ExistingImageUrl = string.IsNullOrEmpty(product.ImageUrl) || product.ImageUrl.StartsWith("http")
+                        ? product.ImageUrl
+                        : $"{Request.Scheme}://{Request.Host}/files/{product.ImageUrl.TrimStart('/')}",
+                    SizeOptions = product.SizeOptions,
                     AvailableCategories = categories
                 };
 
@@ -452,20 +630,40 @@ namespace DAKKN.MVC.Controllers
                 return View("AddProduct", model);
             }
 
+            var imageUrl = string.IsNullOrEmpty(model.ExistingImageUrl) ? string.Empty : model.ExistingImageUrl;
+
+            if (model.ImageFile != null)
+            {
+                var oldFileName = string.IsNullOrEmpty(model.ExistingImageUrl)
+                    ? null
+                    : Path.GetFileName(model.ExistingImageUrl.TrimEnd('/'));
+
+                var result = await _mediator.Send(new UpdateImageCommand
+                {
+                    File = model.ImageFile,
+                    UploadPlace = 1,
+                    ImageName = oldFileName
+                });
+                var baseUrl = $"{Request.Scheme}://{Request.Host}";
+                imageUrl = $"{baseUrl}/files/{result}";
+            }
+
             var command = new UpdateProductCommand(
                 id,
                 model.Name,
+                model.ArName,
                 model.Description,
+                model.ArDescription,
                 model.Price,
-                model.ExistingImageUrl ?? string.Empty,
+                imageUrl,
                 new List<string>(),
-                new List<string>(),
+                model.SizeOptions,
                 model.CategoryId
             );
 
             await _mediator.Send(command);
 
-            TempData["SuccessMessage"] = _localizer[LocalizationKeys.Products.Updated.Value];
+            TempData["SuccessMessage"] = _localizer[LocalizationKeys.Products.Updated.Value].ToString();
             return RedirectToAction(nameof(Inventory));
         }
     }

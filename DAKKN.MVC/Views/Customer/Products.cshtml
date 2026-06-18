@@ -1,5 +1,8 @@
+@model DAKKN.MVC.ViewModels.Customer.ProductsViewModel
 @{
     Layout = "_LayoutCustomer";
+    var culture = System.Globalization.CultureInfo.CurrentCulture.Name;
+    var isArabic = culture.StartsWith("ar");
 }
 
 <div class="max-w-7xl mx-auto px-lg py-xl">
@@ -8,79 +11,79 @@
             <h1 class="font-h1 text-h1 font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["shop_h1"]</h1>
             <p class="text-text-secondary dark:text-outline-variant mt-2">@Localizer["shop_p"]</p>
         </div>
-        <!-- Search & Filter Controls -->
         <div class="flex items-center gap-md w-full md:w-auto">
             <div class="relative flex-1 md:w-64">
                 <input class="w-full bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 rounded-2xl py-3 px-lg focus:ring-2 focus:ring-primary outline-none transition-all" placeholder="@Localizer["shop_search_ph"]" type="text">
                 <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline">search</span>
             </div>
-            <button class="w-12 h-12 rounded-2xl bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 flex items-center justify-center text-primary">
-                <span class="material-symbols-outlined">filter_list</span>
-            </button>
         </div>
     </div>
 
     <!-- Category Pills -->
     <div class="flex items-center gap-sm overflow-x-auto pb-4 mb-xl no-scrollbar">
-        <button class="px-xl py-2.5 rounded-full bg-primary text-on-primary font-bold whitespace-nowrap shadow-medium transition-all">@Localizer["shop_cat_all"]</button>
-        <button class="px-xl py-2.5 rounded-full bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 text-text-secondary hover:border-primary/50 whitespace-nowrap transition-all">@Localizer["cat2"]</button>
-        <button class="px-xl py-2.5 rounded-full bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 text-text-secondary hover:border-primary/50 whitespace-nowrap transition-all">@Localizer["cat1"]</button>
-        <button class="px-xl py-2.5 rounded-full bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 text-text-secondary hover:border-primary/50 whitespace-nowrap transition-all">@Localizer["cat_anime"]</button>
-        <button class="px-xl py-2.5 rounded-full bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 text-text-secondary hover:border-primary/50 whitespace-nowrap transition-all">@Localizer["cat_gaming"]</button>
-        <button class="px-xl py-2.5 rounded-full bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 text-text-secondary hover:border-primary/50 whitespace-nowrap transition-all">@Localizer["cat_cyberpunk"]</button>
+        <a href="@Url.Action("Products")" class="px-xl py-2.5 rounded-full bg-primary text-on-primary font-bold whitespace-nowrap shadow-medium transition-all">@Localizer["shop_cat_all"]</a>
+        @foreach (var cat in Model.Categories)
+        {
+            <a href="@Url.Action("Products", new { categoryId = cat.Id })" class="px-xl py-2.5 rounded-full bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 text-text-secondary hover:border-primary/50 whitespace-nowrap transition-all">
+                @(isArabic ? cat.ArName : cat.CategoryName)
+            </a>
+        }
     </div>
 
     <!-- Product Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-lg">
-        <!-- Product Card 1 -->
-        <div class="product-card group bg-surface dark:bg-inverse-surface rounded-[32px] border border-border dark:border-outline/10 overflow-hidden shadow-small hover:shadow-large transition-all duration-500 hover:-translate-y-2">
-            <a asp-action="ProductDetails" asp-route-id="f4d6c75f-2643-4ffc-8199-e94a91d8b617" class="block">
-                <div class="aspect-square relative overflow-hidden bg-white/5">
-                    <img src="https://lh3.googleusercontent.com/aida/AP1WRLvk0o2fHlsgnzmZ9xrrRAnUTq9hl5CW063LX44OhYiXj0ZAadSE46fIAmtHQKBEzfk8NKsMl6AwohhVGiDgxsbst33TGFkDW68Y9_d3C1Cvf-mtviXqQYHM-Aqnsunu3Q6Yy2-9A5mXcsO80D173UvbE44Odz0GI41kQbHK_cLtDiruHCKTT15snGH5XT7Y6MLMfFd4rUCTY71ZJwiOba19bKW0Du2pMXYtJtF-I-h5V-wypv1z0Vztp_M" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                    <div class="absolute top-4 left-4 bg-primary/90 backdrop-blur-md text-on-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">@Localizer["Product_BestSeller"]</div>
-                    <button class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/90 backdrop-blur-md shadow-medium flex items-center justify-center text-text-secondary hover:text-error transition-all opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0">
-                        <span class="material-symbols-outlined text-xl">favorite</span>
-                    </button>
-                </div>
-            </a>
-            <div class="p-lg">
-                <div class="flex justify-between items-start mb-xs">
-                    <a asp-action="ProductDetails" asp-route-id="f4d6c75f-2643-4ffc-8199-e94a91d8b617">
-                        <h3 class="font-bold text-lg group-hover:text-primary transition-colors">Retro Cassette</h3>
-                    </a>
-                    <span class="font-bold text-primary">70 @Localizer["Currency_EGP"]</span>
-                </div>
-                <p class="text-xs text-text-secondary font-medium uppercase tracking-wider mb-lg">@Localizer["mat_holographic"]</p>
-                <div class="flex items-center gap-md">
-                    <button class="flex-1 bg-surface-container dark:bg-inverse-surface-container text-text-primary dark:text-inverse-on-surface py-3 rounded-2xl font-bold text-sm hover:bg-primary hover:text-on-primary transition-all flex items-center justify-center gap-2">
-                        <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
-                        @Localizer["shop_add_cart"]
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Repeated for more items... (Simulated) -->
-        @for(int i = 0; i < 7; i++) {
-             <div class="product-card bg-surface dark:bg-inverse-surface rounded-[32px] border border-border dark:border-outline/10 overflow-hidden shadow-small transition-all">
-                <div class="aspect-square bg-surface-container-low dark:bg-surface-container-high animate-pulse"></div>
-                <div class="p-lg space-y-md">
-                    <div class="h-6 w-3/4 bg-surface-container-high dark:bg-inverse-surface-container rounded-full animate-pulse"></div>
-                    <div class="h-4 w-1/2 bg-surface-container-high dark:bg-inverse-surface-container rounded-full animate-pulse"></div>
-                    <div class="h-12 w-full bg-surface-container-high dark:bg-inverse-surface-container rounded-2xl animate-pulse"></div>
+        @foreach (var product in Model.Products)
+        {
+            <div class="product-card group bg-surface dark:bg-inverse-surface rounded-[32px] border border-border dark:border-outline/10 overflow-hidden shadow-small hover:shadow-large transition-all duration-500 hover:-translate-y-2">
+                <a asp-action="ProductDetails" asp-route-id="@product.Id" class="block">
+                    <div class="aspect-square relative overflow-hidden bg-white/5">
+                        <img src="@product.ImageUrl" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="@(isArabic ? product.ArName : product.Name)">
+                        <button class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/90 backdrop-blur-md shadow-medium flex items-center justify-center text-text-secondary hover:text-error transition-all opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0">
+                            <span class="material-symbols-outlined text-xl">favorite</span>
+                        </button>
+                    </div>
+                </a>
+                <div class="p-lg">
+                    <div class="flex justify-between items-start mb-xs">
+                        <a asp-action="ProductDetails" asp-route-id="@product.Id">
+                            <h3 class="font-bold text-lg group-hover:text-primary transition-colors">@(isArabic ? product.ArName : product.Name)</h3>
+                        </a>
+                        <span class="font-bold text-primary">@product.Price @Localizer["Currency_EGP"]</span>
+                    </div>
+                    <p class="text-xs text-text-secondary font-medium uppercase tracking-wider mb-lg">@(isArabic ? product.CategoryArName : product.CategoryName)</p>
+                    <div class="flex items-center gap-md">
+                        <button class="flex-1 bg-surface-container dark:bg-inverse-surface-container text-text-primary dark:text-inverse-on-surface py-3 rounded-2xl font-bold text-sm hover:bg-primary hover:text-on-primary transition-all flex items-center justify-center gap-2">
+                            <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
+                            @Localizer["shop_add_cart"]
+                        </button>
+                    </div>
                 </div>
             </div>
         }
     </div>
 
     <!-- Pagination -->
-    <div class="flex justify-center mt-2xl">
-        <nav class="flex items-center gap-sm bg-surface dark:bg-inverse-surface p-2 rounded-full border border-border dark:border-outline/10 shadow-medium">
-            <button class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:bg-primary/5"><span class="material-symbols-outlined">chevron_left</span></button>
-            <button class="w-10 h-10 rounded-full flex items-center justify-center bg-primary text-on-primary font-bold">1</button>
-            <button class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:bg-primary/5 font-bold">2</button>
-            <button class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:bg-primary/5 font-bold">3</button>
-            <button class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:bg-primary/5"><span class="material-symbols-outlined">chevron_right</span></button>
-        </nav>
-    </div>
+    @if (Model.TotalPages > 1)
+    {
+        <div class="flex justify-center mt-2xl">
+            <nav class="flex items-center gap-sm bg-surface dark:bg-inverse-surface p-2 rounded-full border border-border dark:border-outline/10 shadow-medium">
+                @if (Model.HasPreviousPage)
+                {
+                    <a href="@Url.Action("Products", new { pageNumber = Model.PageNumber - 1 })" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:bg-primary/5">
+                        <span class="material-symbols-outlined">chevron_left</span>
+                    </a>
+                }
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <a href="@Url.Action("Products", new { pageNumber = i })" class="w-10 h-10 rounded-full flex items-center justify-center @(i == Model.PageNumber ? "bg-primary text-on-primary font-bold" : "text-text-secondary hover:bg-primary/5 font-bold")">@i</a>
+                }
+                @if (Model.HasNextPage)
+                {
+                    <a href="@Url.Action("Products", new { pageNumber = Model.PageNumber + 1 })" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:bg-primary/5">
+                        <span class="material-symbols-outlined">chevron_right</span>
+                    </a>
+                }
+            </nav>
+        </div>
+    }
 </div>

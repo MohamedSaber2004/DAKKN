@@ -18,12 +18,23 @@ namespace DAKKN.Application.Features.Categories.Queries.GetCategories
         public async Task<List<CategoryDto>> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
         {
             var repo = _unitOfWork.GetRepository<Category>();
-            var categories = await repo.GetAllAsync(null)
-                .Where(c => !c.IsDeleted)
+            var query = repo.GetAllAsync(null);
+
+            if (!string.IsNullOrWhiteSpace(request.SearchTerm))
+            {
+                var term = request.SearchTerm.Trim().ToLower();
+                query = query.Where(c =>
+                    c.CategoryName.ToLower().Contains(term) ||
+                    c.ArName.ToLower().Contains(term));
+            }
+
+            var categories = await query
                 .Select(c => new CategoryDto
                 {
                     Id = c.Id,
                     CategoryName = c.CategoryName,
+                    ArName = c.ArName,
+                    IsDeleted = c.IsDeleted,
                     ProductsCount = c.Products.Count(p => !p.IsDeleted)
                 })
                 .ToListAsync(cancellationToken);

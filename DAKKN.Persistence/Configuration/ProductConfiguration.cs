@@ -22,10 +22,20 @@ namespace DAKKN.Persistence.Configuration
                 .HasMaxLength(200)
                 .HasColumnType("nvarchar(200)");
 
+            builder.Property(x => x.ArName)
+                .IsRequired()
+                .HasMaxLength(200)
+                .HasColumnType("nvarchar(200)");
+
             builder.Property(x => x.Description)
                 .IsRequired()
-                .HasMaxLength(2000)
-                .HasColumnType("nvarchar(2000)");
+                .HasMaxLength(3000)
+                .HasColumnType("nvarchar(3000)");
+
+            builder.Property(x => x.ArDescription)
+                .IsRequired()
+                .HasMaxLength(3000)
+                .HasColumnType("nvarchar(3000)");
 
             builder.Property(x => x.Price)
                 .IsRequired()

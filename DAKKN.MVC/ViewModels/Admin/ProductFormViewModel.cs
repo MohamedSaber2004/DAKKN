@@ -1,4 +1,5 @@
 using DAKKN.Application.DTOs;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -13,10 +14,17 @@ namespace DAKKN.MVC.ViewModels.Admin
 
         public string? ExistingImageUrl { get; set; }
 
+        public IFormFile? ImageFile { get; set; }
+
         [Required]
         public string Name { get; set; } = string.Empty;
 
+        [Required]
+        public string ArName { get; set; } = string.Empty;
+
         public string Description { get; set; } = string.Empty;
+
+        public string ArDescription { get; set; } = string.Empty;
 
         [Required]
         public Guid CategoryId { get; set; }
@@ -26,5 +34,7 @@ namespace DAKKN.MVC.ViewModels.Admin
         public decimal Price { get; set; }
 
         public List<CategoryDto> AvailableCategories { get; set; } = new();
+
+        public List<string> SizeOptions { get; set; } = new();
     }
 }

@@ -1,0 +1,440 @@
+Use this prompt to fully internationalize your Product and Category entities, update seeding, and eliminate mock data:
+
+You are a Senior ASP.NET Core 8, Entity Framework Core, Clean Architecture, MediatR, and Localization engineer working on the DAKKN project.
+
+Goal:
+Refactor Product and Category entities to support Arabic and English content, update all related layers, update seeding data, and completely remove all mock/static product data so that all product/category information is loaded dynamically from the database.
+
+Architecture Requirements:
+- ASP.NET Core 8
+- Clean Architecture
+- Entity Framework Core
+- MediatR CQRS
+- AutoMapper
+- FluentValidation
+- Localization support (English + Arabic)
+- Follow existing DAKKN project conventions
+- Do not break existing functionality
+
+=================================================
+1. CATEGORY ENTITY UPDATE
+=================================================
+
+Update Category entity to support multilingual names.
+
+Category should contain:
+
+- Id
+- Name
+- ArName
+
+Navigation:
+
+- ICollection<Product> Products
+
+Requirements:
+
+- Name (English)
+- ArName (Arabic)
+
+Validation:
+
+- Name required
+- ArName required
+
+=================================================
+2. PRODUCT ENTITY UPDATE
+=================================================
+
+Update Product entity to support multilingual content.
+
+Product should contain:
+
+- Id
+- Name
+- ArName
+- Description
+- ArDescription
+- Price
+- RatingCount
+- ImageUrl
+- CategoryId
+- Category
+
+Validation:
+
+- Name required
+- ArName required
+- Description required
+- ArDescription required
+- Price > 0
+- CategoryId required
+- ImageUrl required
+
+=================================================
+3. ENTITY CONFIGURATIONS
+=================================================
+
+Update EF Core Fluent Configurations.
+
+Category:
+
+Name
+- Required
+- MaxLength(150)
+
+ArName
+- Required
+- MaxLength(150)
+
+Product:
+
+Name
+- Required
+- MaxLength(200)
+
+ArName
+- Required
+- MaxLength(200)
+
+Description
+- Required
+- MaxLength(3000)
+
+ArDescription
+- Required
+- MaxLength(3000)
+
+ImageUrl
+- Required
+- MaxLength(500)
+
+Price
+- Decimal(18,2)
+
+=================================================
+4. DATABASE MIGRATION
+=================================================
+
+Generate migration for:
+
+Category:
+- Add ArName
+
+Product:
+- Add ArName
+- Add ArDescription
+
+Ensure migration preserves existing data where possible.
+
+=================================================
+5. DTO UPDATES
+=================================================
+
+Update all DTOs.
+
+CategoryDto:
+
+- Id
+- Name
+- ArName
+
+CreateCategoryDto
+
+UpdateCategoryDto
+
+ProductDto:
+
+- Id
+- Name
+- ArName
+- Description
+- ArDescription
+- Price
+- RatingCount
+- ImageUrl
+- CategoryId
+- CategoryName
+- CategoryArName
+
+Update:
+
+- CreateProductDto
+- UpdateProductDto
+- ProductDetailsDto
+- ProductListDto
+
+=================================================
+6. CQRS UPDATE
+=================================================
+
+Update:
+
+Commands:
+- CreateProductCommand
+- UpdateProductCommand
+- CreateCategoryCommand
+- UpdateCategoryCommand
+
+Queries:
+- GetProductsQuery
+- GetProductByIdQuery
+- GetCategoriesQuery
+
+Handlers must:
+
+- Return multilingual data
+- Map both English and Arabic fields
+- Validate data correctly
+
+=================================================
+7. AUTOMAPPER UPDATE
+=================================================
+
+Update AutoMapper profiles.
+
+Map:
+
+Name
+ArName
+Description
+ArDescription
+
+for all DTOs and entities.
+
+=================================================
+8. FLUENTVALIDATION UPDATE
+=================================================
+
+Update validators.
+
+Require:
+
+Category:
+- Name
+- ArName
+
+Product:
+- Name
+- ArName
+- Description
+- ArDescription
+- ImageUrl
+- CategoryId
+- Price
+
+=================================================
+9. SEEDING DATA UPDATE
+=================================================
+
+Refactor all seed data.
+
+Remove old seed records.
+
+Create realistic bilingual seed data.
+
+Example Categories:
+
+English:
+- Electronics
+- Fashion
+- Home
+- Books
+- Sports
+
+Arabic:
+- إلكترونيات
+- أزياء
+- المنزل
+- الكتب
+- الرياضة
+
+Example Products:
+
+Name:
+Gaming Laptop
+
+ArName:
+حاسوب ألعاب
+
+Description:
+High-performance gaming laptop.
+
+ArDescription:
+حاسوب ألعاب عالي الأداء.
+
+Provide at least 20 realistic products.
+
+Ensure every product belongs to a category.
+
+=================================================
+10. REMOVE MOCK DATA
+=================================================
+
+Remove ALL hardcoded/mock product/category data from:
+
+- Controllers
+- Razor Views
+- Services
+- Repositories
+- JavaScript files
+- ViewModels
+- Dashboard Widgets
+- Customer Store Pages
+
+Examples:
+
+Remove:
+new Product(...)
+static List<Product>
+MockProducts
+FakeProducts
+SampleProducts
+
+Replace with:
+
+Database-driven queries using MediatR.
+
+=================================================
+11. DYNAMIC DATA LOADING
+=================================================
+
+Customer Store:
+
+Load products from database.
+
+Admin Dashboard:
+
+Load products from database.
+
+Category dropdowns:
+
+Load categories from database.
+
+Product cards:
+
+Load data dynamically.
+
+Search:
+
+Use database data.
+
+Filters:
+
+Use database data.
+
+Statistics:
+
+Use database data.
+
+=================================================
+12. LOCALIZATION SUPPORT
+=================================================
+
+Implement language-aware display.
+
+When language == English:
+
+Display:
+Name
+Description
+Category.Name
+
+When language == Arabic:
+
+Display:
+ArName
+ArDescription
+Category.ArName
+
+Create helper/service if needed.
+
+Ensure no duplicated UI logic.
+
+=================================================
+13. ADMIN DASHBOARD UPDATE
+=================================================
+
+Product Create/Edit Form:
+
+Fields:
+
+- Name (English)
+- Name (Arabic)
+- Description (English)
+- Description (Arabic)
+- Price
+- Category
+- ImageUrl
+
+Category Create/Edit Form:
+
+Fields:
+
+- Name (English)
+- Name (Arabic)
+
+Tables:
+
+Display both English and Arabic names.
+
+=================================================
+14. CUSTOMER STORE UPDATE
+=================================================
+
+Product cards:
+
+Show localized:
+- Name
+- Description
+- Category Name
+
+Product Details:
+
+Show localized content automatically.
+
+Category filters:
+
+Show localized names.
+
+=================================================
+15. DELIVERABLES
+=================================================
+
+Generate complete implementation:
+
+- Updated Entities
+- Configurations
+- DbContext updates
+- Migrations
+- DTOs
+- CQRS Commands
+- CQRS Queries
+- Handlers
+- Validators
+- AutoMapper Profiles
+- Seeding Data
+- Admin Dashboard updates
+- Customer Store updates
+- Localization service
+- Dynamic database loading
+
+For every change provide:
+
+1. File path
+2. Before code
+3. After code
+4. Explanation
+
+Important:
+
+- Remove all mock/static product/category data.
+- Everything must come from the database.
+- Support English and Arabic.
+- Follow DAKKN Clean Architecture.
+- Use MediatR.
+- Use EF Core Fluent Configuration.
+- Preserve existing functionality.
+- Ensure production-ready implementation.
+
+This prompt will push the AI to transform the catalog into a fully bilingual, database-driven system with no hardcoded product/category data remaining.

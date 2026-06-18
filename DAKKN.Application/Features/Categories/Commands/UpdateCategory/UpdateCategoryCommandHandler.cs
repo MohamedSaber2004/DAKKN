@@ -1,4 +1,5 @@
 using DAKKN.Application.Common.Exceptions;
+using DAKKN.Application.Common.Interfaces;
 using DAKKN.Application.DTOs;
 using DAKKN.Application.Localization;
 using DAKKN.Domain.Entities;
@@ -12,11 +13,13 @@ namespace DAKKN.Application.Features.Categories.Commands.UpdateCategory
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IStringLocalizer<Messages> _localizer;
+        private readonly ICurrentUserService _currentUserService;
 
-        public UpdateCategoryCommandHandler(IUnitOfWork unitOfWork, IStringLocalizer<Messages> localizer)
+        public UpdateCategoryCommandHandler(IUnitOfWork unitOfWork, IStringLocalizer<Messages> localizer, ICurrentUserService currentUserService)
         {
             _unitOfWork = unitOfWork;
             _localizer = localizer;
+            _currentUserService = currentUserService;
         }
 
         public async Task<CategoryDto> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
@@ -31,13 +34,24 @@ namespace DAKKN.Application.Features.Categories.Commands.UpdateCategory
                 throw new BadRequestException(_localizer[LocalizationKeys.Categories.NameExists.Value]);
 
             category.CategoryName = request.CategoryName;
+            category.ArName = request.ArName;
+            category.IsActive = request.IsActive;
+            category.MarkAsUpdated(_currentUserService.UserId.ToString());
+
+            if (!request.IsActive && !category.IsDeleted)
+                category.MarkAsDeleted(_currentUserService.UserId.ToString());
+            else if (request.IsActive && category.IsDeleted)
+                category.MarkAsRestored();
+
             repo.Update(category);
             await _unitOfWork.SaveChangesAsync();
 
             return new CategoryDto
             {
                 Id = category.Id,
-                CategoryName = category.CategoryName
+                CategoryName = category.CategoryName,
+                ArName = category.ArName,
+                IsDeleted = category.IsDeleted
             };
         }
     }

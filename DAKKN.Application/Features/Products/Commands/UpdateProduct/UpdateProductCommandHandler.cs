@@ -32,7 +32,9 @@ namespace DAKKN.Application.Features.Products.Commands.UpdateProduct
                 throw new NotFoundException(_localizer[LocalizationKeys.Products.CategoryNotFound.Value]);
 
             product.Name = request.Name;
+            product.ArName = request.ArName;
             product.Description = request.Description;
+            product.ArDescription = request.ArDescription;
             product.Price = request.Price;
             product.ImageUrl = request.ImageUrl;
             product.FinishOptions = request.FinishOptions;
@@ -46,7 +48,9 @@ namespace DAKKN.Application.Features.Products.Commands.UpdateProduct
             {
                 Id = product.Id,
                 Name = product.Name,
+                ArName = product.ArName,
                 Description = product.Description,
+                ArDescription = product.ArDescription,
                 Price = product.Price,
                 AverageRating = product.AverageRating,
                 ReviewCount = product.ReviewCount,
@@ -54,7 +58,8 @@ namespace DAKKN.Application.Features.Products.Commands.UpdateProduct
                 FinishOptions = product.FinishOptions,
                 SizeOptions = product.SizeOptions,
                 CategoryId = product.CategoryId,
-                CategoryName = category.CategoryName
+                CategoryName = category.CategoryName,
+                CategoryArName = category.ArName
             };
         }
     }

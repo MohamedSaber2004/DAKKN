@@ -29,7 +29,9 @@ namespace DAKKN.Application.Features.Products.Commands.CreateProduct
             var product = new Product
             {
                 Name = request.Name,
+                ArName = request.ArName,
                 Description = request.Description,
+                ArDescription = request.ArDescription,
                 Price = request.Price,
                 ImageUrl = request.ImageUrl,
                 FinishOptions = request.FinishOptions,
@@ -45,7 +47,9 @@ namespace DAKKN.Application.Features.Products.Commands.CreateProduct
             {
                 Id = product.Id,
                 Name = product.Name,
+                ArName = product.ArName,
                 Description = product.Description,
+                ArDescription = product.ArDescription,
                 Price = product.Price,
                 AverageRating = product.AverageRating,
                 ReviewCount = product.ReviewCount,
@@ -53,7 +57,8 @@ namespace DAKKN.Application.Features.Products.Commands.CreateProduct
                 FinishOptions = product.FinishOptions,
                 SizeOptions = product.SizeOptions,
                 CategoryId = product.CategoryId,
-                CategoryName = category.CategoryName
+                CategoryName = category.CategoryName,
+                CategoryArName = category.ArName
             };
         }
     }

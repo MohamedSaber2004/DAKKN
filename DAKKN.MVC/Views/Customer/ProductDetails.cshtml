@@ -3,6 +3,8 @@
 @{
     Layout = "_LayoutCustomer";
     var product = Model.Product;
+    var culture = System.Globalization.CultureInfo.CurrentCulture.Name;
+    var isArabic = culture.StartsWith("ar");
 }
 
 <div class="max-w-7xl mx-auto px-lg py-xl">
@@ -10,14 +12,14 @@
     <nav class="flex items-center gap-2 text-sm text-text-secondary mb-xl">
         <a asp-action="Products" class="hover:text-primary transition-colors">@Localizer["Product_Products"]</a>
         <span class="material-symbols-outlined text-xs">chevron_right</span>
-        <span class="text-text-primary dark:text-inverse-on-surface font-bold">@product.Name</span>
+        <span class="text-text-primary dark:text-inverse-on-surface font-bold">@(isArabic ? product.ArName : product.Name)</span>
     </nav>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-2xl">
         <!-- Image Gallery -->
         <div class="space-y-lg">
             <div class="aspect-square rounded-[48px] bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 overflow-hidden shadow-large group relative">
-                <img src="@product.ImageUrl" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="@product.Name">
+                <img src="@product.ImageUrl" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="@(isArabic ? product.ArName : product.Name)">
                 <div class="absolute top-8 right-8 flex flex-col gap-sm">
                     <button class="w-12 h-12 rounded-full bg-surface/90 backdrop-blur-md shadow-medium flex items-center justify-center text-text-secondary hover:text-error transition-all">
                         <span class="material-symbols-outlined">favorite</span>
@@ -27,24 +29,13 @@
                     </button>
                 </div>
             </div>
-            @if (product.SizeOptions.Any() || product.FinishOptions.Any())
-            {
-            <div class="flex flex-wrap gap-2">
-                @if (!string.IsNullOrEmpty(product.ImageUrl))
-                {
-                    <div class="aspect-square rounded-2xl bg-surface-container dark:bg-inverse-surface border-2 border-primary overflow-hidden" style="width:80px;height:80px">
-                        <img src="@product.ImageUrl" class="w-full h-full object-cover" alt="@product.Name">
-                    </div>
-                }
-            </div>
-            }
         </div>
 
         <!-- Product Info -->
         <div class="flex flex-col">
             <div class="mb-xl pb-xl border-b border-border dark:border-outline/10">
-                <span class="bg-primary/10 text-primary px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-md inline-block">@Localizer["Product_BestSeller"]</span>
-                <h1 class="font-h1 text-h1 font-bold mb-sm">@product.Name</h1>
+                <span class="bg-primary/10 text-primary px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-md inline-block">@(isArabic ? product.CategoryArName : product.CategoryName)</span>
+                <h1 class="font-h1 text-h1 font-bold mb-sm">@(isArabic ? product.ArName : product.Name)</h1>
                 <div class="flex items-center gap-xl">
                     <span class="text-3xl font-bold text-primary">@product.Price @Localizer["Currency_EGP"]</span>
                     <div class="flex items-center gap-1 text-yellow-500">
@@ -54,53 +45,8 @@
                     </div>
                 </div>
                 <p class="text-text-secondary dark:text-outline-variant mt-lg leading-relaxed">
-                    @product.Description
+                    @(isArabic ? product.ArDescription : product.Description)
                 </p>
-            </div>
-
-            <!-- Configuration -->
-            <div class="space-y-xl mb-2xl">
-                @if (product.FinishOptions.Any())
-                {
-                    <div>
-                        <h4 class="font-bold text-sm uppercase tracking-widest text-outline mb-md">@Localizer["Product_FinishEffect"]</h4>
-                        <div class="flex flex-wrap gap-md">
-                            @foreach (var finish in product.FinishOptions)
-                            {
-                                <button class="px-xl py-3 rounded-2xl border-2 @(finish == product.FinishOptions[0] ? "border-primary bg-primary/5 text-primary" : "border-border dark:border-outline/10 text-text-secondary hover:border-primary/50") font-bold transition-all">
-                                    @finish
-                                </button>
-                            }
-                        </div>
-                    </div>
-                }
-
-                @if (product.SizeOptions.Any())
-                {
-                    <div>
-                        <h4 class="font-bold text-sm uppercase tracking-widest text-outline mb-md">@Localizer["Product_Size"]</h4>
-                        <div class="flex flex-wrap gap-md">
-                            @foreach (var size in product.SizeOptions)
-                            {
-                                <button class="w-16 h-16 rounded-2xl border-2 @(size == product.SizeOptions[0] ? "border-primary bg-primary/5 text-primary" : "border-border dark:border-outline/10 text-text-secondary") flex items-center justify-center font-bold">
-                                    @size
-                                </button>
-                            }
-                        </div>
-                    </div>
-                }
-
-                <div>
-                    <h4 class="font-bold text-sm uppercase tracking-widest text-outline mb-md">@Localizer["Product_Quantity"]</h4>
-                    <div class="flex items-center gap-md">
-                        <div class="flex items-center bg-surface-container dark:bg-inverse-surface rounded-2xl border border-border dark:border-outline/10 p-1">
-                            <button class="w-10 h-10 rounded-xl hover:bg-white/5 flex items-center justify-center"><span class="material-symbols-outlined">remove</span></button>
-                            <input type="number" value="1" class="w-12 bg-transparent border-none text-center font-bold focus:ring-0">
-                            <button class="w-10 h-10 rounded-xl hover:bg-white/5 flex items-center justify-center"><span class="material-symbols-outlined">add</span></button>
-                        </div>
-                        <p class="text-xs text-text-secondary">@Localizer["Product_BulkSavings"]</p>
-                    </div>
-                </div>
             </div>
 
             <!-- Actions -->
