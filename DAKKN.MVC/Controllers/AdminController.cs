@@ -7,6 +7,7 @@ using DAKKN.Application.Features.Categories.Commands.UpdateCategory;
 using DAKKN.Application.Features.Categories.Queries.GetCategories;
 using DAKKN.Application.Features.Attachments.Commands.UpdateImage;
 using DAKKN.Application.Features.Products.Commands.CreateProduct;
+using DAKKN.Application.Features.Products.Commands.DeleteProduct;
 using DAKKN.Application.Features.Products.Commands.UpdateProduct;
 using DAKKN.Application.Features.Products.Queries.GetProductById;
 using DAKKN.Application.Features.Products.Queries.GetProducts;
@@ -384,12 +385,42 @@ namespace DAKKN.MVC.Controllers
             });
         }
 
+        [HttpGet("categories/{id}")]
+        public async Task<IActionResult> CategoryProducts(Guid id, int pageNumber = 1, int pageSize = 10)
+        {
+            var categories = await _mediator.Send(new GetCategoriesQuery(IncludeInactive: true));
+            var category = categories.FirstOrDefault(c => c.Id == id);
+            if (category == null)
+                return View("NotFound");
+
+            ViewData["Title"] = category.CategoryName;
+
+            var result = await _mediator.Send(new GetProductsQuery(null, id, pageNumber, pageSize));
+            var activeProducts = result.Items.Count(p => p.IsActive);
+            var avgPrice = result.Items.Any() ? result.Items.Average(p => p.Price) : 0;
+
+            var viewModel = new CategoryProductsViewModel
+            {
+                CategoryId = category.Id,
+                CategoryName = category.CategoryName,
+                ArName = category.ArName,
+                ProductsCount = category.ProductsCount,
+                Products = result.Items.ToList(),
+                AveragePrice = avgPrice,
+                ActiveProducts = activeProducts,
+                PageNumber = result.PageNumber,
+                TotalPages = result.TotalPages
+            };
+
+            return View(viewModel);
+        }
+
         [HttpGet("categories")]
         public async Task<IActionResult> Categories(string? searchTerm)
         {
             ViewData["Title"] = _localizer["admin_categories"];
             ViewData["SearchTerm"] = searchTerm;
-            var categories = await _mediator.Send(new GetCategoriesQuery(searchTerm));
+            var categories = await _mediator.Send(new GetCategoriesQuery(searchTerm, IncludeInactive: true));
             return View(categories);
         }
 
@@ -440,7 +471,7 @@ namespace DAKKN.MVC.Controllers
         {
             ViewData["Title"] = _localizer["admin_categories_edit"];
 
-            var categories = await _mediator.Send(new GetCategoriesQuery());
+            var categories = await _mediator.Send(new GetCategoriesQuery(IncludeInactive: true));
             var category = categories.FirstOrDefault(c => c.Id == id);
             if (category == null)
                 return NotFound();
@@ -513,7 +544,7 @@ namespace DAKKN.MVC.Controllers
         {
             try
             {
-                var categories = await _mediator.Send(new GetCategoriesQuery());
+                var categories = await _mediator.Send(new GetCategoriesQuery(IncludeInactive: true));
                 var category = categories.FirstOrDefault(c => c.Id == id);
                 if (category == null)
                     throw new NotFoundException("Category", id);
@@ -583,6 +614,39 @@ namespace DAKKN.MVC.Controllers
 
             TempData["SuccessMessage"] = _localizer[LocalizationKeys.Products.Created.Value].ToString();
             return RedirectToAction(nameof(Inventory));
+        }
+
+        [HttpPost("delete-product/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteProduct(Guid id)
+        {
+            try
+            {
+                await _mediator.Send(new DeleteProductCommand(id));
+                TempData["SuccessMessage"] = _localizer[LocalizationKeys.Products.Deleted.Value].ToString();
+            }
+            catch (NotFoundException)
+            {
+                TempData["ErrorMessage"] = _localizer[LocalizationKeys.Products.NotFound.Value].ToString();
+            }
+
+            return RedirectToAction(nameof(Inventory));
+        }
+
+        [HttpGet("product-details/{id}")]
+        public async Task<IActionResult> ProductDetails(Guid id)
+        {
+            ViewData["Title"] = _localizer["admin_product_details_title"];
+
+            try
+            {
+                var product = await _mediator.Send(new GetProductByIdQuery(id));
+                return View(product);
+            }
+            catch (NotFoundException)
+            {
+                return View("NotFound");
+            }
         }
 
         [HttpGet("edit-product/{id}")]

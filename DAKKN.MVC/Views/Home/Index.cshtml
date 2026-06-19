@@ -183,74 +183,8 @@
             <h2 class="text-3xl md:text-4xl font-extrabold text-on-surface dark:text-white mb-4">@Localizer["prod_h2"]</h2>
             <p class="text-base text-on-surface-variant dark:text-slate-400 leading-relaxed">@Localizer["prod_p"]</p>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8" data-stagger>
-            <!-- Rendered via Localizer for initial state, products grid handled by landing.js -->
-            <div class="product-card glass-panel p-5 rounded-2xl flex flex-col gap-4 scroll-animate delay-100 dark:bg-slate-900/40">
-                <div class="aspect-square rounded-xl overflow-hidden relative">
-                    <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzltvWG8WURo7Y4suxD28ZKqrZqGo_jT9MfzPzO7YJy159K35OA3WcmauA2spMG7cSXjHDhIBERG4el4QITFH87cqD8aMULaFRF6R8fJR1-3Ca-RKAss7q3wjlw1wBwI3rFiciRCrPiyATA55LfV9EKWbH2U3sOeu7UJAl8IDPaLRei3JCXrYPz3r5ZhxVc0UtwbuT7RVAGaG2RC-eLlRnM81bQT6Eh1bbP7SQsT1UJJQ0cAhzAaTxkwWgpmYmBUSrtGFIZzFwZGoi"/>
-                </div>
-                <div>
-                    <h3 class="text-lg font-bold text-on-surface dark:text-white">@Localizer["prod1_name"]</h3>
-                    <p class="text-xs text-on-surface-variant dark:text-slate-400">@Localizer["prod1_type"]</p>
-                </div>
-                <div class="flex items-center justify-between mt-auto pt-2">
-                    <span class="text-xl font-bold text-primary">@Localizer["prod1_price"]</span>
-                    <button aria-label="Add to cart" class="px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-xs font-bold transition-all duration-200">
-                        @Localizer["add_cart"]
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Product 2 -->
-            <div class="product-card glass-panel p-5 rounded-2xl flex flex-col gap-4 scroll-animate delay-200 dark:bg-slate-900/40">
-                <div class="aspect-square rounded-xl overflow-hidden relative">
-                    <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNlKihBsHggV1O8npzxCBXgegvVuI9C4X9A-R-pMkpZxfd9ETgPzw3yV8Y7K3xqS2YMYggvApzgWiC98n2TQ2pkEDVuIHFZk8cdkGoU2Dzg0p-YDxsbRUkr7iogDacxpKtjBwNN8TgcAAQjXmr_2WPuLmhYP5h7kUYXO2hciCSdgSRCl8IObo8nbGIoQBgQFJobpxX69IGcm6UVeiu02pY0d5nSJZtH1JrJd_y0GescOC89BTPWnxp-4oBlohshrnihq2NDtrjYqPR"/>
-                </div>
-                <div>
-                    <h3 class="text-lg font-bold text-on-surface dark:text-white">@Localizer["prod2_name"]</h3>
-                    <p class="text-xs text-on-surface-variant dark:text-slate-400">@Localizer["prod2_type"]</p>
-                </div>
-                <div class="flex items-center justify-between mt-auto pt-2">
-                    <span class="text-xl font-bold text-primary">@Localizer["prod2_price"]</span>
-                    <button aria-label="Add to cart" class="px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-xs font-bold transition-all duration-200">
-                        @Localizer["add_cart"]
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Product 3 -->
-            <div class="product-card glass-panel p-5 rounded-2xl flex flex-col gap-4 scroll-animate delay-300 dark:bg-slate-900/40">
-                <div class="aspect-square rounded-xl overflow-hidden relative">
-                    <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXD4f3g-Xcj3q_tUbHslHRvBGQQPqNJQo25aoOQpYJoAkNvsN195Xr69-P45FG6MuYFa9KKf_wUbKQqLgDlsy1sU972rS_ZK7HtRKvkl8I9A5ISg24pUCXPNvW0tl93POppw80pkH_AeNnI-tIE5PvfS67qcqQroSEGYsxRDcktuS0aiGkoOOxaPLQ5tXSwNn_JqXw3Ken-xEZM-KtUYI6B_jVITKI3yQKJM8Yk-CNFye4fDZcWCf1VN6AeXyte_x6yygWA3xobXz5"/>
-                </div>
-                <div>
-                    <h3 class="text-lg font-bold text-on-surface dark:text-white">@Localizer["prod3_name"]</h3>
-                    <p class="text-xs text-on-surface-variant dark:text-slate-400">@Localizer["prod3_type"]</p>
-                </div>
-                <div class="flex items-center justify-between mt-auto pt-2">
-                    <span class="text-xl font-bold text-primary">@Localizer["prod3_price"]</span>
-                    <button aria-label="Add to cart" class="px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-xs font-bold transition-all duration-200">
-                        @Localizer["add_cart"]
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Product 4 -->
-            <div class="product-card glass-panel p-5 rounded-2xl flex flex-col gap-4 scroll-animate delay-400 dark:bg-slate-900/40">
-                <div class="aspect-square rounded-xl overflow-hidden relative">
-                    <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNEuLIza1T-3Iuc-68bHHLc2pPetxBeuxUnxKpQ6IRTTI82ybqG-q5I9BAWIeOsJ9YBhCLD2DNvoBL2TX8rup2TWluPf4rAjhxdSShOt8fSWMzrUleduQUNPviusk5FHo6g-N4FpR_58KIT9_qchh-raYGS_H-GhrFQ-sgF5lc_PrfRgsuyGdd9q8_CATQniccrhh87XNV1MTwun7KOCcEmJboJnnpEmtKm8asHBRe94TFFUESjJL-f0S50d37pS09FasbtTA3VAPe"/>
-                </div>
-                <div>
-                    <h3 class="text-lg font-bold text-on-surface dark:text-white">@Localizer["prod4_name"]</h3>
-                    <p class="text-xs text-on-surface-variant dark:text-slate-400">@Localizer["prod4_type"]</p>
-                </div>
-                <div class="flex items-center justify-between mt-auto pt-2">
-                    <span class="text-xl font-bold text-primary">@Localizer["prod4_price"]</span>
-                    <button aria-label="Add to cart" class="px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-xs font-bold transition-all duration-200">
-                        @Localizer["add_cart"]
-                    </button>
-                </div>
-            </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8" id="featured-products-grid" data-stagger>
+            <!-- Rendered dynamically by landing.js -->
         </div>
     </section>
 
@@ -315,61 +249,7 @@
                 <!-- Sliding Track -->
                 <div id="cat-slider-track" class="flex gap-6 transition-transform duration-500 ease-out"
                      style="will-change: transform;">
-
-                    <!-- Card 1: Die-Cut -->
-                    <div class="group cursor-pointer rounded-2xl overflow-hidden relative flex-shrink-0 w-[calc(100%-0px)] sm:w-[calc(50%-12px)] md:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] aspect-square glass-panel shadow-sm dark:bg-slate-900/40">
-                        <div class="absolute inset-0 bg-surface-container-highest/20 group-hover:bg-transparent transition-colors z-10"></div>
-                        <img alt="Die-Cut Stickers" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAk_qLkXMyRhZHsFCiX42KXytRcQjX2nab3tojgzqftF18C49FJpCS5XBGoaBsnX75L1gyYlftOBl7WKTmtACsTCrr806OId-nyvJx3XDZ1w-v8x5Qm_GT3GqS4OKn2MFeB83w4XvOMsFFzZxFXuQ8oFPLgpySI6MxTeuJpXw6YP_zc4_64RRwlk0pmeKbcMA2D6nh67sbI8UVcw84LEEpeaE0L3-YyDqG3MvrVsCw0ZjDKcxm043x28Rzxo5kX03VP42LKDk4lLeA2"/>
-                        <div class="absolute bottom-0 left-0 right-0 p-6 cat-overlay z-20">
-                            <h3 class="text-xl font-bold text-white">@Localizer["cat1"]</h3>
-                        </div>
-                    </div>
-
-                    <!-- Card 2: Holographic -->
-                    <div class="group cursor-pointer rounded-2xl overflow-hidden relative flex-shrink-0 w-[calc(100%-0px)] sm:w-[calc(50%-12px)] md:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] aspect-square glass-panel shadow-sm dark:bg-slate-900/40">
-                        <div class="absolute inset-0 bg-surface-container-highest/20 group-hover:bg-transparent transition-colors z-10"></div>
-                        <img alt="Holographic Stickers" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7R0HC8qN2XvoVeNE2ALpluQWlRv1gqsRoZU694CuR3U-dd_9BcWYyazCSb8t36Ueu4AMVfnYtCF7ibe4X76KrHDlZT3reA_YXSTkFfjqGL8GFRd-0Lhg6lf7026uYYjkidJ1ee2eCGL1ntOmk7LT1iwgtgGxO2q0EIj0lskO7TRjr-x7JOKyDhU-8hBAWjDPQSOpFV90-R6H7F9udXZw6fG5DQQxbsnf9Xau_C9lXJlhk3LZcnb7kakWDPtTqFCx2BYRNZhvn4WxE"/>
-                        <div class="absolute bottom-0 left-0 right-0 p-6 cat-overlay z-20">
-                            <h3 class="text-xl font-bold text-white">@Localizer["cat2"]</h3>
-                        </div>
-                    </div>
-
-                    <!-- Card 3: Clear -->
-                    <div class="group cursor-pointer rounded-2xl overflow-hidden relative flex-shrink-0 w-[calc(100%-0px)] sm:w-[calc(50%-12px)] md:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] aspect-square glass-panel shadow-sm dark:bg-slate-900/40">
-                        <div class="absolute inset-0 bg-surface-container-highest/20 group-hover:bg-transparent transition-colors z-10"></div>
-                        <img alt="Clear Stickers" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAC2qBsDcgLT342jaNSLEoqNj5Rx2jFhv4LfF_VtFR0CQCpVygfxVenKIzh0I5yMBCDjTBZzuo49gngmWJdbScbYmtfwVAfuT1IbqQGsqRCPbh8glmwWGu9jBhUaw0CAT4GnPBWsr_jQCdanBnIjVL1smPv9KDOZl4a94lqN4EB9o2cuX5hwTWDC3Nb9ee0q6Eg606xnGfs1odHMvZtT2vAjEPllNmAVE8oujmDyK9bwdyJ7Sc1Ax5Ks1JEp7UShdQtV14II81lUaU7"/>
-                        <div class="absolute bottom-0 left-0 right-0 p-6 cat-overlay z-20">
-                            <h3 class="text-xl font-bold text-white">@Localizer["cat3"]</h3>
-                        </div>
-                    </div>
-
-                    <!-- Card 4: Sticker Sheets -->
-                    <div class="group cursor-pointer rounded-2xl overflow-hidden relative flex-shrink-0 w-[calc(100%-0px)] sm:w-[calc(50%-12px)] md:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] aspect-square glass-panel shadow-sm dark:bg-slate-900/40">
-                        <div class="absolute inset-0 bg-surface-container-highest/20 group-hover:bg-transparent transition-colors z-10"></div>
-                        <img alt="Sticker Sheets" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBJDMScKPq8MJUOklieS9wyBeBolpgZgCezPLy5vxVSfLlZwafOkDMZcTXqanKwSbFFMgETfofN0f0Z3PPVvyA1qXwoqVbzrm3cUyBoWSfHJNsnxf83OEz_N6XWfdgx1j_CKPnEvaDHmQ3-UEQrqJqmPhtF6p4hySOo3H8IrSxJpVe0omQj6ZEYGEcptT3bs84jGWIWvNYTod4_9LUv4Br9s3Mo0kZYUle3La_hd77AzNcmDbQZXxtuVqUGni9yAaljCyssQ3T884AU"/>
-                        <div class="absolute bottom-0 left-0 right-0 p-6 cat-overlay z-20">
-                            <h3 class="text-xl font-bold text-white">@Localizer["cat4"]</h3>
-                        </div>
-                    </div>
-
-                    <!-- Card 5: Custom Labels -->
-                    <div class="group cursor-pointer rounded-2xl overflow-hidden relative flex-shrink-0 w-[calc(100%-0px)] sm:w-[calc(50%-12px)] md:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] aspect-square glass-panel shadow-sm dark:bg-slate-900/40">
-                        <div class="absolute inset-0 bg-surface-container-highest/20 group-hover:bg-transparent transition-colors z-10"></div>
-                        <img alt="Custom Labels" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBzltvWG8WURo7Y4suxD28ZKqrZqGo_jT9MfzPzO7YJy159K35OA3WcmauA2spMG7cSXjHDhIBERG4el4QITFH87cqD8aMULaFRF6R8fJR1-3Ca-RKAss7q3wjlw1wBwI3rFiciRCrPiyATA55LfV9EKWbH2U3sOeu7UJAl8IDPaLRei3JCXrYPz3r5ZhxVc0UtwbuT7RVAGaG2RC-eLlRnM81bQT6Eh1bbP7SQsT1UJJQ0cAhzAaTxkwWgpmYmBUSrtGFIZzFwZGoi"/>
-                        <div class="absolute bottom-0 left-0 right-0 p-6 cat-overlay z-20">
-                            <h3 class="text-xl font-bold text-white">@Localizer["cat5"]</h3>
-                        </div>
-                    </div>
-
-                    <!-- Card 6: Matte Vinyl -->
-                    <div class="group cursor-pointer rounded-2xl overflow-hidden relative flex-shrink-0 w-[calc(100%-0px)] sm:w-[calc(50%-12px)] md:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] aspect-square glass-panel shadow-sm dark:bg-slate-900/40">
-                        <div class="absolute inset-0 bg-surface-container-highest/20 group-hover:bg-transparent transition-colors z-10"></div>
-                        <img alt="Matte Vinyl" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNEuLIza1T-3Iuc-68bHHLc2pPetxBeuxUnxKpQ6IRTTI82ybqG-q5I9BAWIeOsJ9YBhCLD2DNvoBL2TX8rup2TWluPf4rAjhxdSShOt8fSWMzrUleduQUNPviusk5FHo6g-N4FpR_58KIT9_qchh-raYGS_H-GhrFQ-sgF5lc_PrfRgsuyGdd9q8_CATQniccrhh87XNV1MTwun7KOCcEmJboJnnpEmtKm8asHBRe94TFFUESjJL-f0S50d37pS09FasbtTA3VAPe"/>
-                        <div class="absolute bottom-0 left-0 right-0 p-6 cat-overlay z-20">
-                            <h3 class="text-xl font-bold text-white">@Localizer["cat6"]</h3>
-                        </div>
-                    </div>
-
+                    <!-- Rendered dynamically by landing.js -->
                 </div>
             </div>
 
@@ -421,27 +301,7 @@
             <div class="flex flex-col gap-2.5">
                 <span class="text-xs font-bold text-primary uppercase tracking-wider">@Localizer["filter_category"]</span>
                 <div class="flex flex-wrap gap-2" id="prod-cat-filters">
-                    <button onclick="filterCategory('all')" id="cat-filter-all" class="cat-pill px-4 py-2 rounded-full border text-xs font-bold transition-all duration-200 bg-primary border-primary text-white">
-                        <span>@Localizer["all_cats"]</span>
-                    </button>
-                    <button onclick="filterCategory('Die-Cut')" id="cat-filter-Die-Cut" class="cat-pill px-4 py-2 rounded-full border border-primary/20 text-primary hover:border-primary text-xs font-bold transition-all duration-200 bg-white/50 dark:bg-slate-800/50">
-                        <span>@Localizer["cat1"]</span>
-                    </button>
-                    <button onclick="filterCategory('Holographic')" id="cat-filter-Holographic" class="cat-pill px-4 py-2 rounded-full border border-primary/20 text-primary hover:border-primary text-xs font-bold transition-all duration-200 bg-white/50 dark:bg-slate-800/50">
-                        <span>@Localizer["cat2"]</span>
-                    </button>
-                    <button onclick="filterCategory('Clear')" id="cat-filter-Clear" class="cat-pill px-4 py-2 rounded-full border border-primary/20 text-primary hover:border-primary text-xs font-bold transition-all duration-200 bg-white/50 dark:bg-slate-800/50">
-                        <span>@Localizer["cat3"]</span>
-                    </button>
-                    <button onclick="filterCategory('Sticker Sheets')" id="cat-filter-Sticker-Sheets" class="cat-pill px-4 py-2 rounded-full border border-primary/20 text-primary hover:border-primary text-xs font-bold transition-all duration-200 bg-white/50 dark:bg-slate-800/50">
-                        <span>@Localizer["cat4"]</span>
-                    </button>
-                    <button onclick="filterCategory('Custom Labels')" id="cat-filter-Custom-Labels" class="cat-pill px-4 py-2 rounded-full border border-primary/20 text-primary hover:border-primary text-xs font-bold transition-all duration-200 bg-white/50 dark:bg-slate-800/50">
-                        <span>@Localizer["cat5"]</span>
-                    </button>
-                    <button onclick="filterCategory('Matte Vinyl')" id="cat-filter-Matte-Vinyl" class="cat-pill px-4 py-2 rounded-full border border-primary/20 text-primary hover:border-primary text-xs font-bold transition-all duration-200 bg-white/50 dark:bg-slate-800/50">
-                        <span>@Localizer["cat6"]</span>
-                    </button>
+                    <!-- Rendered dynamically by landing.js -->
                 </div>
             </div>
 

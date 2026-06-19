@@ -41,7 +41,11 @@ namespace DAKKN.Application.Features.Products.Queries.GetProductById
                 SizeOptions = product.SizeOptions,
                 CategoryId = product.CategoryId,
                 CategoryName = category?.CategoryName ?? string.Empty,
-                CategoryArName = category?.ArName ?? string.Empty
+                CategoryArName = category?.ArName ?? string.Empty,
+                CreatedAt = product.CreatedAt,
+                UpdatedAt = product.UpdatedAt,
+                IsActive = product.IsActive,
+                IsDeleted = product.IsDeleted
             };
         }
     }

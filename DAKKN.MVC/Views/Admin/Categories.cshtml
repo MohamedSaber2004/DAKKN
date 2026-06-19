@@ -55,8 +55,12 @@
                     @foreach (var cat in Model)
                     {
                         <tr class="hover:bg-admin-page/50 transition-colors @(cat.IsDeleted ? "opacity-60" : "")">
-                            <td class="px-6 py-4 text-admin-primary font-medium">@cat.CategoryName</td>
-                            <td class="px-6 py-4 text-admin-primary" dir="rtl">@cat.ArName</td>
+                            <td class="px-6 py-4">
+                                <a asp-action="CategoryProducts" asp-route-id="@cat.Id" class="text-admin-primary font-medium hover:text-primary transition-colors">@cat.CategoryName</a>
+                            </td>
+                            <td class="px-6 py-4 text-admin-primary" dir="rtl">
+                                <a asp-action="CategoryProducts" asp-route-id="@cat.Id" class="hover:text-primary transition-colors">@cat.ArName</a>
+                            </td>
                             <td class="px-6 py-4 text-center text-admin-secondary">@cat.ProductsCount</td>
                             <td class="px-6 py-4 text-center">
                                 @if (cat.IsDeleted)

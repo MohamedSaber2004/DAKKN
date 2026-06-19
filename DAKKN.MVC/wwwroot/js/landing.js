@@ -123,14 +123,15 @@ async function applyLang(lang, reload = false) {
     // Use pre-injected translations if available, otherwise fetch
     if (window.currentTranslations && Object.keys(window.currentTranslations).length) {
         currentTranslations = window.currentTranslations;
-        if (typeof renderAllProducts === 'function') renderAllProducts();
     } else if (!Object.keys(currentTranslations).length) {
         const s = await fetchTranslations(lang || current);
-        if (s) {
-            currentTranslations = s;
-            if (typeof renderAllProducts === 'function') renderAllProducts();
-        }
+        if (s) currentTranslations = s;
     }
+    // Re-render dynamic content with new language
+    await renderFeaturedProducts();
+    await renderCategoriesSlider();
+    await renderCategoryFilters();
+    await renderAllProducts();
 }
 
 // Utility to hide preloader once everything is ready
@@ -211,8 +212,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         safeInit('initStaggeredGrids');
         safeInit('initNavbarScrollEffect');
         safeInit('initScrollSpy');
-        safeInit('updateSlider');
-        safeInit('renderAllProducts');
+        await renderFeaturedProducts();
+        await renderCategoriesSlider();
+        await renderCategoryFilters();
+        await renderAllProducts();
 
         // OTP & Password micro-interactions
         initOtpBoxes();
@@ -415,56 +418,213 @@ window.updateSlider = updateSlider;
 window.toggleLang = toggleLang;
 window.addEventListener('resize', updateSlider);
 
-/* ── Products Grid ─────────────────────────────────────── */
-const ALL_PRODUCTS = [
-    { id: 1, nameKey: "prod1_name", category: "Die-Cut", categoryKey: "cat1", price: 70, img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBzltvWG8WURo7Y4suxD28ZKqrZqGo_jT9MfzPzO7YJy159K35OA3WcmauA2spMG7cSXjHDhIBERG4el4QITFH87cqD8aMULaFRF6R8fJR1-3Ca-RKAss7q3wjlw1wBwI3rFiciRCrPiyATA55LfV9EKWbH2U3sOeu7UJAl8IDPaLRei3JCXrYPz3r5ZhxVc0UtwbuT7RVAGaG2RC-eLlRnM81bQT6Eh1bbP7SQsT1UJJQ0cAhzAaTxkwWgpmYmBUSrtGFIZzFwZGoi" },
-    { id: 2, nameKey: "prod2_name", category: "Holographic", categoryKey: "cat2", price: 80, img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDNlKihBsHggV1O8npzxCBXgegvVuI9C4X9A-R-pMkpZxfd9ETgPzw3yV8Y7K3xqS2YMYggvApzgWiC98n2TQ2pkEDVuIHFZk8cdkGoU2Dzg0p-YDxsbRUkr7iogDacxpKtjBwNN8TgcAAQjXmr_2WPuLmhYP5h7kUYXO2hciCSdgSRCl8IObo8nbGIoQBgQFJobpxX69IGcm6UVeiu02pY0d5nSJZtH1JrJd_y0GescOC89BTPWnxp-4oBlohshrnihq2NDtrjYqPR" },
-    { id: 3, nameKey: "prod3_name", category: "Clear", categoryKey: "cat3", price: 60, img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAXD4f3g-Xcj3q_tUbHslHRvBGQQPqNJQo25aoOQpYJoAkNvsN195Xr69-P45FG6MuYFa9KKf_wUbKQqLgDlsy1sU972rS_ZK7HtRKvkl8I9A5ISg24pUCXPNvW0tl93POppw80pkH_AeNnI-tIE5PvfS67qcqQroSEGYsxRDcktuS0aiGkoOOxaPLQ5tXSwNn_JqXw3Ken-xEZM-KtUYI6B_jVITKI3yQKJM8Yk-CNFye4fDZcWCf1VN6AeXyte_x6yygWA3xobXz5" },
-    { id: 4, nameKey: "prod4_name", category: "Die-Cut", categoryKey: "cat1", price: 70, img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBNEuLIza1T-3Iuc-68bHHLc2pPetxBeuxUnxKpQ6IRTTI82ybqG-q5I9BAWIeOsJ9YBhCLD2DNvoBL2TX8rup2TWluPf4rAjhxdSShOt8fSWMzrUleduQUNPviusk5FHo6g-N4FpR_58KIT9_qchh-raYGS_H-GhrFQ-sgF5lc_PrfRgsuyGdd9q8_CATQniccrhh87XNV1MTwun7KOCcEmJboJnnpEmtKm8asHBRe94TFFUESjJL-f0S50d37pS09FasbtTA3VAPe" },
-    { id: 5, nameKey: "prod5_name", category: "Custom Labels", categoryKey: "cat5", price: 120, img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBzltvWG8WURo7Y4suxD28ZKqrZqGo_jT9MfzPzO7YJy159K35OA3WcmauA2spMG7cSXjHDhIBERG4el4QITFH87cqD8aMULaFRF6R8fJR1-3Ca-RKAss7q3wjlw1wBwI3rFiciRCrPiyATA55LfV9EKWbH2U3sOeu7UJAl8IDPaLRei3JCXrYPz3r5ZhxVc0UtwbuT7RVAGaG2RC-eLlRnM81bQT6Eh1bbP7SQsT1UJJQ0cAhzAaTxkwWgpmYmBUSrtGFIZzFwZGoi" },
-    { id: 6, nameKey: "prod6_name", category: "Holographic", categoryKey: "cat2", price: 95, img: "https://lh3.googleusercontent.com/aida-public/AB6AXuDNlKihBsHggV1O8npzxCBXgegvVuI9C4X9A-R-pMkpZxfd9ETgPzw3yV8Y7K3xqS2YMYggvApzgWiC98n2TQ2pkEDVuIHFZk8cdkGoU2Dzg0p-YDxsbRUkr7iogDacxpKtjBwNN8TgcAAQjXmr_2WPuLmhYP5h7kUYXO2hciCSdgSRCl8IObo8nbGIoQBgQFJobpxX69IGcm6UVeiu02pY0d5nSJZtH1JrJd_y0GescOC89BTPWnxp-4oBlohshrnihq2NDtrjYqPR" },
-    { id: 7, nameKey: "prod7_name", category: "Clear", categoryKey: "cat3", price: 50, img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAXD4f3g-Xcj3q_tUbHslHRvBGQQPqNJQo25aoOQpYJoAkNvsN195Xr69-P45FG6MuYFa9KKf_wUbKQqLgDlsy1sU972rS_ZK7HtRKvkl8I9A5ISg24pUCXPNvW0tl93POppw80pkH_AeNnI-tIE5PvfS67qcqQroSEGYsxRDcktuS0aiGkoOOxaPLQ5tXSwNn_JqXw3Ken-xEZM-KtUYI6B_jVITKI3yQKJM8Yk-CNFye4fDZcWCf1VN6AeXyte_x6yygWA3xobXz5" },
-    { id: 8, nameKey: "prod8_name", category: "Sticker Sheets", categoryKey: "cat4", price: 110, img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBJDMScKPq8MJUOklieS9wyBeBolpgZgCezPLy5vxVSfLlZwafOkDMZcTXqanKwSbFFMgETfofN0f0Z3PPVvyA1qXwoqVbzrm3cUyBoWSfHJNsnxf83OEz_N6XWfdgx1j_CKPnEvaDHmQ3-UEQrqJqmPhtF6p4hySOo3H8IrSxJpVe0omQj6ZEYGEcptT3bs84jGWIWvNYTod4_9LUv4Br9s3Mo0kZYUle3La_hd77AzNcmDbQZXxtuVqUGni9yAaljCyssQ3T884AU" },
-    { id: 9, nameKey: "prod9_name", category: "Matte Vinyl", categoryKey: "cat6", price: 85, img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBNEuLIza1T-3Iuc-68bHHLc2pPetxBeuxUnxKpQ6IRTTI82ybqG-q5I9BAWIeOsJ9YBhCLD2DNvoBL2TX8rup2TWluPf4rAjhxdSShOt8fSWMzrUleduQUNPviusk5FHo6g-N4FpR_58KIT9_qchh-raYGS_H-GhrFQ-sgF5lc_PrfRgsuyGdd9q8_CATQniccrhh87XNV1MTwun7KOCcEmJboJnnpEmtKm8asHBRe94TFFUESjJL-f0S50d37pS09FasbtTA3VAPe" },
-    { id: 10, nameKey: "prod10_name", category: "Die-Cut", categoryKey: "cat1", price: 75, img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAk_qLkXMyRhZHsFCiX42KXytRcQjX2nab3tojgzqftF18C49FJpCS5XBGoaBsnX75L1gyYlftOBl7WKTmtACsTCrr806OId-nyvJx3XDZ1w-v8x5Qm_GT3GqS4OKn2MFeB83w4XvOMsFFzZxFXuQ8oFPLgpySI6MxTeuJpXw6YP_zc4_64RRwlk0pmeKbcMA2D6nh67sbI8UVcw84LEEpeaE0L3-YyDqG3MvrVsCw0ZjDKcxm043x28Rzxo5kX03VP42LKDk4lLeA2" },
-    { id: 11, nameKey: "prod11_name", category: "Sticker Sheets", categoryKey: "cat4", price: 105, img: "https://lh3.googleusercontent.com/aida-public/AB6AXuBJDMScKPq8MJUOklieS9wyBeBolpgZgCezPLy5vxVSfLlZwafOkDMZcTXqanKwSbFFMgETfofN0f0Z3PPVvyA1qXwoqVbzrm3cUyBoWSfHJNsnxf83OEz_N6XWfdgx1j_CKPnEvaDHmQ3-UEQrqJqmPhtF6p4hySOo3H8IrSxJpVe0omQj6ZEYGEcptT3bs84jGWIWvNYTod4_9LUv4Br9s3Mo0kZYUle3La_hd77AzNcmDbQZXxtuVqUGni9yAaljCyssQ3T884AU" },
-    { id: 12, nameKey: "prod12_name", category: "Holographic", categoryKey: "cat2", price: 90, img: "https://lh3.googleusercontent.com/aida-public/AB6AXuC7R0HC8qN2XvoVeNE2ALpluQWlRv1gqsRoZU694CuR3U-dd_9BcWYyazCSb8t36Ueu4AMVfnYtCF7ibe4X76KrHDlZT3reA_YXSTkFfjqGL8GFRd-0Lhg6lf7026uYYjkidJ1ee2eCGL1ntOmk7LT1iwgtgGxO2q0EIj0lskO7TRjr-x7JOKyDhU-8hBAWjDPQSOpFV90-R6H7F9udXZw6fG5DQQxbsnf9Xau_C9lXJlhk3LZcnb7kakWDPtTqFCx2BYRNZhvn4WxE" }
-];
+/* ── Catalog API ────────────────────────────────────── */
+async function apiFetch(url) {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return res.json();
+}
 
-let selectedCategory = 'all';
+async function fetchCategories() {
+    const json = await apiFetch('/api/v1/catalog/categories');
+    return json.data || [];
+}
+
+async function fetchProducts(page, pageSize, categoryId) {
+    const params = new URLSearchParams({ pageNumber: page, pageSize });
+    if (categoryId) params.set('categoryId', categoryId);
+    const json = await apiFetch(`/api/v1/catalog/products?${params}`);
+    return json.data || { items: [], totalPages: 1, pageNumber: 1 };
+}
+
+/* ── Featured Products (Shop section) ─────────────── */
+async function renderFeaturedProducts() {
+    const grid = document.getElementById('featured-products-grid');
+    if (!grid) return;
+    try {
+        const data = await fetchProducts(1, 8);
+        const items = data.items || [];
+        if (!items.length) {
+            grid.innerHTML = `<div class="col-span-full text-center py-12"><p class="text-on-surface-variant">No products available.</p></div>`;
+            return;
+        }
+        const isAr = document.documentElement.lang.startsWith('ar');
+        grid.innerHTML = items.map((p, i) => `
+            <a href="/shop/product/${p.id}" class="product-card glass-panel p-5 rounded-2xl flex flex-col gap-4 scroll-animate delay-${(i + 1) * 100} dark:bg-slate-900/40 group hover:-translate-y-1 transition-all duration-300 no-underline">
+                <div class="aspect-square rounded-xl overflow-hidden relative">
+                    <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${p.imageUrl}"
+                         onerror="this.src='https://placehold.co/400x400/e2e8f0/64748b?text=No+Image'" alt="${isAr ? p.arName : p.name}" />
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-on-surface dark:text-white">${isAr ? p.arName : p.name}</h3>
+                    <p class="text-xs text-on-surface-variant dark:text-slate-400">${isAr ? p.categoryArName : p.categoryName}</p>
+                </div>
+                <div class="flex items-center justify-between mt-auto pt-2">
+                    <span class="text-xl font-bold text-primary">${p.price.toLocaleString()} ${isAr ? 'ج.م' : 'EGP'}</span>
+                    <span class="px-4 py-2 rounded-lg bg-primary/10 text-primary text-xs font-bold">View Details</span>
+                </div>
+            </a>`).join('');
+    } catch (err) {
+        console.error('Error rendering featured products:', err);
+        grid.innerHTML = `<div class="col-span-full text-center py-12"><p class="text-on-surface-variant">Failed to load products.</p></div>`;
+    }
+}
+
+/* ── Categories Slider ────────────────────────────── */
+let categoriesData = [];
+
+async function renderCategoriesSlider() {
+    const track = document.getElementById('cat-slider-track');
+    if (!track) return;
+    try {
+        categoriesData = await fetchCategories();
+        if (!categoriesData.length) {
+            track.innerHTML = `<div class="flex-shrink-0 w-full text-center py-12"><p class="text-on-surface-variant">No categories yet.</p></div>`;
+            return;
+        }
+        const isAr = document.documentElement.lang.startsWith('ar');
+        track.innerHTML = categoriesData.map(cat => `
+            <a href="/shop/products?categoryId=${cat.id}"
+               class="group rounded-2xl overflow-hidden relative flex-shrink-0 w-[calc(100%-0px)] sm:w-[calc(50%-12px)] md:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] aspect-square glass-panel shadow-sm dark:bg-slate-900/40 no-underline block">
+                <div class="absolute inset-0 bg-surface-container-highest/20 group-hover:bg-transparent transition-colors z-10"></div>
+                <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/5 to-primary/20">
+                    <span class="material-symbols-outlined text-6xl text-primary/40">category</span>
+                </div>
+                <div class="absolute bottom-0 left-0 right-0 p-6 cat-overlay z-20">
+                    <h3 class="text-xl font-bold text-white">${isAr ? cat.arName : cat.categoryName}</h3>
+                    <p class="text-sm text-white/80">${cat.productsCount} Products</p>
+                </div>
+            </a>`).join('');
+        updateSlider();
+    } catch (err) {
+        console.error('Error rendering categories:', err);
+        track.innerHTML = `<div class="flex-shrink-0 w-full text-center py-12"><p class="text-on-surface-variant">Failed to load categories.</p></div>`;
+    }
+}
+
+async function renderCategoryFilters() {
+    const container = document.getElementById('prod-cat-filters');
+    if (!container) return;
+    if (!categoriesData.length) return;
+    const isAr = document.documentElement.lang.startsWith('ar');
+    container.innerHTML = `
+        <button onclick="filterCategory(null)" id="cat-filter-all" class="cat-pill px-4 py-2 rounded-full border text-xs font-bold transition-all duration-200 bg-primary border-primary text-white">
+            <span>All Categories</span>
+        </button>
+        ${categoriesData.map(cat => `
+            <button onclick="filterCategory('${cat.id}')" id="cat-filter-${cat.id}" class="cat-pill px-4 py-2 rounded-full border border-primary/20 text-primary hover:border-primary text-xs font-bold transition-all duration-200 bg-white/50 dark:bg-slate-800/50">
+                <span>${isAr ? cat.arName : cat.categoryName}</span>
+            </button>
+        `).join('')}`;
+}
+
+window.renderCategoryFilters = renderCategoryFilters;
+
+let selectedCategoryId = null;
 let maxPrice = 150;
 let prodsPage = 1;
 const itemsPerPage = 8;
+let allProductsCache = null;
 
-function renderAllProducts() {
+async function renderAllProducts() {
     const grid = document.getElementById('all-prods-grid');
     if (!grid) return;
-    const filtered = ALL_PRODUCTS.filter(p => (selectedCategory === 'all' || p.category === selectedCategory) && p.price <= maxPrice);
-    const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
-    if (prodsPage > totalPages) prodsPage = totalPages;
-    const paginated = filtered.slice((prodsPage - 1) * itemsPerPage, prodsPage * itemsPerPage);
-    if (!paginated.length) { grid.innerHTML = `<div class="col-span-full py-12 text-center text-on-surface-variant/70">${currentTranslations.no_products_found || "No stickers match your filters."}</div>`; }
-    else {
-        grid.innerHTML = paginated.map(p => `
-            <div class="product-card glass-panel p-5 rounded-2xl flex flex-col gap-4 scroll-animate visible" style="opacity:1;transform:none;">
-                <div class="aspect-square rounded-xl overflow-hidden relative"><img class="w-full h-full object-cover" src="${p.img}" alt="${currentTranslations[p.nameKey] || p.nameKey}"/></div>
-                <div><h3 class="text-lg font-bold text-on-surface">${currentTranslations[p.nameKey] || p.nameKey}</h3><p class="text-xs text-on-surface-variant">${currentTranslations[p.categoryKey] || p.category}</p></div>
-                <div class="flex items-center justify-between mt-auto pt-2"><span class="text-xl font-bold text-primary font-sans">${document.documentElement.lang === 'ar' ? p.price + ' ج.م' : p.price + ' EGP'}</span><button onclick="alert('Added!')" class="px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-xs font-bold transition-all duration-200">${currentTranslations.add_cart || 'Add'}</button></div>
-            </div>`).join('');
+    try {
+        if (!allProductsCache) {
+            allProductsCache = await fetchProducts(1, 1000);
+        }
+        let items = allProductsCache.items || [];
+        if (selectedCategoryId) {
+            items = items.filter(p => p.categoryId === selectedCategoryId);
+        }
+        if (maxPrice < 150) {
+            items = items.filter(p => p.price <= maxPrice);
+        }
+        const totalPages = Math.ceil(items.length / itemsPerPage) || 1;
+        if (prodsPage > totalPages) prodsPage = totalPages;
+        const paginated = items.slice((prodsPage - 1) * itemsPerPage, prodsPage * itemsPerPage);
+        const isAr = document.documentElement.lang.startsWith('ar');
+        if (!paginated.length) {
+            grid.innerHTML = `<div class="col-span-full py-12 text-center text-on-surface-variant/70">${currentTranslations.no_products_found || "No stickers match your filters."}</div>`;
+        } else {
+            grid.innerHTML = paginated.map(p => `
+                <div class="product-card glass-panel p-5 rounded-2xl flex flex-col gap-4 scroll-animate visible" style="opacity:1;transform:none;">
+                    <div class="aspect-square rounded-xl overflow-hidden relative"><img class="w-full h-full object-cover" src="${p.imageUrl}" onerror="this.src='https://placehold.co/400x400/e2e8f0/64748b?text=No+Image'" alt="${isAr ? p.arName : p.name}"/></div>
+                    <div><h3 class="text-lg font-bold text-on-surface">${isAr ? p.arName : p.name}</h3><p class="text-xs text-on-surface-variant">${isAr ? p.categoryArName : p.categoryName}</p></div>
+                    <div class="flex items-center justify-between mt-auto pt-2"><span class="text-xl font-bold text-primary font-sans">${p.price.toLocaleString()} ${isAr ? 'ج.م' : 'EGP'}</span><button onclick="alert('Added!')" class="px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-xs font-bold transition-all duration-200">${currentTranslations.add_cart || 'Add'}</button></div>
+                </div>`).join('');
+        }
+        const priceDisplay = document.getElementById('price-val-display');
+        if (priceDisplay) priceDisplay.textContent = isAr ? maxPrice + ' ج.م' : maxPrice + ' EGP';
+        updatePaginationIndicators(totalPages);
+        updateActiveFilterPill();
+    } catch (err) {
+        console.error('Error rendering all products:', err);
+        grid.innerHTML = `<div class="col-span-full text-center py-12"><p class="text-on-surface-variant">Failed to load products.</p></div>`;
     }
-    const priceDisplay = document.getElementById('price-val-display');
-    if (priceDisplay) priceDisplay.textContent = document.documentElement.lang === 'ar' ? maxPrice + ' ج.م' : maxPrice + ' EGP';
+}
+
+function updatePaginationIndicators(totalPages) {
+    const indicators = document.getElementById('prods-page-indicators');
+    if (!indicators) return;
+    let html = '';
+    const maxVisible = 5;
+    let start = Math.max(1, prodsPage - Math.floor(maxVisible / 2));
+    let end = Math.min(totalPages, start + maxVisible - 1);
+    if (end - start + 1 < maxVisible) start = Math.max(1, end - maxVisible + 1);
+    for (let i = start; i <= end; i++) {
+        html += `<button onclick="goToProdsPage(${i})" class="w-9 h-9 rounded-full text-xs font-bold transition-all duration-200 ${i === prodsPage ? 'bg-primary text-white shadow-md' : 'bg-white dark:bg-slate-800 text-primary border border-primary/20 hover:bg-primary/10'}">${i}</button>`;
+    }
+    indicators.innerHTML = html;
+    const prevBtn = document.getElementById('btn-prod-prev');
+    const nextBtn = document.getElementById('btn-prod-next');
+    if (prevBtn) prevBtn.disabled = prodsPage <= 1;
+    if (nextBtn) nextBtn.disabled = prodsPage >= totalPages;
+}
+
+function updateActiveFilterPill() {
     const catFilters = document.getElementById('prod-cat-filters');
-    if (catFilters) catFilters.querySelectorAll('button').forEach(btn => {
-        const isSelected = btn.id === `cat-filter-${selectedCategory.replace(' ', '-')}`;
-        btn.className = isSelected ? 'cat-pill px-4 py-2 rounded-full border text-xs font-bold bg-primary border-primary text-white' : 'cat-pill px-4 py-2 rounded-full border border-primary/20 text-primary hover:border-primary text-xs font-bold bg-white/50';
+    if (!catFilters) return;
+    const key = selectedCategoryId || 'all';
+    catFilters.querySelectorAll('button').forEach(btn => {
+        const isSelected = btn.id === `cat-filter-${key}`;
+        btn.className = isSelected
+            ? 'cat-pill px-4 py-2 rounded-full border text-xs font-bold bg-primary border-primary text-white'
+            : 'cat-pill px-4 py-2 rounded-full border border-primary/20 text-primary hover:border-primary text-xs font-bold bg-white/50';
     });
 }
-function filterCategory(cat) { selectedCategory = cat; prodsPage = 1; renderAllProducts(); }
-function filterPrice(val) { maxPrice = parseInt(val); prodsPage = 1; renderAllProducts(); }
-function prevProdsPage() { if (prodsPage > 1) { prodsPage--; renderAllProducts(); document.getElementById('all-products').scrollIntoView({ behavior: 'smooth' }); } }
-function nextProdsPage() { prodsPage++; renderAllProducts(); document.getElementById('all-products').scrollIntoView({ behavior: 'smooth' }); }
-function goToProdsPage(page) { prodsPage = page; renderAllProducts(); document.getElementById('all-products').scrollIntoView({ behavior: 'smooth' }); }
+
+function filterCategory(catId) {
+    selectedCategoryId = catId;
+    prodsPage = 1;
+    renderAllProducts();
+}
+
+function filterPrice(val) {
+    maxPrice = parseInt(val);
+    prodsPage = 1;
+    renderAllProducts();
+}
+
+function prevProdsPage() {
+    if (prodsPage > 1) {
+        prodsPage--;
+        renderAllProducts();
+        document.getElementById('all-products').scrollIntoView({ behavior: 'smooth' });
+    }
+}
+
+function nextProdsPage() {
+    prodsPage++;
+    renderAllProducts();
+    document.getElementById('all-products').scrollIntoView({ behavior: 'smooth' });
+}
+
+function goToProdsPage(page) {
+    prodsPage = page;
+    renderAllProducts();
+    document.getElementById('all-products').scrollIntoView({ behavior: 'smooth' });
+}
 
 window.filterCategory = filterCategory;
 window.filterPrice = filterPrice;

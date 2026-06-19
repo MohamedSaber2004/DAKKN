@@ -1,0 +1,36 @@
+@inject IStringLocalizer<Messages> Localizer
+@{
+    var isAdmin = ViewContext.RouteData.Values["controller"]?.ToString() == "Admin";
+    Layout = isAdmin ? "_LayoutAdmin" : "_LayoutLanding";
+    ViewData["Title"] = Localizer["exception_not_found"];
+}
+
+<div class="max-w-lg mx-auto py-20 px-4">
+    <div class="premium-card p-12 text-center">
+        <div class="mx-auto w-20 h-20 rounded-full bg-amber-100 dark:bg-amber-900/20 flex items-center justify-center mb-6">
+            <span class="material-symbols-outlined text-4xl text-amber-500">search_off</span>
+        </div>
+        <h3 class="text-2xl font-black text-admin-primary mb-3">@Localizer["exception_not_found"]</h3>
+        <p class="text-admin-secondary text-sm mb-8 max-w-sm mx-auto">@Localizer["exception_not_found_message"]</p>
+        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+            <a href="javascript:history.back()" class="px-6 py-2.5 bg-primary text-on-primary rounded-xl text-sm font-bold shadow-small hover:scale-103 active:scale-95 transition-all inline-flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-lg">arrow_back</span>
+                @Localizer["admin_back"]
+            </a>
+            @if (isAdmin)
+            {
+                <a asp-action="Dashboard" asp-controller="Admin" class="px-6 py-2.5 bg-admin-page border border-admin-border text-admin-secondary rounded-xl text-sm font-bold hover:bg-surface-container transition-all inline-flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-lg">dashboard</span>
+                    @Localizer["admin_back_to_dashboard"]
+                </a>
+            }
+            else
+            {
+                <a asp-action="Index" asp-controller="Home" class="px-6 py-2.5 bg-admin-page border border-admin-border text-admin-secondary rounded-xl text-sm font-bold hover:bg-surface-container transition-all inline-flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-lg">home</span>
+                    @Localizer["admin_back_to_dashboard"]
+                </a>
+            }
+        </div>
+    </div>
+</div>

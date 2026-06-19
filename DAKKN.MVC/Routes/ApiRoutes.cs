@@ -42,5 +42,11 @@ namespace DAKKN.Appearence.Routes
             public const string Get = Base + "/settings";
             public const string Update = Base + "/settings";
         }
+
+        public static class Catalog
+        {
+            public const string Products = Base + "/catalog/products";
+            public const string Categories = Base + "/catalog/categories";
+        }
     }
 }

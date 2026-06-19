@@ -50,7 +50,11 @@ namespace DAKKN.Application.Features.Products.Queries.GetProducts
                 SizeOptions = p.SizeOptions,
                 CategoryId = p.CategoryId,
                 CategoryName = p.Category.CategoryName,
-                CategoryArName = p.Category.ArName
+                CategoryArName = p.Category.ArName,
+                CreatedAt = p.CreatedAt,
+                UpdatedAt = p.UpdatedAt,
+                IsActive = p.IsActive,
+                IsDeleted = p.IsDeleted
             });
 
             var result = await projected.AsPagginatedListAsync(request.PageNumber, request.PageSize);

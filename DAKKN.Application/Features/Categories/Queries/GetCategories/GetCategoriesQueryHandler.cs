@@ -20,6 +20,11 @@ namespace DAKKN.Application.Features.Categories.Queries.GetCategories
             var repo = _unitOfWork.GetRepository<Category>();
             var query = repo.GetAllAsync(null);
 
+            if (!request.IncludeInactive)
+            {
+                query = query.Where(c => !c.IsDeleted);
+            }
+
             if (!string.IsNullOrWhiteSpace(request.SearchTerm))
             {
                 var term = request.SearchTerm.Trim().ToLower();
