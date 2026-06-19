@@ -267,7 +267,9 @@ namespace DAKKN.MVC
                             "https://lh3.googleusercontent.com",
                             "https://ui-avatars.com",
                             "https://flagcdn.com",
+                            "https://dakkn.runasp.net",
                             "https://picsum.photos",
+                            "https://fastly.picsum.photos",
                             "https://placehold.co",
                             "data:",
                             "blob:"
@@ -322,7 +324,9 @@ namespace DAKKN.MVC
                             "https://lh3.googleusercontent.com",
                             "https://ui-avatars.com",
                             "https://flagcdn.com",
+                            "https://dakkn.runasp.net",
                             "https://picsum.photos",
+                            "https://fastly.picsum.photos",
                             "https://placehold.co",
                             "data:",
                             "blob:"

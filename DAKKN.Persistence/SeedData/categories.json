@@ -2,26 +2,31 @@
   {
     "categoryName": "Vinyl Stickers",
     "arName": "ملصقات فينيل",
-    "description": "Durable vinyl stickers perfect for laptops, water bottles, journals, and any smooth surface."
+    "description": "Durable vinyl stickers perfect for laptops, water bottles, journals, and any smooth surface.",
+    "imageUrl": "https://picsum.photos/seed/cat-vinyl/400/400"
   },
   {
     "categoryName": "Holographic Stickers",
     "arName": "ملصقات هولوغرام",
-    "description": "Mesmerizing holographic stickers that shift colors in the light with a rainbow effect."
+    "description": "Mesmerizing holographic stickers that shift colors in the light with a rainbow effect.",
+    "imageUrl": "https://picsum.photos/seed/cat-holo/400/400"
   },
   {
     "categoryName": "Matte Stickers",
     "arName": "ملصقات مطفي",
-    "description": "Smooth, non-reflective matte finish stickers with a premium, sophisticated look."
+    "description": "Smooth, non-reflective matte finish stickers with a premium, sophisticated look.",
+    "imageUrl": "https://picsum.photos/seed/cat-matte/400/400"
   },
   {
     "categoryName": "Glossy Stickers",
     "arName": "ملصقات لامعة",
-    "description": "High-gloss shiny stickers with vibrant colors that really stand out."
+    "description": "High-gloss shiny stickers with vibrant colors that really stand out.",
+    "imageUrl": "https://picsum.photos/seed/cat-glossy/400/400"
   },
   {
     "categoryName": "Die-Cut Stickers",
     "arName": "ملصقات مقطوعة",
-    "description": "Custom-shaped stickers cut precisely to the outline of your design with no background."
+    "description": "Custom-shaped stickers cut precisely to the outline of your design with no background.",
+    "imageUrl": "https://picsum.photos/seed/cat-diecut/400/400"
   }
 ]

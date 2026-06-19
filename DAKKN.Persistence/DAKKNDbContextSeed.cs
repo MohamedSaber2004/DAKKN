@@ -57,7 +57,7 @@ namespace DAKKN.Persistence
                 if (items != null)
                 {
                     foreach (var item in items)
-                        context.Categories.Add(new Category { CategoryName = item.CategoryName, ArName = item.ArName });
+                        context.Categories.Add(new Category { CategoryName = item.CategoryName, ArName = item.ArName, ImageUrl = item.ImageUrl });
                     await context.SaveChangesAsync();
                 }
             }
@@ -98,6 +98,7 @@ namespace DAKKN.Persistence
         {
             public string CategoryName { get; set; } = string.Empty;
             public string ArName { get; set; } = string.Empty;
+            public string? ImageUrl { get; set; }
         }
 
         private class ProductSeed

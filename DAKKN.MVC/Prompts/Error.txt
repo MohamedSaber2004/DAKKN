@@ -1,0 +1,11 @@
+Fixed: CS1012 "Too many characters in character literal"
+========================================================
+
+Root Cause:
+Index.cshtml:296 used single quotes inside a Razor @() expression:
+    src="@(cat.ImageUrl ?? '/images/placeholders/category-placeholder.svg')"
+C# treats single-quoted text as a char literal, not a string.
+
+Fix:
+Changed HTML attribute to single quotes and C# string to double quotes:
+    src='@(cat.ImageUrl ?? "/images/placeholders/category-placeholder.svg")'

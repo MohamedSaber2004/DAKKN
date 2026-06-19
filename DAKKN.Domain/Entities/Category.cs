@@ -7,6 +7,7 @@ namespace DAKKN.Domain.Entities
     {
         public string CategoryName { get; set; } = string.Empty;
         public string ArName { get; set; } = string.Empty;
+        public string? ImageUrl { get; set; }
         public virtual ICollection<Product> Products { get; set; } = new List<Product>();
     }
 }

@@ -35,6 +35,7 @@ namespace DAKKN.Application.Features.Categories.Commands.UpdateCategory
 
             category.CategoryName = request.CategoryName;
             category.ArName = request.ArName;
+            category.ImageUrl = request.ImageUrl;
             category.IsActive = request.IsActive;
             category.MarkAsUpdated(_currentUserService.UserId.ToString());
 
@@ -51,6 +52,7 @@ namespace DAKKN.Application.Features.Categories.Commands.UpdateCategory
                 Id = category.Id,
                 CategoryName = category.CategoryName,
                 ArName = category.ArName,
+                ImageUrl = category.ImageUrl,
                 IsDeleted = category.IsDeleted
             };
         }

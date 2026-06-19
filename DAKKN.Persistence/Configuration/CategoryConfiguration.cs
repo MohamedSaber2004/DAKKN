@@ -24,6 +24,10 @@ namespace DAKKN.Persistence.Configuration
                 .HasMaxLength(150)
                 .HasColumnType("nvarchar(150)");
 
+            builder.Property(x => x.ImageUrl)
+                .HasMaxLength(500)
+                .HasColumnType("nvarchar(500)");
+
             builder.HasMany(x => x.Products)
                 .WithOne(x => x.Category)
                 .HasForeignKey(x => x.CategoryId)

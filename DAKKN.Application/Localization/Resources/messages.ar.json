@@ -750,6 +750,8 @@
   "admin_categories_no_categories": "لم يتم العثور على تصنيفات.",
   "admin_category_name": "اسم التصنيف",
   "admin_category_arname": "الاسم بالعربية",
+  "admin_category_image": "رابط الصورة",
+  "admin_category_image_ph": "https://picsum.photos/seed/cat/400/400",
   "admin_category_name_ph": "مثال: جيمنج",
   "admin_category_arname_ph": "مثال: جيمنج",
   "admin_categories_products": "المنتجات",
@@ -1104,6 +1106,14 @@
     "updated": "تم تحديث الفئة بنجاح",
     "deleted": "تم حذف الفئة بنجاح",
     "restored": "تم استعادة الفئة بنجاح",
-    "name_exists": "يوجد فئة بهذا الاسم بالفعل"
+    "name_exists": "يوجد فئة بهذا الاسم بالفعل",
+    "empty_title": "لا توجد فئات بعد",
+    "empty_msg": "ستظهر الفئات بمجرد إضافة المنتجات."
+  },
+  "featured_empty_title": "لا توجد منتجات مميزة متاحة",
+  "featured_empty_msg": "ستظهر المنتجات الجديدة هنا تلقائياً.",
+  "categories_empty_title": "لا توجد فئات بعد",
+  "categories_empty_msg": "ستظهر الفئات بمجرد إضافة المنتجات.",
+  "cat_products_count": "منتج",
+  "no_products_title": "لا توجد منتجات"
   }
-}

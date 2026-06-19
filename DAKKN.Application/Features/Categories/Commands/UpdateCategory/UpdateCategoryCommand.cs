@@ -3,5 +3,5 @@ using MediatR;
 
 namespace DAKKN.Application.Features.Categories.Commands.UpdateCategory
 {
-    public record UpdateCategoryCommand(Guid Id, string CategoryName, string ArName, bool IsActive = true) : IRequest<CategoryDto>;
+    public record UpdateCategoryCommand(Guid Id, string CategoryName, string ArName, string? ImageUrl = null, bool IsActive = true) : IRequest<CategoryDto>;
 }

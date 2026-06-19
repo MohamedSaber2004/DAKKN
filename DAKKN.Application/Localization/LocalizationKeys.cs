@@ -127,6 +127,8 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString Updated = new("products.updated");
             public static readonly KeyString Deleted = new("products.deleted");
             public static readonly KeyString CategoryNotFound = new("products.category_not_found");
+            public static readonly KeyString FeaturedEmptyTitle = new("products.featured_empty_title");
+            public static readonly KeyString FeaturedEmptyMsg = new("products.featured_empty_msg");
         }
 
         public static class Categories
@@ -137,6 +139,8 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString Deleted = new("categories.deleted");
             public static readonly KeyString Restored = new("categories.restored");
             public static readonly KeyString NameExists = new("categories.name_exists");
+            public static readonly KeyString CategoriesEmptyTitle = new("categories.empty_title");
+            public static readonly KeyString CategoriesEmptyMsg = new("categories.empty_msg");
         }
     }
 }

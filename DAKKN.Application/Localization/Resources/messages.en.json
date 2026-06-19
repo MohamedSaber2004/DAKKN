@@ -749,6 +749,8 @@
   "admin_categories_no_categories": "No categories found.",
   "admin_category_name": "Category Name",
   "admin_category_arname": "Arabic Name",
+  "admin_category_image": "Image URL",
+  "admin_category_image_ph": "https://picsum.photos/seed/cat/400/400",
   "admin_category_name_ph": "e.g. Gaming",
   "admin_category_arname_ph": "مثال: جيمنج",
   "admin_categories_products": "Products",
@@ -1096,6 +1098,14 @@
     "updated": "Category updated successfully",
     "deleted": "Category deleted successfully",
     "restored": "Category restored successfully",
-    "name_exists": "A category with this name already exists"
-  }
+    "name_exists": "A category with this name already exists",
+    "empty_title": "No Categories Yet",
+    "empty_msg": "Categories will appear once products are added."
+  },
+  "featured_empty_title": "No Featured Products Available",
+  "featured_empty_msg": "New products will appear here automatically.",
+  "categories_empty_title": "No Categories Yet",
+  "categories_empty_msg": "Categories will appear once products are added.",
+  "cat_products_count": "Products",
+  "no_products_title": "No Products Found"
   }

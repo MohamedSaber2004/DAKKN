@@ -212,10 +212,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         safeInit('initStaggeredGrids');
         safeInit('initNavbarScrollEffect');
         safeInit('initScrollSpy');
-        await renderFeaturedProducts();
-        await renderCategoriesSlider();
-        await renderCategoryFilters();
-        await renderAllProducts();
 
         // OTP & Password micro-interactions
         initOtpBoxes();
@@ -430,11 +426,26 @@ async function fetchCategories() {
     return json.data || [];
 }
 
-async function fetchProducts(page, pageSize, categoryId) {
+async function fetchFeaturedProducts() {
+    const json = await apiFetch('/api/v1/catalog/products/featured');
+    return json.data || [];
+}
+
+async function fetchProducts(page, pageSize, categoryId, maxPrice) {
     const params = new URLSearchParams({ pageNumber: page, pageSize });
     if (categoryId) params.set('categoryId', categoryId);
+    if (maxPrice) params.set('maxPrice', maxPrice);
     const json = await apiFetch(`/api/v1/catalog/products?${params}`);
     return json.data || { items: [], totalPages: 1, pageNumber: 1 };
+}
+
+/* ── Placeholder ──────────────────── */
+const PRODUCT_PLACEHOLDER = '/images/placeholders/product-placeholder.svg';
+
+function resolveImage(url) {
+    if (!url) return PRODUCT_PLACEHOLDER;
+    if (url.startsWith('http') || url.startsWith('/')) return url;
+    return '/files/' + url;
 }
 
 /* ── Featured Products (Shop section) ─────────────── */
@@ -442,18 +453,21 @@ async function renderFeaturedProducts() {
     const grid = document.getElementById('featured-products-grid');
     if (!grid) return;
     try {
-        const data = await fetchProducts(1, 8);
-        const items = data.items || [];
+        const items = await fetchFeaturedProducts();
         if (!items.length) {
-            grid.innerHTML = `<div class="col-span-full text-center py-12"><p class="text-on-surface-variant">No products available.</p></div>`;
+            grid.innerHTML = `<div class="col-span-full text-center py-16">
+                <span class="material-symbols-outlined text-6xl text-on-surface-variant/30 mb-4">inventory_2</span>
+                <h3 class="text-xl font-bold text-on-surface dark:text-white mb-2">${currentTranslations.featured_empty_title || 'No Featured Products Available'}</h3>
+                <p class="text-sm text-on-surface-variant dark:text-slate-400">${currentTranslations.featured_empty_msg || 'New products will appear here automatically.'}</p>
+            </div>`;
             return;
         }
         const isAr = document.documentElement.lang.startsWith('ar');
         grid.innerHTML = items.map((p, i) => `
             <a href="/shop/product/${p.id}" class="product-card glass-panel p-5 rounded-2xl flex flex-col gap-4 scroll-animate delay-${(i + 1) * 100} dark:bg-slate-900/40 group hover:-translate-y-1 transition-all duration-300 no-underline">
                 <div class="aspect-square rounded-xl overflow-hidden relative">
-                    <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${p.imageUrl}"
-                         onerror="this.src='https://placehold.co/400x400/e2e8f0/64748b?text=No+Image'" alt="${isAr ? p.arName : p.name}" />
+                    <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${resolveImage(p.imageUrl)}"
+                         onerror="this.src='${PRODUCT_PLACEHOLDER}'" alt="${isAr ? p.arName : p.name}" loading="lazy" />
                 </div>
                 <div>
                     <h3 class="text-lg font-bold text-on-surface dark:text-white">${isAr ? p.arName : p.name}</h3>
@@ -479,7 +493,11 @@ async function renderCategoriesSlider() {
     try {
         categoriesData = await fetchCategories();
         if (!categoriesData.length) {
-            track.innerHTML = `<div class="flex-shrink-0 w-full text-center py-12"><p class="text-on-surface-variant">No categories yet.</p></div>`;
+            track.innerHTML = `<div class="flex-shrink-0 w-full text-center py-16">
+                <span class="material-symbols-outlined text-6xl text-on-surface-variant/30 mb-4">grid_view</span>
+                <h3 class="text-xl font-bold text-on-surface dark:text-white mb-2">${currentTranslations.categories_empty_title || 'No Categories Yet'}</h3>
+                <p class="text-sm text-on-surface-variant dark:text-slate-400">${currentTranslations.categories_empty_msg || 'Categories will appear once products are added.'}</p>
+            </div>`;
             return;
         }
         const isAr = document.documentElement.lang.startsWith('ar');
@@ -524,34 +542,28 @@ let selectedCategoryId = null;
 let maxPrice = 150;
 let prodsPage = 1;
 const itemsPerPage = 8;
-let allProductsCache = null;
 
 async function renderAllProducts() {
     const grid = document.getElementById('all-prods-grid');
     if (!grid) return;
     try {
-        if (!allProductsCache) {
-            allProductsCache = await fetchProducts(1, 1000);
-        }
-        let items = allProductsCache.items || [];
-        if (selectedCategoryId) {
-            items = items.filter(p => p.categoryId === selectedCategoryId);
-        }
-        if (maxPrice < 150) {
-            items = items.filter(p => p.price <= maxPrice);
-        }
-        const totalPages = Math.ceil(items.length / itemsPerPage) || 1;
-        if (prodsPage > totalPages) prodsPage = totalPages;
-        const paginated = items.slice((prodsPage - 1) * itemsPerPage, prodsPage * itemsPerPage);
+        const priceVal = maxPrice < 150 ? maxPrice : null;
+        const result = await fetchProducts(prodsPage, itemsPerPage, selectedCategoryId, priceVal);
+        const items = result.items || [];
+        const totalPages = result.totalPages || 1;
         const isAr = document.documentElement.lang.startsWith('ar');
-        if (!paginated.length) {
-            grid.innerHTML = `<div class="col-span-full py-12 text-center text-on-surface-variant/70">${currentTranslations.no_products_found || "No stickers match your filters."}</div>`;
+        if (!items.length) {
+            grid.innerHTML = `<div class="col-span-full py-16 text-center">
+                <span class="material-symbols-outlined text-6xl text-on-surface-variant/30 mb-4">search_off</span>
+                <h3 class="text-xl font-bold text-on-surface dark:text-white mb-2">${currentTranslations.no_products_title || 'No Products Found'}</h3>
+                <p class="text-sm text-on-surface-variant dark:text-slate-400">${currentTranslations.no_products_found || 'No stickers match your filters.'}</p>
+            </div>`;
         } else {
-            grid.innerHTML = paginated.map(p => `
+            grid.innerHTML = items.map(p => `
                 <div class="product-card glass-panel p-5 rounded-2xl flex flex-col gap-4 scroll-animate visible" style="opacity:1;transform:none;">
-                    <div class="aspect-square rounded-xl overflow-hidden relative"><img class="w-full h-full object-cover" src="${p.imageUrl}" onerror="this.src='https://placehold.co/400x400/e2e8f0/64748b?text=No+Image'" alt="${isAr ? p.arName : p.name}"/></div>
-                    <div><h3 class="text-lg font-bold text-on-surface">${isAr ? p.arName : p.name}</h3><p class="text-xs text-on-surface-variant">${isAr ? p.categoryArName : p.categoryName}</p></div>
-                    <div class="flex items-center justify-between mt-auto pt-2"><span class="text-xl font-bold text-primary font-sans">${p.price.toLocaleString()} ${isAr ? 'ج.م' : 'EGP'}</span><button onclick="alert('Added!')" class="px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-xs font-bold transition-all duration-200">${currentTranslations.add_cart || 'Add'}</button></div>
+                    <div class="aspect-square rounded-xl overflow-hidden relative"><img class="w-full h-full object-cover" src="${resolveImage(p.imageUrl)}" onerror="this.src='${PRODUCT_PLACEHOLDER}'" alt="${isAr ? p.arName : p.name}" loading="lazy"/></div>
+                    <div><h3 class="text-lg font-bold text-on-surface dark:text-white">${isAr ? p.arName : p.name}</h3><p class="text-xs text-on-surface-variant dark:text-slate-400">${isAr ? p.categoryArName : p.categoryName}</p></div>
+                    <div class="flex items-center justify-between mt-auto pt-2"><span class="text-xl font-bold text-primary font-sans">${p.price.toLocaleString()} ${isAr ? 'ج.م' : 'EGP'}</span><a href="/shop/product/${p.id}" class="px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-xs font-bold transition-all duration-200">${currentTranslations.shop_view_details || 'View Details'}</a></div>
                 </div>`).join('');
         }
         const priceDisplay = document.getElementById('price-val-display');
@@ -590,7 +602,7 @@ function updateActiveFilterPill() {
         const isSelected = btn.id === `cat-filter-${key}`;
         btn.className = isSelected
             ? 'cat-pill px-4 py-2 rounded-full border text-xs font-bold bg-primary border-primary text-white'
-            : 'cat-pill px-4 py-2 rounded-full border border-primary/20 text-primary hover:border-primary text-xs font-bold bg-white/50';
+            : 'cat-pill px-4 py-2 rounded-full border border-primary/20 text-primary hover:border-primary text-xs font-bold bg-white/50 dark:bg-slate-800/50';
     });
 }
 

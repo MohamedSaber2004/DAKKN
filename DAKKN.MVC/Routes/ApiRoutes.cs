@@ -47,6 +47,7 @@ namespace DAKKN.Appearence.Routes
         {
             public const string Products = Base + "/catalog/products";
             public const string Categories = Base + "/catalog/categories";
+            public const string FeaturedProducts = Base + "/catalog/products/featured";
         }
     }
 }

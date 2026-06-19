@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace DAKKN.MVC.ViewModels.Admin
 {
@@ -14,5 +15,9 @@ namespace DAKKN.MVC.ViewModels.Admin
 
         [Required]
         public string ArName { get; set; } = string.Empty;
+
+        public string? ExistingImageUrl { get; set; }
+
+        public IFormFile? ImageFile { get; set; }
     }
 }

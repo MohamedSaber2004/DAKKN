@@ -27,7 +27,7 @@ namespace DAKKN.Application.Features.Categories.Commands.CreateCategory
             if (existing != null)
                 throw new BadRequestException(_localizer[LocalizationKeys.Categories.NameExists.Value]);
 
-            var category = new Category { CategoryName = request.CategoryName, ArName = request.ArName };
+            var category = new Category { CategoryName = request.CategoryName, ArName = request.ArName, ImageUrl = request.ImageUrl };
             await repo.AddAsync(category);
             await _unitOfWork.SaveChangesAsync();
 
@@ -35,7 +35,8 @@ namespace DAKKN.Application.Features.Categories.Commands.CreateCategory
             {
                 Id = category.Id,
                 CategoryName = category.CategoryName,
-                ArName = category.ArName
+                ArName = category.ArName,
+                ImageUrl = category.ImageUrl
             };
         }
     }

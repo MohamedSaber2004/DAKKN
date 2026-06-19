@@ -44,6 +44,7 @@
             <table class="w-full text-sm">
                 <thead>
                     <tr class="bg-admin-page border-b border-admin-border">
+                        <th class="text-start px-6 py-4 text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_category_image"]</th>
                         <th class="text-start px-6 py-4 text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_category_name"]</th>
                         <th class="text-start px-6 py-4 text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_category_arname"]</th>
                         <th class="text-center px-6 py-4 text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_categories_products"]</th>
@@ -55,6 +56,10 @@
                     @foreach (var cat in Model)
                     {
                         <tr class="hover:bg-admin-page/50 transition-colors @(cat.IsDeleted ? "opacity-60" : "")">
+                            <td class="px-6 py-4">
+                                <img src='@(!string.IsNullOrEmpty(cat.ImageUrl) ? cat.ImageUrl : "/images/placeholders/category-placeholder.svg")' alt="@cat.CategoryName"
+                                     class="w-10 h-10 rounded-lg object-cover border border-admin-border" onerror="this.src='/images/placeholders/category-placeholder.svg'" />
+                            </td>
                             <td class="px-6 py-4">
                                 <a asp-action="CategoryProducts" asp-route-id="@cat.Id" class="text-admin-primary font-medium hover:text-primary transition-colors">@cat.CategoryName</a>
                             </td>

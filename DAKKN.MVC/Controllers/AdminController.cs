@@ -443,7 +443,18 @@ namespace DAKKN.MVC.Controllers
 
             try
             {
-                await _mediator.Send(new CreateCategoryCommand(model.CategoryName, model.ArName));
+                string? imageUrl = null;
+                if (model.ImageFile != null)
+                {
+                    var result = await _mediator.Send(new UpdateImageCommand
+                    {
+                        File = model.ImageFile,
+                        UploadPlace = 2
+                    });
+                    imageUrl = result;
+                }
+
+                await _mediator.Send(new CreateCategoryCommand(model.CategoryName, model.ArName, imageUrl));
                 TempData["SuccessMessage"] = _localizer[LocalizationKeys.Categories.Created.Value].ToString();
                 return RedirectToAction(nameof(Categories));
             }
@@ -480,7 +491,8 @@ namespace DAKKN.MVC.Controllers
             {
                 Id = category.Id,
                 CategoryName = category.CategoryName,
-                ArName = category.ArName
+                ArName = category.ArName,
+                ExistingImageUrl = category.ImageUrl
             };
 
             return View("AddCategory", viewModel);
@@ -498,7 +510,24 @@ namespace DAKKN.MVC.Controllers
 
             try
             {
-                await _mediator.Send(new UpdateCategoryCommand(id, model.CategoryName, model.ArName, IsActive: true));
+                string? imageUrl = string.IsNullOrEmpty(model.ExistingImageUrl) ? null : model.ExistingImageUrl;
+
+                if (model.ImageFile != null)
+                {
+                    var oldFileName = string.IsNullOrEmpty(model.ExistingImageUrl)
+                        ? null
+                        : Path.GetFileName(model.ExistingImageUrl.TrimEnd('/'));
+
+                    var result = await _mediator.Send(new UpdateImageCommand
+                    {
+                        File = model.ImageFile,
+                        UploadPlace = 2,
+                        ImageName = oldFileName
+                    });
+                    imageUrl = result;
+                }
+
+                await _mediator.Send(new UpdateCategoryCommand(id, model.CategoryName, model.ArName, imageUrl, IsActive: true));
                 TempData["SuccessMessage"] = _localizer[LocalizationKeys.Categories.Updated.Value].ToString();
                 return RedirectToAction(nameof(Categories));
             }

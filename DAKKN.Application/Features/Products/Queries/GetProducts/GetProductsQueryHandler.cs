@@ -35,6 +35,11 @@ namespace DAKKN.Application.Features.Products.Queries.GetProducts
                 query = query.Where(p => p.CategoryId == request.CategoryId.Value);
             }
 
+            if (request.MaxPrice.HasValue)
+            {
+                query = query.Where(p => p.Price <= request.MaxPrice.Value);
+            }
+
             var projected = query.Select(p => new ProductDto
             {
                 Id = p.Id,

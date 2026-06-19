@@ -33,16 +33,30 @@ namespace DAKKN.Application.Features.Categories.Queries.GetCategories
                     c.ArName.ToLower().Contains(term));
             }
 
-            var categories = await query
+            var categoriesQuery = query
                 .Select(c => new CategoryDto
                 {
                     Id = c.Id,
                     CategoryName = c.CategoryName,
                     ArName = c.ArName,
+                    ImageUrl = c.ImageUrl,
                     IsDeleted = c.IsDeleted,
                     ProductsCount = c.Products.Count(p => !p.IsDeleted)
                 })
-                .ToListAsync(cancellationToken);
+                .OrderByDescending(c => c.ProductsCount);
+
+            if (request.Top.HasValue && request.Top.Value > 0)
+            {
+                categoriesQuery = (IOrderedQueryable<CategoryDto>)categoriesQuery.Take(request.Top.Value);
+            }
+
+            var categories = await categoriesQuery.ToListAsync(cancellationToken);
+
+            foreach (var item in categories)
+            {
+                if (!string.IsNullOrEmpty(item.ImageUrl) && !item.ImageUrl.StartsWith("http") && !item.ImageUrl.StartsWith("/"))
+                    item.ImageUrl = $"/files/{item.ImageUrl}";
+            }
 
             return categories;
         }
