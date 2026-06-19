@@ -28,14 +28,13 @@ namespace DAKKN.MVC.Controllers
         [OutputCache(Duration = 600)]
         public async Task<IActionResult> Index()
         {
-            // Redirect authorized users to the Customer Dashboard
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Index", "Customer");
             }
 
             var featuredProducts = await _mediator.Send(new GetFeaturedProductsQuery());
-            var categories = await _mediator.Send(new GetCategoriesQuery(Top: 8));
+            var categories = await _mediator.Send(new GetCategoriesQuery());
             var allProducts = await _mediator.Send(new GetProductsQuery(null, null, 1, 8));
 
             var viewModel = new LandingPageViewModel

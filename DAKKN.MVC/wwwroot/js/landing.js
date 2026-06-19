@@ -131,6 +131,7 @@ async function applyLang(lang, reload = false) {
     await renderFeaturedProducts();
     await renderCategoriesSlider();
     await renderCategoryFilters();
+    await initPriceSlider();
     await renderAllProducts();
 }
 
@@ -183,6 +184,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Clear sync flag once we match
         sessionStorage.removeItem('dakkn_lang_syncing');
+
+        // Initialize frozen actions (guest action blocking)
+        initFrozenActions();
+        // Initialize delegated add-to-cart for dynamically rendered buttons
+        initDelegatedAddToCart();
+        // Initialize cart badge from localStorage (survives page navigation)
+        initCartBadge();
 
         // Initialize dynamic components with current language
         await applyLang(current);
@@ -335,9 +343,15 @@ function initStaggeredGrids() {
 function initNavbarScrollEffect() {
     const navbar = document.querySelector('.navbar-animate');
     if (!navbar) return;
+    let ticking = false;
     window.addEventListener('scroll', () => {
-        if (window.scrollY > 60) navbar.classList.add('navbar-scrolled');
-        else navbar.classList.remove('navbar-scrolled');
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                navbar.classList.toggle('navbar-scrolled', window.scrollY > 60);
+                ticking = false;
+            });
+            ticking = true;
+        }
     }, { passive: true });
 }
 
@@ -412,7 +426,13 @@ window.slidePrev = slidePrev;
 window.slideGoTo = slideGoTo;
 window.updateSlider = updateSlider;
 window.toggleLang = toggleLang;
-window.addEventListener('resize', updateSlider);
+window.guestAddToCart = guestAddToCart;
+
+let resizeTimer;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(updateSlider, 150);
+});
 
 /* ── Catalog API ────────────────────────────────────── */
 async function apiFetch(url) {
@@ -439,8 +459,88 @@ async function fetchProducts(page, pageSize, categoryId, maxPrice) {
     return json.data || { items: [], totalPages: 1, pageNumber: 1 };
 }
 
+async function fetchPriceRange() {
+    try {
+        const json = await apiFetch('/api/v1/catalog/products/price-range');
+        return json.data || { minPrice: 0, maxPrice: 200 };
+    } catch {
+        return { minPrice: 0, maxPrice: 200 };
+    }
+}
+
 /* ── Placeholder ──────────────────── */
 const PRODUCT_PLACEHOLDER = '/images/placeholders/product-placeholder.svg';
+
+function guestAddToCart(btnOrId, nameOrId, priceOrName, imageOrPrice, maybeImage) {
+    let id, name, price, image, btn;
+    if (typeof btnOrId === 'object' && btnOrId.tagName) {
+        btn = btnOrId;
+        id = nameOrId;
+        name = priceOrName;
+        price = imageOrPrice;
+        image = maybeImage || '';
+    } else {
+        id = btnOrId;
+        name = nameOrId;
+        price = priceOrName;
+        image = imageOrPrice || '';
+    }
+    const cart = JSON.parse(localStorage.getItem('dakkn_cart') || '[]');
+    const existing = cart.findIndex(item => item.id === id);
+    if (existing > -1) {
+        cart[existing].qty = (cart[existing].qty || 1) + 1;
+    } else {
+        cart.push({ id, name, price: parseFloat(price), image, qty: 1 });
+    }
+    localStorage.setItem('dakkn_cart', JSON.stringify(cart));
+    const count = cart.reduce((s, i) => s + (i.qty || 1), 0);
+    document.querySelectorAll('[id^="cart-badge"]').forEach(el => el.textContent = count);
+    if (btn) {
+        const orig = btn.innerHTML;
+        btn.innerHTML = '<span class="material-symbols-outlined text-sm">check</span>';
+        btn.classList.add('bg-green-600', 'scale-95');
+        setTimeout(() => {
+            btn.classList.remove('bg-green-600', 'scale-95');
+            btn.innerHTML = orig;
+        }, 1000);
+    }
+    showCartToast(name || id);
+    bounceCartBadge();
+}
+
+function showCartToast(name) {
+    const container = document.getElementById('cart-toast-container');
+    if (!container) return;
+    const isAr = document.documentElement.lang.startsWith('ar');
+    const toast = document.createElement('div');
+    toast.className = 'cart-toast';
+    toast.innerHTML = `<span class="material-symbols-outlined text-green-400 text-lg">check_circle</span><span>${isAr ? 'تمت الإضافة إلى السلة — ' : 'Added to cart — '}${name}</span>`;
+    container.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('cart-toast-show'));
+    setTimeout(() => {
+        toast.classList.remove('cart-toast-show');
+        toast.addEventListener('transitionend', () => toast.remove(), { once: true });
+    }, 2500);
+}
+
+function initCartBadge() {
+    try {
+        const cart = JSON.parse(localStorage.getItem('dakkn_cart') || '[]');
+        const count = cart.reduce((s, i) => s + (i.qty || 1), 0);
+        document.querySelectorAll('[id^="cart-badge"]').forEach(el => el.textContent = count);
+    } catch (e) {
+        // Ignore parse errors
+    }
+}
+
+function bounceCartBadge() {
+    document.querySelectorAll('[id^="cart-badge"]').forEach(el => {
+        el.classList.remove('cart-badge-bounce');
+        void el.offsetWidth;
+        el.classList.add('cart-badge-bounce');
+        setTimeout(() => el.classList.remove('cart-badge-bounce'), 500);
+    });
+}
 
 function resolveImage(url) {
     if (!url) return PRODUCT_PLACEHOLDER;
@@ -464,20 +564,27 @@ async function renderFeaturedProducts() {
         }
         const isAr = document.documentElement.lang.startsWith('ar');
         grid.innerHTML = items.map((p, i) => `
-            <a href="/shop/product/${p.id}" class="product-card glass-panel p-5 rounded-2xl flex flex-col gap-4 scroll-animate delay-${(i + 1) * 100} dark:bg-slate-900/40 group hover:-translate-y-1 transition-all duration-300 no-underline">
-                <div class="aspect-square rounded-xl overflow-hidden relative">
-                    <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${resolveImage(p.imageUrl)}"
-                         onerror="this.src='${PRODUCT_PLACEHOLDER}'" alt="${isAr ? p.arName : p.name}" loading="lazy" />
-                </div>
-                <div>
-                    <h3 class="text-lg font-bold text-on-surface dark:text-white">${isAr ? p.arName : p.name}</h3>
-                    <p class="text-xs text-on-surface-variant dark:text-slate-400">${isAr ? p.categoryArName : p.categoryName}</p>
-                </div>
+            <div class="product-card glass-panel p-5 rounded-2xl flex flex-col gap-4 scroll-animate delay-${(i + 1) * 100} dark:bg-slate-900/40 group hover:-translate-y-1 transition-all duration-300">
+                <a href="/shop/product/${p.id}" class="no-underline">
+                    <div class="aspect-square rounded-xl overflow-hidden relative">
+                        <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${resolveImage(p.imageUrl)}"
+                             onerror="this.src='${PRODUCT_PLACEHOLDER}'" alt="${isAr ? p.arName : p.name}" loading="lazy" />
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-on-surface dark:text-white">${isAr ? p.arName : p.name}</h3>
+                        <p class="text-xs text-on-surface-variant dark:text-slate-400">${isAr ? p.categoryArName : p.categoryName}</p>
+                    </div>
+                </a>
                 <div class="flex items-center justify-between mt-auto pt-2">
                     <span class="text-xl font-bold text-primary">${p.price.toLocaleString()} ${isAr ? 'ج.م' : 'EGP'}</span>
-                    <span class="px-4 py-2 rounded-lg bg-primary/10 text-primary text-xs font-bold">View Details</span>
+                    <div class="flex gap-2">
+                        <button data-product-add="${p.id}" data-product-name="${isAr ? (p.arName || p.name) : p.name}" data-product-price="${p.price}" data-product-image="${p.imageUrl || ''}" class="px-3 py-2 rounded-lg bg-primary text-on-primary text-[10px] font-bold hover:bg-primary-container hover:text-primary transition-all flex items-center gap-1">
+                            <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+                        </button>
+                        <a href="/shop/product/${p.id}" class="px-3 py-2 rounded-lg bg-primary/10 text-primary text-[10px] font-bold hover:bg-primary hover:text-on-primary transition-all no-underline">View Details</a>
+                    </div>
                 </div>
-            </a>`).join('');
+            </div>`).join('');
     } catch (err) {
         console.error('Error rendering featured products:', err);
         grid.innerHTML = `<div class="col-span-full text-center py-12"><p class="text-on-surface-variant">Failed to load products.</p></div>`;
@@ -487,9 +594,17 @@ async function renderFeaturedProducts() {
 /* ── Categories Slider ────────────────────────────── */
 let categoriesData = [];
 
+function catSkeleton() {
+    return `<div class="flex gap-6 w-full">${Array.from({length:4},(_,i)=>`
+        <div class="flex-shrink-0 w-[calc(25%-18px)] aspect-square rounded-2xl overflow-hidden glass-panel animate-pulse dark:bg-slate-900/60">
+            <div class="w-full h-full bg-surface-container-high dark:bg-slate-800/60"></div>
+        </div>`).join('')}</div>`;
+}
+
 async function renderCategoriesSlider() {
     const track = document.getElementById('cat-slider-track');
     if (!track) return;
+    track.innerHTML = catSkeleton();
     try {
         categoriesData = await fetchCategories();
         if (!categoriesData.length) {
@@ -501,13 +616,14 @@ async function renderCategoriesSlider() {
             return;
         }
         const isAr = document.documentElement.lang.startsWith('ar');
+        const CATEGORY_PLACEHOLDER = '/images/placeholders/category-placeholder.svg';
         track.innerHTML = categoriesData.map(cat => `
-            <a href="/shop/products?categoryId=${cat.id}"
+            <a href="/shop/products?categoryId=${cat.id}" data-frozen-action
                class="group rounded-2xl overflow-hidden relative flex-shrink-0 w-[calc(100%-0px)] sm:w-[calc(50%-12px)] md:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] aspect-square glass-panel shadow-sm dark:bg-slate-900/40 no-underline block">
-                <div class="absolute inset-0 bg-surface-container-highest/20 group-hover:bg-transparent transition-colors z-10"></div>
-                <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/5 to-primary/20">
-                    <span class="material-symbols-outlined text-6xl text-primary/40">category</span>
-                </div>
+                <img src="${resolveImage(cat.imageUrl)}" alt="${isAr ? cat.arName : cat.categoryName}"
+                     class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                     loading="lazy" onerror="this.src='${CATEGORY_PLACEHOLDER}'" />
+                <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors z-10"></div>
                 <div class="absolute bottom-0 left-0 right-0 p-6 cat-overlay z-20">
                     <h3 class="text-xl font-bold text-white">${isAr ? cat.arName : cat.categoryName}</h3>
                     <p class="text-sm text-white/80">${cat.productsCount} Products</p>
@@ -539,7 +655,9 @@ async function renderCategoryFilters() {
 window.renderCategoryFilters = renderCategoryFilters;
 
 let selectedCategoryId = null;
-let maxPrice = 150;
+let maxPrice = 200;
+let priceMin = 0;
+let priceMax = 200;
 let prodsPage = 1;
 const itemsPerPage = 8;
 
@@ -547,7 +665,7 @@ async function renderAllProducts() {
     const grid = document.getElementById('all-prods-grid');
     if (!grid) return;
     try {
-        const priceVal = maxPrice < 150 ? maxPrice : null;
+        const priceVal = maxPrice < priceMax ? maxPrice : null;
         const result = await fetchProducts(prodsPage, itemsPerPage, selectedCategoryId, priceVal);
         const items = result.items || [];
         const totalPages = result.totalPages || 1;
@@ -563,11 +681,14 @@ async function renderAllProducts() {
                 <div class="product-card glass-panel p-5 rounded-2xl flex flex-col gap-4 scroll-animate visible" style="opacity:1;transform:none;">
                     <div class="aspect-square rounded-xl overflow-hidden relative"><img class="w-full h-full object-cover" src="${resolveImage(p.imageUrl)}" onerror="this.src='${PRODUCT_PLACEHOLDER}'" alt="${isAr ? p.arName : p.name}" loading="lazy"/></div>
                     <div><h3 class="text-lg font-bold text-on-surface dark:text-white">${isAr ? p.arName : p.name}</h3><p class="text-xs text-on-surface-variant dark:text-slate-400">${isAr ? p.categoryArName : p.categoryName}</p></div>
-                    <div class="flex items-center justify-between mt-auto pt-2"><span class="text-xl font-bold text-primary font-sans">${p.price.toLocaleString()} ${isAr ? 'ج.م' : 'EGP'}</span><a href="/shop/product/${p.id}" class="px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-xs font-bold transition-all duration-200">${currentTranslations.shop_view_details || 'View Details'}</a></div>
+                    <div class="flex items-center justify-between mt-auto pt-2"><span class="text-xl font-bold text-primary font-sans">${p.price.toLocaleString()} ${isAr ? 'ج.م' : 'EGP'}</span><div class="flex gap-2"><button data-product-add="${p.id}" data-product-name="${isAr ? (p.arName || p.name) : p.name}" data-product-price="${p.price}" data-product-image="${p.imageUrl || ''}" class="px-3 py-2 rounded-lg bg-primary text-on-primary text-[10px] font-bold hover:bg-primary-container hover:text-primary transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_shopping_cart</span></button><a href="/shop/product/${p.id}" class="px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-[10px] font-bold transition-all duration-200">${currentTranslations.shop_view_details || 'View Details'}</a></div></div>
                 </div>`).join('');
         }
         const priceDisplay = document.getElementById('price-val-display');
-        if (priceDisplay) priceDisplay.textContent = isAr ? maxPrice + ' ج.م' : maxPrice + ' EGP';
+        if (priceDisplay) {
+            const val = maxPrice >= priceMax ? (isAr ? 'الكل' : 'All') : (isAr ? maxPrice + ' ج.م' : maxPrice + ' EGP');
+            priceDisplay.textContent = val;
+        }
         updatePaginationIndicators(totalPages);
         updateActiveFilterPill();
     } catch (err) {
@@ -638,9 +759,106 @@ function goToProdsPage(page) {
     document.getElementById('all-products').scrollIntoView({ behavior: 'smooth' });
 }
 
+async function initPriceSlider() {
+    const range = await fetchPriceRange();
+    priceMin = range.minPrice;
+    priceMax = range.maxPrice || 200;
+    maxPrice = priceMax;
+    const slider = document.getElementById('price-slider');
+    const display = document.getElementById('price-val-display');
+    if (slider) {
+        slider.min = priceMin;
+        slider.max = priceMax;
+        slider.value = priceMax;
+    }
+    if (display) {
+        const isAr = document.documentElement.lang.startsWith('ar');
+        display.textContent = isAr ? 'الكل' : 'All';
+    }
+    document.querySelectorAll('#price-slider + div span').forEach((el, i) => {
+        if (i === 0) el.textContent = priceMin + ' EGP';
+        if (i === 1) el.textContent = priceMax + ' EGP';
+    });
+}
+
 window.filterCategory = filterCategory;
 window.filterPrice = filterPrice;
 window.prevProdsPage = prevProdsPage;
 window.nextProdsPage = nextProdsPage;
 window.goToProdsPage = goToProdsPage;
 window.renderAllProducts = renderAllProducts;
+
+/* ── Sign-in Modal ─────────────────────────────── */
+function showSignInModal() {
+    const modal = document.getElementById('signin-modal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function hideSignInModal() {
+    const modal = document.getElementById('signin-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+}
+
+function initFrozenActions() {
+    // Delegated click listener for frozen <a> tags (both static & dynamic)
+    document.addEventListener('click', function(e) {
+        const frozen = e.target.closest('a[data-frozen-action]');
+        if (frozen) {
+            e.preventDefault();
+            showSignInModal();
+        }
+    });
+
+    // Override category filter (All Products)
+    filterCategory = function() { showSignInModal(); };
+
+    // Override price filter
+    filterPrice = function() { showSignInModal(); };
+
+    // Override pagination
+    prevProdsPage = function() { showSignInModal(); };
+    nextProdsPage = function() { showSignInModal(); };
+    goToProdsPage = function() { showSignInModal(); };
+
+    // Intercept contact form submit
+    const contactForm = document.querySelector('#contact form');
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            showSignInModal();
+        });
+    }
+
+    // Modal close on backdrop click
+    document.getElementById('signin-modal')?.addEventListener('click', function(e) {
+        if (e.target === this) hideSignInModal();
+    });
+
+    // Modal close on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') hideSignInModal();
+    });
+}
+
+function initDelegatedAddToCart() {
+    document.addEventListener('click', function(e) {
+        const btn = e.target.closest('[data-product-add]');
+        if (!btn) return;
+        // Skip if button has inline onclick (already handled during target phase)
+        if (btn.hasAttribute('onclick')) return;
+        const id = btn.getAttribute('data-product-add');
+        const name = btn.getAttribute('data-product-name');
+        const price = btn.getAttribute('data-product-price');
+        const image = btn.getAttribute('data-product-image') || '';
+        guestAddToCart(btn, id, name, price, image);
+    });
+}
+
+window.showSignInModal = showSignInModal;
+window.hideSignInModal = hideSignInModal;

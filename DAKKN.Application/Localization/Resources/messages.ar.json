@@ -1110,6 +1110,9 @@
     "empty_title": "لا توجد فئات بعد",
     "empty_msg": "ستظهر الفئات بمجرد إضافة المنتجات."
   },
+  "signin_modal_title": "سجل الدخول للمتابعة",
+  "signin_modal_msg": "يرجى تسجيل الدخول أو إنشاء حساب للوصول إلى هذه الميزة.",
+  "signin_modal_continue": "المتابعة كزائر",
   "featured_empty_title": "لا توجد منتجات مميزة متاحة",
   "featured_empty_msg": "ستظهر المنتجات الجديدة هنا تلقائياً.",
   "categories_empty_title": "لا توجد فئات بعد",

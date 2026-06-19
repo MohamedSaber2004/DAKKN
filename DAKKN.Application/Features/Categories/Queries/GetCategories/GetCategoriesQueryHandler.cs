@@ -18,7 +18,7 @@ namespace DAKKN.Application.Features.Categories.Queries.GetCategories
         public async Task<List<CategoryDto>> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
         {
             var repo = _unitOfWork.GetRepository<Category>();
-            var query = repo.GetAllAsync(null);
+            var query = repo.GetAllAsync(null).AsNoTracking();
 
             if (!request.IncludeInactive)
             {
@@ -54,8 +54,13 @@ namespace DAKKN.Application.Features.Categories.Queries.GetCategories
 
             foreach (var item in categories)
             {
-                if (!string.IsNullOrEmpty(item.ImageUrl) && !item.ImageUrl.StartsWith("http") && !item.ImageUrl.StartsWith("/"))
-                    item.ImageUrl = $"/files/{item.ImageUrl}";
+                if (!string.IsNullOrEmpty(item.ImageUrl))
+                {
+                    item.ImageFullUrl = item.ImageUrl.StartsWith("http") || item.ImageUrl.StartsWith("/")
+                        ? item.ImageUrl
+                        : $"/files/{item.ImageUrl}";
+                    item.ImageUrl = item.ImageFullUrl;
+                }
             }
 
             return categories;

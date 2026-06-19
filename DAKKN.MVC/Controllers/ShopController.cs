@@ -48,12 +48,19 @@ namespace DAKKN.MVC.Controllers
             {
                 var product = await _mediator.Send(new GetProductByIdQuery(id));
                 ViewData["Title"] = product.Name;
-                return View("~/Views/Customer/ProductDetails.cshtml", new ProductDetailsViewModel { Product = product });
+                return View("ProductDetails", new ProductDetailsViewModel { Product = product });
             }
             catch (NotFoundException)
             {
                 return NotFound();
             }
+        }
+
+        [HttpGet("cart")]
+        public IActionResult Cart()
+        {
+            ViewData["Title"] = _localizer["nav_cart"];
+            return View();
         }
 
         [HttpGet("categories")]

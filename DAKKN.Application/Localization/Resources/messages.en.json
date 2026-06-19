@@ -1102,6 +1102,9 @@
     "empty_title": "No Categories Yet",
     "empty_msg": "Categories will appear once products are added."
   },
+  "signin_modal_title": "Sign in to continue",
+  "signin_modal_msg": "Please sign in or create an account to access this feature.",
+  "signin_modal_continue": "Continue as guest",
   "featured_empty_title": "No Featured Products Available",
   "featured_empty_msg": "New products will appear here automatically.",
   "categories_empty_title": "No Categories Yet",

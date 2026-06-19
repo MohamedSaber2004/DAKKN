@@ -8,6 +8,7 @@ namespace DAKKN.Application.DTOs
         public string CategoryName { get; set; } = string.Empty;
         public string ArName { get; set; } = string.Empty;
         public string? ImageUrl { get; set; }
+        public string? ImageFullUrl { get; set; }
         public int ProductsCount { get; set; }
         public bool IsDeleted { get; set; }
     }

@@ -1,0 +1,215 @@
+@inject IStringLocalizer<Messages> Localizer
+@{
+    Layout = "_LayoutLanding";
+    ViewData["Title"] = Localizer["nav_cart"];
+    var isAr = System.Threading.Thread.CurrentThread.CurrentUICulture.Name.StartsWith("ar");
+}
+
+<div class="min-h-screen bg-surface dark:bg-[#080e1a] pt-28 pb-16 px-4 md:px-16">
+    <div class="max-w-7xl mx-auto">
+        <div class="mb-10">
+            <h1 class="text-3xl md:text-4xl font-extrabold text-on-surface dark:text-white mb-2">@Localizer["cart_h1"]</h1>
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                <p id="free-shipping-info" class="text-sm text-on-surface-variant dark:text-slate-400"></p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            <div class="lg:col-span-2 space-y-4" id="cart-items-container">
+                <div id="cart-empty-state" class="py-20 text-center">
+                    <div class="w-24 h-24 bg-surface-container-high dark:bg-white/5 rounded-full flex items-center justify-center mx-auto text-on-surface-variant/30 mb-6">
+                        <span class="material-symbols-outlined text-5xl">shopping_cart</span>
+                    </div>
+                    <h2 class="text-2xl font-bold text-on-surface dark:text-white mb-2">@Localizer["cart_empty_h"]</h2>
+                    <p class="text-on-surface-variant dark:text-slate-400 max-w-sm mx-auto mb-8">@Localizer["cart_empty_p"]</p>
+                    <a asp-action="Products" asp-controller="Shop" class="inline-flex items-center gap-2 bg-primary text-on-primary px-8 py-4 rounded-2xl font-bold hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                        @Localizer["orders_empty_btn"] <span class="material-symbols-outlined">arrow_forward</span>
+                    </a>
+                </div>
+            </div>
+
+            <aside class="space-y-6 sticky top-28">
+                <div class="bg-surface-container-low dark:bg-[#0d1a2a] rounded-[32px] border border-outline-variant/10 p-8 shadow-lg space-y-6">
+                    <h2 class="text-2xl font-bold text-on-surface dark:text-white">@Localizer["cart_summary_h"]</h2>
+
+                    <div class="space-y-4">
+                        <div class="flex justify-between text-on-surface-variant dark:text-slate-400">
+                            <span>@Localizer["cart_subtotal"]</span>
+                            <span id="summary-subtotal" class="font-bold text-on-surface dark:text-white">0 @Localizer["Currency_EGP"]</span>
+                        </div>
+                        <div class="flex justify-between text-on-surface-variant dark:text-slate-400">
+                            <span>@Localizer["cart_shipping"]</span>
+                            <span id="summary-shipping" class="font-bold text-on-surface dark:text-white">0 @Localizer["Currency_EGP"]</span>
+                        </div>
+                        <div class="h-px bg-outline-variant/20"></div>
+                        <div class="flex justify-between items-end">
+                            <span class="font-bold text-lg text-on-surface dark:text-white">@Localizer["cart_total"]</span>
+                            <div class="text-right">
+                                <div id="summary-total" class="text-3xl font-bold text-primary">0 @Localizer["Currency_EGP"]</div>
+                                <div class="text-[10px] text-on-surface-variant dark:text-slate-400 uppercase tracking-widest mt-1">@Localizer["cart_vat_inc"]</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col gap-3">
+                        <div class="flex items-center gap-3 p-4 bg-surface-container dark:bg-white/5 rounded-2xl">
+                            <span class="material-symbols-outlined text-primary">verified_user</span>
+                            <div class="text-xs">
+                                <p class="font-bold text-on-surface dark:text-white">@Localizer["cart_secure_h"]</p>
+                                <p class="text-on-surface-variant dark:text-slate-400">@Localizer["cart_secure_p"]</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 p-4 bg-surface-container dark:bg-white/5 rounded-2xl">
+                            <span class="material-symbols-outlined text-primary">local_shipping</span>
+                            <div class="text-xs">
+                                <p class="font-bold text-on-surface dark:text-white">@Localizer["cart_fast_h"]</p>
+                                <p class="text-on-surface-variant dark:text-slate-400">@Localizer["cart_fast_p"]</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <a asp-action="Products" asp-controller="Shop" class="flex items-center justify-center gap-2 text-on-surface-variant dark:text-slate-400 hover:text-primary font-bold transition-colors">
+                    <span class="material-symbols-outlined text-sm">arrow_back</span>
+                    @Localizer["cart_continue_shopping"]
+                </a>
+            </aside>
+        </div>
+    </div>
+</div>
+
+<style>
+    .cart-item {
+        animation: slideIn 0.4s ease-out forwards;
+    }
+    @@keyframes slideIn {
+        from { opacity: 0; transform: translateX(-10px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+    .item-removed {
+        transform: scale(0.95);
+        opacity: 0;
+        transition: all 0.3s ease;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        const shippingThreshold = 500;
+        const flatShipping = 45;
+        const decodeEntities = (function() {
+            const el = document.createElement('div');
+            return function(str) {
+                if(str && typeof str === 'string') {
+                    el.innerHTML = str;
+                    str = el.textContent;
+                    el.textContent = '';
+                }
+                return str;
+            }
+        })();
+        const currencyEgp = decodeEntities('@Html.Raw(Localizer["Currency_EGP"])');
+        const isAr = document.documentElement.lang.startsWith('ar');
+
+        function loadCart() {
+            const cart = JSON.parse(localStorage.getItem('dakkn_cart') || '[]');
+            const container = document.getElementById('cart-items-container');
+            const emptyState = document.getElementById('cart-empty-state');
+            if (!cart.length) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            emptyState.classList.add('hidden');
+            container.innerHTML = cart.map((item, idx) => `
+                <div class="cart-item group bg-surface-container-low dark:bg-[#0d1a2a] rounded-[32px] border border-outline-variant/10 p-6 shadow-sm hover:shadow-md transition-all" data-index="${idx}" data-price="${item.price}">
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <div class="w-full sm:w-28 h-28 rounded-2xl overflow-hidden bg-white/5 flex-shrink-0">
+                            <img src="${item.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="${isAr ? item.arName : item.name}" loading="lazy" onerror="this.src='/images/placeholders/product-placeholder.svg'" />
+                        </div>
+                        <div class="flex-1 min-w-0 flex flex-col justify-between">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-bold text-xl text-on-surface dark:text-white truncate group-hover:text-primary transition-colors">${isAr ? (item.arName || item.name) : item.name}</h3>
+                                    <p class="text-xs text-on-surface-variant dark:text-slate-400 font-medium uppercase tracking-wider">${item.options || ''}</p>
+                                </div>
+                                <button onclick="removeItem(${idx})" class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:text-red-500 hover:bg-red-500/5 transition-all">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </div>
+                            <div class="flex justify-between items-end mt-4">
+                                <div class="flex items-center gap-3 bg-surface-container dark:bg-white/5 p-1.5 rounded-2xl border border-outline-variant/10">
+                                    <button onclick="updateQty(${idx}, -1)" class="w-8 h-8 rounded-xl bg-surface dark:bg-[#0d1a2a] shadow-sm flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all text-on-surface dark:text-white">-</button>
+                                    <span class="item-qty font-bold w-8 text-center text-on-surface dark:text-white">${item.qty || 1}</span>
+                                    <button onclick="updateQty(${idx}, 1)" class="w-8 h-8 rounded-xl bg-surface dark:bg-[#0d1a2a] shadow-sm flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all text-on-surface dark:text-white">+</button>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-xs text-on-surface-variant dark:text-slate-400">Unit: ${item.price} ${currencyEgp}</p>
+                                    <p class="font-bold text-xl text-primary item-total">${(item.price * (item.qty || 1)).toFixed(2)} ${currencyEgp}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`).join('');
+            calculateTotals();
+            updateCartBadge();
+        }
+
+        function updateQty(idx, delta) {
+            const cart = JSON.parse(localStorage.getItem('dakkn_cart') || '[]');
+            if (!cart[idx]) return;
+            cart[idx].qty = (cart[idx].qty || 1) + delta;
+            if (cart[idx].qty < 1) cart[idx].qty = 1;
+            localStorage.setItem('dakkn_cart', JSON.stringify(cart));
+            loadCart();
+        }
+
+        function removeItem(idx) {
+            const item = document.querySelector(`.cart-item[data-index="${idx}"]`);
+            if (item) item.classList.add('item-removed');
+            setTimeout(() => {
+                const cart = JSON.parse(localStorage.getItem('dakkn_cart') || '[]');
+                cart.splice(idx, 1);
+                localStorage.setItem('dakkn_cart', JSON.stringify(cart));
+                loadCart();
+            }, 300);
+        }
+
+        function calculateTotals() {
+            let subtotal = 0;
+            document.querySelectorAll('.cart-item').forEach(item => {
+                const qty = parseInt(item.querySelector('.item-qty').textContent);
+                const price = parseFloat(item.dataset.price);
+                subtotal += qty * price;
+            });
+            const shipping = subtotal >= shippingThreshold ? 0 : flatShipping;
+            const total = subtotal + shipping;
+
+            document.getElementById('summary-subtotal').innerHTML = `${subtotal.toFixed(2)} ${currencyEgp}`;
+            document.getElementById('summary-shipping').innerHTML = shipping === 0 ? 'FREE' : `${shipping.toFixed(2)} ${currencyEgp}`;
+            document.getElementById('summary-total').innerHTML = `${total.toFixed(2)} ${currencyEgp}`;
+
+            const info = document.getElementById('free-shipping-info');
+            if (info) {
+                if (subtotal >= shippingThreshold) {
+                    info.innerHTML = decodeEntities('@Html.Raw(Localizer["cart_free_shipping_msg"])');
+                    info.classList.add('text-green-500');
+                    info.classList.remove('text-on-surface-variant', 'dark:text-slate-400');
+                } else {
+                    const left = shippingThreshold - subtotal;
+                    info.innerHTML = `Add <span class="font-bold">${left.toFixed(0)} ${currencyEgp}</span> more for free shipping!`;
+                    info.classList.remove('text-green-500');
+                    info.classList.add('text-on-surface-variant', 'dark:text-slate-400');
+                }
+            }
+        }
+
+        function updateCartBadge() {
+            const cart = JSON.parse(localStorage.getItem('dakkn_cart') || '[]');
+            const count = cart.reduce((sum, item) => sum + (item.qty || 1), 0);
+            document.querySelectorAll('[id^="cart-badge"]').forEach(el => el.textContent = count);
+        }
+
+        window.addEventListener('DOMContentLoaded', loadCart);
+    </script>
+}

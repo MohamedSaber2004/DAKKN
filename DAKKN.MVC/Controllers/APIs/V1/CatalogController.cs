@@ -3,6 +3,7 @@ using DAKKN.Appearence.Controllers.APIs;
 using DAKKN.Appearence.Routes;
 using DAKKN.Application.Features.Categories.Queries.GetCategories;
 using DAKKN.Application.Features.Products.Queries.GetFeaturedProducts;
+using DAKKN.Application.Features.Products.Queries.GetPriceRange;
 using DAKKN.Application.Features.Products.Queries.GetProducts;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -40,6 +41,15 @@ namespace DAKKN.Appearence.Controllers.APIs.V1
         public async Task<IActionResult> GetFeaturedProducts()
         {
             var result = await _mediator.Send(new GetFeaturedProductsQuery());
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route(ApiRoutes.Catalog.PriceRange)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetPriceRange()
+        {
+            var result = await _mediator.Send(new GetPriceRangeQuery());
             return Ok(result);
         }
     }

@@ -1,0 +1,67 @@
+@using DAKKN.MVC.ViewModels.Customer
+@model ProductDetailsViewModel
+@inject IStringLocalizer<Messages> Localizer
+@{
+    Layout = "_LayoutLanding";
+    var product = Model.Product;
+    var culture = System.Globalization.CultureInfo.CurrentCulture.Name;
+    var isArabic = culture.StartsWith("ar");
+    var isAr = isArabic;
+}
+<div class="min-h-screen bg-surface dark:bg-[#080e1a]">
+    <nav class="fixed top-0 w-full z-50 flex justify-between items-center px-4 md:px-16 h-16 md:h-20 bg-surface/75 dark:bg-[#0a1020]/85 backdrop-blur-md border-b border-outline-variant/10 dark:border-white/5 shadow-sm">
+        <a href="/" class="flex items-center gap-2 text-on-surface-variant dark:text-slate-300 hover:text-primary transition-colors font-bold text-sm">
+            <span class="material-symbols-outlined text-lg">arrow_back</span>
+            @Localizer["cart_continue_shopping"]
+        </a>
+        <div class="flex items-center gap-3">
+            <a asp-action="Login" asp-controller="Auth" class="text-xs font-bold text-on-surface-variant dark:text-slate-300 hover:text-primary transition-colors">@Localizer["auth.register.login"]</a>
+            <a asp-action="Register" asp-controller="Auth" class="bg-primary text-on-primary text-xs font-bold px-5 py-2 rounded-full transition-all hover:-translate-y-0.5">@Localizer["auth.login.register"]</a>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 md:px-16 pt-28 pb-16">
+        <nav class="flex items-center gap-2 text-sm text-on-surface-variant dark:text-slate-400 mb-8">
+            <a asp-action="Products" asp-controller="Shop" class="hover:text-primary transition-colors">@Localizer["Product_Products"]</a>
+            <span class="material-symbols-outlined text-xs">chevron_right</span>
+            <span class="text-on-surface dark:text-white font-bold">@(isArabic ? product.ArName : product.Name)</span>
+        </nav>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
+            <div class="space-y-4">
+                <div class="aspect-square rounded-[32px] bg-surface-container-low dark:bg-[#0d1a2a] border border-outline-variant/10 overflow-hidden shadow-lg group relative">
+                    <img src="@(string.IsNullOrEmpty(product.ImageFullUrl) ? product.ImageUrl : product.ImageFullUrl)" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="@(isArabic ? product.ArName : product.Name)" onerror="this.src='/images/placeholders/product-placeholder.svg'" />
+                </div>
+            </div>
+
+            <div class="flex flex-col">
+                <div class="mb-8 pb-8 border-b border-outline-variant/10">
+                    <span class="bg-primary/10 text-primary px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-4 inline-block">@(isArabic ? product.CategoryArName : product.CategoryName)</span>
+                    <h1 class="text-3xl md:text-4xl font-extrabold text-on-surface dark:text-white mb-3">@(isArabic ? product.ArName : product.Name)</h1>
+                    <div class="flex items-center gap-4">
+                        <span class="text-3xl font-bold text-primary">@product.Price.ToString("N0") @Localizer["Currency_EGP"]</span>
+                        <div class="flex items-center gap-1 text-yellow-500">
+                            <span class="material-symbols-outlined text-lg filled-icon">star</span>
+                            <span class="font-bold">@product.AverageRating.ToString("F1")</span>
+                            <span class="text-on-surface-variant dark:text-slate-400 text-sm font-medium ml-1">(@product.ReviewCount @Localizer["Product_Reviews"])</span>
+                        </div>
+                    </div>
+                    <p class="text-on-surface-variant dark:text-slate-400 mt-6 leading-relaxed">
+                        @(isArabic ? product.ArDescription : product.Description)
+                    </p>
+                </div>
+
+                <div class="flex gap-4 mt-auto">
+                    <button onclick="guestAddToCart(this, '@product.Id', '@(isArabic ? product.ArName : product.Name)', '@product.Price', '@(product.ImageFullUrl ?? product.ImageUrl)')"
+                            class="flex-1 bg-primary text-on-primary h-14 rounded-2xl font-bold text-base shadow-lg hover:scale-[1.02] hover:shadow-xl transition-all flex items-center justify-center gap-3">
+                        <span class="material-symbols-outlined">shopping_cart</span>
+                        @Localizer["Product_AddToCart"]
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cart Toast Container -->
+<div id="cart-toast-container" class="fixed bottom-24 md:bottom-8 end-4 md:end-8 z-[90] flex flex-col gap-3 pointer-events-none"></div>

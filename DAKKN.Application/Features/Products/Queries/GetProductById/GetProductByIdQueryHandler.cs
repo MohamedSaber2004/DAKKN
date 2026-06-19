@@ -24,6 +24,11 @@ namespace DAKKN.Application.Features.Products.Queries.GetProductById
 
             var category = await _unitOfWork.GetRepository<Category>().FindByKeyAsync(product.CategoryId, cancellationToken);
 
+            var resolvedUrl = string.IsNullOrEmpty(product.ImageUrl) ? string.Empty
+                : product.ImageUrl.StartsWith("http") || product.ImageUrl.StartsWith("/")
+                    ? product.ImageUrl
+                    : $"/files/{product.ImageUrl}";
+
             return new ProductDto
             {
                 Id = product.Id,
@@ -34,9 +39,8 @@ namespace DAKKN.Application.Features.Products.Queries.GetProductById
                 Price = product.Price,
                 AverageRating = product.AverageRating,
                 ReviewCount = product.ReviewCount,
-                ImageUrl = string.IsNullOrEmpty(product.ImageUrl) || product.ImageUrl.StartsWith("http") || product.ImageUrl.StartsWith("/")
-                    ? product.ImageUrl
-                    : $"/files/{product.ImageUrl}",
+                ImageUrl = resolvedUrl,
+                ImageFullUrl = resolvedUrl,
                 FinishOptions = product.FinishOptions,
                 SizeOptions = product.SizeOptions,
                 CategoryId = product.CategoryId,

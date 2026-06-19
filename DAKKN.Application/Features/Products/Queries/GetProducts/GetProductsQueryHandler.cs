@@ -20,7 +20,7 @@ namespace DAKKN.Application.Features.Products.Queries.GetProducts
         public async Task<PagginatedResult<ProductDto>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
         {
             var repo = _unitOfWork.GetRepository<Product>();
-            var query = repo.GetAllAsync(null)
+            var query = repo.GetAllAsync(null).AsNoTracking()
                 .Include(p => p.Category)
                 .Where(p => !p.IsDeleted);
 
@@ -66,8 +66,13 @@ namespace DAKKN.Application.Features.Products.Queries.GetProducts
 
             foreach (var item in result.Items)
             {
-                if (!string.IsNullOrEmpty(item.ImageUrl) && !item.ImageUrl.StartsWith("http") && !item.ImageUrl.StartsWith("/"))
-                    item.ImageUrl = $"/files/{item.ImageUrl}";
+                if (!string.IsNullOrEmpty(item.ImageUrl))
+                {
+                    item.ImageFullUrl = item.ImageUrl.StartsWith("http") || item.ImageUrl.StartsWith("/")
+                        ? item.ImageUrl
+                        : $"/files/{item.ImageUrl}";
+                    item.ImageUrl = item.ImageFullUrl;
+                }
             }
 
             return result;

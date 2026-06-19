@@ -21,7 +21,7 @@ namespace DAKKN.Application.Features.Products.Queries.GetFeaturedProducts
 
             var sevenDaysAgo = DateTime.UtcNow.AddDays(-7);
 
-            var query = repo.GetAllAsync(null)
+            var query = repo.GetAllAsync(null).AsNoTracking()
                 .Include(p => p.Category)
                 .Where(p => !p.IsDeleted && p.IsActive && p.CreatedAt >= sevenDaysAgo)
                 .OrderByDescending(p => p.CreatedAt)
@@ -53,8 +53,13 @@ namespace DAKKN.Application.Features.Products.Queries.GetFeaturedProducts
 
             foreach (var item in products)
             {
-                if (!string.IsNullOrEmpty(item.ImageUrl) && !item.ImageUrl.StartsWith("http") && !item.ImageUrl.StartsWith("/"))
-                    item.ImageUrl = $"/files/{item.ImageUrl}";
+                if (!string.IsNullOrEmpty(item.ImageUrl))
+                {
+                    item.ImageFullUrl = item.ImageUrl.StartsWith("http") || item.ImageUrl.StartsWith("/")
+                        ? item.ImageUrl
+                        : $"/files/{item.ImageUrl}";
+                    item.ImageUrl = item.ImageFullUrl;
+                }
             }
 
             return products;

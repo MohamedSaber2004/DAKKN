@@ -8,18 +8,14 @@
     var isAr = System.Threading.Thread.CurrentThread.CurrentUICulture.Name.StartsWith("ar");
     var placeholder = "/images/placeholders/product-placeholder.svg";
 
-    string ResolveImage(string? url)
+    string ResolveImage(string? imageFullUrl)
     {
-        if (string.IsNullOrEmpty(url)) return placeholder;
-        if (url.StartsWith("http") || url.StartsWith("/")) return url;
-        return $"/files/{url}";
+        return string.IsNullOrEmpty(imageFullUrl) ? placeholder : imageFullUrl;
     }
 
-    string ResolveCategoryImage(string? url)
+    string ResolveCategoryImage(string? imageFullUrl)
     {
-        if (string.IsNullOrEmpty(url)) return "/images/placeholders/category-placeholder.svg";
-        if (url.StartsWith("http") || url.StartsWith("/")) return url;
-        return $"/files/{url}";
+        return string.IsNullOrEmpty(imageFullUrl) ? "/images/placeholders/category-placeholder.svg" : imageFullUrl;
     }
 }
 
@@ -63,6 +59,12 @@
             <a asp-action="Register" asp-controller="Auth" class="bg-primary hover:bg-primary-container text-on-primary text-[14px] font-bold px-6 py-2.5 rounded-full transition-all shadow-lg shadow-primary/20 hover:-translate-y-0.5 active:scale-95">
                 @Localizer["auth.login.register"]
             </a>
+            <a asp-action="Cart" asp-controller="Shop"
+               class="relative flex items-center gap-2 bg-primary/10 hover:bg-primary text-primary hover:text-on-primary text-[14px] font-bold px-5 py-2.5 rounded-full transition-all duration-200 shadow-sm hover:shadow-lg hover:-translate-y-0.5 active:scale-95"
+               title="@Localizer["nav_cart"]">
+                <span class="material-symbols-outlined text-[20px]">shopping_cart</span>
+                <span class="absolute -top-1 -end-1 w-5 h-5 bg-tertiary-container text-on-tertiary-container text-[10px] font-bold rounded-full flex items-center justify-center shadow-sm" id="cart-badge">0</span>
+            </a>
         </div>
 
         <!-- Account Button (Mobile) -->
@@ -70,11 +72,11 @@
             <span class="material-symbols-outlined text-[24px]">person</span>
         </a>
 
-        <!-- Cart Button -->
-        <button aria-label="shopping_cart" class="navbar-icon-btn relative scale-90 md:scale-100 dark:text-slate-300" title="Cart">
+        <!-- Cart Button (Mobile) -->
+        <a asp-action="Cart" asp-controller="Shop" aria-label="shopping_cart" class="navbar-icon-btn relative scale-90 md:scale-100 dark:text-slate-300 lg:hidden" title="@Localizer["nav_cart"]">
             <span class="material-symbols-outlined text-[24px]">shopping_cart</span>
-            <span class="absolute top-1.5 end-1.5 w-2 h-2 bg-tertiary-container rounded-full"></span>
-        </button>
+            <span class="absolute -top-0.5 -end-0.5 w-4 h-4 bg-tertiary-container text-on-tertiary-container text-[8px] font-bold rounded-full flex items-center justify-center shadow-sm" id="cart-badge-mobile">0</span>
+        </a>
 
         <!-- Language Switcher -->
         @await Html.PartialAsync("Partials/_LanguageToggle")
@@ -170,7 +172,7 @@
                 </p>
                 
                 <div class="flex flex-col sm:flex-row gap-3 md:gap-4 pt-2 md:pt-4 scroll-animate delay-400">
-                    <a href="#shop" class="bg-primary hover:bg-primary-container text-on-primary font-semibold text-center px-6 md:px-8 py-3 md:py-4 rounded-xl transition-all shadow-[0_4px_14px_0_rgba(77,46,229,0.4)] hover:shadow-[0_6px_20px_rgba(77,46,229,0.25)] hover:-translate-y-0.5 duration-200 text-sm md:text-base">
+                    <a href="#shop" data-frozen-action class="bg-primary hover:bg-primary-container text-on-primary font-semibold text-center px-6 md:px-8 py-3 md:py-4 rounded-xl transition-all shadow-[0_4px_14px_0_rgba(77,46,229,0.4)] hover:shadow-[0_6px_20px_rgba(77,46,229,0.25)] hover:-translate-y-0.5 duration-200 text-sm md:text-base">
                         @Localizer["btn_shop"]
                     </a>
                 </div>
@@ -207,19 +209,26 @@
             {
                 @foreach (var product in Model.FeaturedProducts)
                 {
-                    <a href="/shop/product/@product.Id" class="product-card glass-panel p-5 rounded-2xl flex flex-col gap-4 scroll-animate group hover:-translate-y-1 transition-all duration-300 no-underline">
-                        <div class="aspect-square rounded-xl overflow-hidden relative">
-                            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="@ResolveImage(product.ImageUrl)" onerror="this.src='@placeholder'" alt="@(isAr ? product.ArName : product.Name)" loading="lazy" />
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-bold text-on-surface dark:text-white">@(isAr ? product.ArName : product.Name)</h3>
-                            <p class="text-xs text-on-surface-variant dark:text-slate-400">@(isAr ? product.CategoryArName : product.CategoryName)</p>
-                        </div>
+                    <div class="product-card glass-panel p-5 rounded-2xl flex flex-col gap-4 scroll-animate group hover:-translate-y-1 transition-all duration-300">
+                        <a href="/shop/product/@product.Id" class="no-underline">
+                            <div class="aspect-square rounded-xl overflow-hidden relative">
+                                <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="@ResolveImage(product.ImageFullUrl)" onerror="this.src='@placeholder'" alt="@(isAr ? product.ArName : product.Name)" loading="lazy" />
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-on-surface dark:text-white">@(isAr ? product.ArName : product.Name)</h3>
+                                <p class="text-xs text-on-surface-variant dark:text-slate-400">@(isAr ? product.CategoryArName : product.CategoryName)</p>
+                            </div>
+                        </a>
                         <div class="flex items-center justify-between mt-auto pt-2">
                             <span class="text-xl font-bold text-primary">@product.Price.ToString("N0") @(isAr ? "ج.م" : "EGP")</span>
-                            <span class="px-4 py-2 rounded-lg bg-primary/10 text-primary text-xs font-bold">@Localizer["shop_view_details"]</span>
+                            <div class="flex gap-2">
+                                <button onclick="guestAddToCart(this, '@product.Id','@(isAr ? product.ArName : product.Name)','@product.Price','@(product.ImageFullUrl ?? product.ImageUrl)')" class="px-3 py-2 rounded-lg bg-primary text-on-primary text-[10px] font-bold hover:bg-primary-container hover:text-primary transition-all flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+                                </button>
+                                <a href="/shop/product/@product.Id" class="px-3 py-2 rounded-lg bg-primary/10 text-primary text-[10px] font-bold hover:bg-primary hover:text-on-primary transition-all no-underline">@Localizer["shop_view_details"]</a>
+                            </div>
                         </div>
-                    </a>
+                    </div>
                 }
             }
             else
@@ -289,18 +298,16 @@
         </div>
         <!-- Category Slider Wrapper -->
         <div class="relative z-10 scroll-animate">
-            <!-- Overflow Viewport -->
             <div class="overflow-hidden" id="cat-slider-viewport">
-                <!-- Sliding Track -->
                 <div id="cat-slider-track" class="flex gap-6 transition-transform duration-500 ease-out"
                      style="will-change: transform;">
                     @if (Model.HasCategories)
                     {
                         @foreach (var cat in Model.Categories)
                         {
-                            <a href="/shop/products?categoryId=@cat.Id"
+                            <a href="/shop/products?categoryId=@cat.Id" data-frozen-action
                                class="group rounded-2xl overflow-hidden relative flex-shrink-0 w-[calc(100%-0px)] sm:w-[calc(50%-12px)] md:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] aspect-square glass-panel shadow-sm no-underline block">
-                                <img src="@ResolveCategoryImage(cat.ImageUrl)" alt="@(isAr ? cat.ArName : cat.CategoryName)" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='/images/placeholders/category-placeholder.svg'" />
+                                <img src="@ResolveCategoryImage(cat.ImageFullUrl)" alt="@(isAr ? cat.ArName : cat.CategoryName)" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='/images/placeholders/category-placeholder.svg'" />
                                 <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors z-10"></div>
                                 <div class="absolute bottom-0 left-0 right-0 p-6 cat-overlay z-20">
                                     <h3 class="text-xl font-bold text-white">@(isAr ? cat.ArName : cat.CategoryName)</h3>
@@ -320,17 +327,15 @@
                 </div>
             </div>
 
-            <!-- Navigation Buttons & Dots -->
+            <!-- Navigation Buttons -->
             <div class="flex items-center justify-center gap-4 mt-8">
-                <!-- Prev Button -->
                 <button onclick="slidePrev()" aria-label="Previous"
                         class="w-11 h-11 rounded-full bg-surface dark:bg-[#0d1a2a] border border-primary/20 shadow-md flex items-center justify-center text-primary hover:bg-primary hover:text-white hover:border-primary transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0">
                     <span class="material-symbols-outlined text-xl ltr:block rtl:hidden">chevron_left</span>
                     <span class="material-symbols-outlined text-xl ltr:hidden rtl:block">chevron_right</span>
                 </button>
 
-                <!-- Pagination Dots -->
-                <div class="flex gap-2.5 items-center">
+                <div class="flex gap-2.5 items-center" id="cat-dots">
                     <button id="cat-dot-0" onclick="slideGoTo(0)" aria-label="Slide 1"
                             class="w-2.5 h-2.5 rounded-full bg-primary transition-all duration-300 hover:scale-125"></button>
                     <button id="cat-dot-1" onclick="slideGoTo(1)" aria-label="Slide 2"
@@ -339,7 +344,6 @@
                             class="w-2.5 h-2.5 rounded-full bg-primary/30 transition-all duration-300 hover:scale-125"></button>
                 </div>
 
-                <!-- Next Button -->
                 <button onclick="slideNext()" aria-label="Next"
                         class="w-11 h-11 rounded-full bg-surface dark:bg-[#0d1a2a] border border-primary/20 shadow-md flex items-center justify-center text-primary hover:bg-primary hover:text-white hover:border-primary transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0">
                     <span class="material-symbols-outlined text-xl ltr:block rtl:hidden">chevron_right</span>
@@ -378,7 +382,7 @@
                     <span class="text-xs font-bold text-primary uppercase tracking-wider">@Localizer["filter_price"]</span>
                     <span class="text-xs font-bold text-primary font-sans" id="price-val-display">150 EGP</span>
                 </div>
-                <input type="range" min="40" max="150" value="150" class="w-full h-1.5 bg-primary/20 rounded-lg appearance-none cursor-pointer accent-primary" id="price-slider" oninput="filterPrice(this.value)"/>
+                <input type="range" min="0" max="200" value="200" class="w-full h-1.5 bg-primary/20 rounded-lg appearance-none cursor-pointer accent-primary" id="price-slider" onchange="filterPrice(this.value)"/>
                 <div class="flex justify-between text-[10px] text-on-surface-variant/60 dark:text-slate-400/50 font-semibold font-sans">
                     <span>40 EGP</span>
                     <span>150 EGP</span>
@@ -394,7 +398,7 @@
                 {
                     <div class="product-card glass-panel p-5 rounded-2xl flex flex-col gap-4 scroll-animate visible">
                         <div class="aspect-square rounded-xl overflow-hidden relative">
-                            <img class="w-full h-full object-cover" src="@ResolveImage(product.ImageUrl)" onerror="this.src='@placeholder'" alt="@(isAr ? product.ArName : product.Name)" loading="lazy" />
+                            <img class="w-full h-full object-cover" src="@ResolveImage(product.ImageFullUrl)" onerror="this.src='@placeholder'" alt="@(isAr ? product.ArName : product.Name)" loading="lazy" />
                         </div>
                         <div>
                             <h3 class="text-lg font-bold text-on-surface dark:text-white">@(isAr ? product.ArName : product.Name)</h3>
@@ -402,7 +406,12 @@
                         </div>
                         <div class="flex items-center justify-between mt-auto pt-2">
                             <span class="text-xl font-bold text-primary font-sans">@product.Price.ToString("N0") @(isAr ? "ج.م" : "EGP")</span>
-                            <a href="/shop/product/@product.Id" class="px-4 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-xs font-bold transition-all duration-200">@Localizer["shop_view_details"]</a>
+                            <div class="flex gap-2">
+                                <button onclick="guestAddToCart(this, '@product.Id','@(isAr ? product.ArName : product.Name)','@product.Price','@(product.ImageFullUrl ?? product.ImageUrl)')" class="px-3 py-2 rounded-lg bg-primary text-on-primary text-[10px] font-bold hover:bg-primary-container hover:text-primary transition-all flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+                                </button>
+                                <a href="/shop/product/@product.Id" class="px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-[10px] font-bold transition-all duration-200">@Localizer["shop_view_details"]</a>
+                            </div>
                         </div>
                     </div>
                 }
@@ -504,7 +513,7 @@
         <div class="relative z-10 max-w-2xl mx-auto bg-surface-container-low/60 dark:bg-[#0a1220]/80 backdrop-blur-md border border-primary/20 dark:border-white/5 p-8 md:p-12 rounded-3xl shadow-2xl shadow-primary/5 scroll-animate-scale">
             <h2 class="text-3xl font-extrabold text-on-surface dark:text-white mb-3 text-center">@Localizer["form_h2"]</h2>
             <p class="text-sm text-on-surface-variant dark:text-slate-400 text-center mb-8">@Localizer["form_p"]</p>
-            <form onsubmit="event.preventDefault(); alert('Message sent successfully! / تم إرسال الرسالة بنجاح!');" class="flex flex-col gap-6">
+            <form data-frozen-action novalidate class="flex flex-col gap-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="flex flex-col gap-2">
                         <label class="text-xs font-bold text-primary">@Localizer["form_name"]</label>
@@ -526,6 +535,33 @@
         </div>
     </section>
 </main>
+
+<!-- Cart Toast Container -->
+<div id="cart-toast-container" class="fixed bottom-24 md:bottom-8 end-4 md:end-8 z-[90] flex flex-col gap-3 pointer-events-none"></div>
+
+<!-- Sign-in Modal for Frozen Actions -->
+<div id="signin-modal" class="fixed inset-0 z-[100] flex items-center justify-center hidden" aria-modal="true" role="dialog">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+    <div class="relative bg-white dark:bg-[#0f1d30] rounded-3xl shadow-2xl border border-primary/10 dark:border-white/5 p-8 md:p-10 max-w-md w-[90%] mx-4 text-center">
+        <button onclick="hideSignInModal()" class="absolute top-4 end-4 w-10 h-10 rounded-full bg-surface-container-high dark:bg-slate-800 hover:bg-primary/10 flex items-center justify-center text-on-surface-variant dark:text-slate-300 hover:text-primary transition-all" aria-label="Close">
+            <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+        <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6">
+            <span class="material-symbols-outlined text-4xl text-primary">lock</span>
+        </div>
+        <h3 class="text-2xl font-extrabold text-on-surface dark:text-white mb-2">@Localizer["signin_modal_title"]</h3>
+        <p class="text-sm text-on-surface-variant dark:text-slate-400 mb-8 leading-relaxed">@Localizer["signin_modal_msg"]</p>
+        <div class="flex flex-col gap-3">
+            <a asp-action="Login" asp-controller="Auth" class="w-full bg-primary hover:bg-primary-container text-on-primary font-bold py-3.5 px-6 rounded-xl transition-all shadow-lg hover:-translate-y-0.5 active:scale-95 text-sm">
+                @Localizer["auth.login.submit"]
+            </a>
+            <a asp-action="Register" asp-controller="Auth" class="w-full bg-surface-container-high dark:bg-slate-800 hover:bg-primary/10 text-on-surface dark:text-slate-200 font-bold py-3.5 px-6 rounded-xl transition-all border border-outline-variant/20 dark:border-white/5 hover:-translate-y-0.5 active:scale-95 text-sm">
+                @Localizer["auth.login.register"]
+            </a>
+            <button onclick="hideSignInModal()" class="text-xs text-on-surface-variant dark:text-slate-400 hover:text-primary mt-2 transition-colors">@Localizer["signin_modal_continue"]</button>
+        </div>
+    </div>
+</div>
 
 <!-- 8. Footer -->
 <section class="bg-surface dark:bg-[#080e1a] pt-6 pb-24 md:py-8 px-4 relative overflow-hidden">

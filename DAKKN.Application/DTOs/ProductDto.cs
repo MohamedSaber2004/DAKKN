@@ -14,6 +14,7 @@ namespace DAKKN.Application.DTOs
         public double AverageRating { get; set; }
         public int ReviewCount { get; set; }
         public string ImageUrl { get; set; } = string.Empty;
+        public string? ImageFullUrl { get; set; }
         public List<string> FinishOptions { get; set; } = new();
         public List<string> SizeOptions { get; set; } = new();
         public Guid CategoryId { get; set; }

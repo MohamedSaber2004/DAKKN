@@ -1,11 +1,28 @@
-Fixed: CS1012 "Too many characters in character literal"
-========================================================
-
-Root Cause:
-Index.cshtml:296 used single quotes inside a Razor @() expression:
-    src="@(cat.ImageUrl ?? '/images/placeholders/category-placeholder.svg')"
-C# treats single-quoted text as a char literal, not a string.
-
-Fix:
-Changed HTML attribute to single quotes and C# string to double quotes:
-    src='@(cat.ImageUrl ?? "/images/placeholders/category-placeholder.svg")'
+﻿    OFFSET @__p_0 ROWS FETCH NEXT @__p_1 ROWS ONLY
+﻿) AS [t]
+﻿INNER JOIN [dbo].[Categories] AS [c] ON [t].[CategoryId] = [c].[Id]
+﻿[22:53:32 INF] Handled Request: GetProductsQuery
+﻿[22:53:32 ERR] An unhandled exception has occurred while executing the request.
+﻿System.InvalidOperationException: A second operation was started on this context instance before a previous operation completed. This is usually caused by different threads concurrently using the same instance of DbContext. For more information on how to avoid threading issues with DbContext, see https://go.microsoft.com/fwlink/?linkid=2097913.
+﻿   at Microsoft.EntityFrameworkCore.Infrastructure.Internal.ConcurrencyDetector.EnterCriticalSection()
+﻿   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+﻿   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+﻿   at DAKKN.Application.Features.Categories.Queries.GetCategories.GetCategoriesQueryHandler.Handle(GetCategoriesQuery request, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Features\Categories\Queries\GetCategories\GetCategoriesQueryHandler.cs:line 53
+﻿   at DAKKN.Application.Common.Behaviours.LoggingBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\LoggingBehaviour.cs:line 39
+﻿   at DAKKN.Application.Common.Behaviours.PerformanceBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\PerformanceBehaviour.cs:line 23
+﻿   at DAKKN.Application.Common.Behaviours.ValidationBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\ValidationBehaviour.cs:line 28
+﻿   at DAKKN.Application.Common.Behaviours.UnhandledExceptionBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\UnhandledExceptionBehaviour.cs:line 20
+﻿   at DAKKN.MVC.Controllers.HomeController.Index() in E:\DAKKN\DAKKN.MVC\Controllers\HomeController.cs:line 40
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextExceptionFilterAsync>g__Awaited|26_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+﻿[22:53:32 INF] Executing ObjectResult, writing value of type 'DAKKN.Application.Common.Models.ApiResponse`1[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+﻿[22:53:32 INF] Executed action DAKKN.MVC.Controllers.HomeController.Index (DAKKN.Appearence) in 3161.0421ms
+﻿[22:53:32 INF] Executed endpoint 'DAKKN.MVC.Controllers.HomeController.Index (DAKKN.Appearence)'
+﻿[22:53:32 INF] The response could not be cached for this request.
+﻿[22:53:32 INF] Request finished HTTP/2 GET https://localhost:44308/ - 500 null application/json; charset=utf-8 3730.4928ms
