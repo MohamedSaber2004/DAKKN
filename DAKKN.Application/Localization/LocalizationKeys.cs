@@ -172,6 +172,161 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString Price = new("shipping.price");
         }
 
+        public static class Inventory
+        {
+            public static readonly KeyString QuantityInStock = new("inventory_quantity_in_stock");
+            public static readonly KeyString DangerQuantity = new("inventory_danger_quantity");
+            public static readonly KeyString LastUpdated = new("inventory_last_updated");
+            public static readonly KeyString InStock = new("inventory_in_stock");
+            public static readonly KeyString LowStock = new("inventory_low_stock");
+            public static readonly KeyString OutOfStock = new("inventory_out_of_stock");
+            public static readonly KeyString OnlyXLeft = new("inventory_only_x_left");
+            public static readonly KeyString AvailableX = new("inventory_available_x");
+            public static readonly KeyString MaxReached = new("inventory_max_reached");
+            public static readonly KeyString OutOfStockMsg = new("inventory_out_of_stock_msg");
+            public static readonly KeyString OnlyXAvailable = new("inventory_only_x_available");
+            public static readonly KeyString StockStatus = new("inventory_stock_status");
+            public static readonly KeyString ItemsInStock = new("inventory_items_in_stock");
+            public static readonly KeyString ItemsLowStock = new("inventory_items_low_stock");
+            public static readonly KeyString ItemsOutOfStock = new("inventory_items_out_of_stock");
+            public static readonly KeyString LowStockCount = new("inventory_low_stock_count");
+            public static readonly KeyString OutOfStockCount = new("inventory_out_of_stock_count");
+            public static readonly KeyString FilterInStock = new("inventory_filter_in_stock");
+            public static readonly KeyString FilterLowStock = new("inventory_filter_low_stock");
+            public static readonly KeyString FilterOutOfStock = new("inventory_filter_out_of_stock");
+            public static readonly KeyString SortLowest = new("inventory_sort_lowest");
+            public static readonly KeyString SortHighest = new("inventory_sort_highest");
+            public static readonly KeyString WarningLowStock = new("inventory_warning_low_stock");
+            public static readonly KeyString Quantity = new("inventory_quantity");
+            public static readonly KeyString AdjustStock = new("inventory_adjust_stock");
+            public static readonly KeyString UpdateStock = new("inventory_update_stock");
+            public static readonly KeyString DashboardLowStockTitle = new("inventory_dashboard_low_stock_title");
+            public static readonly KeyString DashboardOutOfStockTitle = new("inventory_dashboard_out_of_stock_title");
+        }
+
+        public static class Error
+        {
+            public static readonly KeyString Title = new("error_title");
+            public static readonly KeyString Heading = new("error_heading");
+            public static readonly KeyString Subheading = new("error_subheading");
+            public static readonly KeyString RequestId = new("error_request_id");
+            public static readonly KeyString DevMode = new("error_dev_mode");
+            public static readonly KeyString DevDesc = new("error_dev_desc");
+            public static readonly KeyString DevWarning = new("error_dev_warning");
+            public static readonly KeyString DevSensitive = new("error_dev_sensitive");
+            public static readonly KeyString BackSafety = new("error_back_safety");
+        }
+
+        public static class AuthView
+        {
+            public static readonly KeyString SyncingTitle = new("auth_syncing_title");
+            public static readonly KeyString LoggingOutTitle = new("auth_logging_out_title");
+            public static readonly KeyString SyncingSession = new("auth_syncing_session");
+            public static readonly KeyString LoggingOut = new("auth_logging_out");
+        }
+
+        public static class Profile
+        {
+            public static readonly KeyString Title = new("profile_title");
+            public static readonly KeyString ChangePwd = new("profile_change_pwd");
+            public static readonly KeyString ChangePwdP = new("profile_change_pwd_p");
+            public static readonly KeyString DeleteAcc = new("profile_delete_acc");
+            public static readonly KeyString DeleteAccP = new("profile_delete_acc_p");
+            public static readonly KeyString AvatarP = new("profile_avatar_p");
+            public static readonly KeyString BasicP = new("profile_basic_p");
+            public static readonly KeyString SettingsSubtitle = new("profile_settings_subtitle");
+            public static readonly KeyString ProfilePicFormat = new("profile_pic_format");
+        }
+
+        public static class Support
+        {
+            public static readonly KeyString NewTicketDesc = new("supp_new_ticket_desc");
+            public static readonly KeyString TicketCatPh = new("supp_ticket_cat_ph");
+            public static readonly KeyString OrderIdLabel = new("supp_ticket_order_id_label");
+            public static readonly KeyString OrderIdPh = new("supp_ticket_order_id_ph");
+            public static readonly KeyString SubjectPh = new("supp_ticket_subject_ph");
+            public static readonly KeyString MsgPh = new("supp_ticket_msg_ph");
+            public static readonly KeyString AttachLabel = new("supp_ticket_attach_label");
+            public static readonly KeyString AttachSub = new("supp_ticket_attach_sub");
+            public static readonly KeyString SubmitBtn = new("supp_ticket_submit");
+            public static readonly KeyString LastActivity = new("supp_last_activity");
+            public static readonly KeyString ViewDetails = new("supp_view_details");
+            public static readonly KeyString QuickHelp = new("supp_quick_help");
+            public static readonly KeyString InstantChat = new("supp_instant_chat");
+            public static readonly KeyString EmailSupport = new("supp_email_support");
+            public static readonly KeyString FollowUpdates = new("supp_follow_updates");
+            public static readonly KeyString NoTickets = new("supp_no_tickets");
+            public static readonly KeyString NoTicketsDesc = new("supp_no_tickets_desc");
+            public static readonly KeyString CreateFirstTicket = new("supp_create_first_ticket");
+            public static readonly KeyString SocialInstagram = new("social_instagram");
+            public static readonly KeyString SocialTiktok = new("social_tiktok");
+            public static readonly KeyString SocialYoutube = new("social_youtube");
+        }
+
+        public static class OrderConfirmation
+        {
+            public static readonly KeyString Date = new("conf_date");
+            public static readonly KeyString Payment = new("conf_payment");
+            public static readonly KeyString Cod = new("conf_cod");
+            public static readonly KeyString NeedHelp = new("conf_need_help");
+            public static readonly KeyString ContactSupport = new("conf_contact_support");
+        }
+
+        public static class CustomOrder
+        {
+            public static readonly KeyString OrDivider = new("custom_or_divider");
+            public static readonly KeyString ProTip = new("custom_pro_tip");
+            public static readonly KeyString MaterialLabel = new("custom_material_label");
+            public static readonly KeyString MaterialDesc = new("custom_material_desc");
+            public static readonly KeyString Cm = new("custom_cm");
+            public static readonly KeyString Pieces = new("custom_pieces");
+            public static readonly KeyString FileTooLarge = new("custom_file_too_large");
+            public static readonly KeyString PinterestError = new("custom_pinterest_error");
+            public static readonly KeyString ImageLoadError = new("custom_image_load_error");
+            public static readonly KeyString FetchBtn = new("custom_fetch_btn");
+        }
+
+        public static class AdminContent
+        {
+            public static readonly KeyString TestimonialsDesc = new("admin_testimonials_desc");
+            public static readonly KeyString ThFeatured = new("admin_th_featured");
+            public static readonly KeyString ThCustomer = new("admin_th_customer");
+            public static readonly KeyString ThQuote = new("admin_th_quote");
+            public static readonly KeyString ThRating = new("admin_th_rating");
+            public static readonly KeyString HeroDescPh = new("admin_hero_desc_ph");
+            public static readonly KeyString MapIntegrationH = new("admin_map_integration_h");
+            public static readonly KeyString MapIntegrationP = new("admin_map_integration_p");
+        }
+
+        public static class AdminSettings
+        {
+            public static readonly KeyString Subtitle = new("admin_settings_subtitle");
+            public static readonly KeyString ProfilePicFormat = new("admin_profile_pic_format");
+            public static readonly KeyString ColorTeal = new("color_teal");
+            public static readonly KeyString ColorBlue = new("color_blue");
+            public static readonly KeyString ColorPurple = new("color_purple");
+            public static readonly KeyString ColorPink = new("color_pink");
+            public static readonly KeyString ColorOrange = new("color_orange");
+            public static readonly KeyString ColorSlate = new("color_slate");
+        }
+
+        public static class Shared
+        {
+            public static readonly KeyString ThemeToggle = new("theme_toggle");
+            public static readonly KeyString PasswordToggleAria = new("password_toggle_aria");
+            public static readonly KeyString AltLogo = new("alt_logo");
+            public static readonly KeyString AltHeroSticker = new("alt_hero_sticker");
+            public static readonly KeyString AltTestimonialUser = new("alt_testimonial_user");
+            public static readonly KeyString AltTestimonialCustomer = new("alt_testimonial_customer");
+            public static readonly KeyString AltAdminAvatar = new("alt_admin_avatar");
+            public static readonly KeyString AltUserAvatar = new("alt_user_avatar");
+            public static readonly KeyString AltFinalPreview = new("alt_final_preview");
+            public static readonly KeyString AltStickerPreview = new("alt_sticker_preview");
+            public static readonly KeyString AltProductImage = new("alt_product_image");
+            public static readonly KeyString AltCategory = new("alt_category");
+            public static readonly KeyString Loading = new("loading");
+        }
+
         public static class AdminShipping
         {
             public static readonly KeyString Title = new("admin_shipping.title");

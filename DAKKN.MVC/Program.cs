@@ -383,9 +383,9 @@ builder.Services.AddScoped<IGuestCartStorage, SessionCartStorage>();
 
             app.UseRateLimiter();
 
-            app.UseRequestLocalization(localizationOptions);
-
             app.UseAuthentication();
+
+            app.UseRequestLocalization(localizationOptions);
 
             app.UseOutputCache();
 

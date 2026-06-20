@@ -54,6 +54,38 @@
         }
     </div>
 
+    <!-- Stock Status Filter Pills -->
+    <div class="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
+        <a href="@Url.Action("Inventory", new { searchTerm = Model.SearchTerm, categoryId = Model.SelectedCategoryId })" 
+           class="px-4 py-2 rounded-full text-xs sm:text-sm font-bold whitespace-nowrap transition-all @(string.IsNullOrEmpty(Model.StockFilter) ? "bg-primary text-on-primary" : "bg-admin-card border border-admin-border text-admin-secondary hover:border-primary/50")">
+            @Localizer["admin_cat_all"]
+        </a>
+        <a href="@Url.Action("Inventory", new { stockFilter = "inStock", searchTerm = Model.SearchTerm, categoryId = Model.SelectedCategoryId })" 
+           class="px-4 py-2 rounded-full text-xs sm:text-sm font-bold whitespace-nowrap transition-all @(Model.StockFilter == "inStock" ? "bg-green-500 text-white" : "bg-admin-card border border-admin-border text-admin-secondary hover:border-primary/50")">
+            <span class="material-symbols-outlined text-sm align-text-bottom">check_circle</span>
+            @Localizer["admin_in_stock"]
+        </a>
+        <a href="@Url.Action("Inventory", new { stockFilter = "lowStock", searchTerm = Model.SearchTerm, categoryId = Model.SelectedCategoryId })" 
+           class="px-4 py-2 rounded-full text-xs sm:text-sm font-bold whitespace-nowrap transition-all @(Model.StockFilter == "lowStock" ? "bg-amber-500 text-white" : "bg-admin-card border border-admin-border text-admin-secondary hover:border-primary/50")">
+            <span class="material-symbols-outlined text-sm align-text-bottom">warning</span>
+            @Localizer["admin_low_stock"]
+        </a>
+        <a href="@Url.Action("Inventory", new { stockFilter = "outOfStock", searchTerm = Model.SearchTerm, categoryId = Model.SelectedCategoryId })" 
+           class="px-4 py-2 rounded-full text-xs sm:text-sm font-bold whitespace-nowrap transition-all @(Model.StockFilter == "outOfStock" ? "bg-red-500 text-white" : "bg-admin-card border border-admin-border text-admin-secondary hover:border-primary/50")">
+            <span class="material-symbols-outlined text-sm align-text-bottom">block</span>
+            @Localizer["inventory_out_of_stock"]
+        </a>
+    </div>
+
+    <!-- Sort Controls -->
+    <div class="flex items-center gap-2">
+        <select name="sortBy" onchange="window.location.href=this.value" class="bg-admin-card border border-admin-border rounded-xl px-3 py-2 text-xs text-admin-secondary outline-none focus:ring-1 focus:ring-primary">
+            <option value="@Url.Action("Inventory", new { searchTerm = Model.SearchTerm, categoryId = Model.SelectedCategoryId, stockFilter = Model.StockFilter })">@Localizer["admin_sort_default"]</option>
+            <option value="@Url.Action("Inventory", new { sortBy = "lowest", searchTerm = Model.SearchTerm, categoryId = Model.SelectedCategoryId, stockFilter = Model.StockFilter })" selected="@(Model.SortBy == "lowest")">@Localizer["Sort: Low to High"]</option>
+            <option value="@Url.Action("Inventory", new { sortBy = "highest", searchTerm = Model.SearchTerm, categoryId = Model.SelectedCategoryId, stockFilter = Model.StockFilter })" selected="@(Model.SortBy == "highest")">@Localizer["Sort: High to Low"]</option>
+        </select>
+    </div>
+
     <!-- Product Grid -->
     @if (!Model.Products.Any())
     {
@@ -95,11 +127,32 @@
                     </div>
                     <!-- Info -->
                     <div class="p-4 sm:p-5 flex-1 flex flex-col">
-                        <div class="space-y-1 mb-3">
+                        <div class="space-y-1 mb-2">
                             <span class="text-[10px] font-bold text-primary uppercase tracking-wider block truncate">@(isArabic ? product.CategoryArName : product.CategoryName)</span>
                             <h4 class="text-sm font-bold text-admin-primary group-hover:text-primary transition-colors truncate">@(isArabic ? product.ArName : product.Name)</h4>
-                            <p class="text-xs text-admin-secondary/70 truncate">@(isArabic ? product.ArDescription : product.Description)</p>
                         </div>
+                        <!-- Stock Status Badge -->
+                        @if (product.QuantityInStock == 0)
+                        {
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 text-[10px] font-bold mb-2 w-fit">
+                                <span class="material-symbols-outlined text-xs">block</span>
+                                @Localizer["inventory_out_of_stock"]
+                            </span>
+                        }
+                        else if (product.QuantityInStock <= product.DangerQuantity)
+                        {
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-100 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 text-[10px] font-bold mb-2 w-fit">
+                                <span class="material-symbols-outlined text-xs">warning</span>
+                                @Localizer["admin_low_stock"] (@product.QuantityInStock)
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-100 dark:bg-green-900/20 text-green-600 dark:text-green-400 text-[10px] font-bold mb-2 w-fit">
+                                <span class="material-symbols-outlined text-xs">check_circle</span>
+                                @Localizer["admin_in_stock"] (@product.QuantityInStock)
+                            </span>
+                        }
                         <div class="flex items-center justify-between pt-2.5 border-t border-admin-border mt-auto">
                             <span class="text-sm font-black text-admin-primary">@product.Price.ToString("N2") @Localizer["egp"]</span>
                             <div class="flex items-center gap-1">

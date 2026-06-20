@@ -73,6 +73,14 @@
                             <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider block mb-1">@Localizer["admin_product_price"]</label>
                             <p class="text-admin-primary font-bold text-lg">@Model.Price.ToString("N2") @Localizer["egp"]</p>
                         </div>
+                        <div>
+                            <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider block mb-1">@Localizer["Quantity In Stock"]</label>
+                            <p class="text-admin-primary font-bold text-lg">@Model.QuantityInStock</p>
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider block mb-1">@Localizer["Danger Quantity"]</label>
+                            <p class="text-admin-primary font-medium">@Model.DangerQuantity</p>
+                        </div>
                     </div>
                     <div class="space-y-4">
                         <div>
@@ -88,6 +96,21 @@
                             else
                             {
                                 <span class="status-badge status-pending">@Localizer["admin_product_details_status_inactive"]</span>
+                            }
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider block mb-1">@Localizer["Stock Status"]</label>
+                            @if (Model.QuantityInStock == 0)
+                            {
+                                <span class="status-badge status-cancelled">@Localizer["inventory_out_of_stock"]</span>
+                            }
+                            else if (Model.QuantityInStock <= Model.DangerQuantity)
+                            {
+                                <span class="px-3 py-1 rounded-lg bg-amber-100 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 text-xs font-bold">@Localizer["admin_low_stock"] (@Model.QuantityInStock @Localizer["inventory_quantity"])</span>
+                            }
+                            else
+                            {
+                                <span class="status-badge status-done">@Localizer["admin_in_stock"]</span>
                             }
                         </div>
                         <div>

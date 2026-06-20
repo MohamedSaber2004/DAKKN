@@ -12,6 +12,8 @@ namespace DAKKN.Application.Features.Products.Commands.CreateProduct
         string ImageUrl,
         List<string> FinishOptions,
         List<string> SizeOptions,
-        Guid CategoryId
+        Guid CategoryId,
+        int QuantityInStock = 0,
+        int DangerQuantity = 0
     ) : IRequest<ProductDto>;
 }

@@ -12,7 +12,8 @@
         <h1 class="font-h1 text-h1 font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["checkout_h1"]</h1>
     </div>
 
-    <form action="/customer/confirmation" method="get" class="grid grid-cols-1 lg:grid-cols-3 gap-2xl items-start">
+    <form asp-action="PlaceOrder" method="post" class="grid grid-cols-1 lg:grid-cols-3 gap-2xl items-start">
+        @Html.AntiForgeryToken()
         <!-- Left Column: Checkout Details -->
         <div class="lg:col-span-2 space-y-lg">
             

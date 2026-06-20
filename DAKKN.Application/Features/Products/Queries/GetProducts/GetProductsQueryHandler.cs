@@ -40,6 +40,24 @@ namespace DAKKN.Application.Features.Products.Queries.GetProducts
                 query = query.Where(p => p.Price <= request.MaxPrice.Value);
             }
 
+            if (!string.IsNullOrWhiteSpace(request.StockFilter))
+            {
+                if (request.StockFilter == "inStock")
+                    query = query.Where(p => p.QuantityInStock > p.DangerQuantity);
+                else if (request.StockFilter == "lowStock")
+                    query = query.Where(p => p.QuantityInStock > 0 && p.QuantityInStock <= p.DangerQuantity);
+                else if (request.StockFilter == "outOfStock")
+                    query = query.Where(p => p.QuantityInStock == 0);
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.SortBy))
+            {
+                if (request.SortBy == "lowest")
+                    query = query.OrderBy(p => p.QuantityInStock);
+                else if (request.SortBy == "highest")
+                    query = query.OrderByDescending(p => p.QuantityInStock);
+            }
+
             var projected = query.Select(p => new ProductDto
             {
                 Id = p.Id,
@@ -59,7 +77,11 @@ namespace DAKKN.Application.Features.Products.Queries.GetProducts
                 CreatedAt = p.CreatedAt,
                 UpdatedAt = p.UpdatedAt,
                 IsActive = p.IsActive,
-                IsDeleted = p.IsDeleted
+                IsDeleted = p.IsDeleted,
+                QuantityInStock = p.QuantityInStock,
+                DangerQuantity = p.DangerQuantity,
+                StockStatus = p.StockStatus.ToString(),
+                IsInStock = p.IsInStock
             });
 
             var result = await projected.AsPagginatedListAsync(request.PageNumber, request.PageSize);

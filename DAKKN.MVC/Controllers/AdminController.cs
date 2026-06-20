@@ -209,11 +209,11 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpGet("inventory")]
-        public async Task<IActionResult> Inventory(string? searchTerm, Guid? categoryId, int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> Inventory(string? searchTerm, Guid? categoryId, string? stockFilter, string? sortBy, int pageNumber = 1, int pageSize = 10)
         {
             ViewData["Title"] = _localizer["admin_inventory"];
 
-            var result = await _mediator.Send(new GetProductsQuery(searchTerm, categoryId, pageNumber, pageSize));
+            var result = await _mediator.Send(new GetProductsQuery(searchTerm, categoryId, pageNumber, pageSize, null, stockFilter, sortBy));
             var categories = await _mediator.Send(new GetCategoriesQuery());
 
             var viewModel = new InventoryViewModel
@@ -224,8 +224,14 @@ namespace DAKKN.MVC.Controllers
                 SelectedCategoryId = categoryId,
                 SearchTerm = searchTerm,
                 PageNumber = result.PageNumber,
-                TotalPages = result.TotalPages
+                TotalPages = result.TotalPages,
+                StockFilter = stockFilter,
+                SortBy = sortBy
             };
+
+            var allProducts = await _mediator.Send(new GetProductsQuery(null, null, 1, 10000));
+            viewModel.LowStockCount = allProducts.Items.Count(p => p.QuantityInStock > 0 && p.QuantityInStock <= p.DangerQuantity);
+            viewModel.OutOfStockCount = allProducts.Items.Count(p => p.QuantityInStock == 0);
 
             return View(viewModel);
         }
@@ -641,7 +647,9 @@ namespace DAKKN.MVC.Controllers
                 imageUrl,
                 new List<string>(),
                 model.SizeOptions,
-                model.CategoryId
+                model.CategoryId,
+                model.QuantityInStock,
+                model.DangerQuantity
             );
 
             await _mediator.Send(command);
@@ -706,6 +714,8 @@ namespace DAKKN.MVC.Controllers
                         ? product.ImageUrl
                         : $"{Request.Scheme}://{Request.Host}/files/{product.ImageUrl.TrimStart('/')}",
                     SizeOptions = product.SizeOptions,
+                    QuantityInStock = product.QuantityInStock,
+                    DangerQuantity = product.DangerQuantity,
                     AvailableCategories = categories
                 };
 
@@ -756,7 +766,9 @@ namespace DAKKN.MVC.Controllers
                 imageUrl,
                 new List<string>(),
                 model.SizeOptions,
-                model.CategoryId
+                model.CategoryId,
+                model.QuantityInStock,
+                model.DangerQuantity
             );
 
             await _mediator.Send(command);

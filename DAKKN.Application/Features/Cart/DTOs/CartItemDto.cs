@@ -8,5 +8,6 @@ namespace DAKKN.Application.Features.Cart.DTOs
         public decimal Price { get; set; }
         public string? ImageUrl { get; set; }
         public int Quantity { get; set; } = 1;
+        public int QuantityInStock { get; set; }
     }
 }

@@ -71,6 +71,23 @@ namespace DAKKN.Persistence.Configuration
                 .WithMany(x => x.Products)
                 .HasForeignKey(x => x.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Property(x => x.QuantityInStock)
+                .IsRequired()
+                .HasDefaultValue(0);
+
+            builder.Property(x => x.DangerQuantity)
+                .IsRequired()
+                .HasDefaultValue(0);
+
+            builder.Property(x => x.LastStockUpdateDate)
+                .IsRequired(false);
+
+            builder.Property(x => x.RowVersion)
+                .IsRowVersion();
+
+            builder.Ignore(x => x.IsInStock);
+            builder.Ignore(x => x.StockStatus);
         }
     }
 }

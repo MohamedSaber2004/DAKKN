@@ -40,6 +40,9 @@ namespace DAKKN.Application.Features.Products.Commands.UpdateProduct
             product.FinishOptions = request.FinishOptions;
             product.SizeOptions = request.SizeOptions;
             product.CategoryId = request.CategoryId;
+            product.QuantityInStock = request.QuantityInStock;
+            product.DangerQuantity = request.DangerQuantity;
+            product.LastStockUpdateDate = DateTime.UtcNow;
 
             productRepo.Update(product);
             await _unitOfWork.SaveChangesAsync();
@@ -59,7 +62,11 @@ namespace DAKKN.Application.Features.Products.Commands.UpdateProduct
                 SizeOptions = product.SizeOptions,
                 CategoryId = product.CategoryId,
                 CategoryName = category.CategoryName,
-                CategoryArName = category.ArName
+                CategoryArName = category.ArName,
+                QuantityInStock = product.QuantityInStock,
+                DangerQuantity = product.DangerQuantity,
+                StockStatus = product.StockStatus.ToString(),
+                IsInStock = product.IsInStock
             };
         }
     }

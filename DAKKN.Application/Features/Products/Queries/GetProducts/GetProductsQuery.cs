@@ -9,6 +9,8 @@ namespace DAKKN.Application.Features.Products.Queries.GetProducts
         Guid? CategoryId,
         int PageNumber = PagginatedResult<ProductDto>.DefaultPageNumber,
         int PageSize = PagginatedResult<ProductDto>.DefaultPageSize,
-        decimal? MaxPrice = null
+        decimal? MaxPrice = null,
+        string? StockFilter = null,
+        string? SortBy = null
     ) : IRequest<PagginatedResult<ProductDto>>;
 }

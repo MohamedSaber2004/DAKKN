@@ -49,7 +49,11 @@ namespace DAKKN.Application.Features.Products.Queries.GetProductById
                 CreatedAt = product.CreatedAt,
                 UpdatedAt = product.UpdatedAt,
                 IsActive = product.IsActive,
-                IsDeleted = product.IsDeleted
+                IsDeleted = product.IsDeleted,
+                QuantityInStock = product.QuantityInStock,
+                DangerQuantity = product.DangerQuantity,
+                StockStatus = product.StockStatus.ToString(),
+                IsInStock = product.IsInStock
             };
         }
     }

@@ -219,12 +219,43 @@
                                 <p class="text-xs text-on-surface-variant dark:text-slate-400">@(isAr ? product.CategoryArName : product.CategoryName)</p>
                             </div>
                         </a>
+                        <!-- Stock Status -->
+                        @if (product.QuantityInStock == 0)
+                        {
+                            <span class="text-[10px] font-bold text-red-500 flex items-center gap-1">
+                                <span class="material-symbols-outlined text-xs">block</span>
+                                @Localizer["inventory_out_of_stock"]
+                            </span>
+                        }
+                        else if (product.QuantityInStock <= product.DangerQuantity)
+                        {
+                            <span class="text-[10px] font-bold text-amber-500 flex items-center gap-1">
+                                <span class="material-symbols-outlined text-xs">warning</span>
+                                @Localizer["inventory_only_x_left", product.QuantityInStock]
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="text-[10px] font-bold text-green-500 flex items-center gap-1">
+                                <span class="material-symbols-outlined text-xs">check_circle</span>
+                                @Localizer["inventory_in_stock"]
+                            </span>
+                        }
                         <div class="flex items-center justify-between mt-auto pt-2">
                             <span class="text-xl font-bold text-primary">@product.Price.ToString("N0") @(isAr ? "ج.م" : "EGP")</span>
                             <div class="flex gap-2">
-                                <button onclick="guestAddToCart(this, '@product.Id','@(isAr ? product.ArName : product.Name)','@product.Price','@(product.ImageFullUrl ?? product.ImageUrl)')" class="px-3 py-2 rounded-lg bg-primary text-on-primary text-[10px] font-bold hover:bg-primary-container hover:text-primary transition-all flex items-center gap-1">
-                                    <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
-                                </button>
+                                @if (product.QuantityInStock > 0)
+                                {
+                                    <button onclick="guestAddToCart(this, '@product.Id','@(isAr ? product.ArName : product.Name)','@product.Price','@(product.ImageFullUrl ?? product.ImageUrl)')" class="px-3 py-2 rounded-lg bg-primary text-on-primary text-[10px] font-bold hover:bg-primary-container hover:text-primary transition-all flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button disabled class="px-3 py-2 rounded-lg bg-gray-300 text-gray-500 text-[10px] font-bold cursor-not-allowed flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-sm">block</span>
+                                    </button>
+                                }
                                 <a href="/shop/product/@product.Id" class="px-3 py-2 rounded-lg bg-primary/10 text-primary text-[10px] font-bold hover:bg-primary hover:text-on-primary transition-all no-underline">@Localizer["shop_view_details"]</a>
                             </div>
                         </div>
@@ -404,12 +435,43 @@
                             <h3 class="text-lg font-bold text-on-surface dark:text-white">@(isAr ? product.ArName : product.Name)</h3>
                             <p class="text-xs text-on-surface-variant dark:text-slate-400">@(isAr ? product.CategoryArName : product.CategoryName)</p>
                         </div>
+                        <!-- Stock Status -->
+                        @if (product.QuantityInStock == 0)
+                        {
+                            <span class="text-[10px] font-bold text-red-500 flex items-center gap-1">
+                                <span class="material-symbols-outlined text-xs">block</span>
+                                @Localizer["inventory_out_of_stock"]
+                            </span>
+                        }
+                        else if (product.QuantityInStock <= product.DangerQuantity)
+                        {
+                            <span class="text-[10px] font-bold text-amber-500 flex items-center gap-1">
+                                <span class="material-symbols-outlined text-xs">warning</span>
+                                @Localizer["inventory_only_x_left", product.QuantityInStock]
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="text-[10px] font-bold text-green-500 flex items-center gap-1">
+                                <span class="material-symbols-outlined text-xs">check_circle</span>
+                                @Localizer["inventory_in_stock"]
+                            </span>
+                        }
                         <div class="flex items-center justify-between mt-auto pt-2">
                             <span class="text-xl font-bold text-primary font-sans">@product.Price.ToString("N0") @(isAr ? "ج.م" : "EGP")</span>
                             <div class="flex gap-2">
-                                <button onclick="guestAddToCart(this, '@product.Id','@(isAr ? product.ArName : product.Name)','@product.Price','@(product.ImageFullUrl ?? product.ImageUrl)')" class="px-3 py-2 rounded-lg bg-primary text-on-primary text-[10px] font-bold hover:bg-primary-container hover:text-primary transition-all flex items-center gap-1">
-                                    <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
-                                </button>
+                                @if (product.QuantityInStock > 0)
+                                {
+                                    <button onclick="guestAddToCart(this, '@product.Id','@(isAr ? product.ArName : product.Name)','@product.Price','@(product.ImageFullUrl ?? product.ImageUrl)')" class="px-3 py-2 rounded-lg bg-primary text-on-primary text-[10px] font-bold hover:bg-primary-container hover:text-primary transition-all flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button disabled class="px-3 py-2 rounded-lg bg-gray-300 text-gray-500 text-[10px] font-bold cursor-not-allowed flex items-center gap-1">
+                                        <span class="material-symbols-outlined text-sm">block</span>
+                                    </button>
+                                }
                                 <a href="/shop/product/@product.Id" class="px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-[10px] font-bold transition-all duration-200">@Localizer["shop_view_details"]</a>
                             </div>
                         </div>

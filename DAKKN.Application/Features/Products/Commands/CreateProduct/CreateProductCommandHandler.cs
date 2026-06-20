@@ -36,7 +36,10 @@ namespace DAKKN.Application.Features.Products.Commands.CreateProduct
                 ImageUrl = request.ImageUrl,
                 FinishOptions = request.FinishOptions,
                 SizeOptions = request.SizeOptions,
-                CategoryId = request.CategoryId
+                CategoryId = request.CategoryId,
+                QuantityInStock = request.QuantityInStock,
+                DangerQuantity = request.DangerQuantity,
+                LastStockUpdateDate = DateTime.UtcNow
             };
 
             var productRepo = _unitOfWork.GetRepository<Product>();
@@ -58,7 +61,11 @@ namespace DAKKN.Application.Features.Products.Commands.CreateProduct
                 SizeOptions = product.SizeOptions,
                 CategoryId = product.CategoryId,
                 CategoryName = category.CategoryName,
-                CategoryArName = category.ArName
+                CategoryArName = category.ArName,
+                QuantityInStock = product.QuantityInStock,
+                DangerQuantity = product.DangerQuantity,
+                StockStatus = product.StockStatus.ToString(),
+                IsInStock = product.IsInStock
             };
         }
     }

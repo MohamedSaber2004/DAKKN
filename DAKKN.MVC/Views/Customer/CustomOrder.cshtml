@@ -74,7 +74,7 @@
                 <!-- OR Divider -->
                 <div class="flex items-center gap-4 py-2">
                     <div class="h-px bg-border dark:bg-outline/10 flex-1"></div>
-                    <span class="text-xs font-bold text-outline uppercase tracking-widest">OR</span>
+                    <span class="text-xs font-bold text-outline uppercase tracking-widest">@Localizer["custom_or_divider"]</span>
                     <div class="h-px bg-border dark:bg-outline/10 flex-1"></div>
                 </div>
 
@@ -83,7 +83,7 @@
                     <div class="flex justify-between items-end">
                         <label class="block font-bold text-sm text-text-primary dark:text-inverse-on-surface">@Localizer["custom_url_h"]</label>
                         <span class="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-bold uppercase cursor-help group/tip relative">
-                            Pro Tip
+                            @Localizer["custom_pro_tip"]
                             <div class="absolute bottom-full right-0 mb-2 w-64 p-3 bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 rounded-xl shadow-large opacity-0 group-hover/tip:opacity-100 pointer-events-none transition-all z-30 text-xs text-text-secondary normal-case leading-relaxed">
                                 For sites like Pinterest or Google, right-click the image and select <strong class="text-primary">"Copy Image Address"</strong> to get the direct link.
                             </div>
@@ -162,9 +162,9 @@
                     <div class="bg-primary/5 p-lg rounded-[32px] border border-primary/10">
                         <div class="flex items-center gap-md text-primary mb-md">
                             <span class="material-symbols-outlined">verified</span>
-                            <span class="font-bold">Standard Premium Vinyl</span>
+                            <span class="font-bold">@Localizer["custom_material_label"]</span>
                         </div>
-                        <p class="text-sm text-text-secondary leading-relaxed">Our stickers use an industrial-grade vinyl that is 100% waterproof and UV resistant. No need to worry about the material – we only use the best.</p>
+                        <p class="text-sm text-text-secondary leading-relaxed">@Localizer["custom_material_desc"]</p>
                     </div>
 
                     <div>
@@ -176,7 +176,7 @@
                                     <input type="radio" name="size" value="@size" class="peer hidden" onchange="updatePrice()" @(size == "5x5" ? "checked" : "") />
                                     <div class="py-md text-center rounded-2xl border-2 border-border dark:border-outline/20 peer-checked:border-primary peer-checked:bg-primary/5 transition-all">
                                         <div class="font-bold">@size</div>
-                                        <div class="text-[10px] text-text-secondary uppercase">cm</div>
+                                        <div class="text-[10px] text-text-secondary uppercase">@Localizer["custom_cm"]</div>
                                     </div>
                                 </label>
                             }
@@ -375,7 +375,7 @@
             if (input.files && input.files[0]) {
                 const file = input.files[0];
                 if (file.size > 10 * 1024 * 1024) {
-                    alert("File is too large! Maximum size is 10MB.");
+                    alert('@Localizer["custom_file_too_large"]');
                     return;
                 }
 
@@ -413,9 +413,9 @@
             };
             img.onerror = function() {
                 if (url.includes('pinterest.com/pin/')) {
-                    alert("⚠️ That's a Pinterest PAGE link, not an IMAGE link.\n\nTo fix this:\n1. Right-click the image on Pinterest.\n2. Select 'Copy Image Address'.\n3. Paste that link here instead!");
+                    alert('@Html.Raw(Localizer["custom_pinterest_error"].Value.Replace("'", "\\'").Replace("\n", "\\n"))');
                 } else {
-                    alert("Could not load image. Please ensure you are using a DIRECT IMAGE LINK (ending in .jpg, .png, etc.). \n\nTip: Right-click the image on any site and choose 'Copy Image Address'.");
+                    alert('@Html.Raw(Localizer["custom_image_load_error"].Value.Replace("'", "\\'").Replace("\n", "\\n"))');
                 }
                 resetBtn();
             };
@@ -494,7 +494,7 @@
         function populateReview() {
             document.getElementById('final-shape').textContent = (selections.shape || '').replace('-', ' ').toUpperCase();
             document.getElementById('final-size').textContent = `${selections.size} cm`;
-            document.getElementById('final-qty').textContent = `${selections.qty} pieces`;
+            document.getElementById('final-qty').textContent = `${selections.qty} @Localizer["custom_pieces"]`;
             document.getElementById('final-total').textContent = document.getElementById('total-price').textContent;
         }
     </script>

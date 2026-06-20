@@ -104,7 +104,7 @@
                     </div>
                     <div class="flex flex-col gap-xs">
                         <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_desc"]</label>
-                        <textarea rows="4" placeholder="Briefly describe what makes DAKKN unique..." class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.Hero.Description</textarea>
+                        <textarea rows="4" placeholder="@Localizer["admin_hero_desc_ph"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.Hero.Description</textarea>
                     </div>
                 </div>
                 <div class="flex flex-col gap-lg">
@@ -172,7 +172,7 @@
             <div class="flex justify-between items-center mb-xl">
                 <div>
                     <h2 class="font-h2 text-h2 font-bold">@Localizer["section_testimonials"]</h2>
-                    <p class="text-text-secondary">Moderate reviews and select featured quotes.</p>
+                    <p class="text-text-secondary">@Localizer["admin_testimonials_desc"]</p>
                 </div>
                 <button class="bg-primary text-on-primary px-xl py-md rounded-full font-bold">@Localizer["admin_save_changes"]</button>
             </div>
@@ -181,10 +181,10 @@
                 <table class="w-full text-left rtl:text-right">
                     <thead class="border-b border-border">
                         <tr>
-                            <th class="py-md px-lg font-bold text-outline uppercase text-xs">Featured</th>
-                            <th class="py-md px-lg font-bold text-outline uppercase text-xs">Customer</th>
-                            <th class="py-md px-lg font-bold text-outline uppercase text-xs">Quote</th>
-                            <th class="py-md px-lg font-bold text-outline uppercase text-xs">Rating</th>
+                            <th class="py-md px-lg font-bold text-outline uppercase text-xs">@Localizer["admin_th_featured"]</th>
+                            <th class="py-md px-lg font-bold text-outline uppercase text-xs">@Localizer["admin_th_customer"]</th>
+                            <th class="py-md px-lg font-bold text-outline uppercase text-xs">@Localizer["admin_th_quote"]</th>
+                            <th class="py-md px-lg font-bold text-outline uppercase text-xs">@Localizer["admin_th_rating"]</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -238,8 +238,8 @@
                 </div>
                 <div class="bg-primary/5 rounded-3xl p-xl flex flex-col items-center justify-center text-center border border-primary/10">
                     <span class="material-symbols-outlined text-6xl text-primary mb-md">location_on</span>
-                    <h3 class="font-bold text-xl mb-sm">Map Integration</h3>
-                    <p class="text-text-secondary text-sm">Changing the address will automatically update the Google Maps embed on the contact page.</p>
+                    <h3 class="font-bold text-xl mb-sm">@Localizer["admin_map_integration_h"]</h3>
+                    <p class="text-text-secondary text-sm">@Localizer["admin_map_integration_p"]</p>
                 </div>
             </div>
             <button class="mt-xl bg-primary text-on-primary px-xl py-md rounded-full font-bold">@Localizer["admin_save_changes"]</button>

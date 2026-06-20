@@ -26,15 +26,15 @@
         
         <div class="grid grid-cols-2 gap-lg border-t border-border dark:border-outline/10 pt-xl text-left rtl:text-right">
             <div>
-                <p class="text-[10px] uppercase font-bold text-outline">Date</p>
-                <p class="font-bold">June 13, 2026</p>
+                <p class="text-[10px] uppercase font-bold text-outline">@Localizer["conf_date"]</p>
+                <p class="font-bold">@DateTime.Now.ToString("MMMM dd, yyyy")</p>
             </div>
             <div>
-                <p class="text-[10px] uppercase font-bold text-outline">Payment</p>
-                <p class="font-bold">Cash on Delivery</p>
+                <p class="text-[10px] uppercase font-bold text-outline">@Localizer["conf_payment"]</p>
+                <p class="font-bold">@Localizer["conf_cod"]</p>
             </div>
             <div class="col-span-2 bg-surface-container dark:bg-white/5 p-4 rounded-2xl flex justify-between items-center mt-md">
-                <span class="font-medium">Total Amount</span>
+                <span class="font-medium">@Localizer["admin_order_total"]</span>
                 <span class="text-xl font-bold text-primary">290.00 @Html.Raw(Localizer["Currency_EGP"])</span>
             </div>
         </div>
@@ -54,7 +54,7 @@
 
     <!-- Help Notice -->
     <p class="mt-2xl text-sm text-text-secondary">
-        Need help? <a asp-action="Support" class="text-primary font-bold hover:underline">Contact our support team</a>
+        @Localizer["conf_need_help"] <a asp-action="Support" class="text-primary font-bold hover:underline">@Localizer["conf_contact_support"]</a>
     </p>
 </div>
 

@@ -24,5 +24,9 @@ namespace DAKKN.Application.DTOs
         public DateTime? UpdatedAt { get; set; }
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
+        public int QuantityInStock { get; set; }
+        public int DangerQuantity { get; set; }
+        public string StockStatus { get; set; } = string.Empty;
+        public bool IsInStock { get; set; }
     }
 }

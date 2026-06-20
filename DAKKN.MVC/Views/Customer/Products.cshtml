@@ -50,12 +50,43 @@
                         </a>
                         <span class="font-bold text-primary">@product.Price @Localizer["Currency_EGP"]</span>
                     </div>
-                    <p class="text-xs text-text-secondary font-medium uppercase tracking-wider mb-lg">@(isArabic ? product.CategoryArName : product.CategoryName)</p>
+                    <p class="text-xs text-text-secondary font-medium uppercase tracking-wider mb-sm">@(isArabic ? product.CategoryArName : product.CategoryName)</p>
+                    @if (product.QuantityInStock == 0)
+                    {
+                        <span class="inline-flex items-center gap-1 text-[10px] font-bold text-red-500 mb-lg">
+                            <span class="material-symbols-outlined text-xs">block</span>
+                            @Localizer["inventory_out_of_stock"]
+                        </span>
+                    }
+                    else if (product.QuantityInStock <= product.DangerQuantity)
+                    {
+                        <span class="inline-flex items-center gap-1 text-[10px] font-bold text-amber-500 mb-lg">
+                            <span class="material-symbols-outlined text-xs">warning</span>
+                            @Localizer["inventory_only_x_left", product.QuantityInStock]
+                        </span>
+                    }
+                    else
+                    {
+                        <span class="inline-flex items-center gap-1 text-[10px] font-bold text-green-500 mb-lg">
+                            <span class="material-symbols-outlined text-xs">check_circle</span>
+                            @Localizer["inventory_in_stock"]
+                        </span>
+                    }
                     <div class="flex items-center gap-md">
-                        <button class="flex-1 bg-surface-container dark:bg-inverse-surface-container text-text-primary dark:text-inverse-on-surface py-3 rounded-2xl font-bold text-sm hover:bg-primary hover:text-on-primary transition-all flex items-center justify-center gap-2">
-                            <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
-                            @Localizer["shop_add_cart"]
-                        </button>
+                        @if (product.QuantityInStock > 0)
+                        {
+                            <button class="flex-1 bg-surface-container dark:bg-inverse-surface-container text-text-primary dark:text-inverse-on-surface py-3 rounded-2xl font-bold text-sm hover:bg-primary hover:text-on-primary transition-all flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
+                                @Localizer["shop_add_cart"]
+                            </button>
+                        }
+                        else
+                        {
+                            <button disabled class="flex-1 bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 py-3 rounded-2xl font-bold text-sm cursor-not-allowed flex items-center justify-center gap-2">
+                                <span class="material-symbols-outlined text-lg">block</span>
+                                @Localizer["inventory_out_of_stock"]
+                            </button>
+                        }
                     </div>
                 </div>
             </div>

@@ -44,6 +44,12 @@ namespace DAKKN.Application.Features.Products.Commands.CreateProduct
                     var repo = _unitOfWork.GetRepository<Category>();
                     return await repo.ExistsByKeyAsync(id, ct);
                 }).WithMessage(localizer[LocalizationKeys.Products.CategoryNotFound.Value]);
+
+            RuleFor(v => v.QuantityInStock)
+                .GreaterThanOrEqualTo(0).WithMessage(localizer[LocalizationKeys.ValidationMessages.GreaterThanOrEqual.Value, 0]);
+
+            RuleFor(v => v.DangerQuantity)
+                .GreaterThanOrEqualTo(0).WithMessage(localizer[LocalizationKeys.ValidationMessages.GreaterThanOrEqual.Value, 0]);
         }
     }
 }

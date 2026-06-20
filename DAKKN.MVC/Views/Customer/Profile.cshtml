@@ -2,14 +2,14 @@
 @model CustomerProfileViewModel
 @{
     Layout = "_LayoutCustomer";
-    ViewData["Title"] = "My Profile";
+    ViewData["Title"] = Localizer["profile_title"];
 }
 
 <div class="max-w-4xl mx-auto px-lg py-xl space-y-lg pb-32">
     <!-- Header -->
     <div class="mb-xl">
         <h1 class="font-h1 text-h1 font-bold text-text-primary dark:text-white">@Localizer["nav_profile"]</h1>
-        <p class="text-text-secondary dark:text-outline-variant mt-2">@Localizer["profile_p"]</p>
+        <p class="text-text-secondary dark:text-outline-variant mt-2">@Localizer["profile_settings_subtitle"]</p>
     </div>
 
     <!-- Personal Information Section -->
@@ -42,7 +42,7 @@
                 </div>
                 <div>
                     <h4 class="font-bold text-text-primary dark:text-white">@Localizer["admin_profile_pic"]</h4>
-                    <p class="text-xs text-text-secondary dark:text-outline-variant mb-3">@Localizer["profile_avatar_p"]</p>
+                    <p class="text-xs text-text-secondary dark:text-outline-variant mb-3">@Localizer["profile_pic_format"]</p>
                     <div class="flex gap-2">
                         <button id="changeImageTextBtn" type="button" class="px-4 py-2 bg-primary/10 text-primary dark:text-primary-light rounded-xl font-bold text-sm hover:bg-primary/20 transition-colors">@Localizer["admin_change"]</button>
                         @if (Model.HasProfileImage)

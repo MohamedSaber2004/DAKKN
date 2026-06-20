@@ -18,7 +18,7 @@
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <div>
             <h1 class="text-3xl font-black text-admin-primary">@Localizer["admin_settings"]</h1>
-            <p class="text-sm text-admin-secondary mt-1">Configure your personal profile options and customize your dashboard appearance.</p>
+            <p class="text-sm text-admin-secondary mt-1">@Localizer["admin_settings_subtitle"]</p>
         </div>
     </div>
 
@@ -85,7 +85,7 @@
                         </div>
                         <div class="text-center sm:text-left rtl:sm:text-right space-y-2">
                             <h4 class="font-bold text-admin-primary">@Localizer["admin_profile_pic"]</h4>
-                            <p class="text-xs text-admin-secondary">JPG, JPEG, PNG or WEBP. Max 5MB.</p>
+                            <p class="text-xs text-admin-secondary">@Localizer["admin_profile_pic_format"]</p>
                             <div class="flex justify-center sm:justify-start gap-2">
                                 <button id="btn-change-photo" class="px-4 py-1.5 bg-surface dark:bg-white/5 border border-primary text-primary dark:border-primary-light dark:text-primary-light rounded-xl text-xs font-bold hover:bg-primary/5 transition-colors" type="button">@Localizer["admin_change"]</button>
                                 <button id="btn-remove-photo" class="px-4 py-1.5 text-error dark:text-error-light text-xs font-bold hover:bg-error/5 rounded-xl transition-colors" type="button">@Localizer["admin_remove"]</button>
@@ -147,12 +147,12 @@
                             <div class="flex flex-wrap gap-3">
                                 @{
                                     var colors = new[] { 
-                                        new { Name = "Teal", Hex = "#0E908C" },
-                                        new { Name = "Blue", Hex = "#3B82F6" },
-                                        new { Name = "Purple", Hex = "#8B5CF6" },
-                                        new { Name = "Pink", Hex = "#EC4899" },
-                                        new { Name = "Orange", Hex = "#F59E0B" },
-                                        new { Name = "Slate", Hex = "#475569" }
+                                        new { Name = Localizer["color_teal"].Value, Hex = "#0E908C" },
+                                        new { Name = Localizer["color_blue"].Value, Hex = "#3B82F6" },
+                                        new { Name = Localizer["color_purple"].Value, Hex = "#8B5CF6" },
+                                        new { Name = Localizer["color_pink"].Value, Hex = "#EC4899" },
+                                        new { Name = Localizer["color_orange"].Value, Hex = "#F59E0B" },
+                                        new { Name = Localizer["color_slate"].Value, Hex = "#475569" }
                                     };
                                 }
                                 @foreach (var color in colors)

@@ -49,14 +49,49 @@
                     <p class="text-on-surface-variant dark:text-slate-400 mt-6 leading-relaxed">
                         @(isArabic ? product.ArDescription : product.Description)
                     </p>
+                    
+                    <!-- Stock Info -->
+                    <div class="mt-4 mb-4">
+                        @if (product.QuantityInStock == 0)
+                        {
+                            <div class="flex items-center gap-2 text-red-500">
+                                <span class="material-symbols-outlined">block</span>
+                                <span class="font-bold text-sm">@Localizer["inventory_out_of_stock"]</span>
+                            </div>
+                        }
+                        else if (product.QuantityInStock <= product.DangerQuantity)
+                        {
+                            <div class="flex items-center gap-2 text-amber-500">
+                                <span class="material-symbols-outlined">warning</span>
+                                <span class="font-bold text-sm">@Localizer["inventory_only_x_left", product.QuantityInStock]</span>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="flex items-center gap-2 text-green-500">
+                                <span class="material-symbols-outlined">check_circle</span>
+                                <span class="font-bold text-sm">@Localizer["inventory_in_stock"]</span>
+                            </div>
+                        }
+                    </div>
                 </div>
 
                 <div class="flex gap-4 mt-auto">
-                    <button onclick="guestAddToCart(this, '@product.Id', '@(isArabic ? product.ArName : product.Name)', '@product.Price', '@(product.ImageFullUrl ?? product.ImageUrl)')"
-                            class="flex-1 bg-primary text-on-primary h-14 rounded-2xl font-bold text-base shadow-lg hover:scale-[1.02] hover:shadow-xl transition-all flex items-center justify-center gap-3">
-                        <span class="material-symbols-outlined">shopping_cart</span>
-                        @Localizer["Product_AddToCart"]
-                    </button>
+                    @if (product.QuantityInStock > 0)
+                    {
+                        <button onclick="guestAddToCart(this, '@product.Id', '@(isArabic ? product.ArName : product.Name)', '@product.Price', '@(product.ImageFullUrl ?? product.ImageUrl)')"
+                                class="flex-1 bg-primary text-on-primary h-14 rounded-2xl font-bold text-base shadow-lg hover:scale-[1.02] hover:shadow-xl transition-all flex items-center justify-center gap-3">
+                            <span class="material-symbols-outlined">shopping_cart</span>
+                            @Localizer["Product_AddToCart"]
+                        </button>
+                    }
+                    else
+                    {
+                        <button disabled class="flex-1 bg-gray-300 text-gray-500 h-14 rounded-2xl font-bold text-base cursor-not-allowed flex items-center justify-center gap-3">
+                            <span class="material-symbols-outlined">block</span>
+                            @Localizer["inventory_out_of_stock"]
+                        </button>
+                    }
                 </div>
             </div>
         </div>

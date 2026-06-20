@@ -1,282 +1,511 @@
-Use this prompt:
+Use this comprehensive prompt:
 
-You are a Senior ASP.NET Core 8 MVC, Clean Architecture, MediatR CQRS, ASP.NET Identity, Routing, and E-Commerce engineer working on the DAKKN project.
+You are a Senior ASP.NET Core 8 MVC, Clean Architecture, MediatR CQRS, Entity Framework Core, Inventory Management, E-Commerce, ASP.NET Identity, and Tailwind CSS engineer working on the DAKKN project.
 
 Context:
 
-There is a bug in the Cart Page:
+DAKKN currently has Products, Categories, Cart, Orders, Landing Page, Admin Dashboard, and Customer Dashboard.
 
-URL:
-{BaseUrl}/shop/cart
+The system currently does not properly manage inventory quantities.
 
-Current Behavior:
+Goal:
 
-Guest User (Not Authenticated)
+Implement a complete Inventory & Stock Management System across:
 
-1. User adds products to cart.
-2. User navigates to:
-
-/shop/cart
-
-3. User clicks:
-
-Continue Shopping
-
-4. System redirects to:
-
-Customer Dashboard
-
-Example:
-
-/customer/dashboard
-
-5. Customer Dashboard requires authentication.
-
-Result:
-
-- Access Denied page
-OR
-- Unauthorized page
-OR
-- Login redirect
-
-This creates a broken user experience.
-
-=================================================
-GOAL
-=================================================
-
-Fix Continue Shopping behavior for Guest Users.
-
-Guest users should NEVER be redirected to:
-
+- Landing Page
+- Shop Pages
+- Product Details Pages
+- Admin Dashboard
 - Customer Dashboard
-- User Profile
-- Customer Area
-- Authenticated-only pages
+- Cart
+- Checkout
+- Orders
 
-from Cart Page.
-
-=================================================
-ROOT CAUSE ANALYSIS
-=================================================
-
-Audit:
-
-- Cart Controller
-- Shop Controller
-- Cart View
-- Continue Shopping Button
-- Razor Pages
-- Navigation Links
-- JavaScript redirects
-- Route generation
-- ViewModels
-
-Find:
-
-- Incorrect route
-- Hardcoded customer route
-- Wrong redirect action
-- Authentication assumptions
-
-Explain exact root cause.
+The solution must be production-ready and integrated into the existing DAKKN architecture.
 
 =================================================
-EXPECTED BEHAVIOR
+PART 1 - PRODUCT ENTITY UPDATE
 =================================================
 
-Guest User:
+Update Product entity.
 
-From:
+Add:
 
-/shop/cart
+- QuantityInStock
+- DangerQuantity
+- IsInStock (Computed)
+- LastStockUpdateDate
 
-Click:
+Definitions:
 
-Continue Shopping
+QuantityInStock:
+Current available quantity.
 
-Redirect to:
-
-Preferred:
-
-/shop
-
-OR
-
-Landing Page Product Catalog
-
-OR
-
-Store Products Page
-
-depending on project architecture.
-
-The destination must be publicly accessible.
-
-=================================================
-AUTHENTICATED USER BEHAVIOR
-=================================================
-
-Authenticated users may also click:
-
-Continue Shopping
-
-They should still navigate to:
-
-/shop
-
-or
-
-Store Products Page
-
-NOT:
-
-Customer Dashboard
-
-unless explicitly required.
-
-Continue Shopping means:
-
-Continue browsing products.
-
-NOT:
-
-Go to account area.
-
-=================================================
-BUTTON FIX
-=================================================
-
-Audit the button implementation.
-
-Examples:
-
-Wrong:
-
-asp-controller="Customer"
-asp-action="Dashboard"
-
-Wrong:
-
-href="/customer/dashboard"
-
-Wrong:
-
-window.location='/customer/dashboard'
-
-Replace with:
-
-Store route.
+DangerQuantity:
+Minimum threshold before warning is shown.
 
 Example:
 
-/shop
+Gaming Laptop
 
-or
+QuantityInStock = 50
 
-Products Index Page
+DangerQuantity = 10
 
-according to DAKKN routing.
+Validation:
+
+- QuantityInStock >= 0
+- DangerQuantity >= 0
 
 =================================================
-EMPTY CART PAGE
+PART 2 - INVENTORY STATUS
 =================================================
 
-If cart is empty:
+Implement inventory states.
+
+In Stock
+
+Condition:
+QuantityInStock > DangerQuantity
+
+Low Stock
+
+Condition:
+QuantityInStock > 0
+AND
+QuantityInStock <= DangerQuantity
+
+Out Of Stock
+
+Condition:
+QuantityInStock == 0
+
+Create enum:
+
+ProductStockStatus
+
+Values:
+
+- InStock
+- LowStock
+- OutOfStock
+
+=================================================
+PART 3 - ADMIN DASHBOARD
+=================================================
+
+Update Product Management.
+
+Product Create Form:
+
+Add:
+
+- Quantity In Stock
+- Danger Quantity
+
+Product Edit Form:
+
+Allow updating stock values.
+
+Product Table:
 
 Display:
 
-Title:
-Your Cart Is Empty
+- Product Image
+- Product Name
+- Category
+- Price
+- Quantity In Stock
+- Danger Quantity
+- Stock Status
 
-Message:
-Browse products and add items to your cart.
+Badges:
 
-Buttons:
+Green:
+In Stock
 
-Browse Products
+Yellow:
+Low Stock
 
-Continue Shopping
-
-Both buttons should navigate to:
-
-Public Store Pages
-
-NOT authenticated pages.
-
-=================================================
-GUEST MODE TESTING
-=================================================
-
-Verify:
-
-Case 1:
-Guest user with products in cart
-
-Continue Shopping
-→ Store Page
-
-Case 2:
-Guest user with empty cart
-
-Continue Shopping
-→ Store Page
-
-Case 3:
-Authenticated user
-
-Continue Shopping
-→ Store Page
-
-Case 4:
-Direct access from Landing Page
-
-Continue Shopping
-→ Store Page
+Red:
+Out Of Stock
 
 =================================================
-ROUTING VALIDATION
+PART 4 - ADMIN STOCK WARNINGS
 =================================================
 
-Verify:
+Create dashboard widgets.
 
-- Route exists
-- Route is public
-- No authorization required
-- No redirects to customer dashboard
+Show:
+
+Low Stock Products
+
+Out Of Stock Products
+
+Examples:
+
+⚠️ 8 Products Low In Stock
+
+🚨 3 Products Out Of Stock
+
+Clicking widget opens filtered product list.
 
 =================================================
-RESPONSIVE DESIGN
+PART 5 - LANDING PAGE
 =================================================
 
-Verify button works correctly on:
+Product Cards should display stock information.
 
-- Mobile
-- Tablet
-- Desktop
+Examples:
+
+In Stock
+
+"Available"
+
+Low Stock
+
+"Only 5 left"
+
+Out Of Stock
+
+"Out of Stock"
+
+Disable Add To Cart if stock is zero.
 
 =================================================
-DELIVERABLES
+PART 6 - PRODUCT DETAILS PAGE
 =================================================
+
+Show:
+
+Available Quantity
+
+Stock Status
+
+Examples:
+
+Available: 20
+
+Only 3 Left
+
+Out Of Stock
+
+Show warning colors.
+
+=================================================
+PART 7 - ADD TO CART VALIDATION
+=================================================
+
+When user clicks:
+
+Add To Cart
+
+Validate inventory.
+
+Requirements:
+
+If QuantityInStock == 0
+
+Prevent add to cart.
+
+Show:
+
+"This product is currently out of stock."
+
+If requested quantity exceeds stock:
+
+Prevent operation.
+
+Show:
+
+"Only X items available."
+
+=================================================
+PART 8 - CART VALIDATION
+=================================================
+
+Validate every cart update.
+
+Increase Quantity:
+
+Check stock.
+
+Example:
+
+Stock = 5
+
+Cart Quantity = 5
+
+User clicks +
+
+Show:
+
+Maximum available quantity reached.
+
+Do not exceed stock.
+
+=================================================
+PART 9 - CHECKOUT VALIDATION
+=================================================
+
+Before creating order:
+
+Revalidate inventory.
+
+Requirements:
+
+Prevent overselling.
+
+Example:
+
+Stock = 3
+
+Customer tries ordering 5
+
+Block order.
+
+Show error.
+
+=================================================
+PART 10 - ORDER CREATION
+=================================================
+
+When order succeeds:
+
+Reduce inventory.
+
+Example:
+
+Stock = 20
+
+Order Quantity = 3
+
+New Stock = 17
+
+Update database.
+
+=================================================
+PART 11 - CONCURRENT ORDERS
+=================================================
+
+Handle race conditions.
+
+Example:
+
+Two customers buy last product simultaneously.
+
+Implement:
+
+Optimistic concurrency
+
+OR
+
+Transaction handling
+
+OR
+
+RowVersion
+
+Choose safest approach.
+
+Prevent negative stock.
+
+=================================================
+PART 12 - CUSTOMER DASHBOARD
+=================================================
+
+Customer Order History
+
+Show:
+
+Purchased Quantity
+
+Stock Status
+
+Product Availability
+
+=================================================
+PART 13 - INVENTORY HISTORY
+=================================================
+
+Create optional:
+
+InventoryTransaction
+
+Fields:
+
+- Id
+- ProductId
+- QuantityChanged
+- PreviousQuantity
+- NewQuantity
+- TransactionType
+- UserId
+- CreatedAt
+
+Types:
+
+- StockAdded
+- StockRemoved
+- OrderPlaced
+- OrderCancelled
+- ManualAdjustment
+
+=================================================
+PART 14 - SEARCH & FILTERS
+=================================================
+
+Admin Product Filters:
+
+- In Stock
+- Low Stock
+- Out Of Stock
+
+Sorting:
+
+- Lowest Stock First
+- Highest Stock First
+
+=================================================
+PART 15 - NOTIFICATIONS
+=================================================
+
+Admin Notifications
+
+When product reaches:
+
+QuantityInStock <= DangerQuantity
+
+Create warning notification.
+
+Example:
+
+⚠️ Gaming Laptop is running low (5 remaining)
+
+=================================================
+PART 16 - LOCALIZATION
+=================================================
+
+Support:
+
+English
+
+Arabic
+
+Examples:
+
+Available
+متوفر
+
+Low Stock
+كمية منخفضة
+
+Out Of Stock
+نفذت الكمية
+
+Only X Left
+متبقي X فقط
+
+=================================================
+PART 17 - UI/UX
+=================================================
+
+Use Tailwind CSS.
+
+Create:
+
+Stock badges
+
+Warning cards
+
+Inventory widgets
+
+Responsive layouts
+
+Consistent design for:
+
+- Landing Page
+- Admin Dashboard
+- Customer Dashboard
+
+=================================================
+PART 18 - CQRS IMPLEMENTATION
+=================================================
+
+Update:
+
+CreateProductCommand
+
+UpdateProductCommand
+
+GetProductsQuery
+
+GetProductDetailsQuery
+
+Cart Commands
+
+Order Commands
+
+Handlers must include stock validation.
+
+=================================================
+PART 19 - DATABASE MIGRATION
+=================================================
+
+Generate migrations for:
+
+Product:
+
+- QuantityInStock
+- DangerQuantity
+- RowVersion (if needed)
+
+=================================================
+PART 20 - DELIVERABLES
+=================================================
+
+Generate complete implementation:
+
+- Entity updates
+- Configurations
+- Migrations
+- DTOs
+- Commands
+- Queries
+- Handlers
+- Validators
+- AutoMapper updates
+- Admin Dashboard updates
+- Landing Page updates
+- Customer Dashboard updates
+- Cart validation
+- Checkout validation
+- Inventory reduction logic
+- Concurrency handling
+- Notifications
 
 Provide:
 
-1. Root cause analysis
-2. Exact file path
+1. File paths
+2. Root cause analysis
 3. Before code
 4. After code
-5. Route fixes
-6. Razor View fixes
-7. Controller fixes if needed
-8. Explanation
+5. Explanation of every change
+6. Testing scenarios
 
 Important:
 
 - Follow DAKKN Clean Architecture.
+- Use MediatR only.
+- Use EF Core best practices.
+- Prevent overselling.
+- Prevent negative stock.
+- Disable Add To Cart when out of stock.
+- Show low stock warnings.
+- Update stock automatically after successful orders.
 - Preserve existing functionality.
-- Guest users must never be redirected to Customer Dashboard from Cart Page.
-- Continue Shopping must always redirect to a public product browsing page.
 - Ensure production-ready implementation.
 
-This prompt specifically targets the bug where the Continue Shopping button is incorrectly pointing to a customer-only route instead of the public shop/catalog page.
+A further enhancement would be to add ReservedQuantity (items currently in pending carts/orders) and compute:
+AvailableQuantity = QuantityInStock - ReservedQuantity
+to prevent overselling during high traffic.

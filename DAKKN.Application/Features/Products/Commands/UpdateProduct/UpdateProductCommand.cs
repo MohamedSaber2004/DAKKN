@@ -13,6 +13,8 @@ namespace DAKKN.Application.Features.Products.Commands.UpdateProduct
         string ImageUrl,
         List<string> FinishOptions,
         List<string> SizeOptions,
-        Guid CategoryId
+        Guid CategoryId,
+        int QuantityInStock,
+        int DangerQuantity
     ) : IRequest<ProductDto>;
 }

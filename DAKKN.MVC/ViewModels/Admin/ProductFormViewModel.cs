@@ -36,5 +36,8 @@ namespace DAKKN.MVC.ViewModels.Admin
         public List<CategoryDto> AvailableCategories { get; set; } = new();
 
         public List<string> SizeOptions { get; set; } = new();
+
+        public int QuantityInStock { get; set; } = 0;
+        public int DangerQuantity { get; set; } = 0;
     }
 }

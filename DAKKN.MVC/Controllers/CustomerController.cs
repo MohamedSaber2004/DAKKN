@@ -17,6 +17,7 @@ using DAKKN.Application.Features.Products.Queries.GetProducts;
 using DAKKN.Application.Features.Products.Queries.GetProductById;
 using DAKKN.Application.Features.Categories.Queries.GetCategories;
 using DAKKN.Application.Features.ShippingGovernorates.Queries.GetActiveShippingGovernorates;
+using DAKKN.Application.Features.Orders.Commands.PlaceOrder;
 using DAKKN.MVC.ViewModels.Landing;
 
 namespace DAKKN.MVC.Controllers
@@ -177,6 +178,34 @@ namespace DAKKN.MVC.Controllers
                 Governorates = governorates
             };
             return View(viewModel);
+        }
+
+        [HttpPost("place-order")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> PlaceOrder()
+        {
+            try
+            {
+                var result = await mediator.Send(new PlaceOrderCommand());
+                TempData["SuccessMessage"] = localizer["Order placed successfully!"];
+                return RedirectToAction(nameof(OrderConfirmation), new { orderId = result.OrderNumber });
+            }
+            catch (BadRequestException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction(nameof(Cart));
+            }
+            catch (ValidationException ex)
+            {
+                foreach (var kvp in ex.Errors)
+                {
+                    foreach (var error in kvp.Value)
+                    {
+                        ModelState.AddModelError(kvp.Key, error);
+                    }
+                }
+                return RedirectToAction(nameof(Cart));
+            }
         }
 
         [HttpGet("confirmation")]

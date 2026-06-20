@@ -15,5 +15,9 @@ namespace DAKKN.MVC.ViewModels.Admin
         public int TotalPages { get; set; } = 1;
         public bool HasPreviousPage => PageNumber > 1;
         public bool HasNextPage => PageNumber < TotalPages;
+        public int LowStockCount { get; set; }
+        public int OutOfStockCount { get; set; }
+        public string? StockFilter { get; set; }
+        public string? SortBy { get; set; }
     }
 }

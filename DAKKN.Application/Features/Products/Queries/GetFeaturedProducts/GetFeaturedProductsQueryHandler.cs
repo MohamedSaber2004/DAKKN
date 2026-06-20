@@ -47,7 +47,11 @@ namespace DAKKN.Application.Features.Products.Queries.GetFeaturedProducts
                     CreatedAt = p.CreatedAt,
                     UpdatedAt = p.UpdatedAt,
                     IsActive = p.IsActive,
-                    IsDeleted = p.IsDeleted
+                    IsDeleted = p.IsDeleted,
+                    QuantityInStock = p.QuantityInStock,
+                    DangerQuantity = p.DangerQuantity,
+                    StockStatus = p.StockStatus.ToString(),
+                    IsInStock = p.IsInStock
                 })
                 .ToListAsync(cancellationToken);
 

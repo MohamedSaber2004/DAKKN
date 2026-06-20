@@ -28,8 +28,16 @@ namespace DAKKN.Application.Features.Cart.Commands.AddToCart
             if (!product.IsActive || product.IsDeleted)
                 throw new BadRequestException("Product is not available");
 
+            if (product.QuantityInStock <= 0)
+                throw new BadRequestException("This product is currently out of stock.");
+
             var cart = _cartStorage.GetCart();
             var existing = cart.FirstOrDefault(x => x.ProductId == request.ProductId);
+            var currentCartQty = existing?.Quantity ?? 0;
+            var requestedTotal = currentCartQty + request.Quantity;
+
+            if (requestedTotal > product.QuantityInStock)
+                throw new BadRequestException($"Only {product.QuantityInStock} items available.");
 
             if (existing != null)
             {
@@ -47,7 +55,8 @@ namespace DAKKN.Application.Features.Cart.Commands.AddToCart
                         : product.ImageUrl.StartsWith("http") || product.ImageUrl.StartsWith("/")
                             ? product.ImageUrl
                             : $"/files/{product.ImageUrl}",
-                    Quantity = request.Quantity
+                    Quantity = request.Quantity,
+                    QuantityInStock = product.QuantityInStock
                 });
             }
 
