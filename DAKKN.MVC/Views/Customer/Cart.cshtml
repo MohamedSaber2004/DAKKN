@@ -1,171 +1,176 @@
+@model GuestCartViewModel
 @{
     Layout = "_LayoutCustomer";
+    var isAr = System.Threading.Thread.CurrentThread.CurrentUICulture.Name.StartsWith("ar");
 }
 
 <div class="max-w-7xl mx-auto px-lg py-xl">
     <div class="mb-xl">
         <h1 class="font-h1 text-h1 font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["cart_h1"]</h1>
         <div class="flex items-center gap-2 mt-2">
-            <span class="w-2 h-2 rounded-full bg-success"></span>
+            <span class="w-2 h-2 rounded-full" id="shipping-status-dot"></span>
             <p id="free-shipping-info" class="text-sm text-text-secondary"></p>
         </div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-2xl items-start">
-        <!-- Cart Items List -->
         <div class="lg:col-span-2 space-y-lg">
             <div id="cart-items-container" class="space-y-md">
-                <!-- Sample Item 1 -->
-                <div class="cart-item group bg-surface dark:bg-inverse-surface rounded-[32px] border border-border dark:border-outline/10 p-lg shadow-small hover:shadow-medium transition-all" data-id="1" data-price="70">
-                    <div class="flex flex-col sm:flex-row gap-lg">
-                        <div class="w-full sm:w-32 h-32 rounded-2xl overflow-hidden bg-white/5 flex-shrink-0">
-                            <img src="https://lh3.googleusercontent.com/aida/AP1WRLvk0o2fHlsgnzmZ9xrrRAnUTq9hl5CW063LX44OhYiXj0ZAadSE46fIAmtHQKBEzfk8NKsMl6AwohhVGiDgxsbst33TGFkDW68Y9_d3C1Cvf-mtviXqQYHM-Aqnsunu3Q6Yy2-9A5mXcsO80D173UvbE44Odz0GI41kQbHK_cLtDiruHCKTT15snGH5XT7Y6MLMfFd4rUCTY71ZJwiOba19bKW0Du2pMXYtJtF-I-h5V-wypv1z0Vztp_M" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Retro Cassette">
+                @if (Model.IsEmpty)
+                {
+                    <div id="cart-empty-state" class="py-32 text-center space-y-xl bg-surface dark:bg-inverse-surface rounded-[40px] border border-dashed border-border dark:border-outline/20">
+                        <div class="w-24 h-24 bg-surface-container dark:bg-white/5 rounded-full flex items-center justify-center mx-auto text-outline opacity-30">
+                            <span class="material-symbols-outlined text-5xl">shopping_cart</span>
                         </div>
-                        <div class="flex-1 min-w-0 flex flex-col justify-between">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <h3 class="font-bold text-xl truncate group-hover:text-primary transition-colors">Retro Cassette</h3>
-                                    <p class="text-xs text-text-secondary font-medium uppercase tracking-wider">Holographic Vinyl • 5x5 cm</p>
-                                </div>
-                                <button onclick="removeItem(1)" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-error hover:bg-error/5 transition-all">
-                                    <span class="material-symbols-outlined">delete</span>
-                                </button>
-                            </div>
-                            <div class="flex justify-between items-end mt-lg">
-                                <div class="flex items-center gap-md bg-surface-container dark:bg-white/5 p-1.5 rounded-2xl border border-border dark:border-outline/10">
-                                    <button onclick="updateQty(1, -1)" class="w-8 h-8 rounded-xl bg-surface dark:bg-inverse-surface shadow-small flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all">-</button>
-                                    <span class="item-qty font-bold w-8 text-center">3</span>
-                                    <button onclick="updateQty(1, 1)" class="w-8 h-8 rounded-xl bg-surface dark:bg-inverse-surface shadow-small flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all">+</button>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs text-text-secondary">Unit: 70 @Html.Raw(Localizer["Currency_EGP"])</p>
-                                    <p class="font-bold text-xl text-primary item-total">210.00 @Html.Raw(Localizer["Currency_EGP"])</p>
-                                </div>
-                            </div>
+                        <div class="space-y-md">
+                            <h2 class="text-2xl font-bold">@Localizer["cart_empty_h"]</h2>
+                            <p class="text-text-secondary max-w-sm mx-auto">@Localizer["cart_empty_p"]</p>
+                        </div>
+                        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                            <a asp-action="Products" asp-controller="Shop" class="inline-flex items-center gap-2 bg-primary text-on-primary px-xl py-4 rounded-2xl font-bold hover:shadow-large hover:-translate-y-1 transition-all">
+                                @Localizer[LocalizationKeys.CartMessages.BrowseProducts.Key] <span class="material-symbols-outlined">arrow_forward</span>
+                            </a>
+                            <a asp-action="Products" asp-controller="Shop" class="inline-flex items-center gap-2 text-text-secondary hover:text-primary font-bold transition-colors px-xl py-4">
+                                <span class="material-symbols-outlined text-sm">arrow_back</span>
+                                @Localizer[LocalizationKeys.CartMessages.ContinueShopping.Key]
+                            </a>
                         </div>
                     </div>
-                </div>
-
-                <!-- Sample Item 2 -->
-                <div class="cart-item group bg-surface dark:bg-inverse-surface rounded-[32px] border border-border dark:border-outline/10 p-lg shadow-small hover:shadow-medium transition-all" data-id="2" data-price="35">
-                    <div class="flex flex-col sm:flex-row gap-lg">
-                        <div class="w-full sm:w-32 h-32 rounded-2xl overflow-hidden bg-white/5 flex-shrink-0">
-                            <img src="https://lh3.googleusercontent.com/aida/AP1WRLvk0o2fHlsgnzmZ9xrrRAnUTq9hl5CW063LX44OhYiXj0ZAadSE46fIAmtHQKBEzfk8NKsMl6AwohhVGiDgxsbst33TGFkDW68Y9_d3C1Cvf-mtviXqQYHM-Aqnsunu3Q6Yy2-9A5mXcsO80D173UvbE44Odz0GI41kQbHK_cLtDiruHCKTT15snGH5XT7Y6MLMfFd4rUCTY71ZJwiOba19bKW0Du2pMXYtJtF-I-h5V-wypv1z0Vztp_M" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Custom Design">
-                        </div>
-                        <div class="flex-1 min-w-0 flex flex-col justify-between">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <h3 class="font-bold text-xl truncate group-hover:text-primary transition-colors">Custom Order Sticker</h3>
-                                    <p class="text-xs text-text-secondary font-medium uppercase tracking-wider">Premium Vinyl • Die Cut • 7x7 cm</p>
+                }
+                else
+                {
+                    foreach (var item in Model.Items)
+                    {
+                        <div class="cart-item group bg-surface dark:bg-inverse-surface rounded-[32px] border border-border dark:border-outline/10 p-lg shadow-small hover:shadow-medium transition-all" data-product-id="@item.ProductId" data-price="@item.Price">
+                            <div class="flex flex-col sm:flex-row gap-lg">
+                                <div class="w-full sm:w-32 h-32 rounded-2xl overflow-hidden bg-white/5 flex-shrink-0">
+                                    <img src="@(item.ImageUrl ?? "/images/placeholders/product-placeholder.svg")" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="@(isAr ? item.ArName : item.Name)" loading="lazy" onerror="this.src='/images/placeholders/product-placeholder.svg'" />
                                 </div>
-                                <button onclick="removeItem(2)" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-error hover:bg-error/5 transition-all">
-                                    <span class="material-symbols-outlined">delete</span>
-                                </button>
+                                <div class="flex-1 min-w-0 flex flex-col justify-between">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <h3 class="font-bold text-xl truncate group-hover:text-primary transition-colors">@(isAr && !string.IsNullOrEmpty(item.ArName) ? item.ArName : item.Name)</h3>
+                                        </div>
+                                        <button onclick="removeItem('@item.ProductId')" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-error hover:bg-error/5 transition-all">
+                                            <span class="material-symbols-outlined">delete</span>
+                                        </button>
+                                    </div>
+                                    <div class="flex justify-between items-end mt-lg">
+                                        <div class="flex items-center gap-md bg-surface-container dark:bg-white/5 p-1.5 rounded-2xl border border-border dark:border-outline/10">
+                                            <button onclick="updateQty('@item.ProductId', -1)" class="w-8 h-8 rounded-xl bg-surface dark:bg-inverse-surface shadow-small flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all">-</button>
+                                            <span class="item-qty font-bold w-8 text-center" data-product-id="@item.ProductId">@item.Quantity</span>
+                                            <button onclick="updateQty('@item.ProductId', 1)" class="w-8 h-8 rounded-xl bg-surface dark:bg-inverse-surface shadow-small flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all">+</button>
+                                        </div>
+                                        <div class="text-end">
+                                            <p class="text-xs text-text-secondary">@Localizer["cart_unit"]: @item.Price.ToString("N2") @Html.Raw(Localizer["Currency_EGP"])</p>
+                                            <p class="font-bold text-xl text-primary item-total">@((item.Price * item.Quantity).ToString("N2")) @Html.Raw(Localizer["Currency_EGP"])</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="flex justify-between items-end mt-lg">
-                                <div class="flex items-center gap-md bg-surface-container dark:bg-white/5 p-1.5 rounded-2xl border border-border dark:border-outline/10">
-                                    <button onclick="updateQty(2, -1)" class="w-8 h-8 rounded-xl bg-surface dark:bg-inverse-surface shadow-small flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all">-</button>
-                                    <span class="item-qty font-bold w-8 text-center">1</span>
-                                    <button onclick="updateQty(2, 1)" class="w-8 h-8 rounded-xl bg-surface dark:bg-inverse-surface shadow-small flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all">+</button>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-xs text-text-secondary">Unit: 35 @Html.Raw(Localizer["Currency_EGP"])</p>
-                                    <p class="font-bold text-xl text-primary item-total">35.00 @Html.Raw(Localizer["Currency_EGP"])</p>
-                                </div>
-                            </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Empty State -->
-            <div id="cart-empty-state" class="hidden py-32 text-center space-y-xl bg-surface dark:bg-inverse-surface rounded-[40px] border border-dashed border-border dark:border-outline/20">
-                <div class="w-24 h-24 bg-surface-container dark:bg-white/5 rounded-full flex items-center justify-center mx-auto text-outline opacity-30">
-                    <span class="material-symbols-outlined text-5xl">shopping_cart</span>
-                </div>
-                <div class="space-y-md">
-                    <h2 class="text-2xl font-bold">@Localizer["cart_empty_h"]</h2>
-                    <p class="text-text-secondary max-w-sm mx-auto">@Localizer["cart_empty_p"]</p>
-                </div>
-                <a asp-action="Products" class="inline-flex items-center gap-2 bg-primary text-on-primary px-xl py-4 rounded-2xl font-bold hover:shadow-large hover:-translate-y-1 transition-all">
-                    @Localizer["orders_empty_btn"] <span class="material-symbols-outlined">arrow_forward</span>
-                </a>
+                    }
+                }
             </div>
         </div>
 
-        <!-- Sidebar Summary -->
-        <aside class="space-y-lg sticky top-24">
+        <aside class="space-y-lg sticky top-24" id="cart-sidebar">
             <div class="bg-surface dark:bg-inverse-surface rounded-[40px] border border-border dark:border-outline/10 p-xl shadow-large space-y-xl">
                 <h2 class="text-2xl font-bold">@Localizer["cart_summary_h"]</h2>
-                
-                <div class="space-y-md">
-                    <div class="flex justify-between text-text-secondary">
-                        <span>@Localizer["cart_subtotal"]</span>
-                        <span id="summary-subtotal"></span>
-                    </div>
-                    <div class="flex justify-between text-text-secondary">
-                        <span>@Localizer["cart_shipping"]</span>
-                        <span id="summary-shipping"></span>
-                    </div>
-                    <div id="discount-row" class="hidden flex justify-between text-success">
-                        <span>@Localizer["custom_discount"]</span>
-                        <span id="summary-discount"></span>
-                    </div>
-                    <div class="h-px bg-border dark:bg-outline/10"></div>
-                    <div class="flex justify-between items-end">
-                        <span class="font-bold text-lg">@Localizer["cart_total"]</span>
-                        <div class="text-right">
-                            <div id="summary-total" class="text-4xl font-bold text-primary"></div>
-                            <div class="text-[10px] text-text-secondary uppercase tracking-widest mt-1">@Localizer["cart_vat_inc"]</div>
+
+                @if (!Model.IsEmpty)
+                {
+                    <div class="space-y-md">
+                        <div class="flex justify-between text-text-secondary">
+                            <span>@Localizer["cart_subtotal"] (<span id="summary-items-count">@Model.TotalQuantity</span>)</span>
+                            <span id="summary-subtotal" class="font-bold text-text-primary">@Model.Subtotal.ToString("N2") @Html.Raw(Localizer["Currency_EGP"])</span>
+                        </div>
+
+                        <div class="bg-surface-container dark:bg-white/5 rounded-2xl p-4 space-y-3">
+                            <label class="text-xs font-bold text-text-secondary uppercase tracking-wider flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm">local_shipping</span>
+                                @Localizer[LocalizationKeys.ShippingMessages.ShippingInfo.Key]
+                            </label>
+                            <select id="shipping-gov-select" class="w-full bg-surface dark:bg-inverse-surface border border-border dark:border-outline/20 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-primary text-text-primary transition-all" onchange="updateShipping()">
+                                <option value="">@Localizer[LocalizationKeys.ShippingMessages.SelectGov.Key]</option>
+                                @foreach (var gov in Model.Governorates)
+                                {
+                                    <option value="@gov.Id" data-price="@gov.ShippingPrice" selected="@(Model.ShippingGovernorateId == gov.Id ? true : null)">
+                                        @(isAr ? gov.ArName : gov.Name) (@gov.ShippingPrice.ToString("N0") @Html.Raw(Localizer["Currency_EGP"]))
+                                    </option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="flex justify-between text-text-secondary">
+                            <span>@Localizer["cart_shipping"]</span>
+                            <span id="summary-shipping" class="font-bold text-text-primary">
+                                @if (Model.ShippingGovernorateId.HasValue)
+                                {
+                                    @(Model.ShippingPrice.ToString("N2")) @Html.Raw(Localizer["Currency_EGP"])
+                                }
+                                else
+                                {
+                                    <span class="text-text-secondary/50">--</span>
+                                }
+                            </span>
+                        </div>
+
+                        <div class="h-px bg-border dark:bg-outline/10"></div>
+                        <div class="flex justify-between items-end">
+                            <span class="font-bold text-lg">@Localizer["cart_total"]</span>
+                            <div class="text-end">
+                                <div id="summary-total" class="text-4xl font-bold text-primary">@Model.Total.ToString("N2") @Html.Raw(Localizer["Currency_EGP"])</div>
+                                <div class="text-[10px] text-text-secondary uppercase tracking-widest mt-1">@Localizer["cart_vat_inc"]</div>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Promo Code -->
-                <div class="space-y-md">
-                    <div class="flex flex-wrap gap-3">
-                        <input type="text" class="flex-1 min-w-[200px] bg-surface-container dark:bg-white/5 border border-border dark:border-outline/10 rounded-2xl px-5 py-3.5 outline-none focus:ring-2 focus:ring-primary transition-all text-sm uppercase font-bold tracking-widest placeholder:normal-case placeholder:font-normal" placeholder="@Localizer["cart_promo_ph"]">
-                        <button class="flex-grow sm:flex-grow-0 bg-primary/10 text-primary px-8 py-3.5 rounded-2xl font-bold text-sm hover:bg-primary hover:text-on-primary transition-all">@Localizer["cart_promo_btn"]</button>
-                    </div>
-                </div>
-
-                <a asp-action="Checkout" class="w-full bg-primary text-on-primary py-5 rounded-3xl font-bold text-xl shadow-large hover:scale-[1.02] hover:shadow-2xl transition-all flex items-center justify-center gap-3">
-                    @Localizer["cart_checkout"]
-                    <span class="material-symbols-outlined">chevron_right</span>
-                </a>
+                    <a asp-action="Checkout" class="w-full bg-primary text-on-primary py-5 rounded-3xl font-bold text-xl shadow-large hover:scale-[1.02] hover:shadow-2xl transition-all flex items-center justify-center gap-3">
+                        @Localizer["cart_checkout"]
+                        <span class="material-symbols-outlined">chevron_right</span>
+                    </a>
+                }
 
                 <div class="flex flex-col gap-4">
                     <div class="flex items-center gap-3 p-4 bg-surface-container dark:bg-white/5 rounded-2xl">
                         <span class="material-symbols-outlined text-primary">verified_user</span>
-                        <div class="text-xs text-left rtl:text-right">
+                        <div class="text-xs text-start">
                             <p class="font-bold">@Localizer["cart_secure_h"]</p>
                             <p class="text-text-secondary">@Localizer["cart_secure_p"]</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-3 p-4 bg-surface-container dark:bg-white/5 rounded-2xl">
                         <span class="material-symbols-outlined text-primary">local_shipping</span>
-                        <div class="text-xs text-left rtl:text-right">
+                        <div class="text-xs text-start">
                             <p class="font-bold">@Localizer["cart_fast_h"]</p>
                             <p class="text-text-secondary">@Localizer["cart_fast_p"]</p>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <a asp-action="Products" class="flex items-center justify-center gap-2 text-text-secondary hover:text-primary font-bold transition-colors">
+
+            <a asp-action="Products" asp-controller="Shop" class="flex items-center justify-center gap-2 text-text-secondary hover:text-primary font-bold transition-colors">
                 <span class="material-symbols-outlined text-sm">arrow_back</span>
-                @Localizer["cart_continue_shopping"]
+                @Localizer[LocalizationKeys.CartMessages.ContinueShopping.Key]
             </a>
         </aside>
     </div>
 </div>
 
 <style>
-    .cart-item {
-        animation: slideIn 0.4s ease-out forwards;
+    [dir="ltr"] .cart-item {
+        animation: slideInLtr 0.4s ease-out forwards;
     }
-    @@keyframes slideIn {
+    [dir="rtl"] .cart-item {
+        animation: slideInRtl 0.4s ease-out forwards;
+    }
+    @@keyframes slideInLtr {
         from { opacity: 0; transform: translateX(-10px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+    @@keyframes slideInRtl {
+        from { opacity: 0; transform: translateX(10px); }
         to { opacity: 1; transform: translateX(0); }
     }
     .item-removed {
@@ -177,9 +182,6 @@
 
 @section Scripts {
     <script>
-        const shippingThreshold = 500;
-        const flatShipping = 45;
-        // Use a hidden div to safely decode currency symbol
         const decodeEntities = (function() {
             const el = document.createElement('div');
             return function(str) {
@@ -193,83 +195,135 @@
         })();
 
         const currencyEgp = decodeEntities('@Html.Raw(Localizer["Currency_EGP"])');
+        let selectedGovId = '@Model.ShippingGovernorateId';
+        let currentShipping = @Model.ShippingPrice.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
 
-        function updateQty(id, delta) {
-            const item = document.querySelector(`.cart-item[data-id="${id}"]`);
-            if (!item) return;
-            const qtyLabel = item.querySelector('.item-qty');
-            const totalLabel = item.querySelector('.item-total');
-            const unitPrice = parseFloat(item.dataset.price);
-            
-            let qty = parseInt(qtyLabel.textContent) + delta;
-            if (qty < 1) return;
-            
-            qtyLabel.textContent = qty;
-            totalLabel.innerHTML = `${(qty * unitPrice).toFixed(2)} ${currencyEgp}`;
-            
-            calculateTotals();
+        async function updateQty(productId, delta) {
+            const qtyEl = document.querySelector(`.item-qty[data-product-id="${productId}"]`);
+            if (!qtyEl) return;
+            const currentQty = parseInt(qtyEl.textContent);
+            const newQty = Math.max(1, currentQty + delta);
+            if (newQty === currentQty) return;
+
+            try {
+                const response = await fetch('/api/v1/cart/update-quantity', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ productId: productId, quantity: newQty })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    updateCartBadge(data.data);
+                    qtyEl.textContent = newQty;
+                    recalculateTotals();
+                }
+            } catch (e) {
+                console.error('Failed to update quantity:', e);
+                window.location.reload();
+            }
         }
 
-        function removeItem(id) {
-            const item = document.querySelector(`.cart-item[data-id="${id}"]`);
-            if (!item) return;
-            item.classList.add('item-removed');
-            setTimeout(() => {
-                item.remove();
-                calculateTotals();
-                checkIfEmpty();
+        async function removeItem(productId) {
+            const item = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
+            if (item) item.classList.add('item-removed');
+
+            setTimeout(async () => {
+                try {
+                    const response = await fetch(`/api/v1/cart/remove/${productId}`, {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' }
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        updateCartBadge(data.data);
+                        const item = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
+                        if (item) item.remove();
+                        recalculateTotals();
+                        checkIfEmpty();
+                    }
+                } catch (e) {
+                    console.error('Failed to remove item:', e);
+                    window.location.reload();
+                }
             }, 300);
         }
 
-        function calculateTotals() {
+        async function updateShipping() {
+            const select = document.getElementById('shipping-gov-select');
+            const govId = select.value;
+            if (!govId) return;
+
+            try {
+                const response = await fetch('/api/v1/cart/shipping', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ shippingGovernorateId: govId })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    selectedGovId = govId;
+                    currentShipping = parseFloat(data.data.shippingPrice) || 0;
+                    recalculateTotals();
+                }
+            } catch (e) {
+                console.error('Failed to update shipping:', e);
+                window.location.reload();
+            }
+        }
+
+        function recalculateTotals() {
             let subtotal = 0;
+            let itemCount = 0;
             const items = document.querySelectorAll('.cart-item');
-            
+
             items.forEach(item => {
                 const qty = parseInt(item.querySelector('.item-qty').textContent);
                 const price = parseFloat(item.dataset.price);
-                subtotal += (qty * price);
+                const total = qty * price;
+                subtotal += total;
+                itemCount += qty;
+                const totalEl = item.querySelector('.item-total');
+                if (totalEl) totalEl.innerHTML = total.toFixed(2) + ' ' + currencyEgp;
             });
 
-            const shipping = subtotal >= shippingThreshold ? 0 : flatShipping;
+            const shipping = currentShipping || 0;
             const total = subtotal + shipping;
 
-            // Update Summary
             const subtotalEl = document.getElementById('summary-subtotal');
             const shippingEl = document.getElementById('summary-shipping');
             const totalEl = document.getElementById('summary-total');
+            const itemsCountEl = document.getElementById('summary-items-count');
 
-            if (subtotalEl) subtotalEl.innerHTML = `${subtotal.toFixed(2)} ${currencyEgp}`;
-            if (shippingEl) shippingEl.innerHTML = shipping === 0 ? 'FREE' : `${shipping.toFixed(2)} ${currencyEgp}`;
-            if (totalEl) totalEl.innerHTML = `${total.toFixed(2)} ${currencyEgp}`;
-
-            // Update Shipping Info
-            const info = document.getElementById('free-shipping-info');
-            if (info) {
-                if (subtotal >= shippingThreshold) {
-                    info.innerHTML = decodeEntities('@Html.Raw(Localizer["cart_free_shipping_msg"])');
-                    info.classList.add('text-success');
-                    info.classList.remove('text-text-secondary');
+            if (subtotalEl) subtotalEl.innerHTML = subtotal.toFixed(2) + ' ' + currencyEgp;
+            if (shippingEl) {
+                if (shipping > 0) {
+                    shippingEl.innerHTML = shipping.toFixed(2) + ' ' + currencyEgp;
+                } else if (selectedGovId) {
+                    shippingEl.innerHTML = '0.00 ' + currencyEgp;
                 } else {
-                    const left = shippingThreshold - subtotal;
-                    const msg = decodeEntities('@Html.Raw(Localizer["cart_free_shipping_left", "PLACEHOLDER"])');
-                    info.innerHTML = msg.replace('PLACEHOLDER', `<span class='font-bold'>${left.toFixed(0)}</span>`);
-                    info.classList.remove('text-success');
-                    info.classList.add('text-text-secondary');
+                    shippingEl.innerHTML = '<span class="text-text-secondary/50">--</span>';
                 }
             }
+            if (totalEl) totalEl.innerHTML = total.toFixed(2) + ' ' + currencyEgp;
+            if (itemsCountEl) itemsCountEl.textContent = itemCount;
         }
 
         function checkIfEmpty() {
             const items = document.querySelectorAll('.cart-item');
             if (items.length === 0) {
-                const container = document.getElementById('cart-items-container');
-                const emptyState = document.getElementById('cart-empty-state');
-                if (container) container.classList.add('hidden');
-                if (emptyState) emptyState.classList.remove('hidden');
+                window.location.reload();
             }
         }
 
-        window.addEventListener('DOMContentLoaded', calculateTotals);
+        function updateCartBadge(count) {
+            document.querySelectorAll('[id^="cart-badge"]').forEach(el => el.textContent = count || 0);
+        }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const select = document.getElementById('shipping-gov-select');
+            if (select && selectedGovId) {
+                select.value = selectedGovId;
+            }
+        });
     </script>
 }

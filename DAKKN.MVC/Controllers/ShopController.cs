@@ -4,6 +4,7 @@ using DAKKN.Application.Features.Cart.Queries.GetCart;
 using DAKKN.Application.Features.Categories.Queries.GetCategories;
 using DAKKN.Application.Features.Products.Queries.GetProductById;
 using DAKKN.Application.Features.Products.Queries.GetProducts;
+using DAKKN.Application.Features.ShippingGovernorates.Queries.GetActiveShippingGovernorates;
 using DAKKN.Application.Localization;
 using DAKKN.MVC.ViewModels.Customer;
 using DAKKN.MVC.ViewModels.Landing;
@@ -63,9 +64,15 @@ namespace DAKKN.MVC.Controllers
         {
             ViewData["Title"] = _localizer["nav_cart"];
             var cart = await _mediator.Send(new GetCartQuery());
+            var governorates = await _mediator.Send(new GetActiveShippingGovernoratesQuery());
             var viewModel = new GuestCartViewModel
             {
-                Items = cart.Items
+                Items = cart.Items,
+                ShippingGovernorateId = cart.ShippingGovernorateId,
+                GovernorateName = cart.GovernorateName,
+                GovernorateArName = cart.GovernorateArName,
+                ShippingPrice = cart.ShippingPrice,
+                Governorates = governorates
             };
             return View(viewModel);
         }

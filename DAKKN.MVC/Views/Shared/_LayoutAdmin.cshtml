@@ -1,5 +1,6 @@
 @inject IStringLocalizer<Messages> Localizer
 @using System.Security.Claims
+@using DAKKN.Application.Localization
 @inject IMediator Mediator
 @{
     var culture = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("en") ? "en" : "ar";
@@ -209,6 +210,11 @@
             <a asp-controller="Admin" asp-action="Content" class="nav-item flex items-center gap-md @(currentAction == "Content" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_content_mgmt"]">
                 <span class="material-symbols-outlined @(currentAction == "Content" ? "filled-icon" : "") flex-shrink-0">edit_note</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_content_mgmt"]</span>
+            </a>
+
+            <a asp-controller="Admin" asp-action="Shipping" class="nav-item flex items-center gap-md @(currentAction == "Shipping" || currentAction == "CreateShipping" || currentAction == "EditShipping" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer[LocalizationKeys.AdminShipping.Title.Key]">
+                <span class="material-symbols-outlined @(currentAction == "Shipping" || currentAction == "CreateShipping" || currentAction == "EditShipping" ? "filled-icon" : "") flex-shrink-0">local_shipping</span>
+                <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer[LocalizationKeys.AdminShipping.Title.Key]</span>
             </a>
 
             <a asp-controller="Admin" asp-action="Settings" class="nav-item flex items-center gap-md @(currentAction == "Settings" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl mt-auto transition-all duration-200" title="@Localizer["admin_settings"]">

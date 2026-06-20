@@ -11,6 +11,11 @@ using DAKKN.Application.Features.Products.Commands.DeleteProduct;
 using DAKKN.Application.Features.Products.Commands.UpdateProduct;
 using DAKKN.Application.Features.Products.Queries.GetProductById;
 using DAKKN.Application.Features.Products.Queries.GetProducts;
+using DAKKN.Application.Features.ShippingGovernorates.Commands.CreateShippingGovernorate;
+using DAKKN.Application.Features.ShippingGovernorates.Commands.DeleteShippingGovernorate;
+using DAKKN.Application.Features.ShippingGovernorates.Commands.ToggleShippingGovernorateStatus;
+using DAKKN.Application.Features.ShippingGovernorates.Commands.UpdateShippingGovernorate;
+using DAKKN.Application.Features.ShippingGovernorates.Queries.GetShippingGovernorates;
 using DAKKN.Application.Features.Users.Commands.UpdateUserSettings;
 using DAKKN.Application.Features.Users.Queries.ExportUsers;
 using DAKKN.Application.Features.Users.Queries.GetAllUsers;
@@ -758,6 +763,151 @@ namespace DAKKN.MVC.Controllers
 
             TempData["SuccessMessage"] = _localizer[LocalizationKeys.Products.Updated.Value].ToString();
             return RedirectToAction(nameof(Inventory));
+        }
+
+        [HttpGet("shipping")]
+        public async Task<IActionResult> Shipping(string? searchTerm)
+        {
+            ViewData["Title"] = _localizer[LocalizationKeys.AdminShipping.Title.Key];
+            ViewData["SearchTerm"] = searchTerm;
+            var governorates = await _mediator.Send(new GetShippingGovernoratesQuery(searchTerm, IncludeInactive: true));
+            return View(governorates);
+        }
+
+        [HttpGet("shipping/create")]
+        public IActionResult CreateShipping()
+        {
+            ViewData["Title"] = _localizer[LocalizationKeys.AdminShipping.AddNew.Key];
+            return View("AddShippingGovernorate", new ShippingGovernorateFormViewModel());
+        }
+
+        [HttpPost("shipping/create")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateShipping(ShippingGovernorateFormViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewData["Title"] = _localizer[LocalizationKeys.AdminShipping.AddNew.Key];
+                return View("AddShippingGovernorate", model);
+            }
+
+            try
+            {
+                await _mediator.Send(new CreateShippingGovernorateCommand(
+                    model.Name, model.ArName, model.ShippingPrice, model.DisplayOrder));
+                TempData["SuccessMessage"] = _localizer[LocalizationKeys.AdminShipping.CreatedSuccess.Key].ToString();
+                return RedirectToAction(nameof(Shipping));
+            }
+            catch (BadRequestException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+            }
+            catch (ValidationException ex)
+            {
+                foreach (var kvp in ex.Errors)
+                {
+                    foreach (var error in kvp.Value)
+                    {
+                        ModelState.AddModelError(kvp.Key, error);
+                    }
+                }
+            }
+
+            ViewData["Title"] = _localizer[LocalizationKeys.AdminShipping.AddNew.Key];
+            return View("AddShippingGovernorate", model);
+        }
+
+        [HttpGet("shipping/edit/{id}")]
+        public async Task<IActionResult> EditShipping(Guid id)
+        {
+            ViewData["Title"] = _localizer[LocalizationKeys.AdminShipping.Edit.Key];
+
+            var governorates = await _mediator.Send(new GetShippingGovernoratesQuery(IncludeInactive: true));
+            var gov = governorates.FirstOrDefault(x => x.Id == id);
+            if (gov == null)
+                return NotFound();
+
+            var viewModel = new ShippingGovernorateFormViewModel
+            {
+                Id = gov.Id,
+                Name = gov.Name,
+                ArName = gov.ArName,
+                ShippingPrice = gov.ShippingPrice,
+                DisplayOrder = gov.DisplayOrder,
+                IsActive = gov.IsActive
+            };
+
+            return View("AddShippingGovernorate", viewModel);
+        }
+
+        [HttpPost("shipping/edit/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditShipping(Guid id, ShippingGovernorateFormViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewData["Title"] = _localizer[LocalizationKeys.AdminShipping.Edit.Key];
+                return View("AddShippingGovernorate", model);
+            }
+
+            try
+            {
+                await _mediator.Send(new UpdateShippingGovernorateCommand(
+                    id, model.Name, model.ArName, model.ShippingPrice, model.DisplayOrder, model.IsActive));
+                TempData["SuccessMessage"] = _localizer[LocalizationKeys.AdminShipping.UpdatedSuccess.Key].ToString();
+                return RedirectToAction(nameof(Shipping));
+            }
+            catch (BadRequestException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+            }
+            catch (ValidationException ex)
+            {
+                foreach (var kvp in ex.Errors)
+                {
+                    foreach (var error in kvp.Value)
+                    {
+                        ModelState.AddModelError(kvp.Key, error);
+                    }
+                }
+            }
+
+            ViewData["Title"] = _localizer[LocalizationKeys.AdminShipping.Edit.Key];
+            return View("AddShippingGovernorate", model);
+        }
+
+        [HttpPost("shipping/delete/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteShipping(Guid id)
+        {
+            try
+            {
+                await _mediator.Send(new DeleteShippingGovernorateCommand(id));
+                TempData["SuccessMessage"] = _localizer[LocalizationKeys.AdminShipping.DeletedSuccess.Key].ToString();
+            }
+            catch (NotFoundException)
+            {
+                TempData["ErrorMessage"] = _localizer[LocalizationKeys.ShippingMessages.NotFound.Key].ToString();
+            }
+
+            return RedirectToAction(nameof(Shipping));
+        }
+
+        [HttpPost("shipping/toggle-status/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleShippingStatus(Guid id)
+        {
+            try
+            {
+                await _mediator.Send(new ToggleShippingGovernorateStatusCommand(id));
+                TempData["SuccessMessage"] = _localizer[LocalizationKeys.AdminShipping.ToggledSuccess.Key].ToString();
+            }
+            catch (NotFoundException)
+            {
+                TempData["ErrorMessage"] = _localizer[LocalizationKeys.ShippingMessages.NotFound.Key].ToString();
+            }
+
+            return RedirectToAction(nameof(Shipping));
         }
     }
 }

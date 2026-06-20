@@ -207,6 +207,7 @@ builder.Services.AddScoped<IGuestCartStorage, SessionCartStorage>();
                     await DAKKNDbContextSeed.SeedAsync(userManager, roleManager);
 
                     var context = services.GetRequiredService<DAKKNDbContext>();
+                    await DAKKNDbContextSeed.SeedGovernoratesAsync(context);
                     await DAKKNDbContextSeed.SeedCategoriesAndProductsAsync(context);
                 }
                 catch (Exception ex)
@@ -365,11 +366,13 @@ builder.Services.AddScoped<IGuestCartStorage, SessionCartStorage>();
                 .AddSupportedUICultures(supportedCultures);
 
 
-            // Prioritize Cookie and QueryString providers for immediate feedback
+            // Priority: 1. QueryString (one-off override), 2. DB User Preference (for authenticated users),
+            // 3. Legacy Cookie (for guest/landing), 4. Browser Accept-Language header.
+            // This ensures changing language on landing page doesn't affect authenticated admin/customer pages.
             localizationOptions.RequestCultureProviders.Clear();
             localizationOptions.RequestCultureProviders.Add(new QueryStringRequestCultureProvider());
-            localizationOptions.RequestCultureProviders.Add(new CookieRequestCultureProvider());
             localizationOptions.RequestCultureProviders.Add(new DAKKN.MVC.Localization.UserPreferenceRequestCultureProvider());
+            localizationOptions.RequestCultureProviders.Add(new CookieRequestCultureProvider());
             localizationOptions.RequestCultureProviders.Add(new AcceptLanguageHeaderRequestCultureProvider());
 
             app.UseRouting();

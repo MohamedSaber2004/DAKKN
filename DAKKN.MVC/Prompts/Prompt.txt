@@ -1,160 +1,191 @@
 Use this prompt:
 
-You are a Senior ASP.NET Core 8 MVC, Clean Architecture, MediatR CQRS, Entity Framework Core, ASP.NET Identity, Session Management, and E-Commerce engineer working on the DAKKN project.
+You are a Senior ASP.NET Core 8 MVC, Clean Architecture, MediatR CQRS, ASP.NET Identity, Routing, and E-Commerce engineer working on the DAKKN project.
 
 Context:
 
-The Landing Page and Store support Guest Users (non-authenticated users).
+There is a bug in the Cart Page:
 
-Current Problem:
+URL:
+{BaseUrl}/shop/cart
 
-Guest users can click "Add To Cart".
+Current Behavior:
 
-Observed behavior:
+Guest User (Not Authenticated)
 
-1. Cart counter increases correctly.
-2. Product appears to be added successfully.
-3. When navigating to:
-
-/shop/cart
-
-the cart is empty.
-
-4. "Browse Shopping" and "Continue Shopping" behavior is inconsistent.
-5. Cart state is not persisted correctly for guest users.
-6. Guest cart functionality is partially broken.
-
-Goal:
-
-Perform a complete root-cause analysis and implement a production-ready Guest Cart system.
-
-=================================================
-STEP 1 - ROOT CAUSE ANALYSIS
-=================================================
-
-Audit the entire cart flow:
-
-Landing Page
-→ Add To Cart Button
-→ AJAX Request
-→ Controller
-→ MediatR Command
-→ Session Storage / Cookie Storage
-→ Cart Counter
-→ Cart Page (/shop/cart)
-
-Investigate:
-
-- Cart counter logic
-- Session storage
-- Cookie storage
-- Cart persistence
-- Cart retrieval
-- Cart ViewModel
-- Cart Queries
-- Cart Razor Views
-- JavaScript cart updates
-- MediatR handlers
-
-Identify why:
-
-- Counter increases
-- Cart page remains empty
-
-Provide exact root cause.
-
-=================================================
-STEP 2 - GUEST CART STORAGE
-=================================================
-
-Guest users are NOT authenticated.
-
-Implement persistent guest cart storage.
-
-Choose the best existing architecture:
-
-Option A:
-Session-based Cart
-
-Option B:
-Cookie-based Cart
-
-Option C:
-Hybrid Session + Cookie
-
-Analyze project and implement the safest approach.
-
-Requirements:
-
-Guest user adds product.
-
-Product must persist across:
-
-- Page refresh
-- Landing page
-- Product details page
-- Category page
-- Cart page
-
-=================================================
-STEP 3 - ADD TO CART FLOW
-=================================================
-
-When guest clicks:
-
-Add To Cart
-
-System should:
-
-1. Verify product exists.
-2. Add product to guest cart.
-3. Increment quantity if product already exists.
-4. Update cart counter.
-5. Persist cart data.
-6. Show success notification.
-
-=================================================
-STEP 4 - CART PAGE FIX
-=================================================
-
-Fix:
+1. User adds products to cart.
+2. User navigates to:
 
 /shop/cart
 
-Requirements:
+3. User clicks:
 
-Load guest cart products correctly.
+Continue Shopping
 
-Display:
+4. System redirects to:
 
-- Product Image
-- Product Name
-- Price
-- Quantity
-- Subtotal
-- Remove Button
+Customer Dashboard
 
-Calculate:
+Example:
 
-- Total Quantity
-- Total Price
+/customer/dashboard
 
-If cart contains products:
+5. Customer Dashboard requires authentication.
 
-Display them correctly.
+Result:
+
+- Access Denied page
+OR
+- Unauthorized page
+OR
+- Login redirect
+
+This creates a broken user experience.
 
 =================================================
-STEP 5 - EMPTY CART HANDLING
+GOAL
+=================================================
+
+Fix Continue Shopping behavior for Guest Users.
+
+Guest users should NEVER be redirected to:
+
+- Customer Dashboard
+- User Profile
+- Customer Area
+- Authenticated-only pages
+
+from Cart Page.
+
+=================================================
+ROOT CAUSE ANALYSIS
+=================================================
+
+Audit:
+
+- Cart Controller
+- Shop Controller
+- Cart View
+- Continue Shopping Button
+- Razor Pages
+- Navigation Links
+- JavaScript redirects
+- Route generation
+- ViewModels
+
+Find:
+
+- Incorrect route
+- Hardcoded customer route
+- Wrong redirect action
+- Authentication assumptions
+
+Explain exact root cause.
+
+=================================================
+EXPECTED BEHAVIOR
+=================================================
+
+Guest User:
+
+From:
+
+/shop/cart
+
+Click:
+
+Continue Shopping
+
+Redirect to:
+
+Preferred:
+
+/shop
+
+OR
+
+Landing Page Product Catalog
+
+OR
+
+Store Products Page
+
+depending on project architecture.
+
+The destination must be publicly accessible.
+
+=================================================
+AUTHENTICATED USER BEHAVIOR
+=================================================
+
+Authenticated users may also click:
+
+Continue Shopping
+
+They should still navigate to:
+
+/shop
+
+or
+
+Store Products Page
+
+NOT:
+
+Customer Dashboard
+
+unless explicitly required.
+
+Continue Shopping means:
+
+Continue browsing products.
+
+NOT:
+
+Go to account area.
+
+=================================================
+BUTTON FIX
+=================================================
+
+Audit the button implementation.
+
+Examples:
+
+Wrong:
+
+asp-controller="Customer"
+asp-action="Dashboard"
+
+Wrong:
+
+href="/customer/dashboard"
+
+Wrong:
+
+window.location='/customer/dashboard'
+
+Replace with:
+
+Store route.
+
+Example:
+
+/shop
+
+or
+
+Products Index Page
+
+according to DAKKN routing.
+
+=================================================
+EMPTY CART PAGE
 =================================================
 
 If cart is empty:
 
-Show professional empty state.
-
-Example:
-
-Icon:
-Shopping Cart
+Display:
 
 Title:
 Your Cart Is Empty
@@ -162,213 +193,90 @@ Your Cart Is Empty
 Message:
 Browse products and add items to your cart.
 
-Actions:
+Buttons:
 
-- Browse Products
-- Continue Shopping
+Browse Products
 
-=================================================
-STEP 6 - BROWSE SHOPPING BUTTON
-=================================================
+Continue Shopping
 
-Fix Browse Shopping button.
+Both buttons should navigate to:
 
-Current issue:
+Public Store Pages
 
-Button may redirect incorrectly.
-
-Requirements:
-
-Navigate to:
-
-/shop
-OR
-Product Catalog Page
-
-Verify route.
+NOT authenticated pages.
 
 =================================================
-STEP 7 - CONTINUE SHOPPING BUTTON
+GUEST MODE TESTING
 =================================================
 
-Fix Continue Shopping button.
+Verify:
 
-Requirements:
+Case 1:
+Guest user with products in cart
 
-Navigate user back to:
+Continue Shopping
+→ Store Page
 
-- Landing Page
-OR
-Store Page
+Case 2:
+Guest user with empty cart
 
-depending on DAKKN routing.
+Continue Shopping
+→ Store Page
+
+Case 3:
+Authenticated user
+
+Continue Shopping
+→ Store Page
+
+Case 4:
+Direct access from Landing Page
+
+Continue Shopping
+→ Store Page
+
+=================================================
+ROUTING VALIDATION
+=================================================
 
 Verify:
 
 - Route exists
-- Navigation works
-- Responsive behavior
+- Route is public
+- No authorization required
+- No redirects to customer dashboard
 
 =================================================
-STEP 8 - GUEST CART COUNTER
+RESPONSIVE DESIGN
 =================================================
 
-Cart counter should always match actual cart contents.
-
-Verify:
-
-Landing Page
-
-Navbar
-
-Product Pages
-
-Category Pages
-
-Cart Page
-
-Counter must be calculated from:
-
-Actual guest cart data
-
-NOT from temporary frontend state.
-
-=================================================
-STEP 9 - CART SYNCHRONIZATION
-=================================================
-
-Ensure synchronization between:
-
-- Cart Counter
-- Cart Storage
-- Cart Page
-- Product Pages
-
-Requirements:
-
-Add product
-→ Counter updates
-
-Refresh page
-→ Counter preserved
-
-Navigate to cart
-→ Products visible
-
-Remove product
-→ Counter updates
-
-=================================================
-STEP 10 - LOGIN MERGE STRATEGY
-=================================================
-
-If guest logs in:
-
-Merge guest cart with user cart.
-
-Requirements:
-
-Guest Cart
-+
-User Cart
-
-→ Single Cart
-
-Prevent duplicates.
-
-Preserve quantities.
-
-=================================================
-STEP 11 - PRODUCT IMAGE HANDLING
-=================================================
-
-Products store:
-
-ImageUrl = image name only
-
-Generate image URLs dynamically using:
-
-{CurrentScheme}://{CurrentHost}/files/{ImageName}
-
-Do not hardcode BaseUrl.
-
-Handle:
-
-- Null images
-- Missing images
-- Invalid images
-
-Use placeholder fallback.
-
-=================================================
-STEP 12 - SECURITY
-=================================================
-
-Validate:
-
-- Product exists
-- Quantity > 0
-- Product available
-
-Prevent:
-
-- Invalid product IDs
-- Tampered requests
-- Negative quantities
-
-=================================================
-STEP 13 - RESPONSIVE DESIGN
-=================================================
-
-Audit:
-
-Cart Page
-
-Empty Cart State
-
-Buttons
-
-Quantity Controls
-
-Product Cards
-
-Ensure:
+Verify button works correctly on:
 
 - Mobile
 - Tablet
 - Desktop
 
-work correctly.
-
 =================================================
-STEP 14 - DELIVERABLES
+DELIVERABLES
 =================================================
 
 Provide:
 
 1. Root cause analysis
-2. Exact file paths
+2. Exact file path
 3. Before code
 4. After code
-5. Controller fixes
-6. MediatR command fixes
-7. Query fixes
-8. Session/Cookie storage fixes
-9. Cart ViewModel fixes
-10. Razor View fixes
-11. JavaScript fixes
-12. Navigation fixes
+5. Route fixes
+6. Razor View fixes
+7. Controller fixes if needed
+8. Explanation
 
 Important:
 
 - Follow DAKKN Clean Architecture.
-- Use MediatR.
 - Preserve existing functionality.
-- Guest users must have a fully functional cart.
-- Cart counter must match actual cart contents.
-- Cart products must appear in /shop/cart.
-- Browse Shopping and Continue Shopping must work correctly.
-- Support future cart merge after login.
+- Guest users must never be redirected to Customer Dashboard from Cart Page.
+- Continue Shopping must always redirect to a public product browsing page.
 - Ensure production-ready implementation.
 
-This prompt specifically targets the classic bug where the navbar cart count is updated on the frontend, but the guest cart items are never persisted/retrieved correctly for the /shop/cart page.
+This prompt specifically targets the bug where the Continue Shopping button is incorrectly pointing to a customer-only route instead of the public shop/catalog page.

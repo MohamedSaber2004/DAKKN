@@ -153,6 +153,50 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString ProductNotAvailable = new("cart.product_not_available");
             public static readonly KeyString ProductNotFound = new("cart.product_not_found");
             public static readonly KeyString FreeShipping = new("cart.free_shipping");
+            public static readonly KeyString ShippingUpdated = new("cart.shipping_updated");
+            public static readonly KeyString BrowseProducts = new("cart.browse_products");
+            public static readonly KeyString ContinueShopping = new("cart.continue_shopping");
+        }
+
+        public static class ShippingMessages
+        {
+            public static readonly KeyString NotFound = new("shipping.not_found");
+            public static readonly KeyString Created = new("shipping.created");
+            public static readonly KeyString Updated = new("shipping.updated");
+            public static readonly KeyString Deleted = new("shipping.deleted");
+            public static readonly KeyString NameExists = new("shipping.name_exists");
+            public static readonly KeyString GovPlaceholder = new("shipping.gov_placeholder");
+            public static readonly KeyString SelectGov = new("shipping.select_gov");
+            public static readonly KeyString ShippingInfo = new("shipping.info");
+            public static readonly KeyString Governorate = new("shipping.governorate");
+            public static readonly KeyString Price = new("shipping.price");
+        }
+
+        public static class AdminShipping
+        {
+            public static readonly KeyString Title = new("admin_shipping.title");
+            public static readonly KeyString AddNew = new("admin_shipping.add_new");
+            public static readonly KeyString Edit = new("admin_shipping.edit");
+            public static readonly KeyString Delete = new("admin_shipping.delete");
+            public static readonly KeyString Name = new("admin_shipping.name");
+            public static readonly KeyString ArName = new("admin_shipping.ar_name");
+            public static readonly KeyString Price = new("admin_shipping.price");
+            public static readonly KeyString DisplayOrder = new("admin_shipping.display_order");
+            public static readonly KeyString Status = new("admin_shipping.status");
+            public static readonly KeyString Actions = new("admin_shipping.actions");
+            public static readonly KeyString Active = new("admin_shipping.active");
+            public static readonly KeyString Inactive = new("admin_shipping.inactive");
+            public static readonly KeyString Save = new("admin_shipping.save");
+            public static readonly KeyString Cancel = new("admin_shipping.cancel");
+            public static readonly KeyString DeleteConfirm = new("admin_shipping.delete_confirm");
+            public static readonly KeyString DeleteMessage = new("admin_shipping.delete_message");
+            public static readonly KeyString ToggleStatus = new("admin_shipping.toggle_status");
+            public static readonly KeyString CreatedSuccess = new("admin_shipping.created_success");
+            public static readonly KeyString UpdatedSuccess = new("admin_shipping.updated_success");
+            public static readonly KeyString DeletedSuccess = new("admin_shipping.deleted_success");
+            public static readonly KeyString ToggledSuccess = new("admin_shipping.toggled_success");
+            public static readonly KeyString NoGovernorates = new("admin_shipping.no_governorates");
+            public static readonly KeyString Subtitle = new("admin_shipping.subtitle");
         }
     }
 }

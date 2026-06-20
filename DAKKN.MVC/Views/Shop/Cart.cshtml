@@ -10,17 +10,8 @@
         <div class="mb-10">
             <h1 class="text-3xl md:text-4xl font-extrabold text-on-surface dark:text-white mb-2">@Localizer["cart_h1"]</h1>
             <div class="flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full @(Model.IsFreeShipping ? "bg-green-500" : "bg-yellow-500")"></span>
-                <p id="free-shipping-info" class="text-sm @(Model.IsFreeShipping ? "text-green-500" : "text-on-surface-variant dark:text-slate-400")">
-                    @if (Model.IsFreeShipping)
-                    {
-                        @Localizer["cart_free_shipping_msg"]
-                    }
-                    else
-                    {
-                        @Localizer["cart_shipping_remaining"] <span class="font-bold">@Model.AmountLeftForFreeShipping.ToString("N0") @Localizer["Currency_EGP"]</span>
-                    }
-                </p>
+                <span class="w-2 h-2 rounded-full" id="shipping-status-dot"></span>
+                <p id="free-shipping-info" class="text-sm"></p>
             </div>
         </div>
 
@@ -34,14 +25,19 @@
                         </div>
                         <h2 class="text-2xl font-bold text-on-surface dark:text-white mb-2">@Localizer["cart_empty_h"]</h2>
                         <p class="text-on-surface-variant dark:text-slate-400 max-w-sm mx-auto mb-8">@Localizer["cart_empty_p"]</p>
-                        <a asp-action="Products" asp-controller="Shop" class="inline-flex items-center gap-2 bg-primary text-on-primary px-8 py-4 rounded-2xl font-bold hover:shadow-lg hover:-translate-y-0.5 transition-all">
-                            @Localizer["orders_empty_btn"] <span class="material-symbols-outlined">arrow_forward</span>
-                        </a>
+                        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                            <a asp-action="Products" asp-controller="Shop" class="inline-flex items-center gap-2 bg-primary text-on-primary px-8 py-4 rounded-2xl font-bold hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                                @Localizer[LocalizationKeys.CartMessages.BrowseProducts.Key] <span class="material-symbols-outlined">arrow_forward</span>
+                            </a>
+                            <a asp-action="Products" asp-controller="Shop" class="inline-flex items-center gap-2 text-on-surface-variant dark:text-slate-400 hover:text-primary font-bold transition-colors px-8 py-4">
+                                <span class="material-symbols-outlined text-sm">arrow_back</span>
+                                @Localizer[LocalizationKeys.CartMessages.ContinueShopping.Key]
+                            </a>
+                        </div>
                     </div>
                 }
                 else
                 {
-                    var idx = 0;
                     foreach (var item in Model.Items)
                     {
                         <div class="cart-item group bg-surface-container-low dark:bg-[#0d1a2a] rounded-[32px] border border-outline-variant/10 p-6 shadow-sm hover:shadow-md transition-all" data-product-id="@item.ProductId" data-price="@item.Price">
@@ -64,7 +60,7 @@
                                             <span class="item-qty font-bold w-8 text-center text-on-surface dark:text-white" data-product-id="@item.ProductId">@item.Quantity</span>
                                             <button onclick="updateQty('@item.ProductId', 1)" class="w-8 h-8 rounded-xl bg-surface dark:bg-[#0d1a2a] shadow-sm flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all text-on-surface dark:text-white">+</button>
                                         </div>
-                                        <div class="text-right">
+                                        <div class="text-end">
                                             <p class="text-xs text-on-surface-variant dark:text-slate-400">@Localizer["cart_unit"]: @item.Price.ToString("N2") @Localizer["Currency_EGP"]</p>
                                             <p class="font-bold text-xl text-primary item-total">@((item.Price * item.Quantity).ToString("N2")) @Localizer["Currency_EGP"]</p>
                                         </div>
@@ -72,33 +68,67 @@
                                 </div>
                             </div>
                         </div>
-                        idx++;
                     }
                 }
             </div>
 
-            <aside class="space-y-6 sticky top-28">
+            <aside class="space-y-6 sticky top-28" id="cart-sidebar">
                 <div class="bg-surface-container-low dark:bg-[#0d1a2a] rounded-[32px] border border-outline-variant/10 p-8 shadow-lg space-y-6">
                     <h2 class="text-2xl font-bold text-on-surface dark:text-white">@Localizer["cart_summary_h"]</h2>
 
-                    <div class="space-y-4">
-                        <div class="flex justify-between text-on-surface-variant dark:text-slate-400">
-                            <span>@Localizer["cart_subtotal"] (@Model.TotalQuantity @Localizer["cart_items"])</span>
-                            <span id="summary-subtotal" class="font-bold text-on-surface dark:text-white">@Model.Subtotal.ToString("N2") @Localizer["Currency_EGP"]</span>
-                        </div>
-                        <div class="flex justify-between text-on-surface-variant dark:text-slate-400">
-                            <span>@Localizer["cart_shipping"]</span>
-                            <span id="summary-shipping" class="font-bold text-on-surface dark:text-white">@(Model.IsFreeShipping ? Localizer["cart_free"].Value : Model.Shipping.ToString("N2") + " " + Localizer["Currency_EGP"].Value)</span>
-                        </div>
-                        <div class="h-px bg-outline-variant/20"></div>
-                        <div class="flex justify-between items-end">
-                            <span class="font-bold text-lg text-on-surface dark:text-white">@Localizer["cart_total"]</span>
-                            <div class="text-right">
-                                <div id="summary-total" class="text-3xl font-bold text-primary">@Model.Total.ToString("N2") @Localizer["Currency_EGP"]</div>
-                                <div class="text-[10px] text-on-surface-variant dark:text-slate-400 uppercase tracking-widest mt-1">@Localizer["cart_vat_inc"]</div>
+                    @if (!Model.IsEmpty)
+                    {
+                        <div class="space-y-4">
+                            <div class="flex justify-between text-on-surface-variant dark:text-slate-400">
+                                <span>@Localizer["cart_subtotal"] (<span id="summary-items-count">@Model.TotalQuantity</span> @Localizer["cart_items"])</span>
+                                <span id="summary-subtotal" class="font-bold text-on-surface dark:text-white">@Model.Subtotal.ToString("N2") @Localizer["Currency_EGP"]</span>
+                            </div>
+
+                            <div class="bg-surface-container dark:bg-white/5 rounded-2xl p-4 space-y-3">
+                                <label class="text-xs font-bold text-on-surface-variant dark:text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-sm">local_shipping</span>
+                                    @Localizer[LocalizationKeys.ShippingMessages.ShippingInfo.Key]
+                                </label>
+                                <select id="shipping-gov-select" class="w-full bg-surface dark:bg-[#0d1a2a] border border-outline-variant/20 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-primary text-on-surface dark:text-white transition-all" onchange="updateShipping()">
+                                    <option value="">@Localizer[LocalizationKeys.ShippingMessages.SelectGov.Key]</option>
+                                    @foreach (var gov in Model.Governorates)
+                                    {
+                                        <option value="@gov.Id" data-price="@gov.ShippingPrice" selected="@(Model.ShippingGovernorateId == gov.Id ? true : null)">
+                                            @(isAr ? gov.ArName : gov.Name) (@gov.ShippingPrice.ToString("N0") @Localizer["Currency_EGP"])
+                                        </option>
+                                    }
+                                </select>
+                            </div>
+
+                            <div class="flex justify-between text-on-surface-variant dark:text-slate-400">
+                                <span>@Localizer["cart_shipping"]</span>
+                                <span id="summary-shipping" class="font-bold text-on-surface dark:text-white">
+                                    @if (Model.ShippingGovernorateId.HasValue)
+                                    {
+                                        @(Model.ShippingPrice.ToString("N2")) @Localizer["Currency_EGP"]
+                                    }
+                                    else
+                                    {
+                                        <span class="text-on-surface-variant/50">--</span>
+                                    }
+                                </span>
+                            </div>
+
+                            <div class="h-px bg-outline-variant/20"></div>
+                            <div class="flex justify-between items-end">
+                                <span class="font-bold text-lg text-on-surface dark:text-white">@Localizer["cart_total"]</span>
+                                <div class="text-end">
+                                    <div id="summary-total" class="text-3xl font-bold text-primary">@Model.Total.ToString("N2") @Localizer["Currency_EGP"]</div>
+                                    <div class="text-[10px] text-on-surface-variant dark:text-slate-400 uppercase tracking-widest mt-1">@Localizer["cart_vat_inc"]</div>
+                                </div>
                             </div>
                         </div>
-                    </div>
+
+                        <a asp-action="Checkout" asp-controller="Customer" class="w-full bg-primary text-on-primary py-5 rounded-3xl font-bold text-xl shadow-large hover:scale-[1.02] hover:shadow-2xl transition-all flex items-center justify-center gap-3">
+                            @Localizer["cart_checkout"]
+                            <span class="material-symbols-outlined">chevron_right</span>
+                        </a>
+                    }
 
                     <div class="flex flex-col gap-3">
                         <div class="flex items-center gap-3 p-4 bg-surface-container dark:bg-white/5 rounded-2xl">
@@ -120,7 +150,7 @@
 
                 <a asp-action="Products" asp-controller="Shop" class="flex items-center justify-center gap-2 text-on-surface-variant dark:text-slate-400 hover:text-primary font-bold transition-colors">
                     <span class="material-symbols-outlined text-sm">arrow_back</span>
-                    @Localizer["cart_continue_shopping"]
+                    @Localizer[LocalizationKeys.CartMessages.ContinueShopping.Key]
                 </a>
             </aside>
         </div>
@@ -131,8 +161,18 @@
     .cart-item {
         animation: slideIn 0.4s ease-out forwards;
     }
-    @@keyframes slideIn {
+    [dir="ltr"] .cart-item {
+        animation: slideInLtr 0.4s ease-out forwards;
+    }
+    [dir="rtl"] .cart-item {
+        animation: slideInRtl 0.4s ease-out forwards;
+    }
+    @@keyframes slideInLtr {
         from { opacity: 0; transform: translateX(-10px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+    @@keyframes slideInRtl {
+        from { opacity: 0; transform: translateX(10px); }
         to { opacity: 1; transform: translateX(0); }
     }
     .item-removed {
@@ -146,6 +186,8 @@
     <script>
         const csrfToken = document.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
         const currencyEgp = '@Localizer["Currency_EGP"]';
+        let selectedGovId = '@Model.ShippingGovernorateId';
+        let currentShipping = @Model.ShippingPrice.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
 
         async function updateQty(productId, delta) {
             const qtyEl = document.querySelector(`.item-qty[data-product-id="${productId}"]`);
@@ -163,16 +205,20 @@
                 const data = await response.json();
                 if (data.success) {
                     updateCartBadge(data.data);
-                    window.location.reload();
+                    qtyEl.textContent = newQty;
+                    recalculateTotals();
                 }
             } catch (e) {
                 console.error('Failed to update quantity:', e);
+                window.location.reload();
             }
         }
 
-        async function removeItem(productId) {
-            const item = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
-            if (item) item.classList.add('item-removed');
+        async function removeItem(productId, skipConfirm) {
+            if (!skipConfirm) {
+                const item = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
+                if (item) item.classList.add('item-removed');
+            }
 
             setTimeout(async () => {
                 try {
@@ -183,7 +229,10 @@
                     const data = await response.json();
                     if (data.success) {
                         updateCartBadge(data.data);
-                        window.location.reload();
+                        const item = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
+                        if (item) item.remove();
+                        recalculateTotals();
+                        checkIfEmpty();
                     }
                 } catch (e) {
                     console.error('Failed to remove item:', e);
@@ -192,8 +241,82 @@
             }, 300);
         }
 
+        async function updateShipping() {
+            const select = document.getElementById('shipping-gov-select');
+            const govId = select.value;
+            if (!govId) return;
+
+            try {
+                const response = await fetch('/api/v1/cart/shipping', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ shippingGovernorateId: govId })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    selectedGovId = govId;
+                    currentShipping = parseFloat(data.data.shippingPrice) || 0;
+                    recalculateTotals();
+                }
+            } catch (e) {
+                console.error('Failed to update shipping:', e);
+                window.location.reload();
+            }
+        }
+
+        function recalculateTotals() {
+            let subtotal = 0;
+            let itemCount = 0;
+            const items = document.querySelectorAll('.cart-item');
+
+            items.forEach(item => {
+                const qty = parseInt(item.querySelector('.item-qty').textContent);
+                const price = parseFloat(item.dataset.price);
+                const total = qty * price;
+                subtotal += total;
+                itemCount += qty;
+                const totalEl = item.querySelector('.item-total');
+                if (totalEl) totalEl.textContent = total.toFixed(2) + ' ' + currencyEgp;
+            });
+
+            const shipping = currentShipping || 0;
+            const total = subtotal + shipping;
+
+            const subtotalEl = document.getElementById('summary-subtotal');
+            const shippingEl = document.getElementById('summary-shipping');
+            const totalEl = document.getElementById('summary-total');
+            const itemsCountEl = document.getElementById('summary-items-count');
+
+            if (subtotalEl) subtotalEl.textContent = subtotal.toFixed(2) + ' ' + currencyEgp;
+            if (shippingEl) {
+                if (shipping > 0) {
+                    shippingEl.textContent = shipping.toFixed(2) + ' ' + currencyEgp;
+                } else if (selectedGovId) {
+                    shippingEl.textContent = '0.00 ' + currencyEgp;
+                } else {
+                    shippingEl.innerHTML = '<span class="text-on-surface-variant/50">--</span>';
+                }
+            }
+            if (totalEl) totalEl.textContent = total.toFixed(2) + ' ' + currencyEgp;
+            if (itemsCountEl) itemsCountEl.textContent = itemCount;
+        }
+
+        function checkIfEmpty() {
+            const items = document.querySelectorAll('.cart-item');
+            if (items.length === 0) {
+                window.location.reload();
+            }
+        }
+
         function updateCartBadge(count) {
             document.querySelectorAll('[id^="cart-badge"]').forEach(el => el.textContent = count || 0);
         }
+
+        window.addEventListener('DOMContentLoaded', function() {
+            const select = document.getElementById('shipping-gov-select');
+            if (select && selectedGovId) {
+                select.value = selectedGovId;
+            }
+        });
     </script>
 }

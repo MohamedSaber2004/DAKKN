@@ -12,9 +12,12 @@ using DAKKN.Application.Localization;
 using MediatR;
 using DAKKN.Application.Features.Users.Queries.GetUserSettings;
 using DAKKN.Application.Features.Users.Commands.UpdateUserSettings;
+using DAKKN.Application.Features.Cart.Queries.GetCart;
 using DAKKN.Application.Features.Products.Queries.GetProducts;
 using DAKKN.Application.Features.Products.Queries.GetProductById;
 using DAKKN.Application.Features.Categories.Queries.GetCategories;
+using DAKKN.Application.Features.ShippingGovernorates.Queries.GetActiveShippingGovernorates;
+using DAKKN.MVC.ViewModels.Landing;
 
 namespace DAKKN.MVC.Controllers
 {
@@ -141,17 +144,39 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpGet("cart")]
-        public IActionResult Cart()
+        public async Task<IActionResult> Cart()
         {
             ViewData["Title"] = localizer["nav_cart"];
-            return View();
+            var cart = await mediator.Send(new GetCartQuery());
+            var governorates = await mediator.Send(new GetActiveShippingGovernoratesQuery());
+            var viewModel = new GuestCartViewModel
+            {
+                Items = cart.Items,
+                ShippingGovernorateId = cart.ShippingGovernorateId,
+                GovernorateName = cart.GovernorateName,
+                GovernorateArName = cart.GovernorateArName,
+                ShippingPrice = cart.ShippingPrice,
+                Governorates = governorates
+            };
+            return View(viewModel);
         }
 
         [HttpGet("checkout")]
-        public IActionResult Checkout()
+        public async Task<IActionResult> Checkout()
         {
             ViewData["Title"] = localizer["checkout_h1"];
-            return View();
+            var cart = await mediator.Send(new GetCartQuery());
+            var governorates = await mediator.Send(new GetActiveShippingGovernoratesQuery());
+            var viewModel = new GuestCartViewModel
+            {
+                Items = cart.Items,
+                ShippingGovernorateId = cart.ShippingGovernorateId,
+                GovernorateName = cart.GovernorateName,
+                GovernorateArName = cart.GovernorateArName,
+                ShippingPrice = cart.ShippingPrice,
+                Governorates = governorates
+            };
+            return View(viewModel);
         }
 
         [HttpGet("confirmation")]

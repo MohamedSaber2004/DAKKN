@@ -46,6 +46,29 @@ namespace DAKKN.Persistence
             }
         }
 
+        public static async Task SeedGovernoratesAsync(DAKKNDbContext context)
+        {
+            if (!context.ShippingGovernorates.Any())
+            {
+                var basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "DAKKN.Persistence", "SeedData");
+                var json = await File.ReadAllTextAsync(Path.Combine(basePath, "governorates.json"));
+                var items = JsonSerializer.Deserialize<List<GovernorateSeed>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                if (items != null)
+                {
+                    foreach (var item in items)
+                        context.ShippingGovernorates.Add(new Domain.Entities.ShippingGovernorate
+                        {
+                            Name = item.Name,
+                            ArName = item.ArName,
+                            ShippingPrice = item.ShippingPrice,
+                            DisplayOrder = item.DisplayOrder,
+                            IsActive = true
+                        });
+                    await context.SaveChangesAsync();
+                }
+            }
+        }
+
         public static async Task SeedCategoriesAndProductsAsync(DAKKNDbContext context)
         {
             var basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "DAKKN.Persistence", "SeedData");
@@ -92,6 +115,14 @@ namespace DAKKN.Persistence
                     await context.SaveChangesAsync();
                 }
             }
+        }
+
+        private class GovernorateSeed
+        {
+            public string Name { get; set; } = string.Empty;
+            public string ArName { get; set; } = string.Empty;
+            public decimal ShippingPrice { get; set; }
+            public int DisplayOrder { get; set; }
         }
 
         private class CategorySeed

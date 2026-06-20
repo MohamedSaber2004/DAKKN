@@ -62,7 +62,7 @@ function toggleLang() {
     const current = getCurrentLang();
     const target = current.startsWith('en') ? 'ar' : 'en';
     
-    // Persist language choice
+    // Persist language choice in localStorage (for guest/landing only — never touches DB)
     localStorage.setItem('dakkn_lang', target);
     setCookie(".AspNetCore.Culture", `c=${target}|uic=${target}`, 365);
     

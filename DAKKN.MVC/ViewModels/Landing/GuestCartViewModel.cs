@@ -1,3 +1,4 @@
+using DAKKN.Application.DTOs;
 using DAKKN.Application.Features.Cart.DTOs;
 
 namespace DAKKN.MVC.ViewModels.Landing
@@ -7,10 +8,12 @@ namespace DAKKN.MVC.ViewModels.Landing
         public List<CartItemDto> Items { get; set; } = new();
         public int TotalQuantity => Items.Sum(x => x.Quantity);
         public decimal Subtotal => Items.Sum(x => x.Price * x.Quantity);
-        public decimal Shipping => Subtotal >= 500 ? 0 : 45;
-        public decimal Total => Subtotal + Shipping;
+        public Guid? ShippingGovernorateId { get; set; }
+        public string? GovernorateName { get; set; }
+        public string? GovernorateArName { get; set; }
+        public decimal ShippingPrice { get; set; }
+        public decimal Total => Subtotal + ShippingPrice;
         public bool IsEmpty => Items.Count == 0;
-        public bool IsFreeShipping => Subtotal >= 500;
-        public decimal AmountLeftForFreeShipping => Subtotal >= 500 ? 0 : 500 - Subtotal;
+        public List<ShippingGovernorateDto> Governorates { get; set; } = new();
     }
 }

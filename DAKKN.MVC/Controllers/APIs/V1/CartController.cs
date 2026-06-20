@@ -4,6 +4,7 @@ using DAKKN.Appearence.Routes;
 using DAKKN.Application.Features.Cart.Commands.AddToCart;
 using DAKKN.Application.Features.Cart.Commands.RemoveFromCart;
 using DAKKN.Application.Features.Cart.Commands.UpdateCartQuantity;
+using DAKKN.Application.Features.Cart.Commands.UpdateCartShipping;
 using DAKKN.Application.Features.Cart.Queries.GetCart;
 using DAKKN.Application.Features.Cart.Queries.GetCartCount;
 using DAKKN.Application.Localization;
@@ -66,6 +67,15 @@ namespace DAKKN.Appearence.Controllers.APIs.V1
         {
             var count = await _mediator.Send(command);
             return Ok(count, _localizer[LocalizationKeys.CartMessages.Updated.Key]);
+        }
+
+        [HttpPut]
+        [Route(ApiRoutes.Cart.UpdateShipping)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> UpdateShipping([FromBody] UpdateCartShippingCommand command)
+        {
+            var result = await _mediator.Send(command);
+            return Ok(result, _localizer[LocalizationKeys.CartMessages.ShippingUpdated.Key]);
         }
     }
 }

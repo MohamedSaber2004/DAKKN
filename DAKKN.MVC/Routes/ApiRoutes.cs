@@ -58,6 +58,12 @@ namespace DAKKN.Appearence.Routes
             public const string Add = Base + "/cart/add";
             public const string Remove = Base + "/cart/remove/{productId}";
             public const string UpdateQuantity = Base + "/cart/update-quantity";
+            public const string UpdateShipping = Base + "/cart/shipping";
+        }
+
+        public static class Shipping
+        {
+            public const string Governorates = Base + "/shipping/governorates";
         }
     }
 }
