@@ -142,5 +142,17 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString CategoriesEmptyTitle = new("categories.empty_title");
             public static readonly KeyString CategoriesEmptyMsg = new("categories.empty_msg");
         }
+
+        public static class CartMessages
+        {
+            public static readonly KeyString Added = new("cart.added");
+            public static readonly KeyString Removed = new("cart.removed");
+            public static readonly KeyString Updated = new("cart.updated");
+            public static readonly KeyString Empty = new("cart.empty");
+            public static readonly KeyString QuantityMustBePositive = new("cart.quantity_must_be_positive");
+            public static readonly KeyString ProductNotAvailable = new("cart.product_not_available");
+            public static readonly KeyString ProductNotFound = new("cart.product_not_found");
+            public static readonly KeyString FreeShipping = new("cart.free_shipping");
+        }
     }
 }

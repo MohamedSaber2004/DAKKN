@@ -4,9 +4,11 @@ using DAKKN.Appearence.Services;
 using DAKKN.Application;
 using DAKKN.Application.Common.Interfaces;
 using DAKKN.Application.Common.Options;
+using DAKKN.Application.Interfaces;
 using DAKKN.Application.Localization;
 using DAKKN.Domain.Entities;
 using DAKKN.Infrastructure;
+using DAKKN.MVC.Services;
 using DAKKN.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -52,8 +54,19 @@ namespace DAKKN.MVC
 
             builder.Host.UseSerilog();
 
-            builder.Services.AddHttpContextAccessor();
-            builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromDays(7);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+    options.Cookie.Name = ".DAKKN.GuestCart";
+});
+
+builder.Services.AddScoped<IGuestCartStorage, SessionCartStorage>();
 
             builder.Services.AddApplication(builder.Configuration);
             builder.Services.AddPersistence(builder.Configuration);
@@ -204,7 +217,11 @@ namespace DAKKN.MVC
 
             app.UseForwardedHeaders();
 
-            if (!app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
             {
                 app.UseExceptionHandler("/Home/Error");
             }
@@ -357,13 +374,15 @@ namespace DAKKN.MVC
 
             app.UseRouting();
 
+            app.UseSession();
+
             app.UseCors("CQRS");
 
             app.UseRateLimiter();
 
-            app.UseAuthentication();
-
             app.UseRequestLocalization(localizationOptions);
+
+            app.UseAuthentication();
 
             app.UseOutputCache();
 
@@ -374,6 +393,18 @@ namespace DAKKN.MVC
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+            {
+                var ex = args.ExceptionObject as Exception;
+                Log.Fatal(ex, "AppDomain unhandled exception: {Message}", ex?.Message);
+            };
+
+            TaskScheduler.UnobservedTaskException += (sender, args) =>
+            {
+                Log.Fatal(args.Exception, "Unobserved task exception: {Message}", args.Exception.Message);
+                args.SetObserved();
+            };
 
             app.Run();
         }

@@ -189,8 +189,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         initFrozenActions();
         // Initialize delegated add-to-cart for dynamically rendered buttons
         initDelegatedAddToCart();
-        // Initialize cart badge from localStorage (survives page navigation)
-        initCartBadge();
+        // Initialize cart badge from server session (fire-and-forget, don't block rendering)
+        initCartBadge().catch(() => {});
 
         // Initialize dynamic components with current language
         await applyLang(current);
@@ -471,50 +471,48 @@ async function fetchPriceRange() {
 /* ── Placeholder ──────────────────── */
 const PRODUCT_PLACEHOLDER = '/images/placeholders/product-placeholder.svg';
 
-function guestAddToCart(btnOrId, nameOrId, priceOrName, imageOrPrice, maybeImage) {
-    let id, name, price, image, btn;
+async function guestAddToCart(btnOrId, nameOrId, priceOrName, imageOrPrice, maybeImage) {
+    let id, name, btn;
     if (typeof btnOrId === 'object' && btnOrId.tagName) {
         btn = btnOrId;
         id = nameOrId;
         name = priceOrName;
-        price = imageOrPrice;
-        image = maybeImage || '';
     } else {
         id = btnOrId;
         name = nameOrId;
-        price = priceOrName;
-        image = imageOrPrice || '';
     }
-    const cart = JSON.parse(localStorage.getItem('dakkn_cart') || '[]');
-    const existing = cart.findIndex(item => item.id === id);
-    if (existing > -1) {
-        cart[existing].qty = (cart[existing].qty || 1) + 1;
-    } else {
-        cart.push({ id, name, price: parseFloat(price), image, qty: 1 });
+    try {
+        const response = await fetch('/api/v1/cart/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ productId: id, quantity: 1 })
+        });
+        const data = await response.json();
+        if (data.success) {
+            document.querySelectorAll('[id^="cart-badge"]').forEach(el => el.textContent = data.data || 0);
+            if (btn) {
+                const orig = btn.innerHTML;
+                btn.innerHTML = '<span class="material-symbols-outlined text-sm">check</span>';
+                btn.classList.add('bg-green-600', 'scale-95');
+                setTimeout(() => {
+                    btn.classList.remove('bg-green-600', 'scale-95');
+                    btn.innerHTML = orig;
+                }, 1000);
+            }
+            showCartToast(data.message || name || id);
+            bounceCartBadge();
+        }
+    } catch (e) {
+        console.error('Failed to add to cart:', e);
     }
-    localStorage.setItem('dakkn_cart', JSON.stringify(cart));
-    const count = cart.reduce((s, i) => s + (i.qty || 1), 0);
-    document.querySelectorAll('[id^="cart-badge"]').forEach(el => el.textContent = count);
-    if (btn) {
-        const orig = btn.innerHTML;
-        btn.innerHTML = '<span class="material-symbols-outlined text-sm">check</span>';
-        btn.classList.add('bg-green-600', 'scale-95');
-        setTimeout(() => {
-            btn.classList.remove('bg-green-600', 'scale-95');
-            btn.innerHTML = orig;
-        }, 1000);
-    }
-    showCartToast(name || id);
-    bounceCartBadge();
 }
 
-function showCartToast(name) {
+function showCartToast(message) {
     const container = document.getElementById('cart-toast-container');
     if (!container) return;
-    const isAr = document.documentElement.lang.startsWith('ar');
     const toast = document.createElement('div');
     toast.className = 'cart-toast';
-    toast.innerHTML = `<span class="material-symbols-outlined text-green-400 text-lg">check_circle</span><span>${isAr ? 'تمت الإضافة إلى السلة — ' : 'Added to cart — '}${name}</span>`;
+    toast.innerHTML = `<span class="material-symbols-outlined text-green-400 text-lg">check_circle</span><span>${message}</span>`;
     container.appendChild(toast);
     requestAnimationFrame(() => toast.classList.add('cart-toast-show'));
     setTimeout(() => {
@@ -523,13 +521,14 @@ function showCartToast(name) {
     }, 2500);
 }
 
-function initCartBadge() {
+async function initCartBadge() {
     try {
-        const cart = JSON.parse(localStorage.getItem('dakkn_cart') || '[]');
-        const count = cart.reduce((s, i) => s + (i.qty || 1), 0);
+        const response = await fetch('/api/v1/cart/count');
+        const data = await response.json();
+        const count = data.success ? (data.data || 0) : 0;
         document.querySelectorAll('[id^="cart-badge"]').forEach(el => el.textContent = count);
     } catch (e) {
-        // Ignore parse errors
+        document.querySelectorAll('[id^="cart-badge"]').forEach(el => el.textContent = '0');
     }
 }
 

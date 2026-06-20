@@ -1110,5 +1110,15 @@
   "categories_empty_title": "No Categories Yet",
   "categories_empty_msg": "Categories will appear once products are added.",
   "cat_products_count": "Products",
-  "no_products_title": "No Products Found"
+  "no_products_title": "No Products Found",
+  "cart": {
+    "added": "Added to cart",
+    "removed": "Removed from cart",
+    "updated": "Cart updated",
+    "empty": "Your cart is empty",
+    "quantity_must_be_positive": "Quantity must be greater than zero",
+    "product_not_available": "Product is not available",
+    "product_not_found": "Product not found",
+    "free_shipping": "Free shipping"
+  }
   }

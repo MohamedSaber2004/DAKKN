@@ -1,0 +1,47 @@
+@model List<DAKKN.Application.DTOs.CategoryDto>
+@{
+    ViewData["Title"] = Localizer["nav_categories"];
+    var isAr = System.Threading.Thread.CurrentThread.CurrentUICulture.Name.StartsWith("ar");
+}
+
+<div class="min-h-screen bg-surface dark:bg-[#080e1a] pt-28 pb-16 px-4 md:px-16">
+    <div class="max-w-7xl mx-auto">
+        <h1 class="text-3xl md:text-4xl font-extrabold text-on-surface dark:text-white mb-10">@Localizer["nav_categories"]</h1>
+
+        @if (Model.Count == 0)
+        {
+            <div class="text-center py-20">
+                <div class="w-24 h-24 bg-surface-container-high dark:bg-white/5 rounded-full flex items-center justify-center mx-auto text-on-surface-variant/30 mb-6">
+                    <span class="material-symbols-outlined text-5xl">grid_view</span>
+                </div>
+                <h2 class="text-2xl font-bold text-on-surface dark:text-white mb-2">@Localizer["categories_empty_title"]</h2>
+                <p class="text-on-surface-variant dark:text-slate-400">@Localizer["categories_empty_msg"]</p>
+            </div>
+        }
+        else
+        {
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                @foreach (var cat in Model)
+                {
+                    <a href="/shop/products?categoryId=@cat.Id" class="group rounded-2xl overflow-hidden relative aspect-square glass-panel shadow-sm dark:bg-slate-900/40 no-underline block hover:-translate-y-1 transition-all duration-300">
+                        <img src="@(cat.ImageFullUrl ?? "/images/placeholders/category-placeholder.svg")" alt="@(isAr ? cat.ArName : cat.CategoryName)"
+                             class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                             loading="lazy" onerror="this.src='/images/placeholders/category-placeholder.svg'" />
+                        <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors z-10"></div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6 cat-overlay z-20">
+                            <h3 class="text-xl font-bold text-white">@(isAr ? cat.ArName : cat.CategoryName)</h3>
+                            <p class="text-sm text-white/80">@cat.ProductsCount @Localizer["cat_products_count"]</p>
+                        </div>
+                    </a>
+                }
+            </div>
+        }
+
+        <div class="mt-10 text-center">
+            <a asp-action="Products" asp-controller="Shop" class="inline-flex items-center gap-2 bg-primary text-on-primary px-8 py-4 rounded-2xl font-bold hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                <span class="material-symbols-outlined">arrow_back</span>
+                @Localizer["cart_continue_shopping"]
+            </a>
+        </div>
+    </div>
+</div>

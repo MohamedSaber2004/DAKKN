@@ -50,5 +50,14 @@ namespace DAKKN.Appearence.Routes
             public const string FeaturedProducts = Base + "/catalog/products/featured";
             public const string PriceRange = Base + "/catalog/products/price-range";
         }
+
+        public static class Cart
+        {
+            public const string Get = Base + "/cart";
+            public const string Count = Base + "/cart/count";
+            public const string Add = Base + "/cart/add";
+            public const string Remove = Base + "/cart/remove/{productId}";
+            public const string UpdateQuantity = Base + "/cart/update-quantity";
+        }
     }
 }

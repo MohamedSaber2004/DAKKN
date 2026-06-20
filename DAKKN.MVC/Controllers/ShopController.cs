@@ -1,10 +1,12 @@
 using DAKKN.Application.Common.Exceptions;
 using DAKKN.Application.DTOs;
+using DAKKN.Application.Features.Cart.Queries.GetCart;
 using DAKKN.Application.Features.Categories.Queries.GetCategories;
 using DAKKN.Application.Features.Products.Queries.GetProductById;
 using DAKKN.Application.Features.Products.Queries.GetProducts;
 using DAKKN.Application.Localization;
 using DAKKN.MVC.ViewModels.Customer;
+using DAKKN.MVC.ViewModels.Landing;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
@@ -57,10 +59,15 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpGet("cart")]
-        public IActionResult Cart()
+        public async Task<IActionResult> Cart()
         {
             ViewData["Title"] = _localizer["nav_cart"];
-            return View();
+            var cart = await _mediator.Send(new GetCartQuery());
+            var viewModel = new GuestCartViewModel
+            {
+                Items = cart.Items
+            };
+            return View(viewModel);
         }
 
         [HttpGet("categories")]

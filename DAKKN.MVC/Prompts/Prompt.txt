@@ -1,328 +1,347 @@
-You are a Senior ASP.NET Core 8 MVC, Clean Architecture, MediatR CQRS, Entity Framework Core, AutoMapper, and Tailwind CSS engineer working on the DAKKN project.
+Use this prompt:
 
-You MUST follow all project rules defined in @DAKKN/Gemini.md — especially the architecture patterns, dependency direction, naming conventions, and constraints listed there.
+You are a Senior ASP.NET Core 8 MVC, Clean Architecture, MediatR CQRS, Entity Framework Core, ASP.NET Identity, Session Management, and E-Commerce engineer working on the DAKKN project.
 
-First, analyze the screenshot:
+Context:
 
-@DAKKN.MVC/Prompts/Screenshot 2026-06-19 213621.png
+The Landing Page and Store support Guest Users (non-authenticated users).
 
-The screenshot shows an issue with Category Images displayed on the Landing Page. Investigate the visual problem shown in the screenshot and identify why category images are not rendering correctly, are broken, stretched, missing, or using incorrect URLs.
+Current Problem:
 
-IMPORTANT ARCHITECTURE RULES
+Guest users can click "Add To Cart".
 
-Current DAKKN architecture:
+Observed behavior:
 
-- Categories are loaded dynamically from the database.
-- Category.ImageUrl stores ONLY the image file name.
-- The database NEVER stores:
-  - Full URLs
-  - Absolute URLs
-  - Physical paths
-  - Relative file system paths
+1. Cart counter increases correctly.
+2. Product appears to be added successfully.
+3. When navigating to:
 
-Example:
+/shop/cart
 
-Database value:
-Category.ImageUrl = "electronics.webp"
+the cart is empty.
 
-NOT:
-"https://localhost:5001/files/electronics.webp"
+4. "Browse Shopping" and "Continue Shopping" behavior is inconsistent.
+5. Cart state is not persisted correctly for guest users.
+6. Guest cart functionality is partially broken.
 
-NOT:
-"/uploads/categories/electronics.webp"
+Goal:
 
-Image files are served through the Files API endpoint:
-
-GET {BaseUrl}/files/{imageName}
-
-Examples:
-
-BaseUrl:
-https://localhost:5001
-
-ImageName:
-electronics.webp
-
-Final URL:
-https://localhost:5001/files/electronics.webp
-
-Image naming convention (per Gemini.md §5.5):
-- File names are prefixed with the place index (2 for Categories) and include a timestamp.
-- Example: "2202506151230001.jpg" (2 = Categories place, 202506151230001 = timestamp).
-- The first digit of an existing image name must match its UploadPlace.
-- Allowed extensions: .jpg, .jpeg, .webp, .bmp, .png, .gif, .jfif.
-- Max file size: 10 MB.
-
-GOAL
-
-Fix the Category Images section on the Landing Page so that images render correctly, consistently, responsively, and follow the same strategy used throughout DAKKN for product images and profile images.
+Perform a complete root-cause analysis and implement a production-ready Guest Cart system.
 
 =================================================
 STEP 1 - ROOT CAUSE ANALYSIS
 =================================================
 
-Audit:
+Audit the entire cart flow:
 
-- Landing Page Controller (must extend `Controller`, not `BaseApiController` — §8.2)
-- Landing Page ViewModel (naming: `{Page}ViewModel` — §13)
-- Category DTOs (naming: `{Entity}Dto` — §13)
-- Category Queries (use `IRequest<T>` via MediatR — §3.1)
-- MediatR Handlers (never inject `DAKKNDbContext` directly — use `IUnitOfWork.GetRepository<T>()` — §3.3, §14-1)
-- AutoMapper Profiles
-- Category Card Component
-- Razor Views
-- Image URL generation logic
-- AppSettings/BaseUrl configuration
-- Files endpoint integration
-- Image naming convention compliance (first digit must match UploadPlace — §5.5)
+Landing Page
+→ Add To Cart Button
+→ AJAX Request
+→ Controller
+→ MediatR Command
+→ Session Storage / Cookie Storage
+→ Cart Counter
+→ Cart Page (/shop/cart)
 
-Find:
+Investigate:
 
-- Incorrect URL generation
-- Missing BaseUrl
-- Broken mappings
-- Null image handling issues
-- Incorrect src attributes
-- Relative URL problems
-- Placeholder issues
+- Cart counter logic
+- Session storage
+- Cookie storage
+- Cart persistence
+- Cart retrieval
+- Cart ViewModel
+- Cart Queries
+- Cart Razor Views
+- JavaScript cart updates
+- MediatR handlers
 
-Explain the exact root cause.
+Identify why:
 
-=================================================
-STEP 2 - IMAGE URL RESOLUTION
-=================================================
+- Counter increases
+- Cart page remains empty
 
-Implement a centralized image URL generation strategy.
-
-Rule:
-
-Database:
-Category.ImageUrl = image file name only
-
-Frontend must generate:
-
-{BaseUrl}/files/{Category.ImageUrl}
-
-Example:
-
-Database:
-electronics.webp
-
-Rendered HTML:
-
-<img src="https://localhost:5001/files/electronics.webp" />
-
-Never generate:
-
-<img src="electronics.webp" />
-
-Never generate:
-
-<img src="/uploads/electronics.webp" />
-
-Never generate:
-
-<img src="@Model.ImageUrl" />
+Provide exact root cause.
 
 =================================================
-STEP 3 - CREATE REUSABLE FILE URL RESOLVER
+STEP 2 - GUEST CART STORAGE
 =================================================
 
-If not already implemented:
+Guest users are NOT authenticated.
 
-Create in DAKKN.Application (the Interface) and DAKKN.Infrastructure (the Implementation):
+Implement persistent guest cart storage.
 
-IFileUrlResolver
+Choose the best existing architecture:
 
-Methods:
+Option A:
+Session-based Cart
 
-string GetFileUrl(string imageName);
+Option B:
+Cookie-based Cart
 
-Implementation:
+Option C:
+Hybrid Session + Cookie
 
-Returns:
-
-{BaseUrl}/files/{imageName}
-
-Use dependency injection.
-
-Use throughout:
-
-- Categories
-- Products
-- User Profile Images
-- Future image entities
-
-Avoid duplicate URL-building logic.
-
-=================================================
-STEP 4 - DTO & VIEWMODEL UPDATES
-=================================================
-
-Add:
-
-ImageFullUrl
-
-Example:
-
-public string? ImageFullUrl { get; set; }
-
-Populate automatically.
-
-Do NOT expose URL generation logic inside Razor views.
-
-Generate ImageFullUrl in:
-
-- Query Handler
-OR
-- Mapping Layer (AutoMapper)
-OR
-- URL Resolver Service
-
-Follow Clean Architecture best practices — no business logic in MVC Controllers (§14-2).
-
-DTO naming: {Entity}Dto or {Operation}ResponseDto (§13). ViewModel naming: {Page}ViewModel (§13).
-
-=================================================
-STEP 5 - LANDING PAGE CATEGORY CARDS
-=================================================
-
-Fix category card UI.
+Analyze project and implement the safest approach.
 
 Requirements:
 
-- Consistent image size
-- Proper aspect ratio
-- object-cover
-- Rounded corners
-- Responsive layout
-- Equal card heights
-- Smooth hover effects
+Guest user adds product.
 
-Prevent:
+Product must persist across:
 
-- Image stretching
-- Cropping issues
-- Layout shifts
-- Broken image icons
-
-Tailwind/UI conventions (per Gemini.md §10):
-- Tailwind loaded via CDN: https://cdn.tailwindcss.com.
-- Dark mode: `class` strategy — toggle by adding/removing `dark` class on `<html>`.
-- Custom config in wwwroot/js/tailwind.config.js.
-- Landing page CSS in wwwroot/css/landing.css.
-- Use landing.js for scroll animations, category slider, product grid rendering.
+- Page refresh
+- Landing page
+- Product details page
+- Category page
+- Cart page
 
 =================================================
-STEP 6 - PLACEHOLDER SUPPORT
+STEP 3 - ADD TO CART FLOW
 =================================================
 
-If:
+When guest clicks:
 
-Category.ImageUrl == null
+Add To Cart
 
-OR
+System should:
 
-Category.ImageUrl == ""
-
-OR
-
-File does not exist
-
-Display:
-
-/images/placeholders/category-placeholder.webp
-
-Implement:
-
-- Backend fallback
-- Frontend fallback
-- onerror fallback
-
-Example:
-
-onerror="this.src='/images/placeholders/category-placeholder.webp'"
-
-Never show broken image icons.
+1. Verify product exists.
+2. Add product to guest cart.
+3. Increment quantity if product already exists.
+4. Update cart counter.
+5. Persist cart data.
+6. Show success notification.
 
 =================================================
-STEP 7 - RESPONSIVE DESIGN
+STEP 4 - CART PAGE FIX
 =================================================
-
-Verify image rendering on:
-
-- Mobile
-- Tablet
-- Laptop
-- Desktop
-- Ultra-wide screens
 
 Fix:
 
-- Overflow
-- Alignment
-- Image scaling
-- Card sizing
+/shop/cart
+
+Requirements:
+
+Load guest cart products correctly.
+
+Display:
+
+- Product Image
+- Product Name
+- Price
+- Quantity
+- Subtotal
+- Remove Button
+
+Calculate:
+
+- Total Quantity
+- Total Price
+
+If cart contains products:
+
+Display them correctly.
 
 =================================================
-STEP 8 - DARK MODE / LIGHT MODE
+STEP 5 - EMPTY CART HANDLING
 =================================================
 
-Ensure category cards look professional in:
+If cart is empty:
 
-Light Mode
+Show professional empty state.
 
-Dark Mode
+Example:
+
+Icon:
+Shopping Cart
+
+Title:
+Your Cart Is Empty
+
+Message:
+Browse products and add items to your cart.
+
+Actions:
+
+- Browse Products
+- Continue Shopping
+
+=================================================
+STEP 6 - BROWSE SHOPPING BUTTON
+=================================================
+
+Fix Browse Shopping button.
+
+Current issue:
+
+Button may redirect incorrectly.
+
+Requirements:
+
+Navigate to:
+
+/shop
+OR
+Product Catalog Page
+
+Verify route.
+
+=================================================
+STEP 7 - CONTINUE SHOPPING BUTTON
+=================================================
+
+Fix Continue Shopping button.
+
+Requirements:
+
+Navigate user back to:
+
+- Landing Page
+OR
+Store Page
+
+depending on DAKKN routing.
+
+Verify:
+
+- Route exists
+- Navigation works
+- Responsive behavior
+
+=================================================
+STEP 8 - GUEST CART COUNTER
+=================================================
+
+Cart counter should always match actual cart contents.
+
+Verify:
+
+Landing Page
+
+Navbar
+
+Product Pages
+
+Category Pages
+
+Cart Page
+
+Counter must be calculated from:
+
+Actual guest cart data
+
+NOT from temporary frontend state.
+
+=================================================
+STEP 9 - CART SYNCHRONIZATION
+=================================================
+
+Ensure synchronization between:
+
+- Cart Counter
+- Cart Storage
+- Cart Page
+- Product Pages
+
+Requirements:
+
+Add product
+→ Counter updates
+
+Refresh page
+→ Counter preserved
+
+Navigate to cart
+→ Products visible
+
+Remove product
+→ Counter updates
+
+=================================================
+STEP 10 - LOGIN MERGE STRATEGY
+=================================================
+
+If guest logs in:
+
+Merge guest cart with user cart.
+
+Requirements:
+
+Guest Cart
++
+User Cart
+
+→ Single Cart
+
+Prevent duplicates.
+
+Preserve quantities.
+
+=================================================
+STEP 11 - PRODUCT IMAGE HANDLING
+=================================================
+
+Products store:
+
+ImageUrl = image name only
+
+Generate image URLs dynamically using:
+
+{CurrentScheme}://{CurrentHost}/files/{ImageName}
+
+Do not hardcode BaseUrl.
+
+Handle:
+
+- Null images
+- Missing images
+- Invalid images
+
+Use placeholder fallback.
+
+=================================================
+STEP 12 - SECURITY
+=================================================
+
+Validate:
+
+- Product exists
+- Quantity > 0
+- Product available
+
+Prevent:
+
+- Invalid product IDs
+- Tampered requests
+- Negative quantities
+
+=================================================
+STEP 13 - RESPONSIVE DESIGN
+=================================================
 
 Audit:
 
-- Card backgrounds
-- Shadows
-- Borders
-- Image containers
-- Placeholder appearance
+Cart Page
+
+Empty Cart State
+
+Buttons
+
+Quantity Controls
+
+Product Cards
+
+Ensure:
+
+- Mobile
+- Tablet
+- Desktop
+
+work correctly.
 
 =================================================
-STEP 9 - PERFORMANCE
-=================================================
-
-Optimize:
-
-- Lazy loading
-- URL generation
-- Rendering performance
-
-Use:
-
-loading="lazy"
-
-Avoid:
-
-Repeated URL generation in Razor
-
-=================================================
-STEP 10 - CONSISTENCY ACROSS PROJECT
-=================================================
-
-Verify that Category Images use the same image strategy as:
-
-- Product Images
-- User Profile Images
-- Admin Profile Images
-- Customer Profile Images
-
-All images should use:
-
-{BaseUrl}/files/{imageName}
-
-through a shared service.
-
-Also verify image naming convention consistency:
-- First digit of image name must match the UploadPlace index (2 for Categories).
-- Naming format: {place}{timestamp}{original-extension} (e.g., "2202506151230001.jpg").
-
-=================================================
-DELIVERABLES
+STEP 14 - DELIVERABLES
 =================================================
 
 Provide:
@@ -331,25 +350,25 @@ Provide:
 2. Exact file paths
 3. Before code
 4. After code
-5. DTO changes
-6. ViewModel changes
-7. AutoMapper changes
-8. Query Handler changes
-9. Razor View changes
-10. File URL Resolver implementation
-11. Tailwind UI improvements
+5. Controller fixes
+6. MediatR command fixes
+7. Query fixes
+8. Session/Cookie storage fixes
+9. Cart ViewModel fixes
+10. Razor View fixes
+11. JavaScript fixes
+12. Navigation fixes
 
 Important:
 
-- Follow DAKKN Clean Architecture per @DAKKN/Gemini.md.
-- Dependency direction: Domain ← Application ← Infrastructure / Persistence ← MVC.
-- Use MediatR (IRequest<T>, IRequestHandler<T,TResponse>) in Application layer.
-- Use IUnitOfWork.GetRepository<T>() in handlers — never inject DbContext directly (§3.3, §14-1).
-- Use IStringLocalizer<Messages> for all user-facing strings, referencing LocalizationKeys (§5.3, §14-4).
-- Use [RoleAuthorize] instead of [Authorize] (§8.2, §14-9).
+- Follow DAKKN Clean Architecture.
+- Use MediatR.
 - Preserve existing functionality.
-- Database stores image names only.
-- Render images through: {BaseUrl}/files/{imageName}
-- Fix the exact visual issue shown in the screenshot.
-- Ensure category images display correctly on the Landing Page.
+- Guest users must have a fully functional cart.
+- Cart counter must match actual cart contents.
+- Cart products must appear in /shop/cart.
+- Browse Shopping and Continue Shopping must work correctly.
+- Support future cart merge after login.
 - Ensure production-ready implementation.
+
+This prompt specifically targets the classic bug where the navbar cart count is updated on the frontend, but the guest cart items are never persisted/retrieved correctly for the /shop/cart page.

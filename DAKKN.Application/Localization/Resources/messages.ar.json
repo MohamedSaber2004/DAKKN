@@ -1118,5 +1118,15 @@
   "categories_empty_title": "لا توجد فئات بعد",
   "categories_empty_msg": "ستظهر الفئات بمجرد إضافة المنتجات.",
   "cat_products_count": "منتج",
-  "no_products_title": "لا توجد منتجات"
+  "no_products_title": "لا توجد منتجات",
+  "cart": {
+    "added": "تمت الإضافة إلى السلة",
+    "removed": "تمت الإزالة من السلة",
+    "updated": "تم تحديث السلة",
+    "empty": "سلة التسوق فارغة",
+    "quantity_must_be_positive": "يجب أن تكون الكمية أكبر من صفر",
+    "product_not_available": "المنتج غير متاح",
+    "product_not_found": "المنتج غير موجود",
+    "free_shipping": "الشحن مجاني"
+  }
   }
