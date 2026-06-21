@@ -202,6 +202,22 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString UpdateStock = new("inventory_update_stock");
             public static readonly KeyString DashboardLowStockTitle = new("inventory_dashboard_low_stock_title");
             public static readonly KeyString DashboardOutOfStockTitle = new("inventory_dashboard_out_of_stock_title");
+            public static readonly KeyString SortDefault = new("admin_sort_default");
+            public static readonly KeyString SortLowToHigh = new("admin_sort_low_to_high");
+            public static readonly KeyString SortHighToLow = new("admin_sort_high_to_low");
+            public static readonly KeyString QuantityInStockLabel = new("admin_quantity_in_stock");
+            public static readonly KeyString DangerQuantityLabel = new("admin_danger_quantity");
+            public static readonly KeyString DangerQuantityHint = new("admin_danger_quantity_hint");
+            public static readonly KeyString GlobalDangerQuantity = new("admin_global_danger_quantity");
+            public static readonly KeyString GlobalDangerQuantityDesc = new("admin_global_danger_quantity_desc");
+            public static readonly KeyString InventorySettings = new("admin_inventory_settings");
+            public static readonly KeyString InventorySettingsDesc = new("admin_inventory_settings_desc");
+            public static readonly KeyString SaveSettings = new("admin_save_settings");
+            public static readonly KeyString ResetDefault = new("admin_reset_default");
+            public static readonly KeyString ApplyToAll = new("admin_apply_to_all");
+            public static readonly KeyString ApplyToAllConfirm = new("admin_apply_to_all_confirm");
+            public static readonly KeyString Updated = new("admin_inventory_updated");
+            public static readonly KeyString GlobalDangerApplied = new("admin_global_danger_applied");
         }
 
         public static class Error

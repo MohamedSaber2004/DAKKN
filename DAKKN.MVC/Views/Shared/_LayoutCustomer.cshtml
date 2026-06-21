@@ -239,16 +239,7 @@
         <!-- Scrollable Content -->
         <div class="flex-1 overflow-y-auto custom-scrollbar">
             @RenderBody()
-            <!-- Footer -->
-            <footer class="bg-surface dark:bg-[#1E293B] border-t border-border dark:border-white/5 py-lg mt-xl">
-                <div class="max-w-7xl mx-auto px-lg flex flex-col md:flex-row justify-between items-center gap-md">
-                    <p class="text-sm text-text-secondary dark:text-outline-variant">@Localizer["footer_copy"]</p>
-                    <div class="flex gap-lg">
-                        <a asp-controller="Home" asp-action="Privacy" class="text-sm text-text-secondary dark:text-outline-variant hover:text-primary transition-colors">@Localizer["nav_privacy"]</a>
-                        <a asp-controller="Home" asp-action="Terms" class="text-sm text-text-secondary dark:text-outline-variant hover:text-primary transition-colors">@Localizer["f_terms"]</a>
-                    </div>
-                </div>
-            </footer>
+
         </div>
     </main>
 

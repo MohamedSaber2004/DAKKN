@@ -27,7 +27,7 @@
             </button>
             <a asp-action="Inventory"
                class="flex-1 md:flex-none px-6 py-2.5 bg-admin-page border border-admin-border text-admin-secondary rounded-xl text-sm font-bold hover:bg-surface-container transition-all inline-flex items-center justify-center gap-2">
-                <span class="material-symbols-outlined text-lg">arrow_back</span>
+                <span class="material-symbols-outlined text-lg">@(isArabic ? "arrow_forward" : "arrow_back")</span>
                 @Localizer["admin_product_details_back"]
             </a>
         </div>

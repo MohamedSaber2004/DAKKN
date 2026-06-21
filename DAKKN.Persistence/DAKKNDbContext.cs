@@ -21,6 +21,8 @@ namespace DAKKN.Persistence
         public DbSet<Category> Categories => Set<Category>();
         public DbSet<ShippingGovernorate> ShippingGovernorates => Set<ShippingGovernorate>();
         public DbSet<InventoryTransaction> InventoryTransactions => Set<InventoryTransaction>();
+        public DbSet<SystemSetting> SystemSettings => Set<SystemSetting>();
+        public DbSet<UserFavorite> UserFavorites => Set<UserFavorite>();
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {

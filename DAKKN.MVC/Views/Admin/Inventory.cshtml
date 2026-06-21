@@ -78,11 +78,19 @@
     </div>
 
     <!-- Sort Controls -->
+    <style>
+        .sort-select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+        }
+        [dir="ltr"] .sort-select { background-position: right 8px center; }
+        [dir="rtl"] .sort-select { background-position: left 8px center; }
+    </style>
     <div class="flex items-center gap-2">
-        <select name="sortBy" onchange="window.location.href=this.value" class="bg-admin-card border border-admin-border rounded-xl px-3 py-2 text-xs text-admin-secondary outline-none focus:ring-1 focus:ring-primary">
+        <select name="sortBy" onchange="window.location.href=this.value" class="sort-select bg-admin-card border border-admin-border rounded-xl ltr:pl-3 rtl:pr-3 ltr:pr-8 rtl:pl-8 py-2 text-xs text-admin-secondary outline-none focus:ring-1 focus:ring-primary appearance-none">
             <option value="@Url.Action("Inventory", new { searchTerm = Model.SearchTerm, categoryId = Model.SelectedCategoryId, stockFilter = Model.StockFilter })">@Localizer["admin_sort_default"]</option>
-            <option value="@Url.Action("Inventory", new { sortBy = "lowest", searchTerm = Model.SearchTerm, categoryId = Model.SelectedCategoryId, stockFilter = Model.StockFilter })" selected="@(Model.SortBy == "lowest")">@Localizer["Sort: Low to High"]</option>
-            <option value="@Url.Action("Inventory", new { sortBy = "highest", searchTerm = Model.SearchTerm, categoryId = Model.SelectedCategoryId, stockFilter = Model.StockFilter })" selected="@(Model.SortBy == "highest")">@Localizer["Sort: High to Low"]</option>
+            <option value="@Url.Action("Inventory", new { sortBy = "lowest", searchTerm = Model.SearchTerm, categoryId = Model.SelectedCategoryId, stockFilter = Model.StockFilter })" selected="@(Model.SortBy == "lowest")">@Localizer["admin_sort_low_to_high"]</option>
+            <option value="@Url.Action("Inventory", new { sortBy = "highest", searchTerm = Model.SearchTerm, categoryId = Model.SelectedCategoryId, stockFilter = Model.StockFilter })" selected="@(Model.SortBy == "highest")">@Localizer["admin_sort_high_to_low"]</option>
         </select>
     </div>
 
@@ -172,7 +180,7 @@
                 <nav class="flex items-center gap-1 sm:gap-2 bg-admin-card p-1.5 rounded-xl border border-admin-border shadow-sm">
                     <a href="@Url.Action("Inventory", new { searchTerm = Model.SearchTerm, categoryId = Model.SelectedCategoryId, pageNumber = Model.PageNumber - 1 })"
                        class="w-9 h-9 rounded-lg flex items-center justify-center text-admin-secondary hover:bg-primary/5 transition-all @(!Model.HasPreviousPage ? "pointer-events-none opacity-30" : "")">
-                        <span class="material-symbols-outlined">chevron_left</span>
+                        <span class="material-symbols-outlined">@(isArabic ? "chevron_right" : "chevron_left")</span>
                     </a>
                     @for (int i = 1; i <= Model.TotalPages; i++)
                     {
@@ -181,7 +189,7 @@
                     }
                     <a href="@Url.Action("Inventory", new { searchTerm = Model.SearchTerm, categoryId = Model.SelectedCategoryId, pageNumber = Model.PageNumber + 1 })"
                        class="w-9 h-9 rounded-lg flex items-center justify-center text-admin-secondary hover:bg-primary/5 transition-all @(!Model.HasNextPage ? "pointer-events-none opacity-30" : "")">
-                        <span class="material-symbols-outlined">chevron_right</span>
+                        <span class="material-symbols-outlined">@(isArabic ? "chevron_left" : "chevron_right")</span>
                     </a>
                 </nav>
             </div>

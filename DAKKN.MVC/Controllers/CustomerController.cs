@@ -16,6 +16,9 @@ using DAKKN.Application.Features.Cart.Queries.GetCart;
 using DAKKN.Application.Features.Products.Queries.GetProducts;
 using DAKKN.Application.Features.Products.Queries.GetProductById;
 using DAKKN.Application.Features.Categories.Queries.GetCategories;
+using DAKKN.Application.Features.Favorites.Queries.GetFavorites;
+using DAKKN.Application.Features.Favorites.Commands.ToggleFavorite;
+using DAKKN.Application.Features.Favorites.Commands.RemoveFavorite;
 using DAKKN.Application.Features.ShippingGovernorates.Queries.GetActiveShippingGovernorates;
 using DAKKN.Application.Features.Orders.Commands.PlaceOrder;
 using DAKKN.MVC.ViewModels.Landing;
@@ -42,11 +45,15 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpGet("products")]
-        public async Task<IActionResult> Products(int pageNumber = 1, int pageSize = 12)
+        public async Task<IActionResult> Products(string? searchTerm, Guid? categoryId, int pageNumber = 1, int pageSize = 12)
         {
             ViewData["Title"] = localizer["nav_shop"];
-            var productsResult = await mediator.Send(new GetProductsQuery(null, null, pageNumber, pageSize));
+            var productsResult = await mediator.Send(new GetProductsQuery(searchTerm, categoryId, pageNumber, pageSize));
             var categories = await mediator.Send(new GetCategoriesQuery());
+
+            var favoriteIds = await mediator.Send(new GetFavoritesQuery());
+            var favSet = favoriteIds.Select(f => f.Id).ToHashSet();
+
             var viewModel = new ProductsViewModel
             {
                 Products = productsResult.Items.ToList(),
@@ -54,7 +61,10 @@ namespace DAKKN.MVC.Controllers
                 PageNumber = productsResult.PageNumber,
                 TotalPages = productsResult.TotalPages,
                 HasPreviousPage = productsResult.HasPreviousPage,
-                HasNextPage = productsResult.HasNextPage
+                HasNextPage = productsResult.HasNextPage,
+                SearchTerm = searchTerm,
+                SelectedCategoryId = categoryId,
+                FavoriteProductIds = favSet
             };
             return View(viewModel);
         }
@@ -66,6 +76,10 @@ namespace DAKKN.MVC.Controllers
             {
                 var product = await mediator.Send(new GetProductByIdQuery(id));
                 ViewData["Title"] = product.Name;
+
+                var favoriteIds = await mediator.Send(new GetFavoritesQuery());
+                ViewData["IsFavorited"] = favoriteIds.Any(f => f.Id == id);
+
                 return View(new ProductDetailsViewModel { Product = product });
             }
             catch (NotFoundException)
@@ -85,12 +99,46 @@ namespace DAKKN.MVC.Controllers
         public async Task<IActionResult> Favorites()
         {
             ViewData["Title"] = localizer["nav_favorites"];
-            var products = await mediator.Send(new GetProductsQuery(null, null, 1, 10));
+            var products = await mediator.Send(new GetFavoritesQuery());
             var viewModel = new FavoritesViewModel
             {
-                FavoriteProducts = products.Items.ToList()
+                FavoriteProducts = products
             };
             return View(viewModel);
+        }
+
+        [HttpPost("favorites/toggle")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleFavorite([FromBody] ToggleFavoriteRequest request)
+        {
+            try
+            {
+                var isFavorited = await mediator.Send(new ToggleFavoriteCommand(request.ProductId));
+                return Json(new { success = true, isFavorited });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpPost("favorites/remove")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveFavorite([FromBody] RemoveFavoriteRequest request)
+        {
+            try
+            {
+                await mediator.Send(new RemoveFavoriteCommand(request.ProductId));
+                return Json(new { success = true });
+            }
+            catch (NotFoundException)
+            {
+                return Json(new { success = false, message = localizer["fav_not_found"] });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
         }
 
         [HttpGet("order-details/{id}")]
@@ -305,9 +353,11 @@ namespace DAKKN.MVC.Controllers
                 return View("NewTicket", model);
             }
 
-            // Mock saving ticket
             TempData["SuccessMessage"] = "Your support ticket has been created successfully!";
             return RedirectToAction("Support");
         }
     }
+
+    public record ToggleFavoriteRequest(Guid ProductId);
+    public record RemoveFavoriteRequest(Guid ProductId);
 }

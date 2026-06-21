@@ -2,6 +2,8 @@
 @{
     Layout = "_LayoutAdmin";
     ViewData["Title"] = Localizer["admin_overview"];
+    var culture = System.Globalization.CultureInfo.CurrentCulture.Name;
+    var isArabic = culture.StartsWith("ar");
 }
 
 <div class="space-y-8 pb-12">
@@ -71,7 +73,7 @@
             </div>
             <div>
                 <p class="text-sm font-semibold text-admin-secondary">@Localizer["admin_stat_products"]</p>
-                <h3 class="text-2xl font-black text-admin-primary mt-1">48</h3>
+                <h3 class="text-2xl font-black text-admin-primary mt-1">@ViewData["TotalProducts"]</h3>
             </div>
         </div>
     </div>
@@ -84,7 +86,7 @@
             </div>
             <div>
                 <p class="text-sm font-semibold text-admin-secondary">@Localizer["inventory_dashboard_low_stock_title"]</p>
-                <h3 class="text-xl font-black text-admin-primary group-hover:text-amber-500 transition-colors" id="lowStockCount">0 @Localizer["admin_products"]</h3>
+                <h3 class="text-xl font-black text-admin-primary group-hover:text-amber-500 transition-colors" id="lowStockCount">@ViewData["LowStockCount"] @Localizer["admin_products"]</h3>
             </div>
         </a>
         <a asp-action="Inventory" asp-route-stockFilter="outOfStock" class="premium-card p-6 flex items-center gap-4 hover:shadow-lg transition-all group">
@@ -93,7 +95,7 @@
             </div>
             <div>
                 <p class="text-sm font-semibold text-admin-secondary">@Localizer["inventory_dashboard_out_of_stock_title"]</p>
-                <h3 class="text-xl font-black text-admin-primary group-hover:text-red-500 transition-colors" id="outOfStockCount">0 @Localizer["admin_products"]</h3>
+                <h3 class="text-xl font-black text-admin-primary group-hover:text-red-500 transition-colors" id="outOfStockCount">@ViewData["OutOfStockCount"] @Localizer["admin_products"]</h3>
             </div>
         </a>
     </div>
@@ -152,7 +154,7 @@
             </div>
             <a href="#" class="text-xs font-bold text-primary hover:underline flex items-center gap-1">
                 @Localizer["admin_view_all"]
-                <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                <span class="material-symbols-outlined text-sm">@(isArabic ? "arrow_back" : "arrow_forward")</span>
             </a>
         </div>
         <div class="overflow-x-auto">

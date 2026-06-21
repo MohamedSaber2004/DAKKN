@@ -1,6 +1,9 @@
 @model DAKKN.MVC.ViewModels.Admin.UserManagementViewModel
 @using DAKKN.MVC.ViewModels.Admin
 @inject IStringLocalizer<Messages> Localizer
+@{
+    var isArabic = System.Globalization.CultureInfo.CurrentCulture.Name.StartsWith("ar");
+}
 
 <div id="usersTableContainer">
     <!-- Desktop Table View -->
@@ -175,13 +178,13 @@
             @if (Model.HasPreviousPage)
             {
                 <button onclick="loadPage(@(Model.PageNumber - 1))" class="w-9 h-9 sm:p-2 rounded-lg border border-admin-border text-admin-secondary hover:bg-admin-page flex items-center justify-center transition-colors">
-                    <span class="material-symbols-outlined text-lg">chevron_right</span>
+                    <span class="material-symbols-outlined text-lg">@(isArabic ? "chevron_left" : "chevron_right")</span>
                 </button>
             }
             else
             {
                 <button class="w-9 h-9 sm:p-2 rounded-lg border border-admin-border text-admin-secondary opacity-40 cursor-not-allowed flex items-center justify-center" disabled>
-                    <span class="material-symbols-outlined text-lg">chevron_right</span>
+                    <span class="material-symbols-outlined text-lg">@(isArabic ? "chevron_left" : "chevron_right")</span>
                 </button>
             }
 
@@ -226,13 +229,13 @@
             @if (Model.HasNextPage)
             {
                 <button onclick="loadPage(@(Model.PageNumber + 1))" class="w-9 h-9 sm:p-2 rounded-lg border border-admin-border text-admin-secondary hover:bg-admin-page flex items-center justify-center transition-colors">
-                    <span class="material-symbols-outlined text-lg">chevron_left</span>
+                    <span class="material-symbols-outlined text-lg">@(isArabic ? "chevron_right" : "chevron_left")</span>
                 </button>
             }
             else
             {
                 <button class="w-9 h-9 sm:p-2 rounded-lg border border-admin-border text-admin-secondary opacity-40 cursor-not-allowed flex items-center justify-center" disabled>
-                    <span class="material-symbols-outlined text-lg">chevron_left</span>
+                    <span class="material-symbols-outlined text-lg">@(isArabic ? "chevron_right" : "chevron_left")</span>
                 </button>
             }
         </div>

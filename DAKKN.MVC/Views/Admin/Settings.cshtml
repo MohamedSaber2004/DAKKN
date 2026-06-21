@@ -35,6 +35,10 @@
                     <span class="material-symbols-outlined text-lg">palette</span>
                     <span>@Localizer["admin_appearance"]</span>
                 </a>
+                <a href="#section-inventory" class="flex-1 lg:flex-none flex items-center justify-center lg:justify-start gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all text-text-secondary dark:text-outline-variant hover:bg-surface-container dark:hover:bg-white/5" id="link-inventory">
+                    <span class="material-symbols-outlined text-lg">inventory_2</span>
+                    <span>@Localizer["admin_inventory_settings"]</span>
+                </a>
             </nav>
         </aside>
 
@@ -189,6 +193,23 @@
                         </div>
                     </div>
                 </section>
+
+                <!-- Inventory Settings Section -->
+                <section id="section-inventory" class="premium-card p-6 sm:p-8 space-y-6 scroll-mt-24">
+                    <div class="border-b border-border dark:border-white/5 pb-4">
+                        <h2 class="text-xl font-bold text-admin-primary">@Localizer["admin_inventory_settings"]</h2>
+                        <p class="text-xs text-admin-secondary mt-1">@Localizer["admin_inventory_settings_desc"]</p>
+                    </div>
+                    <div class="space-y-3">
+                        <h4 class="text-sm font-bold text-admin-primary">@Localizer["admin_global_danger_quantity"]</h4>
+                        <div class="max-w-xs">
+                            <input type="number" name="GlobalDangerQuantity" id="globalDangerQuantity" min="0"
+                                   class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all"
+                                   value="@ViewData["GlobalDangerQuantity"]" />
+                        </div>
+                        <p class="text-xs text-admin-secondary">@Localizer["admin_global_danger_quantity_desc"]</p>
+                    </div>
+                </section>
             </form>
         </div>
     </div>
@@ -324,7 +345,8 @@
             const sections = document.querySelectorAll('section[id]');
             const links = {
                 'section-profile': document.getElementById('link-profile'),
-                'section-appearance': document.getElementById('link-appearance')
+                'section-appearance': document.getElementById('link-appearance'),
+                'section-inventory': document.getElementById('link-inventory')
             };
 
             const scrollContainer = document.getElementById('admin-canvas') || document.querySelector('main > .overflow-y-auto') || window;
@@ -494,6 +516,8 @@
                     }
                 });
             }
+        });
+
         });
     </script>
 }

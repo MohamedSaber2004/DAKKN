@@ -3,6 +3,8 @@
 @{
     Layout = "_LayoutCustomer";
     ViewData["Title"] = Localizer["fav_title"];
+    var culture = System.Globalization.CultureInfo.CurrentCulture.Name;
+    var isArabic = culture.StartsWith("ar");
 }
 
 <div class="max-w-7xl mx-auto px-lg py-xl space-y-xl">
@@ -10,42 +12,77 @@
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-lg">
         <div>
             <h1 class="font-h1 text-h1 font-bold text-text-primary dark:text-inverse-on-surface">
-                @Localizer["fav_title"] 
+                @Localizer["fav_title"]
                 <span class="text-primary bg-primary/10 px-3 py-1 rounded-2xl text-2xl ml-2">@Model.FavoriteProducts.Count</span>
             </h1>
             <p class="text-text-secondary dark:text-outline-variant mt-2">@Localizer["fav_subtitle"]</p>
         </div>
     </div>
 
+    @Html.AntiForgeryToken()
+
     @if (Model.FavoriteProducts.Any())
     {
         <!-- Favorites Grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-lg">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-lg" id="fav-grid">
             @foreach (var product in Model.FavoriteProducts)
             {
-                <div class="product-card group bg-surface dark:bg-inverse-surface rounded-[32px] border border-border dark:border-outline/10 overflow-hidden shadow-small hover:shadow-large transition-all duration-500 hover:-translate-y-2">
+                <div class="product-card group bg-surface dark:bg-inverse-surface rounded-[32px] border border-border dark:border-outline/10 overflow-hidden shadow-small hover:shadow-large transition-all duration-500 hover:-translate-y-2" data-id="@product.Id">
                     <div class="aspect-square relative overflow-hidden bg-white/5">
                         <img src="@product.ImageUrl" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                        
-                        <button onclick="removeFromFavorites('@product.Id')" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-error/10 backdrop-blur-md shadow-medium flex items-center justify-center text-error hover:bg-error hover:text-white transition-all opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0" title="@Localizer["fav_remove"]">
+
+                        <button onclick="removeFavorite('@product.Id', this)" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-error/10 backdrop-blur-md shadow-medium flex items-center justify-center text-error hover:bg-error hover:text-white transition-all opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0" title="@Localizer["fav_remove"]">
                             <span class="material-symbols-outlined text-xl filled-icon">favorite</span>
                         </button>
                     </div>
-                    
+
                     <div class="p-lg">
                         <div class="flex justify-between items-start mb-xs">
-                            <a asp-action="ProductDetails" asp-route-id="@product.Id">
-                                <h3 class="font-bold text-lg group-hover:text-primary transition-colors truncate pr-2">@product.Name</h3>
+                            <a asp-action="ProductDetails" asp-route-id="@product.Id" class="min-w-0 overflow-hidden">
+                                <h3 class="font-bold text-lg group-hover:text-primary transition-colors truncate">@(isArabic ? product.ArName : product.Name)</h3>
                             </a>
                             <span class="font-bold text-primary flex-shrink-0">@product.Price @Localizer["Currency_EGP"]</span>
                         </div>
-                        <p class="text-xs text-text-secondary font-medium uppercase tracking-wider mb-lg">@string.Join(", ", product.FinishOptions)</p>
-                        
+                        <p class="text-xs text-text-secondary font-medium uppercase tracking-wider mb-lg">@(isArabic ? product.CategoryArName : product.CategoryName)</p>
+
+                        @if (product.QuantityInStock == 0)
+                        {
+                            <span class="inline-flex items-center gap-1 text-[10px] font-bold text-red-500 mb-lg">
+                                <span class="material-symbols-outlined text-xs">block</span>
+                                @Localizer["inventory_out_of_stock"]
+                            </span>
+                        }
+                        else if (product.QuantityInStock <= product.DangerQuantity)
+                        {
+                            <span class="inline-flex items-center gap-1 text-[10px] font-bold text-amber-500 mb-lg">
+                                <span class="material-symbols-outlined text-xs">warning</span>
+                                @Localizer["inventory_only_x_left", product.QuantityInStock]
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="inline-flex items-center gap-1 text-[10px] font-bold text-green-500 mb-lg">
+                                <span class="material-symbols-outlined text-xs">check_circle</span>
+                                @Localizer["inventory_in_stock"]
+                            </span>
+                        }
+
                         <div class="flex items-center gap-md">
-                            <button class="flex-1 bg-text-primary dark:bg-inverse-on-surface text-background dark:text-on-background py-3 rounded-2xl font-bold text-sm hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-                                <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
-                                @Localizer["add_cart"]
-                            </button>
+                            @if (product.QuantityInStock > 0)
+                            {
+                                <button onclick="guestAddToCart(this, '@product.Id','@(isArabic ? product.ArName : product.Name)','@product.Price','@(product.ImageFullUrl ?? product.ImageUrl)')"
+                                        class="flex-1 bg-text-primary dark:bg-inverse-on-surface text-background dark:text-on-background py-3 rounded-2xl font-bold text-sm hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                                    <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
+                                    @Localizer["add_cart"]
+                                </button>
+                            }
+                            else
+                            {
+                                <button disabled class="flex-1 bg-gray-300 dark:bg-gray-700 text-gray-500 dark:text-gray-400 py-3 rounded-2xl font-bold text-sm cursor-not-allowed flex items-center justify-center gap-2">
+                                    <span class="material-symbols-outlined text-lg">block</span>
+                                    @Localizer["inventory_out_of_stock"]
+                                </button>
+                            }
                             <a asp-action="ProductDetails" asp-route-id="@product.Id" class="w-12 h-12 rounded-2xl border border-border dark:border-outline/20 flex items-center justify-center text-text-secondary hover:text-primary hover:bg-primary/5 transition-all">
                                 <span class="material-symbols-outlined">visibility</span>
                             </a>
@@ -75,22 +112,35 @@
 
 @section Scripts {
     <script>
-        function removeFromFavorites(productId) {
-            // Logic to remove from favorites via API would go here
-            console.log('Removing product:', productId);
-            
-            // For now, just visually remove it
-            const card = event.target.closest('.product-card');
+        function removeFavorite(productId, btn) {
+            var card = btn.closest('.product-card');
             card.style.opacity = '0';
             card.style.transform = 'scale(0.9)';
-            setTimeout(() => {
-                card.remove();
-                // Check if grid is empty to show empty state
-                const grid = document.querySelector('.grid');
-                if (grid && grid.children.length === 0) {
-                    location.reload(); // Reload to show empty state
-                }
-            }, 300);
+
+            var token = document.querySelector('input[name="__RequestVerificationToken"]');
+            var headers = { 'Content-Type': 'application/json' };
+            if (token) headers['RequestVerificationToken'] = token.value;
+
+            fetch('/customer/favorites/remove', {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({ productId: productId })
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                setTimeout(function() {
+                    card.remove();
+                    var grid = document.getElementById('fav-grid');
+                    if (grid && grid.children.length === 0) {
+                        location.reload();
+                    }
+                }, 300);
+            })
+            .catch(function(e) {
+                console.error('Remove favorite failed:', e);
+                card.style.opacity = '1';
+                card.style.transform = '';
+            });
         }
     </script>
 }

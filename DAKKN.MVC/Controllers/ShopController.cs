@@ -41,7 +41,7 @@ namespace DAKKN.MVC.Controllers
                 HasPreviousPage = productsResult.HasPreviousPage,
                 HasNextPage = productsResult.HasNextPage
             };
-            return View("~/Views/Customer/Products.cshtml", viewModel);
+            return View("~/Views/Shop/Products.cshtml", viewModel);
         }
 
         [HttpGet("product/{id}")]

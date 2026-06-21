@@ -5,6 +5,7 @@
     var product = Model.Product;
     var culture = System.Globalization.CultureInfo.CurrentCulture.Name;
     var isArabic = culture.StartsWith("ar");
+    var isFavorited = ViewData["IsFavorited"] is true;
 }
 
 <div class="max-w-7xl mx-auto px-lg py-xl">
@@ -15,14 +16,16 @@
         <span class="text-text-primary dark:text-inverse-on-surface font-bold">@(isArabic ? product.ArName : product.Name)</span>
     </nav>
 
+    @Html.AntiForgeryToken()
+
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-2xl">
         <!-- Image Gallery -->
         <div class="space-y-lg">
             <div class="aspect-square rounded-[48px] bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 overflow-hidden shadow-large group relative">
                 <img src="@product.ImageUrl" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="@(isArabic ? product.ArName : product.Name)">
                 <div class="absolute top-8 right-8 flex flex-col gap-sm">
-                    <button class="w-12 h-12 rounded-full bg-surface/90 backdrop-blur-md shadow-medium flex items-center justify-center text-text-secondary hover:text-error transition-all">
-                        <span class="material-symbols-outlined">favorite</span>
+                    <button type="button" onclick="toggleFav('@product.Id', this)" class="w-12 h-12 rounded-full bg-surface/90 backdrop-blur-md shadow-medium flex items-center justify-center transition-all @(isFavorited ? "text-error" : "text-text-secondary hover:text-error")">
+                        <span class="material-symbols-outlined @(isFavorited ? "filled-icon" : "")">favorite</span>
                     </button>
                     <button class="w-12 h-12 rounded-full bg-surface/90 backdrop-blur-md shadow-medium flex items-center justify-center text-text-secondary hover:text-primary transition-all">
                         <span class="material-symbols-outlined">share</span>
@@ -47,7 +50,7 @@
                 <p class="text-text-secondary dark:text-outline-variant mt-lg leading-relaxed">
                     @(isArabic ? product.ArDescription : product.Description)
                 </p>
-                
+
                 <!-- Stock Info -->
                 <div class="mt-4 mb-4">
                     @if (product.QuantityInStock == 0)
@@ -129,3 +132,33 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        function toggleFav(productId, btn) {
+            var token = document.querySelector('input[name="__RequestVerificationToken"]');
+            var headers = { 'Content-Type': 'application/json' };
+            if (token) headers['RequestVerificationToken'] = token.value;
+
+            fetch('/customer/favorites/toggle', {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({ productId: productId })
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.success) {
+                    var icon = btn.querySelector('.material-symbols-outlined');
+                    if (data.isFavorited) {
+                        btn.classList.add('text-error');
+                        icon.classList.add('filled-icon');
+                    } else {
+                        btn.classList.remove('text-error');
+                        icon.classList.remove('filled-icon');
+                    }
+                }
+            })
+            .catch(function(e) { console.error('Toggle favorite failed:', e); });
+        }
+    </script>
+}

@@ -10,5 +10,8 @@ namespace DAKKN.MVC.ViewModels.Customer
         public int TotalPages { get; set; }
         public bool HasPreviousPage { get; set; }
         public bool HasNextPage { get; set; }
+        public string? SearchTerm { get; set; }
+        public Guid? SelectedCategoryId { get; set; }
+        public HashSet<Guid> FavoriteProductIds { get; set; } = new();
     }
 }

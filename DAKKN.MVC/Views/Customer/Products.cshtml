@@ -12,43 +12,60 @@
             <p class="text-text-secondary dark:text-outline-variant mt-2">@Localizer["shop_p"]</p>
         </div>
         <div class="flex items-center gap-md w-full md:w-auto">
-            <div class="relative flex-1 md:w-64">
-                <input class="w-full bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 rounded-2xl py-3 px-lg focus:ring-2 focus:ring-primary outline-none transition-all" placeholder="@Localizer["shop_search_ph"]" type="text">
-                <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-outline">search</span>
-            </div>
+            <form method="get" action="@Url.Action("Products")" class="relative flex-1 md:w-64">
+                <input type="hidden" name="categoryId" value="@Model.SelectedCategoryId" />
+                <input name="searchTerm" value="@Model.SearchTerm"
+                       class="w-full bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 rounded-2xl py-3 @(isArabic ? "pr-11 pl-10" : "pl-11 pr-10") focus:ring-2 focus:ring-primary outline-none transition-all text-text-primary"
+                       placeholder="@Localizer["shop_search_ph"]" type="text" />
+                <span class="material-symbols-outlined absolute @(isArabic ? "right-4" : "left-4") top-1/2 -translate-y-1/2 text-outline">search</span>
+                @if (!string.IsNullOrEmpty(Model.SearchTerm))
+                {
+                    <a href="@Url.Action("Products", new { categoryId = Model.SelectedCategoryId })"
+                       class="absolute @(isArabic ? "left-3" : "right-3") top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-surface-container dark:bg-inverse-surface-container flex items-center justify-center text-text-secondary hover:text-error transition-all">
+                        <span class="material-symbols-outlined text-sm">close</span>
+                    </a>
+                }
+            </form>
         </div>
     </div>
 
     <!-- Category Pills -->
     <div class="flex items-center gap-sm overflow-x-auto pb-4 mb-xl no-scrollbar">
-        <a href="@Url.Action("Products")" class="px-xl py-2.5 rounded-full bg-primary text-on-primary font-bold whitespace-nowrap shadow-medium transition-all">@Localizer["shop_cat_all"]</a>
+        <a href="@Url.Action("Products", new { searchTerm = Model.SearchTerm })"
+           class="px-xl py-2.5 rounded-full font-bold whitespace-nowrap shadow-medium transition-all @(Model.SelectedCategoryId == null ? "bg-primary text-on-primary" : "bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 text-text-secondary hover:border-primary/50")">
+            @Localizer["shop_cat_all"]
+        </a>
         @foreach (var cat in Model.Categories)
         {
-            <a href="@Url.Action("Products", new { categoryId = cat.Id })" class="px-xl py-2.5 rounded-full bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 text-text-secondary hover:border-primary/50 whitespace-nowrap transition-all">
+            <a href="@Url.Action("Products", new { categoryId = cat.Id, searchTerm = Model.SearchTerm })"
+               class="px-xl py-2.5 rounded-full font-bold whitespace-nowrap transition-all @(Model.SelectedCategoryId == cat.Id ? "bg-primary text-on-primary" : "bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 text-text-secondary hover:border-primary/50")">
                 @(isArabic ? cat.ArName : cat.CategoryName)
             </a>
         }
     </div>
 
+    @Html.AntiForgeryToken()
+
     <!-- Product Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-lg">
         @foreach (var product in Model.Products)
         {
+            var isFav = Model.FavoriteProductIds.Contains(product.Id);
             <div class="product-card group bg-surface dark:bg-inverse-surface rounded-[32px] border border-border dark:border-outline/10 overflow-hidden shadow-small hover:shadow-large transition-all duration-500 hover:-translate-y-2">
                 <a asp-action="ProductDetails" asp-route-id="@product.Id" class="block">
                     <div class="aspect-square relative overflow-hidden bg-white/5">
                         <img src="@product.ImageUrl" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="@(isArabic ? product.ArName : product.Name)">
-                        <button class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/90 backdrop-blur-md shadow-medium flex items-center justify-center text-text-secondary hover:text-error transition-all opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0">
-                            <span class="material-symbols-outlined text-xl">favorite</span>
+                        <button type="button" onclick="toggleFavorite('@product.Id', this)" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/90 backdrop-blur-md shadow-medium flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 @(isFav ? "text-error opacity-100" : "text-text-secondary hover:text-error")">
+                            <span class="material-symbols-outlined text-xl @(isFav ? "filled-icon" : "")">favorite</span>
                         </button>
                     </div>
                 </a>
                 <div class="p-lg">
                     <div class="flex justify-between items-start mb-xs">
-                        <a asp-action="ProductDetails" asp-route-id="@product.Id">
-                            <h3 class="font-bold text-lg group-hover:text-primary transition-colors">@(isArabic ? product.ArName : product.Name)</h3>
+                        <a asp-action="ProductDetails" asp-route-id="@product.Id" class="min-w-0 flex-1">
+                            <h3 class="font-bold text-lg group-hover:text-primary transition-colors truncate pr-2">@(isArabic ? product.ArName : product.Name)</h3>
                         </a>
-                        <span class="font-bold text-primary">@product.Price @Localizer["Currency_EGP"]</span>
+                        <span class="font-bold text-primary flex-shrink-0">@product.Price @Localizer["Currency_EGP"]</span>
                     </div>
                     <p class="text-xs text-text-secondary font-medium uppercase tracking-wider mb-sm">@(isArabic ? product.CategoryArName : product.CategoryName)</p>
                     @if (product.QuantityInStock == 0)
@@ -75,7 +92,8 @@
                     <div class="flex items-center gap-md">
                         @if (product.QuantityInStock > 0)
                         {
-                            <button class="flex-1 bg-surface-container dark:bg-inverse-surface-container text-text-primary dark:text-inverse-on-surface py-3 rounded-2xl font-bold text-sm hover:bg-primary hover:text-on-primary transition-all flex items-center justify-center gap-2">
+                            <button onclick="guestAddToCart(this, '@product.Id','@(isArabic ? product.ArName : product.Name)','@product.Price','@(product.ImageFullUrl ?? product.ImageUrl)')"
+                                    class="flex-1 bg-surface-container dark:bg-inverse-surface-container text-text-primary dark:text-inverse-on-surface py-3 rounded-2xl font-bold text-sm hover:bg-primary hover:text-on-primary transition-all flex items-center justify-center gap-2">
                                 <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
                                 @Localizer["shop_add_cart"]
                             </button>
@@ -87,6 +105,9 @@
                                 @Localizer["inventory_out_of_stock"]
                             </button>
                         }
+                        <a asp-action="ProductDetails" asp-route-id="@product.Id" class="w-12 h-12 rounded-2xl border border-border dark:border-outline/20 flex items-center justify-center text-text-secondary hover:text-primary hover:bg-primary/5 transition-all">
+                            <span class="material-symbols-outlined">visibility</span>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -100,21 +121,55 @@
             <nav class="flex items-center gap-sm bg-surface dark:bg-inverse-surface p-2 rounded-full border border-border dark:border-outline/10 shadow-medium">
                 @if (Model.HasPreviousPage)
                 {
-                    <a href="@Url.Action("Products", new { pageNumber = Model.PageNumber - 1 })" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:bg-primary/5">
-                        <span class="material-symbols-outlined">chevron_left</span>
+                    <a href="@Url.Action("Products", new { pageNumber = Model.PageNumber - 1, searchTerm = Model.SearchTerm, categoryId = Model.SelectedCategoryId })" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:bg-primary/5">
+                        <span class="material-symbols-outlined">@(isArabic ? "chevron_right" : "chevron_left")</span>
                     </a>
                 }
                 @for (int i = 1; i <= Model.TotalPages; i++)
                 {
-                    <a href="@Url.Action("Products", new { pageNumber = i })" class="w-10 h-10 rounded-full flex items-center justify-center @(i == Model.PageNumber ? "bg-primary text-on-primary font-bold" : "text-text-secondary hover:bg-primary/5 font-bold")">@i</a>
+                    <a href="@Url.Action("Products", new { pageNumber = i, searchTerm = Model.SearchTerm, categoryId = Model.SelectedCategoryId })" class="w-10 h-10 rounded-full flex items-center justify-center @(i == Model.PageNumber ? "bg-primary text-on-primary font-bold" : "text-text-secondary hover:bg-primary/5 font-bold")">@i</a>
                 }
                 @if (Model.HasNextPage)
                 {
-                    <a href="@Url.Action("Products", new { pageNumber = Model.PageNumber + 1 })" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:bg-primary/5">
-                        <span class="material-symbols-outlined">chevron_right</span>
+                    <a href="@Url.Action("Products", new { pageNumber = Model.PageNumber + 1, searchTerm = Model.SearchTerm, categoryId = Model.SelectedCategoryId })" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:bg-primary/5">
+                        <span class="material-symbols-outlined">@(isArabic ? "chevron_left" : "chevron_right")</span>
                     </a>
                 }
             </nav>
         </div>
     }
 </div>
+
+@section Scripts {
+    <script>
+        function toggleFavorite(productId, btn) {
+            var token = document.querySelector('input[name="__RequestVerificationToken"]');
+            var headers = { 'Content-Type': 'application/json' };
+            if (token) headers['RequestVerificationToken'] = token.value;
+
+            fetch('/customer/favorites/toggle', {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({ productId: productId })
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.success) {
+                    var icon = btn.querySelector('.material-symbols-outlined');
+                    if (data.isFavorited) {
+                        btn.classList.add('text-error');
+                        icon.classList.add('filled-icon');
+                    } else {
+                        btn.classList.remove('text-error');
+                        icon.classList.remove('filled-icon');
+                    }
+                }
+            })
+            .catch(function(e) { console.error('Toggle favorite failed:', e); });
+        }
+
+        document.querySelector('input[name="searchTerm"]')?.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') { this.closest('form').submit(); }
+        });
+    </script>
+}

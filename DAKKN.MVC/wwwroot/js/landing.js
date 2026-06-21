@@ -501,10 +501,27 @@ async function guestAddToCart(btnOrId, nameOrId, priceOrName, imageOrPrice, mayb
             }
             showCartToast(data.message || name || id);
             bounceCartBadge();
+        } else {
+            showCartErrorToast(data.message || '');
         }
     } catch (e) {
         console.error('Failed to add to cart:', e);
+        showCartErrorToast('');
     }
+}
+
+function showCartErrorToast(message) {
+    const container = document.getElementById('cart-toast-container');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.className = 'cart-toast cart-toast-error';
+    toast.innerHTML = '<span class="material-symbols-outlined text-lg">error</span><span>' + (message || '') + '</span>';
+    container.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('cart-toast-show'));
+    setTimeout(() => {
+        toast.classList.remove('cart-toast-show');
+        toast.addEventListener('transitionend', () => toast.remove(), { once: true });
+    }, 3500);
 }
 
 function showCartToast(message) {

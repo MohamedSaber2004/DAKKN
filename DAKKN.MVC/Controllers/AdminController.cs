@@ -16,6 +16,10 @@ using DAKKN.Application.Features.ShippingGovernorates.Commands.DeleteShippingGov
 using DAKKN.Application.Features.ShippingGovernorates.Commands.ToggleShippingGovernorateStatus;
 using DAKKN.Application.Features.ShippingGovernorates.Commands.UpdateShippingGovernorate;
 using DAKKN.Application.Features.ShippingGovernorates.Queries.GetShippingGovernorates;
+using DAKKN.Application.Features.Dashboard.Queries.GetDashboardInventoryStats;
+using DAKKN.Application.Features.Inventory.Commands.ApplyGlobalDangerQuantity;
+using DAKKN.Application.Features.Inventory.Commands.UpdateInventorySettings;
+using DAKKN.Application.Features.Inventory.Queries.GetInventorySettings;
 using DAKKN.Application.Features.Users.Commands.UpdateUserSettings;
 using DAKKN.Application.Features.Users.Queries.ExportUsers;
 using DAKKN.Application.Features.Users.Queries.GetAllUsers;
@@ -49,9 +53,13 @@ namespace DAKKN.MVC.Controllers
 
         [HttpGet("")]
         [HttpGet("dashboard")]
-        public IActionResult Dashboard()
+        public async Task<IActionResult> Dashboard()
         {
             ViewData["Title"] = _localizer["admin_overview"];
+            var stats = await _mediator.Send(new GetDashboardInventoryStatsQuery());
+            ViewData["LowStockCount"] = stats.LowStockCount;
+            ViewData["OutOfStockCount"] = stats.OutOfStockCount;
+            ViewData["TotalProducts"] = stats.TotalProducts;
             return View();
         }
 
@@ -307,6 +315,7 @@ namespace DAKKN.MVC.Controllers
             ViewData["Title"] = _localizer["admin_settings"];
 
             var settings = await _mediator.Send(new GetUserSettingsQuery());
+            var inventorySettings = await _mediator.Send(new GetInventorySettingsQuery());
 
             var viewModel = new AdminSettingsViewModel
             {
@@ -320,15 +329,19 @@ namespace DAKKN.MVC.Controllers
                 ProfilePictureUrl = settings.ProfilePictureUrl
             };
 
+            ViewData["GlobalDangerQuantity"] = inventorySettings.GlobalDangerQuantity;
+
             return View(viewModel);
         }
 
         [HttpPost("settings")]
-        public async Task<IActionResult> Settings(AdminSettingsViewModel model)
+        public async Task<IActionResult> Settings(AdminSettingsViewModel model, int globalDangerQuantity = 10)
         {
             if (!ModelState.IsValid)
             {
                 ViewData["Title"] = _localizer["admin_settings"];
+                var inventorySettings = await _mediator.Send(new GetInventorySettingsQuery());
+                ViewData["GlobalDangerQuantity"] = inventorySettings.GlobalDangerQuantity;
                 return View(model);
             }
 
@@ -344,7 +357,12 @@ namespace DAKKN.MVC.Controllers
                 model.LayoutMode
             ));
 
-            TempData["SuccessMessage"] = "profile_updated_success";
+            // Save inventory settings and apply to all products
+            await _mediator.Send(new UpdateInventorySettingsCommand(globalDangerQuantity));
+            var updatedCount = await _mediator.Send(new ApplyGlobalDangerQuantityCommand());
+
+            TempData["SuccessMessage"] = string.Format(
+                _localizer[LocalizationKeys.Inventory.GlobalDangerApplied.Value].ToString(), updatedCount);
 
             // If language changed, redirect through SetLanguage to update cookie
             if (currentSettings.Language != model.Language)
@@ -606,9 +624,12 @@ namespace DAKKN.MVC.Controllers
             ViewData["Title"] = _localizer["admin_add_product"];
 
             var categories = await _mediator.Send(new GetCategoriesQuery());
+            var inventorySettings = await _mediator.Send(new GetInventorySettingsQuery());
+
             var viewModel = new AddProductViewModel
             {
-                AvailableCategories = categories
+                AvailableCategories = categories,
+                DangerQuantity = inventorySettings.GlobalDangerQuantity
             };
 
             return View(viewModel);
@@ -775,6 +796,40 @@ namespace DAKKN.MVC.Controllers
 
             TempData["SuccessMessage"] = _localizer[LocalizationKeys.Products.Updated.Value].ToString();
             return RedirectToAction(nameof(Inventory));
+        }
+
+        [HttpGet("inventory-settings")]
+        [HttpGet("settings/inventory")]
+        public async Task<IActionResult> InventorySettings()
+        {
+            var settings = await _mediator.Send(new GetInventorySettingsQuery());
+            return Json(new { globalDangerQuantity = settings.GlobalDangerQuantity });
+        }
+
+        [HttpPost("settings/inventory")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateInventorySettings(int globalDangerQuantity)
+        {
+            try
+            {
+                await _mediator.Send(new UpdateInventorySettingsCommand(globalDangerQuantity));
+                TempData["SuccessMessage"] = _localizer[LocalizationKeys.Inventory.Updated.Value].ToString();
+            }
+            catch (ValidationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
+
+            return RedirectToAction(nameof(Settings));
+        }
+
+        [HttpPost("settings/inventory/apply-global")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ApplyGlobalDangerQuantity()
+        {
+            var count = await _mediator.Send(new ApplyGlobalDangerQuantityCommand());
+            TempData["SuccessMessage"] = string.Format(_localizer[LocalizationKeys.Inventory.GlobalDangerApplied.Value].ToString(), count);
+            return RedirectToAction(nameof(Settings));
         }
 
         [HttpGet("shipping")]

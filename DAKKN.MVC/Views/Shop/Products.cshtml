@@ -1,0 +1,138 @@
+﻿@model DAKKN.MVC.ViewModels.Customer.ProductsViewModel
+@inject IStringLocalizer<Messages> Localizer
+@{
+    Layout = "_LayoutLanding";
+    ViewData["Title"] = Localizer["nav_shop"];
+    var culture = System.Globalization.CultureInfo.CurrentCulture.Name;
+    var isArabic = culture.StartsWith("ar");
+    var isAr = isArabic;
+    var placeholder = "/images/placeholders/product-placeholder.svg";
+}
+<div class="min-h-screen bg-surface dark:bg-[#080e1a]">
+    <nav class="fixed top-0 w-full z-50 flex justify-between items-center px-4 md:px-16 h-16 md:h-20 bg-surface/75 dark:bg-[#0a1020]/85 backdrop-blur-md border-b border-outline-variant/10 dark:border-white/5 shadow-sm">
+        <a href="/" class="flex items-center gap-2 text-on-surface-variant dark:text-slate-300 hover:text-primary transition-colors font-bold text-sm">
+            <span class="material-symbols-outlined text-lg">@(isArabic ? "arrow_forward" : "arrow_back")</span>
+            @Localizer["home"]
+        </a>
+        <div class="flex items-center gap-3">
+            <a href="/shop/cart" class="relative flex items-center gap-2 bg-primary/10 hover:bg-primary text-primary hover:text-on-primary px-4 py-2 rounded-full text-xs font-bold transition-all" title="@Localizer["nav_cart"]">
+                <span class="material-symbols-outlined text-lg">shopping_cart</span>
+                <span class="absolute -top-1 -end-1 w-4 h-4 bg-tertiary-container text-on-tertiary-container text-[8px] font-bold rounded-full flex items-center justify-center shadow-sm" id="cart-badge">0</span>
+            </a>
+            <a asp-action="Login" asp-controller="Auth" class="text-xs font-bold text-on-surface-variant dark:text-slate-300 hover:text-primary transition-colors">@Localizer["auth.register.login"]</a>
+            <a asp-action="Register" asp-controller="Auth" class="bg-primary text-on-primary text-xs font-bold px-5 py-2 rounded-full transition-all hover:-translate-y-0.5">@Localizer["auth.login.register"]</a>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 md:px-16 pt-28 pb-16">
+        <div class="flex flex-col md:flex-row justify-between items-end gap-6 mb-8">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-extrabold text-on-surface dark:text-white">@Localizer["shop_h1"]</h1>
+                <p class="text-on-surface-variant dark:text-slate-400 mt-2">@Localizer["shop_p"]</p>
+            </div>
+        </div>
+
+        <!-- Category Pills -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-8 no-scrollbar">
+            <a href="@Url.Action("Products")" class="px-5 py-2.5 rounded-full bg-primary text-on-primary font-bold whitespace-nowrap shadow-medium transition-all text-sm">@Localizer["shop_cat_all"]</a>
+            @foreach (var cat in Model.Categories)
+            {
+                <a href="@Url.Action("Products", new { categoryId = cat.Id })" class="px-5 py-2.5 rounded-full bg-surface-container dark:bg-[#0d1a2a] border border-outline-variant/10 text-on-surface-variant dark:text-slate-300 hover:border-primary/50 whitespace-nowrap transition-all text-sm">
+                    @(isArabic ? cat.ArName : cat.CategoryName)
+                </a>
+            }
+        </div>
+
+        <!-- Product Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            @foreach (var product in Model.Products)
+            {
+                <div class="group bg-surface dark:bg-[#0d1a2a] rounded-[32px] border border-outline-variant/10 overflow-hidden shadow-small hover:shadow-large transition-all duration-500 hover:-translate-y-2">
+                    <a href="/shop/product/@product.Id" class="block">
+                        <div class="aspect-square relative overflow-hidden bg-white/5">
+                            <img src="@(product.ImageFullUrl ?? product.ImageUrl)" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="@(isArabic ? product.ArName : product.Name)" onerror="this.src='@placeholder'" />
+                        </div>
+                    </a>
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-1">
+                            <a href="/shop/product/@product.Id">
+                                <h3 class="font-bold text-base group-hover:text-primary transition-colors text-on-surface dark:text-white">@(isArabic ? product.ArName : product.Name)</h3>
+                            </a>
+                            <span class="font-bold text-primary whitespace-nowrap">@product.Price.ToString("N0") @Localizer["Currency_EGP"]</span>
+                        </div>
+                        <p class="text-xs text-on-surface-variant dark:text-slate-400 font-medium uppercase tracking-wider mb-3">@(isArabic ? product.CategoryArName : product.CategoryName)</p>
+                        @if (product.QuantityInStock == 0)
+                        {
+                            <span class="inline-flex items-center gap-1 text-[10px] font-bold text-red-500 mb-4">
+                                <span class="material-symbols-outlined text-xs">block</span>
+                                @Localizer["inventory_out_of_stock"]
+                            </span>
+                        }
+                        else if (product.QuantityInStock <= product.DangerQuantity)
+                        {
+                            <span class="inline-flex items-center gap-1 text-[10px] font-bold text-amber-500 mb-4">
+                                <span class="material-symbols-outlined text-xs">warning</span>
+                                @Localizer["inventory_only_x_left", product.QuantityInStock]
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="inline-flex items-center gap-1 text-[10px] font-bold text-green-500 mb-4">
+                                <span class="material-symbols-outlined text-xs">check_circle</span>
+                                @Localizer["inventory_in_stock"]
+                            </span>
+                        }
+                        <div class="flex items-center gap-3">
+                            @if (product.QuantityInStock > 0)
+                            {
+                                <button onclick="guestAddToCart(this, '@product.Id', '@(isArabic ? product.ArName : product.Name)', '@product.Price', '@(product.ImageFullUrl ?? product.ImageUrl)')"
+                                        class="flex-1 bg-primary/10 hover:bg-primary text-primary hover:text-on-primary py-3 rounded-2xl font-bold text-sm transition-all flex items-center justify-center gap-2">
+                                    <span class="material-symbols-outlined text-lg">add_shopping_cart</span>
+                                    @Localizer["shop_add_cart"]
+                                </button>
+                            }
+                            else
+                            {
+                                <button disabled class="flex-1 bg-gray-200 dark:bg-gray-700 text-gray-400 dark:text-gray-500 py-3 rounded-2xl font-bold text-sm cursor-not-allowed flex items-center justify-center gap-2">
+                                    <span class="material-symbols-outlined text-lg">block</span>
+                                    @Localizer["inventory_out_of_stock"]
+                                </button>
+                            }
+                            <a href="/shop/product/@product.Id" class="px-4 py-3 rounded-2xl bg-primary/10 text-primary hover:bg-primary hover:text-on-primary font-bold text-sm transition-all flex items-center justify-center">
+                                <span class="material-symbols-outlined text-lg">visibility</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Pagination -->
+        @if (Model.TotalPages > 1)
+        {
+            <div class="flex justify-center mt-12">
+                <nav class="flex items-center gap-2 bg-surface dark:bg-[#0d1a2a] p-2 rounded-full border border-outline-variant/10 shadow-medium">
+                    @if (Model.HasPreviousPage)
+                    {
+                        <a href="@Url.Action("Products", new { pageNumber = Model.PageNumber - 1, categoryId = Context.Request.Query["categoryId"] })" class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant dark:text-slate-300 hover:bg-primary/5">
+                            <span class="material-symbols-outlined">@(isArabic ? "chevron_right" : "chevron_left")</span>
+                        </a>
+                    }
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <a href="@Url.Action("Products", new { pageNumber = i, categoryId = Context.Request.Query["categoryId"] })" class="w-10 h-10 rounded-full flex items-center justify-center text-sm @(i == Model.PageNumber ? "bg-primary text-on-primary font-bold" : "text-on-surface-variant dark:text-slate-300 hover:bg-primary/5 font-bold")">@i</a>
+                    }
+                    @if (Model.HasNextPage)
+                    {
+                        <a href="@Url.Action("Products", new { pageNumber = Model.PageNumber + 1, categoryId = Context.Request.Query["categoryId"] })" class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant dark:text-slate-300 hover:bg-primary/5">
+                            <span class="material-symbols-outlined">@(isArabic ? "chevron_left" : "chevron_right")</span>
+                        </a>
+                    }
+                </nav>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Cart Toast Container -->
+<div id="cart-toast-container" class="fixed bottom-24 md:bottom-8 end-4 md:end-8 z-[90] flex flex-col gap-3 pointer-events-none"></div>

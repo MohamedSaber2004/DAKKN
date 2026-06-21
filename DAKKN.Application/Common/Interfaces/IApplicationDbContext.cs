@@ -13,6 +13,8 @@ namespace DAKKN.Application.Common.Interfaces
         DbSet<Product> Products { get; }
         DbSet<Category> Categories { get; }
         DbSet<ShippingGovernorate> ShippingGovernorates { get; }
+        DbSet<SystemSetting> SystemSettings { get; }
+        DbSet<UserFavorite> UserFavorites { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

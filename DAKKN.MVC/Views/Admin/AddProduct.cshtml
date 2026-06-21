@@ -128,13 +128,13 @@
                     
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["Quantity In Stock"]</label>
+                            <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_quantity_in_stock"]</label>
                             <input asp-for="QuantityInStock" type="number" min="0" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all" />
                         </div>
                         <div class="space-y-1.5">
-                            <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["Danger Quantity"]</label>
+                            <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_danger_quantity"]</label>
                             <input asp-for="DangerQuantity" type="number" min="0" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all" />
-                            <p class="text-[10px] text-admin-secondary mt-1">@Localizer["Minimum threshold before low stock warning is shown."]</p>
+                            <p class="text-[10px] text-admin-secondary mt-1">@Localizer["admin_danger_quantity_hint"]</p>
                         </div>
                     </div>
                 </div>

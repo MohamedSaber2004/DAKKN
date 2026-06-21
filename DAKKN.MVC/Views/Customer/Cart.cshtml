@@ -27,10 +27,10 @@
                             <p class="text-text-secondary max-w-sm mx-auto">@Localizer["cart_empty_p"]</p>
                         </div>
                         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                            <a asp-action="Products" asp-controller="Shop" class="inline-flex items-center gap-2 bg-primary text-on-primary px-xl py-4 rounded-2xl font-bold hover:shadow-large hover:-translate-y-1 transition-all">
+                            <a asp-action="Products" class="inline-flex items-center gap-2 bg-primary text-on-primary px-xl py-4 rounded-2xl font-bold hover:shadow-large hover:-translate-y-1 transition-all">
                                 @Localizer[LocalizationKeys.CartMessages.BrowseProducts.Key] <span class="material-symbols-outlined">arrow_forward</span>
                             </a>
-                            <a asp-action="Products" asp-controller="Shop" class="inline-flex items-center gap-2 text-text-secondary hover:text-primary font-bold transition-colors px-xl py-4">
+                            <a asp-action="Products" class="inline-flex items-center gap-2 text-text-secondary hover:text-primary font-bold transition-colors px-xl py-4">
                                 <span class="material-symbols-outlined text-sm">arrow_back</span>
                                 @Localizer[LocalizationKeys.CartMessages.ContinueShopping.Key]
                             </a>
@@ -150,7 +150,7 @@
                 </div>
             </div>
 
-            <a asp-action="Products" asp-controller="Shop" class="flex items-center justify-center gap-2 text-text-secondary hover:text-primary font-bold transition-colors">
+            <a asp-action="Products" class="flex items-center justify-center gap-2 text-text-secondary hover:text-primary font-bold transition-colors">
                 <span class="material-symbols-outlined text-sm">arrow_back</span>
                 @Localizer[LocalizationKeys.CartMessages.ContinueShopping.Key]
             </a>
@@ -177,6 +177,21 @@
         transform: scale(0.95);
         opacity: 0;
         transition: all 0.3s ease;
+    }
+    select#shipping-gov-select {
+        background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3E%3C/svg%3E");
+        background-position: right 0.75rem center;
+        background-repeat: no-repeat;
+        background-size: 1.5em 1.5em;
+        padding-right: 2.5rem;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+    [dir="rtl"] select#shipping-gov-select {
+        background-position: left 0.75rem center;
+        padding-left: 2.5rem;
+        padding-right: 1rem;
     }
 </style>
 
