@@ -13,6 +13,10 @@ using DAKKN.Application.Localization;
 using MediatR;
 using DAKKN.Application.Features.AccountSecurity.Commands.ChangePassword;
 using DAKKN.Application.Features.AccountSecurity.Commands.DeleteAccount;
+using DAKKN.Application.Features.Orders.Queries.GetCustomerOrders;
+using DAKKN.Application.Features.Orders.Queries.GetOrderDetails;
+using DAKKN.Application.Features.Orders.Commands.PlaceOrder;
+using DAKKN.Application.Features.Orders.Commands.CancelOrder;
 using DAKKN.Application.Features.Users.Queries.GetUserSettings;
 using DAKKN.Application.Features.Users.Commands.UpdateUserSettings;
 using DAKKN.Application.Features.Cart.Queries.GetCart;
@@ -23,7 +27,6 @@ using DAKKN.Application.Features.Favorites.Queries.GetFavorites;
 using DAKKN.Application.Features.Favorites.Commands.ToggleFavorite;
 using DAKKN.Application.Features.Favorites.Commands.RemoveFavorite;
 using DAKKN.Application.Features.ShippingGovernorates.Queries.GetActiveShippingGovernorates;
-using DAKKN.Application.Features.Orders.Commands.PlaceOrder;
 using DAKKN.MVC.ViewModels.Landing;
 
 namespace DAKKN.MVC.Controllers
@@ -91,13 +94,7 @@ namespace DAKKN.MVC.Controllers
             }
         }
 
-        [HttpGet("orders")]
-        public IActionResult Orders()
-        {
-            ViewData["Title"] = localizer["admin_orders"];
-            return View();
-        }
-
+        //[HttpGet("orders")]
         [HttpGet("favorites")]
         public async Task<IActionResult> Favorites()
         {
@@ -144,48 +141,75 @@ namespace DAKKN.MVC.Controllers
             }
         }
 
-        [HttpGet("order-details/{id}")]
-        public IActionResult OrderDetails(string id)
+        [HttpGet("orders")]
+        public async Task<IActionResult> Orders()
         {
-            ViewData["Title"] = localizer["orders_details_title"] + " #" + id;
+            ViewData["Title"] = localizer["nav_orders_title"];
 
-            var viewModel = new CustomerOrderDetailsViewModel
+            var orders = await mediator.Send(new GetCustomerOrdersQuery());
+
+            var viewModel = new CustomerOrderListViewModel
             {
-                OrderId = id,
-                Status = OrderStatus.Processing,
-                OrderDate = DateTime.Now.AddDays(-1),
-                ShippingAddress = "123 Nile Street, Apartment 4B",
-                ShippingGovernorate = "Cairo",
-                ShippingPhone = "+20 100 123 4567",
-                Subtotal = 220.00m,
-                ShippingFee = 25.00m,
-                Items = new List<OrderItemViewModel>
+                Orders = orders.Select(o => new CustomerOrderItemViewModel
                 {
-                    new OrderItemViewModel {
-                        ProductName = "Retro Cassette Sticker",
-                        Sku = "STK-RETR-01",
-                        Dimensions = "5x5 cm",
-                        Quantity = 2,
-                        UnitPrice = 70.00m,
-                        ImageUrl = "https://images.unsplash.com/photo-1605648916319-cf082f7524a1?q=80&w=400&auto=format&fit=crop"
-                    },
-                    new OrderItemViewModel {
-                        ProductName = "Pixel Heart Sticker",
-                        Sku = "STK-PIXL-03",
-                        Dimensions = "4x4 cm",
-                        Quantity = 1,
-                        UnitPrice = 80.00m,
-                        ImageUrl = "https://images.unsplash.com/photo-1599305090598-fe179d501c27?q=80&w=400&auto=format&fit=crop"
-                    }
-                },
-                Logs = new List<OrderLogViewModel>
-                {
-                    new OrderLogViewModel { Message = "Order received and payment confirmed.", Timestamp = "1 day ago", Actor = "System", IsSystem = true },
-                    new OrderLogViewModel { Message = "Preparing your stickers for production.", Timestamp = "20 hours ago", Actor = "System", IsSystem = true }
-                }
+                    Id = o.Id,
+                    OrderNumber = o.OrderNumber,
+                    TrackingNumber = o.TrackingNumber,
+                    Status = o.Status,
+                    CreatedAt = o.CreatedAt,
+                    ItemCount = o.ItemCount,
+                    TotalAmount = o.TotalAmount
+                }).ToList()
             };
 
             return View(viewModel);
+        }
+
+        [HttpGet("order-details/{id}")]
+        public async Task<IActionResult> OrderDetails(Guid id)
+        {
+            ViewData["Title"] = localizer["orders_details_title"] + " #" + id.ToString("N")[..8].ToUpper();
+
+            try
+            {
+                var order = await mediator.Send(new GetOrderDetailsQuery(id));
+
+                var viewModel = new CustomerOrderDetailsViewModel
+                {
+                    Id = order.Id,
+                    OrderNumber = order.OrderNumber,
+                    TrackingNumber = order.TrackingNumber,
+                    Status = order.Status,
+                    CreatedAt = order.CreatedAt,
+                    ShippingAddress = order.ShippingAddress,
+                    ShippingGovernorate = order.ShippingGovernorateName,
+                    ShippingPhone = order.CustomerPhone,
+                    ShippingCost = order.ShippingCost,
+                    Subtotal = order.Subtotal,
+                    TotalAmount = order.TotalAmount,
+                    Notes = order.Notes,
+                    Items = order.Items.Select(i => new CustomerOrderItemDetailViewModel
+                    {
+                        ProductName = i.ProductName,
+                        ProductImageUrl = i.ProductImageUrl,
+                        Quantity = i.Quantity,
+                        UnitPrice = i.UnitPrice,
+                        TotalPrice = i.TotalPrice
+                    }).ToList(),
+                    StatusHistory = order.StatusHistory.Select(h => new CustomerOrderStatusHistoryViewModel
+                    {
+                        Status = h.NewStatus,
+                        ChangedBy = h.ChangedBy,
+                        ChangedAt = h.ChangedAt
+                    }).ToList()
+                };
+
+                return View(viewModel);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
         }
 
         [HttpGet("custom-order")]
@@ -233,13 +257,20 @@ namespace DAKKN.MVC.Controllers
 
         [HttpPost("place-order")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> PlaceOrder()
+        public async Task<IActionResult> PlaceOrder([FromForm] PlaceOrderRequest request)
         {
             try
             {
-                var result = await mediator.Send(new PlaceOrderCommand());
-                TempData["SuccessMessage"] = localizer["Order placed successfully!"];
-                return RedirectToAction(nameof(OrderConfirmation), new { orderId = result.OrderNumber });
+                var command = new PlaceOrderCommand(
+                    request.CustomerName,
+                    request.CustomerPhone,
+                    request.ShippingAddress,
+                    request.ShippingGovernorateId,
+                    request.Notes);
+
+                var result = await mediator.Send(command);
+                TempData["SuccessMessage"] = localizer["order.created"].Value;
+                return RedirectToAction(nameof(OrderConfirmation), new { orderId = result.OrderId });
             }
             catch (BadRequestException ex)
             {
@@ -255,16 +286,24 @@ namespace DAKKN.MVC.Controllers
                         ModelState.AddModelError(kvp.Key, error);
                     }
                 }
-                return RedirectToAction(nameof(Cart));
+                return RedirectToAction(nameof(Checkout));
             }
         }
 
-        [HttpGet("confirmation")]
-        public IActionResult OrderConfirmation(string orderId = "DK-9021")
+        [HttpGet("confirmation/{orderId}")]
+        public async Task<IActionResult> OrderConfirmation(Guid orderId)
         {
-            ViewData["Title"] = localizer["conf_h1"];
-            ViewData["OrderId"] = orderId;
-            return View();
+            ViewData["Title"] = localizer["order_placed_title"];
+
+            try
+            {
+                var order = await mediator.Send(new GetOrderDetailsQuery(orderId));
+                return View(order);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
         }
 
         [HttpGet("profile")]

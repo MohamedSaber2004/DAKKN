@@ -17,6 +17,13 @@ using DAKKN.Application.Features.ShippingGovernorates.Commands.ToggleShippingGov
 using DAKKN.Application.Features.ShippingGovernorates.Commands.UpdateShippingGovernorate;
 using DAKKN.Application.Features.ShippingGovernorates.Queries.GetShippingGovernorates;
 using DAKKN.Application.Features.Dashboard.Queries.GetDashboardInventoryStats;
+using DAKKN.Application.Features.Orders.Queries.GetOrders;
+using DAKKN.Application.Features.Orders.Queries.GetOrderDetails;
+using DAKKN.Application.Features.Orders.Queries.GetRecentOrders;
+using DAKKN.Application.Features.Orders.Queries.GetDashboardStats;
+using DAKKN.Application.Features.Orders.Commands.UpdateOrderStatus;
+using DAKKN.Application.Features.Orders.Commands.CancelOrder;
+using DAKKN.Application.Features.Orders.Commands.DeleteOrder;
 using DAKKN.Application.Features.Inventory.Commands.ApplyGlobalDangerQuantity;
 using DAKKN.Application.Features.Inventory.Commands.UpdateInventorySettings;
 using DAKKN.Application.Features.Inventory.Queries.GetInventorySettings;
@@ -56,11 +63,38 @@ namespace DAKKN.MVC.Controllers
         public async Task<IActionResult> Dashboard()
         {
             ViewData["Title"] = _localizer["admin_overview"];
-            var stats = await _mediator.Send(new GetDashboardInventoryStatsQuery());
-            ViewData["LowStockCount"] = stats.LowStockCount;
-            ViewData["OutOfStockCount"] = stats.OutOfStockCount;
-            ViewData["TotalProducts"] = stats.TotalProducts;
-            return View();
+            var inventoryStats = await _mediator.Send(new GetDashboardInventoryStatsQuery());
+            var orderStats = await _mediator.Send(new GetDashboardStatsQuery());
+            var recentOrders = await _mediator.Send(new GetRecentOrdersQuery(Count: 10));
+
+            ViewData["LowStockCount"] = inventoryStats.LowStockCount;
+            ViewData["OutOfStockCount"] = inventoryStats.OutOfStockCount;
+            ViewData["TotalProducts"] = inventoryStats.TotalProducts;
+
+            var viewModel = new DashboardStatsViewModel
+            {
+                OrdersToday = orderStats.OrdersToday,
+                OrdersLast24Hours = orderStats.OrdersLast24Hours,
+                RevenueToday = orderStats.RevenueToday,
+                RevenueLast24Hours = orderStats.RevenueLast24Hours,
+                PendingOrders = orderStats.PendingOrders,
+                DeliveredOrders = orderStats.DeliveredOrders,
+                CancelledOrders = orderStats.CancelledOrders,
+                TotalProducts = orderStats.TotalProducts,
+                TotalUsers = orderStats.TotalUsers
+            };
+
+            ViewData["RecentOrders"] = recentOrders.Select(o => new RecentOrderWidgetViewModel
+            {
+                Id = o.Id,
+                OrderNumber = o.OrderNumber,
+                CustomerName = o.CustomerName,
+                Status = o.Status,
+                TotalAmount = o.TotalAmount,
+                CreatedAt = o.CreatedAt
+            }).ToList();
+
+            return View(viewModel);
         }
 
         [HttpGet("users")]
@@ -131,89 +165,122 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpGet("orders")]
-        public IActionResult Orders()
+        public async Task<IActionResult> Orders(string? searchTerm, OrderStatus? filterStatus, int page = 1)
         {
             ViewData["Title"] = _localizer["admin_orders"];
-            
-            var mockOrders = new List<OrderListItemViewModel>
-            {
-                new OrderListItemViewModel { OrderId = "ORD-001", CustomerName = "أحمد محمود", OrderDate = DateTime.Now.AddDays(-1), Status = OrderStatus.Processing, TotalAmount = 750 },
-                new OrderListItemViewModel { OrderId = "ORD-002", CustomerName = "سارة عبد الله", OrderDate = DateTime.Now.AddDays(-2), Status = OrderStatus.Shipped, TotalAmount = 1200 },
-                new OrderListItemViewModel { OrderId = "ORD-003", CustomerName = "ياسين علي", OrderDate = DateTime.Now.AddDays(-3), Status = OrderStatus.Delivered, TotalAmount = 450 },
-                new OrderListItemViewModel { OrderId = "ORD-004", CustomerName = "ليلى محمد", OrderDate = DateTime.Now.AddDays(-5), Status = OrderStatus.Cancelled, TotalAmount = 300 }
-            };
 
-            var viewModel = new OrderListViewModel
+            var result = await _mediator.Send(new GetOrdersQuery(searchTerm, filterStatus, Page: page));
+
+            var viewModel = new AdminOrderListViewModel
             {
-                Orders = mockOrders,
-                TotalOrders = 2458,
-                ProcessingCount = 142,
-                ShippedCount = 856,
-                MonthlyRevenue = "124,000 ج.م"
+                Orders = result.Orders.Select(o => new OrderListItemViewModel
+                {
+                    Id = o.Id,
+                    OrderNumber = o.OrderNumber,
+                    CustomerName = o.CustomerName,
+                    CreatedAt = o.CreatedAt,
+                    Status = o.Status,
+                    TotalAmount = o.TotalAmount,
+                    TrackingNumber = o.TrackingNumber,
+                    ItemCount = o.ItemCount
+                }).ToList(),
+                TotalOrders = result.TotalCount,
+                PendingCount = result.PendingCount,
+                ProcessingCount = result.ProcessingCount,
+                ShippedCount = result.ShippedCount,
+                DeliveredCount = result.DeliveredCount,
+                CancelledCount = result.CancelledCount,
+                MonthlyRevenue = result.MonthlyRevenue,
+                SearchTerm = searchTerm,
+                FilterStatus = filterStatus
             };
 
             return View(viewModel);
         }
 
         [HttpGet("order-details/{id}")]
-        public IActionResult OrderDetails(string id)
+        public async Task<IActionResult> OrderDetails(Guid id)
         {
             ViewData["Title"] = _localizer["admin_order_details"];
-            
-            var viewModel = new OrderDetailsViewModel
-            {
-                OrderId = id,
-                Status = OrderStatus.TechnicalReview,
-                OrderDate = DateTime.Now.AddDays(-2),
-                DeadlineDate = DateTime.Now.AddDays(2),
-                Material = "فينيل ممتاز (Vinyl)",
-                Finish = "هولوجرام",
-                CutType = "قص محيطي (Die-Cut)",
-                Resolution = "300 DPI",
-                InternalNotes = "العميل طلب ألوان مشبعة أكثر في التصميم الثاني.",
-                Items = new List<OrderItemViewModel>
-                {
-                    new OrderItemViewModel { 
-                        ProductName = "حزمة ملصقات جيمنج", 
-                        Sku = "GM-8821", 
-                        Dimensions = "5x5 سم", 
-                        Quantity = 50, 
-                        UnitPrice = 15, 
-                        FileStatusOk = true,
-                        ImageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuBdJqwUIJElF6yKiAthjzqbJT3oybHZLiBv1kJqmbuD5er1OlaDE6e1hoP4RbXI68dtTm9QrVrdOu4_L3gIbRZzTfdPkJLIImwJgtfFOblkSv-zMbSFfD_U6GblKhzSYn6aZ6UMAQTaHHAv7ja5lVj5JQ_0eA60WnQU6Tdn8_-P_aPc-MlDlgr3RCXgvrDq7VwR6wWvaxjG5_se3JpJkYk1JpuDc-70Yt9bnuSg2R_zVgHYwNGlkw_-8bAWpGARNWW3NW7GDdgZKL8"
-                    },
-                    new OrderItemViewModel { 
-                        ProductName = "تصميم خاص (تايبوجرافي)", 
-                        Sku = "رفع بواسطة العميل", 
-                        Dimensions = "10x4 سم", 
-                        Quantity = 100, 
-                        UnitPrice = 8.5m, 
-                        FileStatusOk = false,
-                        ImageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuAYqCGBR3sHhdqe1mdJisODxn5Q3mYWRwLi66x75IT4A9Yxij9GP1QnCZjiAUbcOSFgViSTcKrRe02xppzY4S8p2-kPQOJMDgqlv2RT4QI2eFpHWZBASZagZoaX61ZEZKFfuufofS4xvl9pMujFf1iGLw_v3AvaaNeVwVJhlVSUwYUZoFpvIHFOFBAgAYLevbS7VwjTYNJ_NDmU3Mf3ggAVKxNHE7vl2mY5kv_zNm-ME8QUmPaEUO243hcgumpk5LD8o9Gl1101g10"
-                    }
-                },
-                Customer = new CustomerInfoViewModel
-                {
-                    Name = "أحمد محمود",
-                    Email = "ahmed.m@example.com",
-                    TotalSpent = "4,500 ج.م",
-                    TotalOrdersCount = 12,
-                    RecentOrders = new List<CustomerRecentOrderViewModel>
-                    {
-                        new CustomerRecentOrderViewModel { OrderId = "98201", Status = OrderStatus.Delivered },
-                        new CustomerRecentOrderViewModel { OrderId = "97844", Status = OrderStatus.Delivered },
-                        new CustomerRecentOrderViewModel { OrderId = "97102", Status = OrderStatus.Cancelled }
-                    }
-                },
-                Logs = new List<OrderLogViewModel>
-                {
-                    new OrderLogViewModel { Message = "تم تأكيد الدفع بنجاح (Paymob).", Timestamp = "منذ ساعتين", Actor = "النظام", IsSystem = true },
-                    new OrderLogViewModel { Message = "تم رفع ملفات التصميم الجديدة.", Timestamp = "منذ 3 ساعات", Actor = "أحمد (العميل)", IsSystem = false },
-                    new OrderLogViewModel { Message = "تم إنشاء الطلب.", Timestamp = "أمس", Actor = "النظام", IsSystem = true }
-                }
-            };
 
-            return View(viewModel);
+            try
+            {
+                var order = await _mediator.Send(new GetOrderDetailsQuery(id, IsAdmin: true));
+
+                var viewModel = new AdminOrderDetailsViewModel
+                {
+                    Id = order.Id,
+                    OrderNumber = order.OrderNumber,
+                    TrackingNumber = order.TrackingNumber,
+                    Status = order.Status,
+                    CreatedAt = order.CreatedAt,
+                    CustomerName = order.CustomerName,
+                    CustomerEmail = order.CustomerEmail,
+                    CustomerPhone = order.CustomerPhone,
+                    ShippingAddress = order.ShippingAddress,
+                    ShippingGovernorateName = order.ShippingGovernorateName,
+                    ShippingCost = order.ShippingCost,
+                    Subtotal = order.Subtotal,
+                    TotalAmount = order.TotalAmount,
+                    Notes = order.Notes,
+                    Items = order.Items.Select(i => new OrderItemViewModel
+                    {
+                        ProductName = i.ProductName,
+                        ProductImageUrl = i.ProductImageUrl,
+                        Quantity = i.Quantity,
+                        UnitPrice = i.UnitPrice,
+                        TotalPrice = i.TotalPrice
+                    }).ToList(),
+                    StatusHistory = order.StatusHistory.Select(h => new OrderStatusHistoryViewModel
+                    {
+                        OldStatus = h.OldStatus,
+                        NewStatus = h.NewStatus,
+                        ChangedBy = h.ChangedBy,
+                        ChangedAt = h.ChangedAt,
+                        Notes = h.Notes
+                    }).ToList()
+                };
+
+                return View(viewModel);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPost("order-details/{id}/update-status")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateOrderStatus(Guid id, OrderStatus newStatus, string? statusNotes = null)
+        {
+            try
+            {
+                await _mediator.Send(new UpdateOrderStatusCommand(id, newStatus, statusNotes));
+                TempData["SuccessMessage"] = _localizer[LocalizationKeys.OrderMessages.StatusUpdated.Value].Value;
+            }
+            catch (Exception ex) when (ex is ValidationException or BadRequestException or NotFoundException)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
+
+            return RedirectToAction(nameof(OrderDetails), new { id });
+        }
+
+        [HttpPost("orders/delete/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteOrder(Guid id)
+        {
+            try
+            {
+                await _mediator.Send(new DeleteOrderCommand(id));
+                TempData["SuccessMessage"] = _localizer[LocalizationKeys.OrderMessages.Deleted.Value].Value;
+            }
+            catch (Exception ex) when (ex is ValidationException or BadRequestException or NotFoundException)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
+
+            return RedirectToAction(nameof(Orders));
         }
 
         [HttpGet("inventory")]

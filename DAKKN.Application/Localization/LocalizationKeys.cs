@@ -65,6 +65,8 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString MaxLength = new("validation.max_length");
             public static readonly KeyString Range = new("validation.range");
             public static readonly KeyString GreaterThanOrEqual = new("validation.greater_than_or_equal");
+            public static readonly KeyString InvalidEnum = new("validation.invalid_enum");
+            public static readonly KeyString InvalidValue = new("validation.invalid_value");
         }
 
         public static class Admin
@@ -156,6 +158,13 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString ShippingUpdated = new("cart.shipping_updated");
             public static readonly KeyString BrowseProducts = new("cart.browse_products");
             public static readonly KeyString ContinueShopping = new("cart.continue_shopping");
+        }
+
+        public static class CheckoutMessages
+        {
+            public static readonly KeyString ShippingCardTitle = new("checkout_shipping_card_title");
+            public static readonly KeyString GovLabel = new("checkout_gov_label");
+            public static readonly KeyString ShippingCost = new("checkout_shipping_cost");
         }
 
         public static class ShippingMessages
@@ -363,6 +372,17 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString AltProductImage = new("alt_product_image");
             public static readonly KeyString AltCategory = new("alt_category");
             public static readonly KeyString Loading = new("loading");
+        }
+
+        public static class OrderMessages
+        {
+            public static readonly KeyString InvalidStatusTransition = new("order.invalid_status_transition");
+            public static readonly KeyString CannotCancel = new("order.cannot_cancel");
+            public static readonly KeyString NotFound = new("order.not_found");
+            public static readonly KeyString Created = new("order.created");
+            public static readonly KeyString StatusUpdated = new("order.status_updated");
+            public static readonly KeyString Cancelled = new("order.cancelled");
+            public static readonly KeyString Deleted = new("order.deleted");
         }
 
         public static class AdminShipping

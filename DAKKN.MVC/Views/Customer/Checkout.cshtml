@@ -1,23 +1,25 @@
 @model GuestCartViewModel
+@inject IStringLocalizer<Messages> Localizer
 @{
     Layout = "_LayoutCustomer";
     var isAr = System.Threading.Thread.CurrentThread.CurrentUICulture.Name.StartsWith("ar");
+    var backIcon = isAr ? "arrow_forward" : "arrow_back";
+    var govName = isAr && !string.IsNullOrEmpty(Model.GovernorateArName) ? Model.GovernorateArName : Model.GovernorateName;
 }
 
 <div class="max-w-7xl mx-auto px-lg py-xl">
     <div class="mb-xl flex items-center gap-md">
         <a asp-action="Cart" class="w-10 h-10 rounded-full bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 flex items-center justify-center text-text-secondary hover:text-primary transition-all">
-            <span class="material-symbols-outlined">arrow_back</span>
+            <span class="material-symbols-outlined">@backIcon</span>
         </a>
         <h1 class="font-h1 text-h1 font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["checkout_h1"]</h1>
     </div>
 
     <form asp-action="PlaceOrder" method="post" class="grid grid-cols-1 lg:grid-cols-3 gap-2xl items-start">
         @Html.AntiForgeryToken()
-        <!-- Left Column: Checkout Details -->
+        <input type="hidden" name="ShippingGovernorateId" value="@Model.ShippingGovernorateId" />
+
         <div class="lg:col-span-2 space-y-lg">
-            
-            <!-- 1. Shipping Address Section -->
             <section class="bg-surface dark:bg-inverse-surface rounded-[40px] border border-border dark:border-outline/10 p-lg md:p-xl shadow-small space-y-xl">
                 <div class="flex items-center gap-md border-b border-border dark:border-outline/10 pb-md">
                     <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
@@ -33,7 +35,7 @@
                     <div class="md:col-span-2 space-y-2">
                         <label class="block font-bold text-sm text-outline uppercase tracking-wider px-1">@Localizer["checkout_name"]</label>
                         <div class="relative">
-                            <input required type="text" class="w-full ps-12 pe-4 py-4 bg-surface-container dark:bg-white/5 rounded-2xl border border-border dark:border-outline/20 focus:ring-2 focus:ring-primary outline-none transition-all font-medium" placeholder="@Localizer["checkout_name_ph"]">
+                            <input required type="text" name="CustomerName" class="w-full px-12 py-4 bg-surface-container dark:bg-white/5 rounded-2xl border border-border dark:border-outline/20 focus:ring-2 focus:ring-primary outline-none transition-all font-medium" placeholder="@Localizer["checkout_name_ph"]">
                             <span class="material-symbols-outlined absolute start-4 top-1/2 -translate-y-1/2 text-outline">person</span>
                         </div>
                     </div>
@@ -45,109 +47,106 @@
                                 <img src="https://flagcdn.com/w20/eg.png" width="20" alt="Egypt Flag">
                                 <span class="text-sm font-bold">+20</span>
                             </div>
-                            <input required type="tel" class="flex-1 px-4 py-4 bg-transparent border-none outline-none focus:ring-0 font-medium" placeholder="1x xxx xxxx">
-                        </div>
-                    </div>
-
-                    <div class="space-y-2">
-                        <label class="block font-bold text-sm text-outline uppercase tracking-wider px-1">@Localizer["checkout_gov"]</label>
-                        <div class="relative">
-                            <select required class="w-full ps-12 pe-10 py-4 bg-surface-container dark:bg-white/5 rounded-2xl border border-border dark:border-outline/20 focus:ring-2 focus:ring-primary outline-none appearance-none bg-none transition-all font-medium">
-                                <option value="" disabled selected>@Localizer[LocalizationKeys.ShippingMessages.GovPlaceholder.Key]</option>
-                                @foreach (var gov in Model.Governorates)
-                                {
-                                    <option value="@gov.Id" data-price="@gov.ShippingPrice" selected="@(Model.ShippingGovernorateId == gov.Id ? true : null)">
-                                        @(isAr ? gov.ArName : gov.Name)
-                                    </option>
-                                }
-                            </select>
-                            <span class="material-symbols-outlined absolute start-4 top-1/2 -translate-y-1/2 text-outline">map</span>
-                            <span class="material-symbols-outlined absolute end-4 top-1/2 -translate-y-1/2 text-outline pointer-events-none">expand_more</span>
+                            <input required type="tel" name="CustomerPhone" class="flex-1 px-4 py-4 bg-transparent border-none outline-none focus:ring-0 font-medium" placeholder="1x xxx xxxx">
                         </div>
                     </div>
 
                     <div class="md:col-span-2 space-y-2">
                         <label class="block font-bold text-sm text-outline uppercase tracking-wider px-1">@Localizer["checkout_address"]</label>
-                        <div class="relative">
-                            <textarea required rows="3" class="w-full ps-12 pe-4 py-4 bg-surface-container dark:bg-white/5 rounded-2xl border border-border dark:border-outline/20 focus:ring-2 focus:ring-primary outline-none transition-all font-medium resize-none" placeholder="@Localizer["checkout_address_ph"]"></textarea>
-                            <span class="material-symbols-outlined absolute start-4 top-4 text-outline">home_pin</span>
-                        </div>
+                        <textarea required name="ShippingAddress" rows="3" class="w-full px-4 py-4 bg-surface-container dark:bg-white/5 rounded-2xl border border-border dark:border-outline/20 focus:ring-2 focus:ring-primary outline-none transition-all font-medium" placeholder="@Localizer["checkout_address_ph"]"></textarea>
                     </div>
 
                     <div class="md:col-span-2 space-y-2">
-                        <label class="block font-bold text-sm text-outline uppercase tracking-wider px-1">@Localizer["checkout_notes"]</label>
-                        <div class="relative">
-                            <input type="text" class="w-full ps-12 pe-4 py-4 bg-surface-container dark:bg-white/5 rounded-2xl border border-border dark:border-outline/20 focus:ring-2 focus:ring-primary outline-none transition-all font-medium" placeholder="@Localizer["checkout_notes_ph"]">
-                            <span class="material-symbols-outlined absolute start-4 top-1/2 -translate-y-1/2 text-outline">edit_note</span>
-                        </div>
+                        <label class="block font-bold text-sm text-outline uppercase tracking-wider px-1">@Localizer["order_notes"]</label>
+                        <textarea name="Notes" rows="1" class="w-full px-4 py-4 bg-surface-container dark:bg-white/5 rounded-2xl border border-border dark:border-outline/20 focus:ring-2 focus:ring-primary outline-none transition-all font-medium" placeholder="@Localizer["checkout_notes_ph"]"></textarea>
                     </div>
                 </div>
             </section>
         </div>
 
-        <!-- Right Column: Order Summary (Sticky) -->
-        <aside class="space-y-lg sticky top-24">
-            <div class="bg-surface dark:bg-inverse-surface rounded-[40px] border border-border dark:border-outline/10 p-xl shadow-large space-y-xl">
-                <h2 class="text-2xl font-bold">@Localizer["cart_summary_h"]</h2>
-                
-                <div class="space-y-md max-h-48 overflow-y-auto pe-2 custom-scrollbar">
+        <div class="space-y-lg">
+            @if (Model.ShippingGovernorateId.HasValue)
+            {
+                <section class="bg-surface dark:bg-inverse-surface rounded-[40px] border border-border dark:border-outline/10 p-lg md:p-xl shadow-small space-y-lg">
+                    <div class="flex items-center gap-md border-b border-border dark:border-outline/10 pb-md">
+                        <div class="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                            <span class="material-symbols-outlined">local_shipping</span>
+                        </div>
+                        <h3 class="text-lg font-bold">@Localizer[LocalizationKeys.CheckoutMessages.ShippingCardTitle.Key]</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-text-secondary">@Localizer[LocalizationKeys.CheckoutMessages.GovLabel.Key]</span>
+                            <span class="font-bold">@govName</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-text-secondary">@Localizer[LocalizationKeys.CheckoutMessages.ShippingCost.Key]</span>
+                            <span class="font-bold">@Model.ShippingPrice.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</span>
+                        </div>
+                    </div>
+                </section>
+            }
+
+            <section class="bg-surface dark:bg-inverse-surface rounded-[40px] border border-border dark:border-outline/10 p-lg md:p-xl shadow-small space-y-xl">
+                <h2 class="text-2xl font-bold">@Localizer["checkout_summary_h"]</h2>
+
+                <div class="space-y-md divide-y divide-border dark:divide-outline/10">
+                    @{
+                        var cartSubtotal = Model.Items.Sum(i => i.Price * i.Quantity);
+                    }
                     @foreach (var item in Model.Items)
                     {
-                        <div class="flex gap-md items-center">
-                            <div class="w-12 h-12 rounded-xl overflow-hidden bg-surface-container-high">
-                                <img src="@(item.ImageUrl ?? "/images/placeholders/product-placeholder.svg")" class="w-full h-full object-cover" alt="@(isAr ? item.ArName : item.Name)" onerror="this.src='/images/placeholders/product-placeholder.svg'" />
+                        var itemTotal = item.Price * item.Quantity;
+                        <div class="flex items-center gap-md pt-md first:pt-0">
+                            <div class="w-14 h-14 rounded-2xl bg-surface-container dark:bg-white/5 overflow-hidden flex-shrink-0 border border-border dark:border-outline/10">
+                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                {
+                                    <img src="@item.ImageUrl" alt="@item.Name" class="w-full h-full object-cover">
+                                }
                             </div>
                             <div class="flex-1 min-w-0">
-                                <p class="text-xs font-bold truncate">@(isAr && !string.IsNullOrEmpty(item.ArName) ? item.ArName : item.Name)</p>
-                                <p class="text-[10px] text-text-secondary">@Localizer["cart_items"]: @item.Quantity • @((item.Price * item.Quantity).ToString("N2")) @Html.Raw(Localizer["Currency_EGP"])</p>
+                                <p class="font-bold text-text-primary dark:text-inverse-on-surface truncate">@(isAr && !string.IsNullOrEmpty(item.ArName) ? item.ArName : item.Name)</p>
+                                <p class="text-sm text-text-secondary">@Localizer["checkout_qty"]: @item.Quantity</p>
                             </div>
+                            <p class="font-bold whitespace-nowrap">@itemTotal.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</p>
                         </div>
                     }
                 </div>
 
-                <div class="h-px bg-border dark:bg-outline/10"></div>
-
-                <div class="space-y-md">
-                    <div class="flex justify-between text-text-secondary">
-                        <span>@Localizer["cart_subtotal"]</span>
-                        <span>@Model.Subtotal.ToString("N2") @Html.Raw(Localizer["Currency_EGP"])</span>
+                <div class="border-t border-border dark:border-outline/10 pt-xl space-y-2">
+                    <div class="flex justify-between">
+                        <span class="text-text-secondary">@Localizer["order_subtotal"]</span>
+                        <span class="font-bold">@cartSubtotal.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</span>
                     </div>
-                    <div class="flex justify-between text-text-secondary">
-                        <span>@Localizer["cart_shipping"]</span>
-                        <span>
-                            @if (Model.ShippingGovernorateId.HasValue)
-                            {
-                                @(Model.ShippingPrice.ToString("N2")) @Html.Raw(Localizer["Currency_EGP"])
-                            }
-                            else
-                            {
-                                <span class="text-text-secondary/50">--</span>
-                            }
-                        </span>
+                    <div class="flex justify-between">
+                        <span class="text-text-secondary">@Localizer["order_shipping"]</span>
+                        <span class="font-bold">@Model.ShippingPrice.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</span>
                     </div>
-                    <div class="h-px bg-border dark:bg-outline/10"></div>
-                    <div class="flex justify-between items-end">
-                        <span class="font-bold text-lg">@Localizer["cart_total"]</span>
-                        <div class="text-end">
-                            <div class="text-4xl font-bold text-primary">@Model.Total.ToString("N2") @Html.Raw(Localizer["Currency_EGP"])</div>
-                            <div class="text-[10px] text-text-secondary uppercase tracking-widest mt-1">@Localizer["cart_vat_inc"]</div>
-                        </div>
+                    <div class="flex justify-between text-lg pt-2">
+                        <span class="font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["order_total"]</span>
+                        <span class="font-bold text-primary">@((cartSubtotal + Model.ShippingPrice).ToString("N0")) @Html.Raw(Localizer["Currency_EGP"])</span>
                     </div>
                 </div>
 
-                <button type="submit" class="w-full bg-primary text-on-primary py-5 rounded-3xl font-bold text-xl shadow-large hover:scale-[1.02] hover:shadow-2xl transition-all flex items-center justify-center gap-3">
-                    @Localizer["checkout_place_order"]
-                    <span class="material-symbols-outlined">shopping_bag</span>
+                <button type="submit" class="w-full bg-primary text-on-primary py-5 rounded-2xl font-bold text-lg shadow-large hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined">lock</span>
+                    @Localizer["checkout_submit"]
                 </button>
-
-                <div class="flex items-center gap-3 p-4 bg-surface-container dark:bg-white/5 rounded-2xl">
-                    <span class="material-symbols-outlined text-primary">verified_user</span>
-                    <div class="text-[10px] text-start">
-                        <p class="font-bold">@Localizer["cart_secure_h"]</p>
-                        <p class="text-text-secondary">@Localizer["cart_secure_p"]</p>
-                    </div>
-                </div>
-            </div>
-        </aside>
+            </section>
+        </div>
     </form>
 </div>
+
+<style>
+    select,
+    input,
+    textarea {
+        direction: inherit;
+        text-align: inherit;
+    }
+    [dir="rtl"] select {
+        background-position: left 0.75rem center !important;
+        padding-left: 2.5rem !important;
+        padding-right: 1rem !important;
+    }
+</style>

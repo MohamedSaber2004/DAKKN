@@ -23,6 +23,9 @@ namespace DAKKN.Persistence
         public DbSet<InventoryTransaction> InventoryTransactions => Set<InventoryTransaction>();
         public DbSet<SystemSetting> SystemSettings => Set<SystemSetting>();
         public DbSet<UserFavorite> UserFavorites => Set<UserFavorite>();
+        public DbSet<Order> Orders => Set<Order>();
+        public DbSet<OrderItem> OrderItems => Set<OrderItem>();
+        public DbSet<OrderStatusHistory> OrderStatusHistories => Set<OrderStatusHistory>();
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {

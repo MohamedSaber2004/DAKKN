@@ -1,78 +1,59 @@
+@using DAKKN.MVC.ViewModels.Admin
+@using DAKKN.Domain.Enums
+@model DashboardStatsViewModel
 @inject IStringLocalizer<Messages> Localizer
 @{
     Layout = "_LayoutAdmin";
     ViewData["Title"] = Localizer["admin_overview"];
     var culture = System.Globalization.CultureInfo.CurrentCulture.Name;
     var isArabic = culture.StartsWith("ar");
+    var recentOrders = ViewData["RecentOrders"] as List<RecentOrderWidgetViewModel> ?? new();
 }
 
 <div class="space-y-8 pb-12">
     <!-- 1. Stats Grid -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- Stat Card 1 -->
         <div class="premium-card p-6 flex flex-col gap-4">
             <div class="flex justify-between items-start">
                 <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                    <span class="material-symbols-outlined text-2xl">payments</span>
+                    <span class="material-symbols-outlined text-2xl">shopping_cart</span>
                 </div>
-                <span class="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1.5 rounded-lg bg-green-500/10 text-green-600 dark:text-green-500">
-                    <span class="material-symbols-outlined text-sm">trending_up</span>
-                    +22%
-                </span>
             </div>
             <div>
-                <p class="text-sm font-semibold text-admin-secondary">@Localizer["admin_stat_revenue"]</p>
-                <h3 class="text-2xl font-black text-admin-primary mt-1">12,450 ج.م</h3>
+                <p class="text-sm font-semibold text-admin-secondary">@Localizer["admin_dashboard_orders_today"]</p>
+                <h3 class="text-2xl font-black text-admin-primary mt-1">@Model.OrdersToday</h3>
             </div>
         </div>
-
-        <!-- Stat Card 2 -->
         <div class="premium-card p-6 flex flex-col gap-4">
             <div class="flex justify-between items-start">
                 <div class="w-12 h-12 rounded-2xl bg-secondary/10 flex items-center justify-center text-secondary">
-                    <span class="material-symbols-outlined text-2xl">shopping_cart</span>
+                    <span class="material-symbols-outlined text-2xl">payments</span>
                 </div>
-                <span class="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1.5 rounded-lg bg-red-500/10 text-red-600 dark:text-red-500">
-                    <span class="material-symbols-outlined text-sm">trending_down</span>
-                    -2%
-                </span>
             </div>
             <div>
-                <p class="text-sm font-semibold text-admin-secondary">@Localizer["admin_stat_orders"]</p>
-                <h3 class="text-2xl font-black text-admin-primary mt-1">142</h3>
+                <p class="text-sm font-semibold text-admin-secondary">@Localizer["admin_dashboard_revenue_today"]</p>
+                <h3 class="text-2xl font-black text-admin-primary mt-1">@Model.RevenueToday.ToString("N0") @Localizer["egp"]</h3>
             </div>
         </div>
-
-        <!-- Stat Card 3 -->
         <div class="premium-card p-6 flex flex-col gap-4">
             <div class="flex justify-between items-start">
                 <div class="w-12 h-12 rounded-2xl bg-tertiary/10 flex items-center justify-center text-tertiary">
                     <span class="material-symbols-outlined text-2xl">group</span>
                 </div>
-                <span class="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1.5 rounded-lg bg-green-500/10 text-green-600 dark:text-green-500">
-                    <span class="material-symbols-outlined text-sm">trending_up</span>
-                    +15%
-                </span>
             </div>
             <div>
-                <p class="text-sm font-semibold text-admin-secondary">@Localizer["admin_stat_customers"]</p>
-                <h3 class="text-2xl font-black text-admin-primary mt-1">1,280</h3>
+                <p class="text-sm font-semibold text-admin-secondary">@Localizer["admin_dashboard_users"]</p>
+                <h3 class="text-2xl font-black text-admin-primary mt-1">@Model.TotalUsers</h3>
             </div>
         </div>
-
-        <!-- Stat Card 4 -->
         <div class="premium-card p-6 flex flex-col gap-4">
             <div class="flex justify-between items-start">
                 <div class="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500">
                     <span class="material-symbols-outlined text-2xl">inventory_2</span>
                 </div>
-                <span class="flex items-center gap-1 text-[11px] font-bold px-2.5 py-1.5 rounded-lg bg-green-500/10 text-green-600 dark:text-green-500">
-                    <span class="material-symbols-outlined text-sm">check</span>
-                    @Localizer["admin_stat_stock_ok"]
-                </span>
             </div>
             <div>
-                <p class="text-sm font-semibold text-admin-secondary">@Localizer["admin_stat_products"]</p>
+                <p class="text-sm font-semibold text-admin-secondary">@Localizer["admin_dashboard_products"]</p>
                 <h3 class="text-2xl font-black text-admin-primary mt-1">@ViewData["TotalProducts"]</h3>
             </div>
         </div>
@@ -86,7 +67,7 @@
             </div>
             <div>
                 <p class="text-sm font-semibold text-admin-secondary">@Localizer["inventory_dashboard_low_stock_title"]</p>
-                <h3 class="text-xl font-black text-admin-primary group-hover:text-amber-500 transition-colors" id="lowStockCount">@ViewData["LowStockCount"] @Localizer["admin_products"]</h3>
+                <h3 class="text-xl font-black text-admin-primary group-hover:text-amber-500 transition-colors">@ViewData["LowStockCount"] @Localizer["admin_products"]</h3>
             </div>
         </a>
         <a asp-action="Inventory" asp-route-stockFilter="outOfStock" class="premium-card p-6 flex items-center gap-4 hover:shadow-lg transition-all group">
@@ -95,14 +76,37 @@
             </div>
             <div>
                 <p class="text-sm font-semibold text-admin-secondary">@Localizer["inventory_dashboard_out_of_stock_title"]</p>
-                <h3 class="text-xl font-black text-admin-primary group-hover:text-red-500 transition-colors" id="outOfStockCount">@ViewData["OutOfStockCount"] @Localizer["admin_products"]</h3>
+                <h3 class="text-xl font-black text-admin-primary group-hover:text-red-500 transition-colors">@ViewData["OutOfStockCount"] @Localizer["admin_products"]</h3>
             </div>
         </a>
     </div>
 
+    <!-- Order Status Summary -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div class="premium-card p-4 text-center">
+            <p class="text-xs font-semibold text-admin-secondary">@Localizer["admin_dashboard_pending"]</p>
+            <h4 class="text-xl font-black text-admin-primary mt-1">@Model.PendingOrders</h4>
+        </div>
+        <div class="premium-card p-4 text-center">
+            <p class="text-xs font-semibold text-admin-secondary">@Localizer["admin_dashboard_delivered"]</p>
+            <h4 class="text-xl font-black text-admin-primary mt-1">@Model.DeliveredOrders</h4>
+        </div>
+        <div class="premium-card p-4 text-center">
+            <p class="text-xs font-semibold text-admin-secondary">@Localizer["admin_dashboard_cancelled"]</p>
+            <h4 class="text-xl font-black text-admin-primary mt-1">@Model.CancelledOrders</h4>
+        </div>
+        <div class="premium-card p-4 text-center">
+            <p class="text-xs font-semibold text-admin-secondary">@Localizer["admin_dashboard_orders_24h"]</p>
+            <h4 class="text-xl font-black text-admin-primary mt-1">@Model.OrdersLast24Hours</h4>
+        </div>
+        <div class="premium-card p-4 text-center">
+            <p class="text-xs font-semibold text-admin-secondary">@Localizer["admin_dashboard_revenue_24h"]</p>
+            <h4 class="text-xl font-black text-admin-primary mt-1">@Model.RevenueLast24Hours.ToString("N0")</h4>
+        </div>
+    </div>
+
     <!-- 2. Charts and Quick Actions -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Chart Column -->
         <div class="lg:col-span-2 premium-card p-6 space-y-6">
             <div class="flex justify-between items-center">
                 <h3 class="text-lg font-bold text-admin-primary">@Localizer["admin_sales_chart"]</h3>
@@ -118,7 +122,6 @@
             </div>
         </div>
 
-        <!-- Quick Actions Column -->
         <div class="premium-card p-6 space-y-6 flex flex-col">
             <h3 class="text-lg font-bold text-admin-primary">@Localizer["admin_quick_actions"]</h3>
             <div class="grid grid-cols-1 gap-4 flex-grow">
@@ -152,7 +155,7 @@
                 <span class="material-symbols-outlined text-primary">history</span>
                 <h3 class="text-lg font-bold text-admin-primary">@Localizer["admin_recent_orders"]</h3>
             </div>
-            <a href="#" class="text-xs font-bold text-primary hover:underline flex items-center gap-1">
+            <a asp-action="Orders" class="text-xs font-bold text-primary hover:underline flex items-center gap-1">
                 @Localizer["admin_view_all"]
                 <span class="material-symbols-outlined text-sm">@(isArabic ? "arrow_back" : "arrow_forward")</span>
             </a>
@@ -169,82 +172,41 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-admin-border">
-                    <!-- Mock Row 1 -->
-                    <tr>
-                        <td class="px-8 py-5 font-bold text-admin-primary">#4582</td>
-                        <td class="px-8 py-5">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-[11px] font-bold text-primary">MA</div>
-                                <span>محمد علي</span>
-                            </div>
-                        </td>
-                        <td class="px-8 py-5 font-bold text-admin-primary">240 ج.م</td>
-                        <td class="px-8 py-5">
-                            <span class="status-badge status-pending">@Localizer["status_pending"]</span>
-                        </td>
-                        <td class="px-8 py-5 text-center">
-                            <button class="w-9 h-9 rounded-xl hover:bg-primary/10 hover:text-primary flex items-center justify-center transition-all">
-                                <span class="material-symbols-outlined text-lg">visibility</span>
-                            </button>
-                        </td>
-                    </tr>
-                    <!-- Mock Row 2 -->
-                    <tr>
-                        <td class="px-8 py-5 font-bold text-admin-primary">#4581</td>
-                        <td class="px-8 py-5">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center text-[11px] font-bold text-secondary">SA</div>
-                                <span>سارة أحمد</span>
-                            </div>
-                        </td>
-                        <td class="px-8 py-5 font-bold text-admin-primary">120 ج.م</td>
-                        <td class="px-8 py-5">
-                            <span class="status-badge status-done">@Localizer["status_done"]</span>
-                        </td>
-                        <td class="px-8 py-5 text-center">
-                            <button class="w-9 h-9 rounded-xl hover:bg-primary/10 hover:text-primary flex items-center justify-center transition-all">
-                                <span class="material-symbols-outlined text-lg">visibility</span>
-                            </button>
-                        </td>
-                    </tr>
-                    <!-- Mock Row 3 -->
-                    <tr>
-                        <td class="px-8 py-5 font-bold text-admin-primary">#4580</td>
-                        <td class="px-8 py-5">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-tertiary/10 flex items-center justify-center text-[11px] font-bold text-tertiary">OK</div>
-                                <span>عمر خالد</span>
-                            </div>
-                        </td>
-                        <td class="px-8 py-5 font-bold text-admin-primary">450 ج.م</td>
-                        <td class="px-8 py-5">
-                            <span class="status-badge status-shipped">@Localizer["status_shipped"]</span>
-                        </td>
-                        <td class="px-8 py-5 text-center">
-                            <button class="w-9 h-9 rounded-xl hover:bg-primary/10 hover:text-primary flex items-center justify-center transition-all">
-                                <span class="material-symbols-outlined text-lg">visibility</span>
-                            </button>
-                        </td>
-                    </tr>
-                    <!-- Mock Row 4 -->
-                    <tr>
-                        <td class="px-8 py-5 font-bold text-admin-primary">#4579</td>
-                        <td class="px-8 py-5">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center text-[11px] font-bold text-red-500">LM</div>
-                                <span>ليلى محمود</span>
-                            </div>
-                        </td>
-                        <td class="px-8 py-5 font-bold text-admin-primary">85 ج.م</td>
-                        <td class="px-8 py-5">
-                            <span class="status-badge status-cancelled">@Localizer["status_cancelled"]</span>
-                        </td>
-                        <td class="px-8 py-5 text-center">
-                            <button class="w-9 h-9 rounded-xl hover:bg-primary/10 hover:text-primary flex items-center justify-center transition-all">
-                                <span class="material-symbols-outlined text-lg">visibility</span>
-                            </button>
-                        </td>
-                    </tr>
+                    @foreach (var order in recentOrders)
+                    {
+                        var statusBadge = order.Status switch
+                        {
+                            OrderStatus.Pending => "status-pending",
+                            OrderStatus.Delivered => "status-done",
+                            OrderStatus.Cancelled => "status-cancelled",
+                            OrderStatus.Shipped => "status-shipped",
+                            _ => "status-pending"
+                        };
+                        <tr>
+                            <td class="px-8 py-5 font-bold text-admin-primary">@order.OrderNumber</td>
+                            <td class="px-8 py-5">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-[11px] font-bold text-primary uppercase">@order.CustomerName[0]</div>
+                                    <span>@order.CustomerName</span>
+                                </div>
+                            </td>
+                            <td class="px-8 py-5 font-bold text-admin-primary">@order.TotalAmount.ToString("N0") @Localizer["egp"]</td>
+                            <td class="px-8 py-5">
+                                <span class="status-badge @statusBadge">@Localizer[$"order_status_{order.Status.ToString()}"]</span>
+                            </td>
+                            <td class="px-8 py-5 text-center">
+                                <a asp-action="OrderDetails" asp-route-id="@order.Id" class="w-9 h-9 rounded-xl hover:bg-primary/10 hover:text-primary flex items-center justify-center transition-all">
+                                    <span class="material-symbols-outlined text-lg">visibility</span>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                    @if (recentOrders.Count == 0)
+                    {
+                        <tr>
+                            <td colspan="5" class="px-8 py-5 text-center text-admin-secondary">@Localizer["admin_orders_no_orders"]</td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
@@ -258,7 +220,6 @@
             const ctx = document.getElementById('salesChart').getContext('2d');
             const isDark = document.documentElement.classList.contains('dark');
             
-            // Theme-aware colors
             const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
             const textColor = isDark ? '#7d93ae' : '#94a3b8';
             const primaryColor = '#0e908c';

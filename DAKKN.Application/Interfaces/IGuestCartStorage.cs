@@ -8,5 +8,7 @@ namespace DAKKN.Application.Interfaces
         void SetCart(List<CartItemDto> items);
         int GetCartCount();
         void ClearCart();
+        Guid? GetShippingGovernorateId();
+        void SetShippingGovernorateId(Guid? governorateId);
     }
 }

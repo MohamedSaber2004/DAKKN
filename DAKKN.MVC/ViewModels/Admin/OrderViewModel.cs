@@ -1,92 +1,93 @@
-using System;
-using System.Collections.Generic;
+using DAKKN.Domain.Enums;
 
 namespace DAKKN.MVC.ViewModels.Admin
 {
     public class OrderListItemViewModel
     {
-        public string OrderId { get; set; } = string.Empty;
+        public Guid Id { get; set; }
+        public string OrderNumber { get; set; } = string.Empty;
         public string CustomerName { get; set; } = string.Empty;
-        public DateTime OrderDate { get; set; }
+        public DateTime CreatedAt { get; set; }
         public OrderStatus Status { get; set; }
         public decimal TotalAmount { get; set; }
+        public string TrackingNumber { get; set; } = string.Empty;
+        public int ItemCount { get; set; }
     }
 
-    public enum OrderStatus
-    {
-        Pending,
-        Processing,
-        Shipped,
-        Delivered,
-        Cancelled,
-        TechnicalReview
-    }
-
-    public class OrderListViewModel
+    public class AdminOrderListViewModel
     {
         public List<OrderListItemViewModel> Orders { get; set; } = new();
         public int TotalOrders { get; set; }
+        public int PendingCount { get; set; }
         public int ProcessingCount { get; set; }
         public int ShippedCount { get; set; }
-        public string MonthlyRevenue { get; set; } = "0 ج.م";
+        public int DeliveredCount { get; set; }
+        public int CancelledCount { get; set; }
+        public decimal MonthlyRevenue { get; set; }
+        public string? SearchTerm { get; set; }
+        public OrderStatus? FilterStatus { get; set; }
     }
 
-    public class OrderDetailsViewModel
+    public class AdminOrderDetailsViewModel
     {
-        public string OrderId { get; set; } = string.Empty;
+        public Guid Id { get; set; }
+        public string OrderNumber { get; set; } = string.Empty;
+        public string TrackingNumber { get; set; } = string.Empty;
         public OrderStatus Status { get; set; }
-        public DateTime OrderDate { get; set; }
-        public DateTime DeadlineDate { get; set; }
-        
-        // Technical Specs
-        public string Material { get; set; } = string.Empty;
-        public string Finish { get; set; } = string.Empty;
-        public string CutType { get; set; } = string.Empty;
-        public string Resolution { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
+
+        public string CustomerName { get; set; } = string.Empty;
+        public string CustomerEmail { get; set; } = string.Empty;
+        public string CustomerPhone { get; set; } = string.Empty;
+        public string ShippingAddress { get; set; } = string.Empty;
+        public string ShippingGovernorateName { get; set; } = string.Empty;
+        public decimal ShippingCost { get; set; }
+        public decimal Subtotal { get; set; }
+        public decimal TotalAmount { get; set; }
+        public string? Notes { get; set; }
 
         public List<OrderItemViewModel> Items { get; set; } = new();
-        
-        // Customer Info
-        public CustomerInfoViewModel Customer { get; set; } = new();
-        
-        // Logs
-        public List<OrderLogViewModel> Logs { get; set; } = new();
-        
-        public string InternalNotes { get; set; } = string.Empty;
+        public List<OrderStatusHistoryViewModel> StatusHistory { get; set; } = new();
     }
 
     public class OrderItemViewModel
     {
-        public string ImageUrl { get; set; } = string.Empty;
         public string ProductName { get; set; } = string.Empty;
-        public string Sku { get; set; } = string.Empty;
-        public string Dimensions { get; set; } = string.Empty;
+        public string? ProductImageUrl { get; set; }
         public int Quantity { get; set; }
         public decimal UnitPrice { get; set; }
-        public decimal TotalPrice => Quantity * UnitPrice;
-        public bool FileStatusOk { get; set; }
+        public decimal TotalPrice { get; set; }
     }
 
-    public class CustomerInfoViewModel
+    public class OrderStatusHistoryViewModel
     {
-        public string Name { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-        public string TotalSpent { get; set; } = string.Empty;
-        public int TotalOrdersCount { get; set; }
-        public List<CustomerRecentOrderViewModel> RecentOrders { get; set; } = new();
+        public OrderStatus OldStatus { get; set; }
+        public OrderStatus NewStatus { get; set; }
+        public string ChangedBy { get; set; } = string.Empty;
+        public DateTime ChangedAt { get; set; }
+        public string? Notes { get; set; }
     }
 
-    public class CustomerRecentOrderViewModel
+    public class DashboardStatsViewModel
     {
-        public string OrderId { get; set; } = string.Empty;
+        public int OrdersToday { get; set; }
+        public int OrdersLast24Hours { get; set; }
+        public decimal RevenueToday { get; set; }
+        public decimal RevenueLast24Hours { get; set; }
+        public int PendingOrders { get; set; }
+        public int DeliveredOrders { get; set; }
+        public int CancelledOrders { get; set; }
+        public int TotalProducts { get; set; }
+        public int TotalUsers { get; set; }
+    }
+
+    public class RecentOrderWidgetViewModel
+    {
+        public Guid Id { get; set; }
+        public string OrderNumber { get; set; } = string.Empty;
+        public string CustomerName { get; set; } = string.Empty;
         public OrderStatus Status { get; set; }
-    }
-
-    public class OrderLogViewModel
-    {
-        public string Message { get; set; } = string.Empty;
-        public string Timestamp { get; set; } = string.Empty;
-        public string Actor { get; set; } = string.Empty;
-        public bool IsSystem { get; set; }
+        public decimal TotalAmount { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

@@ -8,6 +8,7 @@ namespace DAKKN.MVC.Services
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private const string SessionKey = "GuestCart";
+        private const string ShippingGovKey = "GuestCart_ShippingGovId";
 
         public SessionCartStorage(IHttpContextAccessor httpContextAccessor)
         {
@@ -50,7 +51,34 @@ namespace DAKKN.MVC.Services
         public void ClearCart()
         {
             var session = _httpContextAccessor.HttpContext?.Session;
-            session?.Remove(SessionKey);
+            if (session == null) return;
+            session.Remove(SessionKey);
+            session.Remove(ShippingGovKey);
+        }
+
+        public Guid? GetShippingGovernorateId()
+        {
+            var session = _httpContextAccessor.HttpContext?.Session;
+            if (session == null) return null;
+
+            var data = session.GetString(ShippingGovKey);
+            if (string.IsNullOrEmpty(data)) return null;
+
+            if (Guid.TryParse(data, out var id))
+                return id;
+
+            return null;
+        }
+
+        public void SetShippingGovernorateId(Guid? governorateId)
+        {
+            var session = _httpContextAccessor.HttpContext?.Session;
+            if (session == null) return;
+
+            if (governorateId.HasValue)
+                session.SetString(ShippingGovKey, governorateId.Value.ToString());
+            else
+                session.Remove(ShippingGovKey);
         }
     }
 }

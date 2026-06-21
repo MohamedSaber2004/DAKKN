@@ -1,5 +1,6 @@
 @using DAKKN.MVC.ViewModels.Admin
-@model OrderListViewModel
+@using DAKKN.Domain.Enums
+@model AdminOrderListViewModel
 @inject IStringLocalizer<Messages> Localizer
 @{
     Layout = "_LayoutAdmin";
@@ -17,9 +18,8 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-lg mb-lg">
     <div class="premium-card p-lg flex items-center justify-between">
         <div>
-            <p class="font-body text-body text-text-secondary dark:text-outline-variant mb-xs">@Localizer["admin_orders_total"]</p>
+            <p class="font-body text-body text-text-secondary dark:text-outline-variant mb-xs">@Localizer["admin_orders_total_label"]</p>
             <p class="font-h2 text-h2 text-text-primary dark:text-inverse-on-surface">@Model.TotalOrders</p>
-            <p class="text-caption text-primary font-bold mt-1">+12% @Localizer["admin_week"]</p>
         </div>
         <div class="w-12 h-12 rounded-full bg-primary-container/20 text-primary flex items-center justify-center">
             <span class="material-symbols-outlined filled-icon">shopping_cart</span>
@@ -38,7 +38,6 @@
         <div>
             <p class="font-body text-body text-text-secondary dark:text-outline-variant mb-xs">@Localizer["admin_orders_shipped"]</p>
             <p class="font-h2 text-h2 text-text-primary dark:text-inverse-on-surface">@Model.ShippedCount</p>
-            <p class="text-caption text-secondary font-bold mt-1">+5% @Localizer["admin_week"]</p>
         </div>
         <div class="w-12 h-12 rounded-full bg-tertiary-container/20 text-tertiary flex items-center justify-center">
             <span class="material-symbols-outlined filled-icon">local_shipping</span>
@@ -47,8 +46,7 @@
     <div class="premium-card p-lg flex items-center justify-between">
         <div>
             <p class="font-body text-body text-text-secondary dark:text-outline-variant mb-xs">@Localizer["admin_orders_revenue"]</p>
-            <p class="font-h2 text-h2 text-text-primary dark:text-inverse-on-surface">@Model.MonthlyRevenue</p>
-            <p class="text-caption text-primary font-bold mt-1">+18% @Localizer["admin_month"]</p>
+            <p class="font-h2 text-h2 text-text-primary dark:text-inverse-on-surface">@Model.MonthlyRevenue.ToString("N0") @Localizer["egp"]</p>
         </div>
         <div class="w-12 h-12 rounded-full bg-primary-container/20 text-primary flex items-center justify-center">
             <span class="material-symbols-outlined filled-icon">payments</span>
@@ -56,25 +54,48 @@
     </div>
 </div>
 
-<!-- Orders Table -->
+<!-- Search & Filter -->
 <div class="premium-card overflow-hidden">
     <div class="p-lg border-b border-border dark:border-outline/10 flex flex-col sm:flex-row justify-between items-center gap-md bg-surface-bright dark:bg-surface-container-high">
         <h3 class="font-h3 text-h3 text-text-primary dark:text-inverse-on-surface">@Localizer["admin_recent_orders"]</h3>
-        <div class="relative w-full sm:w-64">
-            <input type="text" placeholder="@Localizer["admin_search"]" class="w-full bg-surface dark:bg-surface-container-low border border-border dark:border-outline/20 rounded-full py-2 ltr:pl-10 ltr:pr-4 rtl:pr-10 rtl:pl-4 font-body text-body text-on-surface dark:text-inverse-on-surface focus:ring-2 focus:ring-primary outline-none transition-all">
-            <span class="material-symbols-outlined absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 text-text-secondary dark:text-outline">search</span>
-        </div>
+        <form method="get" class="flex flex-col sm:flex-row gap-sm w-full sm:w-auto">
+            <div class="relative w-full sm:w-64">
+                <input type="text" name="searchTerm" value="@Model.SearchTerm" placeholder="@Localizer["admin_orders_search_ph"]" class="w-full bg-surface dark:bg-surface-container-low border border-border dark:border-outline/20 rounded-full py-2 ltr:pl-10 ltr:pr-4 rtl:pr-10 rtl:pl-4 font-body text-body text-on-surface dark:text-inverse-on-surface focus:ring-2 focus:ring-primary outline-none transition-all">
+                <span class="material-symbols-outlined absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 text-text-secondary dark:text-outline">search</span>
+            </div>
+            <div class="relative">
+                @{
+                    var culture = System.Globalization.CultureInfo.CurrentCulture.Name;
+                    var isAr = culture.StartsWith("ar");
+                }
+                <select name="filterStatus" dir="@(isAr ? "rtl" : "ltr")" class="bg-surface dark:bg-surface-container-low border border-border dark:border-outline/20 rounded-full py-2 ltr:pl-4 ltr:pr-10 rtl:pr-4 rtl:pl-10 font-body text-body text-on-surface dark:text-inverse-on-surface focus:ring-2 focus:ring-primary outline-none appearance-none cursor-pointer">
+                    <option value="">@Localizer["admin_orders_all"]</option>
+                    <option value="1" selected="@(Model.FilterStatus == OrderStatus.Pending)">@Localizer["order_status_Pending"]</option>
+                    <option value="2" selected="@(Model.FilterStatus == OrderStatus.Confirmed)">@Localizer["order_status_Confirmed"]</option>
+                    <option value="3" selected="@(Model.FilterStatus == OrderStatus.Processing)">@Localizer["order_status_Processing"]</option>
+                    <option value="5" selected="@(Model.FilterStatus == OrderStatus.Shipped)">@Localizer["order_status_Shipped"]</option>
+                    <option value="7" selected="@(Model.FilterStatus == OrderStatus.Delivered)">@Localizer["order_status_Delivered"]</option>
+                    <option value="8" selected="@(Model.FilterStatus == OrderStatus.Cancelled)">@Localizer["order_status_Cancelled"]</option>
+                </select>
+                <span class="material-symbols-outlined absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 text-text-secondary dark:text-outline pointer-events-none">arrow_drop_down</span>
+            </div>
+            <button type="submit" class="bg-primary text-on-primary px-4 py-2 rounded-full text-body font-bold hover:brightness-110 transition-all">@Localizer["admin_search"]</button>
+            <a asp-action="Orders" class="bg-surface-container-low dark:bg-surface-container-high border border-border dark:border-outline/20 px-4 py-2 rounded-full text-body font-bold text-text-secondary hover:text-primary transition-all flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">refresh</span>
+                @Localizer["admin_reset_filter"]
+            </a>
+        </form>
     </div>
     <div class="overflow-x-auto custom-scrollbar">
         <table class="w-full text-start border-collapse">
             <thead class="bg-surface-container-low dark:bg-surface-container-highest/30 text-text-secondary dark:text-outline font-body border-b border-border dark:border-outline/10">
                 <tr>
-                    <th class="p-md text-start font-bold">@Localizer["admin_order_id"]</th>
-                    <th class="p-md text-start font-bold">@Localizer["admin_order_customer"]</th>
-                    <th class="p-md text-start font-bold">@Localizer["admin_order_date"]</th>
-                    <th class="p-md text-start font-bold">@Localizer["admin_order_status"]</th>
-                    <th class="p-md text-start font-bold">@Localizer["admin_order_total"]</th>
-                    <th class="p-md text-center font-bold">@Localizer["admin_th_action"]</th>
+                        <th class="p-md text-left rtl:text-right font-bold">@Localizer["admin_order_id"]</th>
+                        <th class="p-md text-left rtl:text-right font-bold">@Localizer["admin_order_customer"]</th>
+                        <th class="p-md text-left rtl:text-right font-bold">@Localizer["admin_order_date"]</th>
+                        <th class="p-md text-left rtl:text-right font-bold">@Localizer["admin_order_status"]</th>
+                        <th class="p-md text-left rtl:text-right font-bold">@Localizer["admin_order_total"]</th>
+                    <th class="p-md text-center font-bold">@Localizer["admin_order_actions"]</th>
                 </tr>
             </thead>
             <tbody class="text-body text-text-primary dark:text-inverse-on-surface divide-y divide-border dark:divide-outline/10">
@@ -86,30 +107,60 @@
                         OrderStatus.Processing => "bg-secondary-container/20 text-secondary",
                         OrderStatus.Shipped => "bg-tertiary-container/20 text-tertiary",
                         OrderStatus.Cancelled => "bg-error-container/20 text-error",
-                        OrderStatus.TechnicalReview => "bg-secondary-container/20 text-secondary",
                         _ => "bg-surface-container-highest text-text-secondary"
                     };
 
                     <tr class="hover:bg-surface-container-lowest dark:hover:bg-surface-container-high/50 transition-colors group">
-                        <td class="p-md font-bold text-primary dark:text-primary-light">#@order.OrderId</td>
+                        <td class="p-md font-bold text-primary dark:text-primary-light">@order.OrderNumber</td>
                         <td class="p-md">@order.CustomerName</td>
-                        <td class="p-md text-text-secondary dark:text-outline">@order.OrderDate.ToString("MMM dd, yyyy")</td>
+                        <td class="p-md text-text-secondary dark:text-outline">@order.CreatedAt.ToLocalTime().ToString("MMM dd, yyyy HH:mm")</td>
                         <td class="p-md">
                             <span class="px-3 py-1 @statusClass rounded-full text-caption font-bold">
-                                @Localizer[$"status_{order.Status.ToString().ToLower()}"]
+                                @Localizer[$"order_status_{order.Status.ToString()}"]
                             </span>
                         </td>
-                        <td class="p-md font-bold">@order.TotalAmount.ToString("N0") @Localizer["egp"]</td>
+                        <td class="p-md font-bold">@order.TotalAmount.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</td>
                         <td class="p-md text-center">
-                            <a asp-controller="Admin" asp-action="OrderDetails" asp-route-id="@order.OrderId" class="inline-flex items-center justify-center w-10 h-10 rounded-full text-text-secondary hover:text-primary hover:bg-primary-container/20 dark:hover:bg-primary/20 transition-all">
-                                <span class="material-symbols-outlined">visibility</span>
-                            </a>
+                            <div class="flex items-center justify-center gap-1">
+                                <a asp-controller="Admin" asp-action="OrderDetails" asp-route-id="@order.Id" class="inline-flex items-center justify-center w-9 h-9 rounded-full text-text-secondary hover:text-primary hover:bg-primary-container/20 dark:hover:bg-primary/20 transition-all" title="@Localizer["order_view_details"]">
+                                    <span class="material-symbols-outlined text-lg">visibility</span>
+                                </a>
+                                <form asp-action="UpdateOrderStatus" asp-route-id="@order.Id" method="post" class="inline-flex items-center gap-1">
+                                    @Html.AntiForgeryToken()
+                                    @{
+                                        var culture = System.Globalization.CultureInfo.CurrentCulture.Name;
+                                        var isAr = culture.StartsWith("ar");
+                                    }
+                                    <select name="newStatus" dir="@(isAr ? "rtl" : "ltr")" class="bg-transparent border border-border dark:border-outline/20 rounded-lg text-[11px] py-1 outline-none focus:ring-1 focus:ring-primary cursor-pointer">
+                                        @foreach (var s in Enum.GetValues<OrderStatus>())
+                                        {
+                                            <option value="@((int)s)" selected="@(s == order.Status)">@Localizer[$"order_status_{s.ToString()}"]</option>
+                                        }
+                                    </select>
+                                    <button type="submit" class="inline-flex items-center justify-center w-7 h-7 rounded-full text-text-secondary hover:text-primary hover:bg-primary/10 transition-all" title="@Localizer["admin_order_update_status"]">
+                                        <span class="material-symbols-outlined text-sm">save</span>
+                                    </button>
+                                </form>
+                                <form asp-action="DeleteOrder" asp-route-id="@order.Id" method="post" onsubmit="return confirm('@Localizer["admin_order_delete_confirm"]')">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="inline-flex items-center justify-center w-9 h-9 rounded-full text-text-secondary hover:text-error hover:bg-error/10 transition-all" title="@Localizer["admin_order_delete"]">
+                                        <span class="material-symbols-outlined text-lg">delete</span>
+                                    </button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
+    @if (Model.TotalOrders == 0)
+    {
+        <div class="p-lg text-center">
+            <p class="text-body text-text-secondary dark:text-outline">@Localizer["admin_orders_no_orders"]</p>
+            <p class="text-caption text-text-secondary dark:text-outline-variant">@Localizer["admin_orders_no_orders_desc"]</p>
+        </div>
+    }
 </div>
 
 @section Scripts {

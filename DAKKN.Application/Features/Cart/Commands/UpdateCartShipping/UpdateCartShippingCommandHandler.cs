@@ -26,6 +26,7 @@ namespace DAKKN.Application.Features.Cart.Commands.UpdateCartShipping
                 throw new NotFoundException(nameof(ShippingGovernorate), request.ShippingGovernorateId);
 
             var items = _cartStorage.GetCart();
+            _cartStorage.SetShippingGovernorateId(gov.Id);
             return new CartDto
             {
                 Items = items,

@@ -1,8 +1,43 @@
-﻿iisexpress.exe' (CoreCLR: clrhost): Loaded 'C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\8.0.26\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll'. Symbol loading disabled by Include/Exclude setting.
-'iisexpress.exe' (CoreCLR: clrhost): Loaded 'E:\DAKKN\DAKKN.MVC\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll'. Symbol loading disabled by Include/Exclude setting.
-'iisexpress.exe' (CoreCLR: clrhost): Loaded 'E:\DAKKN\DAKKN.MVC\bin\Debug\net8.0\Microsoft.IdentityModel.JsonWebTokens.dll'. Symbol loading disabled by Include/Exclude setting.
-'iisexpress.exe' (CoreCLR: clrhost): Loaded 'E:\DAKKN\DAKKN.MVC\bin\Debug\net8.0\Microsoft.IdentityModel.Abstractions.dll'. Symbol loading disabled by Include/Exclude setting.
-The thread 20616 has exited with code 0 (0x0).
-The thread 15540 has exited with code 0 (0x0).
-The thread '.NET TP Worker' (10068) has exited with code 0 (0x0).
-Exception thrown: 'System.ObjectDisposedException' in System.Private.CoreLib.dll
+﻿﻿INSERT INTO [dbo].[OrderStatusHistories] ([Id], [ChangedBy], [CreatedAt], [CreatedBy], [DeletedAt], [DeletedBy], [IsActive], [IsDeleted], [NewStatus], [Notes], [OldStatus], [OrderId], [UpdatedAt], [UpdatedBy])
+﻿VALUES (@p78, @p79, @p80, @p81, @p82, @p83, @p84, @p85, @p86, @p87, @p88, @p89, @p90, @p91);
+﻿[19:14:46 INF] Order ORD-20260621-390A8C created by user 66332bc5-b6f5-4a58-af29-3609a87ce5a5
+﻿[19:14:46 INF] Handled Request: PlaceOrderCommand
+﻿[19:14:46 WRN] Dakkn Long Running Request: PlaceOrderCommand (1156 milliseconds)
+﻿[19:14:46 INF] Executing RedirectResult, redirecting to /customer/confirmation/10af2887-ba1c-4d76-b958-636799cee62b.
+﻿[19:14:47 INF] Executed action DAKKN.MVC.Controllers.CustomerController.PlaceOrder (DAKKN.Appearence) in 2298.2442ms
+﻿[19:14:47 INF] Executed endpoint 'DAKKN.MVC.Controllers.CustomerController.PlaceOrder (DAKKN.Appearence)'
+﻿[19:14:50 ERR] An unhandled exception has occurred while executing the request.
+﻿System.InvalidOperationException: The 'Microsoft.AspNetCore.Mvc.ViewFeatures.Infrastructure.DefaultTempDataSerializer' cannot serialize an object of type 'Microsoft.Extensions.Localization.LocalizedString'.
+﻿   at Microsoft.AspNetCore.Mvc.ViewFeatures.Infrastructure.DefaultTempDataSerializer.Serialize(IDictionary`2 values)
+﻿   at Microsoft.AspNetCore.Mvc.ViewFeatures.CookieTempDataProvider.SaveTempData(HttpContext context, IDictionary`2 values)
+﻿   at Microsoft.AspNetCore.Mvc.ViewFeatures.TempDataDictionary.Save()
+﻿   at Microsoft.AspNetCore.Mvc.ViewFeatures.Filters.SaveTempDataFilter.OnResultExecuted(ResultExecutedContext context)
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
+﻿--- End of stack trace from previous location ---
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+﻿   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+﻿   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+﻿   at Microsoft.AspNetCore.OutputCaching.OutputCacheMiddleware.InvokeAwaited(HttpContext httpContext, IReadOnlyList`1 policies)
+﻿   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+﻿   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+﻿   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+﻿   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+﻿   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+﻿   at NWebsec.AspNetCore.Middleware.Middleware.CspMiddleware.Invoke(HttpContext context)
+﻿   at NWebsec.AspNetCore.Middleware.Middleware.MiddlewareBase.Invoke(HttpContext context)
+﻿   at NWebsec.AspNetCore.Middleware.Middleware.MiddlewareBase.Invoke(HttpContext context)
+﻿   at NWebsec.AspNetCore.Middleware.Middleware.MiddlewareBase.Invoke(HttpContext context)
+﻿   at NWebsec.AspNetCore.Middleware.Middleware.MiddlewareBase.Invoke(HttpContext context)
+﻿   at NWebsec.AspNetCore.Middleware.Middleware.MiddlewareBase.Invoke(HttpContext context)
+﻿   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+﻿[19:14:50 INF] Request finished HTTP/2 POST https://localhost:44308/customer/place-order - 500 null text/html; charset=utf-8 5081.7869ms
+﻿[19:14:50 INF] Request starting HTTP/2 GET https://localhost:44308/_vs/browserLink - null null
+﻿[19:14:50 INF] Request starting HTTP/2 GET https://localhost:44308/_framework/aspnetcore-browser-refresh.js - null null
+﻿[19:14:50 INF] Request finished HTTP/2 GET https://localhost:44308/_framework/aspnetcore-browser-refresh.js - 200 14936 application/javascript; charset=utf-8 0.8402ms
+﻿[19:14:50 INF] Request finished HTTP/2 GET https://localhost:44308/_vs/browserLink - 200 null text/javascript; charset=UTF-8 9.8562ms

@@ -1,5 +1,6 @@
 @using DAKKN.MVC.ViewModels.Admin
-@model OrderDetailsViewModel
+@using DAKKN.Domain.Enums
+@model AdminOrderDetailsViewModel
 @inject IStringLocalizer<Messages> Localizer
 @{
     Layout = "_LayoutAdmin";
@@ -11,77 +12,28 @@
     <div>
         <div class="flex flex-wrap items-center gap-sm mb-xs">
             <span class="text-caption text-text-secondary dark:text-outline">@Localizer["admin_order_id"]</span>
-            <h2 class="text-h2 text-text-primary dark:text-inverse-on-surface">#@Model.OrderId</h2>
+            <h2 class="text-h2 text-text-primary dark:text-inverse-on-surface">@Model.OrderNumber</h2>
             @{
                 var statusClass = Model.Status switch
                 {
-                    OrderStatus.TechnicalReview => "bg-secondary-container/20 text-secondary",
                     OrderStatus.Delivered => "bg-primary-container/20 text-primary",
+                    OrderStatus.Processing => "bg-secondary-container/20 text-secondary",
+                    OrderStatus.Shipped => "bg-tertiary-container/20 text-tertiary",
                     OrderStatus.Cancelled => "bg-error-container/20 text-error",
                     _ => "bg-surface-container-highest text-text-secondary"
                 };
             }
-            <span class="@statusClass px-sm py-xs rounded-full text-caption font-bold">@Localizer[$"status_{Model.Status.ToString().ToLower()}"]</span>
+            <span class="@statusClass px-sm py-xs rounded-full text-caption font-bold">@Localizer[$"order_status_{Model.Status.ToString()}"]</span>
         </div>
         <p class="text-body text-text-secondary dark:text-outline-variant">
-            @Localizer["admin_order_date"]: @Model.OrderDate.ToString("dd MMM yyyy - HH:mm") | 
-            @Localizer["admin_order_deadline"]: @Model.DeadlineDate.ToString("dd MMM yyyy")
+            @Localizer["admin_order_date"]: @Model.CreatedAt.ToLocalTime().ToString("dd MMM yyyy - HH:mm")
         </p>
-    </div>
-    <div class="flex flex-wrap gap-md w-full lg:w-auto">
-        <button class="flex-1 lg:flex-none flex items-center justify-center gap-xs bg-surface dark:bg-surface-container border border-border dark:border-outline/20 px-md py-sm rounded-xl text-body font-bold hover:bg-surface-container-low transition-colors shadow-sm">
-            <span class="material-symbols-outlined text-[20px]">download</span>
-            @Localizer["admin_order_download_files"]
-        </button>
-        <button class="flex-1 lg:flex-none flex items-center justify-center gap-xs bg-surface dark:bg-surface-container border border-border dark:border-outline/20 px-md py-sm rounded-xl text-body font-bold hover:bg-surface-container-low transition-colors shadow-sm">
-            <span class="material-symbols-outlined text-[20px]">print</span>
-            @Localizer["admin_order_print_work"]
-        </button>
-        <button class="flex-1 lg:flex-none flex items-center justify-center gap-xs bg-error text-on-primary px-md py-sm rounded-xl text-body font-bold hover:brightness-110 transition-all shadow-sm">
-            <span class="material-symbols-outlined text-[20px]">cancel</span>
-            @Localizer["admin_order_cancel"]
-        </button>
     </div>
 </div>
 
 <div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
-    <!-- Left Column: Details -->
+    <!-- Left Column -->
     <div class="lg:col-span-2 space-y-lg">
-        <!-- Technical Specs -->
-        <section class="bg-surface dark:bg-surface-container p-lg rounded-2xl border border-border dark:border-outline/20 shadow-sm transition-colors">
-            <div class="flex items-center justify-between mb-md">
-                <h3 class="text-h4 flex items-center gap-sm text-text-primary dark:text-inverse-on-surface">
-                    <span class="material-symbols-outlined text-primary">precision_manufacturing</span>
-                    @Localizer["admin_order_tech_specs"]
-                </h3>
-                <button class="text-primary dark:text-primary-light text-body font-bold hover:underline">Edit Specs</button>
-            </div>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-md">
-                <div class="p-md bg-surface-container-low dark:bg-surface-container-high rounded-xl transition-colors">
-                    <p class="text-caption text-text-secondary dark:text-outline mb-xs">@Localizer["admin_order_material"]</p>
-                    <p class="text-body font-bold text-text-primary dark:text-inverse-on-surface">@Model.Material</p>
-                </div>
-                <div class="p-md bg-surface-container-low dark:bg-surface-container-high rounded-xl transition-colors">
-                    <p class="text-caption text-text-secondary dark:text-outline mb-xs">@Localizer["admin_order_finish"]</p>
-                    <p class="text-body font-bold flex items-center gap-xs text-text-primary dark:text-inverse-on-surface">
-                        <span class="material-symbols-outlined text-accent-purple text-sm filled-icon">stars</span>
-                        @Model.Finish
-                    </p>
-                </div>
-                <div class="p-md bg-surface-container-low dark:bg-surface-container-high rounded-xl transition-colors">
-                    <p class="text-caption text-text-secondary dark:text-outline mb-xs">@Localizer["admin_order_cut_type"]</p>
-                    <p class="text-body font-bold text-text-primary dark:text-inverse-on-surface">@Model.CutType</p>
-                </div>
-                <div class="p-md bg-surface-container-low dark:bg-surface-container-high rounded-xl transition-colors">
-                    <p class="text-caption text-text-secondary dark:text-outline mb-xs">@Localizer["admin_order_resolution"]</p>
-                    <p class="text-body font-bold text-primary dark:text-primary-light flex items-center gap-xs">
-                        <span class="material-symbols-outlined text-sm">check_circle</span>
-                        @Model.Resolution
-                    </p>
-                </div>
-            </div>
-        </section>
-
         <!-- Order Items -->
         <section class="bg-surface dark:bg-surface-container rounded-2xl border border-border dark:border-outline/20 overflow-hidden shadow-sm transition-colors">
             <div class="p-lg border-b border-border dark:border-outline/10 bg-surface-bright dark:bg-surface-container-high">
@@ -91,15 +43,13 @@
                 </h3>
             </div>
             <div class="overflow-x-auto custom-scrollbar">
-                <table class="w-full text-start border-collapse">
+                <table class="w-full text-left rtl:text-right border-collapse">
                     <thead class="bg-surface-container-low dark:bg-surface-container-highest/20 text-caption text-text-secondary dark:text-outline border-b border-border dark:border-outline/10">
                         <tr>
-                            <th class="p-md text-start">Image</th>
-                            <th class="p-md text-start">@Localizer["admin_order_product"]</th>
-                            <th class="p-md text-start">@Localizer["admin_order_size"]</th>
-                            <th class="p-md text-start">@Localizer["admin_order_qty"]</th>
-                            <th class="p-md text-start">@Localizer["admin_order_price"]</th>
-                            <th class="p-md text-center">@Localizer["admin_order_file_status"]</th>
+                            <th class="p-md">@Localizer["admin_order_product"]</th>
+                            <th class="p-md">@Localizer["admin_order_qty"]</th>
+                            <th class="p-md">@Localizer["admin_order_price"]</th>
+                            <th class="p-md">Total</th>
                         </tr>
                     </thead>
                     <tbody class="text-body text-text-primary dark:text-inverse-on-surface divide-y divide-border dark:divide-outline/10">
@@ -107,67 +57,93 @@
                         {
                             <tr class="hover:bg-surface-container-lowest dark:hover:bg-surface-container-high/30 transition-colors">
                                 <td class="p-md">
-                                    <div class="w-12 h-12 rounded-lg border border-border dark:border-outline/20 overflow-hidden bg-surface-container-low">
-                                        <img src="@item.ImageUrl" alt="@item.ProductName" class="w-full h-full object-cover">
+                                    <div class="flex items-center gap-md">
+                                        @if (!string.IsNullOrEmpty(item.ProductImageUrl))
+                                        {
+                                            <div class="w-12 h-12 rounded-lg border border-border dark:border-outline/20 overflow-hidden bg-surface-container-low flex-shrink-0">
+                                                <img src="@item.ProductImageUrl" alt="@item.ProductName" class="w-full h-full object-cover">
+                                            </div>
+                                        }
+                                        <p class="font-bold">@item.ProductName</p>
                                     </div>
                                 </td>
-                                <td class="p-md">
-                                    <p class="font-bold">@item.ProductName</p>
-                                    <p class="text-caption text-text-secondary dark:text-outline truncate max-w-[150px]">SKU: @item.Sku</p>
-                                </td>
-                                <td class="p-md whitespace-nowrap">@item.Dimensions</td>
                                 <td class="p-md">@item.Quantity</td>
-                                <td class="p-md whitespace-nowrap">
-                                    <p>@item.UnitPrice.ToString("N2") @Localizer["egp"]</p>
-                                    <p class="text-caption text-text-secondary dark:text-outline">Total: @item.TotalPrice.ToString("N2")</p>
-                                </td>
-                                <td class="p-md text-center">
-                                    @if (item.FileStatusOk)
-                                    {
-                                        <span class="material-symbols-outlined text-primary filled-icon">check_circle</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="material-symbols-outlined text-accent-orange filled-icon">warning</span>
-                                    }
-                                </td>
+                                <td class="p-md whitespace-nowrap">@item.UnitPrice.ToString("N2") @Html.Raw(Localizer["Currency_EGP"])</td>
+                                <td class="p-md whitespace-nowrap font-bold">@item.TotalPrice.ToString("N2") @Html.Raw(Localizer["Currency_EGP"])</td>
                             </tr>
                         }
                     </tbody>
+                    <tfoot class="bg-surface-container-low dark:bg-surface-container-highest/20">
+                        <tr>
+                            <td colspan="3" class="p-md text-right rtl:text-left font-bold">@Localizer["order_subtotal"]</td>
+                            <td class="p-md font-bold">@Model.Subtotal.ToString("N2") @Html.Raw(Localizer["Currency_EGP"])</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" class="p-md text-right rtl:text-left">@Localizer["order_shipping"]</td>
+                            <td class="p-md">@Model.ShippingCost.ToString("N2") @Html.Raw(Localizer["Currency_EGP"])</td>
+                        </tr>
+                        <tr class="text-primary">
+                            <td colspan="3" class="p-md text-right rtl:text-left font-bold text-h4">@Localizer["order_total"]</td>
+                            <td class="p-md font-bold text-h4">@Model.TotalAmount.ToString("N2") @Html.Raw(Localizer["Currency_EGP"])</td>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
         </section>
 
-        <!-- Internal Notes -->
+        <!-- Status History -->
         <section class="bg-surface dark:bg-surface-container p-lg rounded-2xl border border-border dark:border-outline/20 shadow-sm transition-colors">
-            <h3 class="text-h4 flex items-center gap-sm mb-md text-text-primary dark:text-inverse-on-surface">
-                <span class="material-symbols-outlined text-primary">edit_note</span>
-                @Localizer["admin_order_internal_notes"]
-            </h3>
-            <textarea placeholder="Add internal notes for the team..." class="w-full h-24 p-md bg-surface-container-low dark:bg-surface-container-high border border-border dark:border-outline/20 rounded-xl text-body focus:ring-1 focus:ring-primary focus:border-primary outline-none mb-md transition-all dark:text-inverse-on-surface">@Model.InternalNotes</textarea>
-            <div class="flex flex-col sm:flex-row justify-between items-center gap-md">
-                <p class="text-caption text-text-secondary dark:text-outline text-center sm:text-start">These notes are visible to the team only.</p>
-                <button class="w-full sm:w-auto bg-primary text-on-primary px-lg py-sm rounded-xl text-body font-bold hover:brightness-110 transition-all shadow-sm">Save Note</button>
+            @* <h3 class="text-h4 flex items-center gap-sm mb-md text-text-primary dark:text-inverse-on-surface">
+                <span class="material-symbols-outlined text-primary">history</span>
+                @Localizer["admin_orders_status_history"]
+            </h3> *@
+            <div class="space-y-md relative ltr:before:left-2 rtl:before:right-2 before:content-[''] before:absolute before:top-2 before:bottom-2 before:w-px before:bg-border dark:before:bg-outline/10">
+                @foreach (var log in Model.StatusHistory)
+                {
+                    <div class="relative ltr:pl-8 rtl:pr-8">
+                        <div class="absolute ltr:left-0 rtl:right-0 top-1 w-4 h-4 rounded-full bg-primary border-4 border-surface dark:border-surface-container"></div>
+                        <p class="text-body font-bold text-text-primary dark:text-inverse-on-surface">
+                            @Localizer[$"order_status_{log.NewStatus.ToString()}"]
+                        </p>
+                        <p class="text-caption text-text-secondary dark:text-outline">
+                            @log.ChangedAt.ToLocalTime().ToString("dd MMM yyyy - HH:mm")
+                            @if (!string.IsNullOrEmpty(log.Notes))
+                            {
+                                <span> - @log.Notes</span>
+                            }
+                        </p>
+                    </div>
+                }
             </div>
         </section>
     </div>
 
-    <!-- Right Column: Customer & History -->
+    <!-- Right Column -->
     <div class="space-y-lg">
-        <!-- System History -->
+        <!-- Shipping Info -->
         <section class="bg-surface dark:bg-surface-container p-lg rounded-2xl border border-border dark:border-outline/20 shadow-sm transition-colors">
             <h3 class="text-h4 flex items-center gap-sm mb-md text-text-primary dark:text-inverse-on-surface">
-                <span class="material-symbols-outlined text-primary">history</span>
-                @Localizer["admin_order_system_log"]
+                <span class="material-symbols-outlined text-primary">local_shipping</span>
+                @Localizer["admin_orders_shipping_info"]
             </h3>
-            <div class="space-y-md relative ltr:before:left-2 rtl:before:right-2 before:content-[''] before:absolute before:top-2 before:bottom-2 before:w-px before:bg-border dark:before:bg-outline/10">
-                @foreach (var log in Model.Logs)
+            <div class="space-y-sm">
+                <div>
+                    <p class="text-caption text-text-secondary dark:text-outline">@Localizer["order_shipping_address"]</p>
+                    <p class="text-body font-bold">@Model.ShippingAddress</p>
+                </div>
+                <div>
+                    <p class="text-caption text-text-secondary dark:text-outline">@Localizer["order_governorate"]</p>
+                    <p class="text-body font-bold">@Model.ShippingGovernorateName</p>
+                </div>
+                <div>
+                    <p class="text-caption text-text-secondary dark:text-outline">@Localizer["order_phone"]</p>
+                    <p class="text-body font-bold" dir="ltr">@Model.CustomerPhone</p>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.Notes))
                 {
-                    var dotColor = log.IsSystem ? "bg-primary" : "bg-border dark:bg-outline/30";
-                    <div class="relative ltr:pl-8 rtl:pr-8">
-                        <div class="absolute ltr:left-0 rtl:right-0 top-1 w-4 h-4 rounded-full @dotColor border-4 border-surface dark:border-surface-container"></div>
-                        <p class="text-body font-bold text-text-primary dark:text-inverse-on-surface">@log.Message</p>
-                        <p class="text-caption text-text-secondary dark:text-outline">@log.Timestamp - @log.Actor</p>
+                    <div>
+                        <p class="text-caption text-text-secondary dark:text-outline">@Localizer["order_notes"]</p>
+                        <p class="text-body">@Model.Notes</p>
                     </div>
                 }
             </div>
@@ -175,58 +151,65 @@
 
         <!-- Customer Info -->
         <section class="bg-surface dark:bg-surface-container p-lg rounded-2xl border border-border dark:border-outline/20 shadow-sm transition-colors">
-            <div class="flex items-center justify-between mb-md">
-                <h3 class="text-h4 flex items-center gap-sm text-text-primary dark:text-inverse-on-surface">
-                    <span class="material-symbols-outlined text-primary">account_circle</span>
-                    @Localizer["admin_order_customer_info"]
-                </h3>
-                <button class="text-text-secondary dark:text-outline hover:text-primary transition-colors"><span class="material-symbols-outlined">open_in_new</span></button>
-            </div>
+            <h3 class="text-h4 flex items-center gap-sm mb-md text-text-primary dark:text-inverse-on-surface">
+                <span class="material-symbols-outlined text-primary">account_circle</span>
+                @Localizer["admin_orders_customer_info"]
+            </h3>
             <div class="flex items-center gap-md mb-lg">
-                <div class="h-12 w-12 rounded-full bg-secondary-container/30 flex items-center justify-center text-secondary text-h3 font-bold">@Model.Customer.Name[0]</div>
+                <div class="h-12 w-12 rounded-full bg-secondary-container/30 flex items-center justify-center text-secondary text-h3 font-bold">@Model.CustomerName[0]</div>
                 <div>
-                    <h4 class="text-body-lg font-bold text-text-primary dark:text-inverse-on-surface">@Model.Customer.Name</h4>
-                    <p class="text-caption text-text-secondary dark:text-outline">@Model.Customer.Email</p>
+                    <h4 class="text-body-lg font-bold text-text-primary dark:text-inverse-on-surface">@Model.CustomerName</h4>
+                    <p class="text-caption text-text-secondary dark:text-outline">@Model.CustomerEmail</p>
                 </div>
-            </div>
-            <div class="grid grid-cols-2 gap-md mb-lg">
-                <div class="p-sm bg-surface-container-low dark:bg-surface-container-high rounded-xl text-center transition-colors">
-                    <p class="text-caption text-text-secondary dark:text-outline mb-xs">@Localizer["admin_order_total_spent"]</p>
-                    <p class="text-body font-bold text-text-primary dark:text-inverse-on-surface">@Model.Customer.TotalSpent</p>
-                </div>
-                <div class="p-sm bg-surface-container-low dark:bg-surface-container-high rounded-xl text-center transition-colors">
-                    <p class="text-caption text-text-secondary dark:text-outline mb-xs">@Localizer["admin_order_total_count"]</p>
-                    <p class="text-body font-bold text-text-primary dark:text-inverse-on-surface">@Model.Customer.TotalOrdersCount orders</p>
-                </div>
-            </div>
-            <div class="space-y-sm">
-                <p class="text-caption text-text-secondary dark:text-outline font-bold">@Localizer["admin_order_recent_orders"] (3)</p>
-                @foreach (var recent in Model.Customer.RecentOrders)
-                {
-                    <div class="flex items-center justify-between p-sm border border-border dark:border-outline/10 rounded-xl transition-colors">
-                        <span class="text-body font-bold text-text-primary dark:text-inverse-on-surface">#@recent.OrderId</span>
-                        @{
-                            var rStatusClass = recent.Status == OrderStatus.Delivered ? "text-primary bg-primary-container/10" : "text-error bg-error-container/10";
-                        }
-                        <span class="text-caption @rStatusClass px-sm py-xs rounded-lg">@Localizer[$"status_{recent.Status.ToString().ToLower()}"]</span>
-                    </div>
-                }
             </div>
         </section>
 
-        <!-- Quick Actions -->
+        <!-- Payment Info -->
         <section class="bg-surface dark:bg-surface-container p-lg rounded-2xl border border-border dark:border-outline/20 shadow-sm transition-colors">
-            <h3 class="text-h4 mb-md text-text-primary dark:text-inverse-on-surface">Quick Actions</h3>
-            <div class="space-y-sm">
-                <button class="w-full flex items-center gap-sm p-sm border border-border dark:border-outline/20 rounded-xl hover:bg-surface-container-low dark:hover:bg-surface-container-high text-body transition-colors text-text-primary dark:text-inverse-on-surface">
-                    <span class="material-symbols-outlined text-primary">inventory</span>
-                    @Localizer["admin_order_action_inventory"]
-                </button>
-                <button class="w-full flex items-center gap-sm p-sm border border-border dark:border-outline/20 rounded-xl hover:bg-surface-container-low dark:hover:bg-surface-container-high text-body transition-colors text-text-primary dark:text-inverse-on-surface">
-                    <span class="material-symbols-outlined text-primary">mail</span>
-                    @Localizer["admin_order_action_mail"]
-                </button>
+            <h3 class="text-h4 flex items-center gap-sm mb-md text-text-primary dark:text-inverse-on-surface">
+                <span class="material-symbols-outlined text-primary">payments</span>
+                @Localizer["admin_orders_payment_info"]
+            </h3>
+            <div>
+                <p class="text-caption text-text-secondary dark:text-outline">@Localizer["admin_orders_payment_info"]</p>
+                <p class="text-body font-bold">@Localizer["admin_orders_cod"]</p>
             </div>
+            <div class="mt-sm">
+                <p class="text-caption text-text-secondary dark:text-outline">@Localizer["order_tracking"]</p>
+                <p class="text-body font-bold" dir="ltr">@Model.TrackingNumber</p>
+            </div>
+        </section>
+
+        <!-- Status Update -->
+        <section class="bg-surface dark:bg-surface-container p-lg rounded-2xl border border-border dark:border-outline/20 shadow-sm transition-colors">
+            <h3 class="text-h4 flex items-center gap-sm mb-md text-text-primary dark:text-inverse-on-surface">
+                <span class="material-symbols-outlined text-primary">sync_alt</span>
+                @Localizer["admin_order_update_status"]
+            </h3>
+            <form asp-action="UpdateOrderStatus" asp-route-id="@Model.Id" method="post" class="space-y-sm">
+                @Html.AntiForgeryToken()
+                <select name="newStatus" class="w-full bg-surface-container-low dark:bg-surface-container-highest border border-border dark:border-outline/20 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-primary transition-all appearance-none cursor-pointer">
+                    @foreach (var s in Enum.GetValues<OrderStatus>())
+                    {
+                        <option value="@((int)s)" selected="@(s == Model.Status)">@Localizer[$"order_status_{s.ToString()}"]</option>
+                    }
+                </select>
+                <input type="text" name="statusNotes" class="w-full bg-surface-container-low dark:bg-surface-container-highest border border-border dark:border-outline/20 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-primary transition-all text-sm" placeholder="@Localizer["order_cancel_reason_ph"]" />
+                <button type="submit" class="w-full bg-primary text-on-primary py-3 rounded-xl font-bold hover:brightness-110 transition-all">
+                    @Localizer["admin_order_update_status"]
+                </button>
+            </form>
+        </section>
+
+        <!-- Delete -->
+        <section class="bg-surface dark:bg-surface-container p-lg rounded-2xl border border-error/20 shadow-sm transition-colors">
+            <form asp-action="DeleteOrder" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('@Localizer["admin_order_delete_confirm"]')">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="w-full bg-error/10 text-error py-3 rounded-xl font-bold hover:bg-error hover:text-on-primary transition-all flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined">delete_forever</span>
+                    @Localizer["admin_order_delete"]
+                </button>
+            </form>
         </section>
     </div>
 </div>
