@@ -1,5 +1,6 @@
 @using DAKKN.MVC.ViewModels.Admin
 @using DAKKN.Domain.Enums
+@using System.Text.Json
 @model DashboardStatsViewModel
 @inject IStringLocalizer<Messages> Localizer
 @{
@@ -8,6 +9,8 @@
     var culture = System.Globalization.CultureInfo.CurrentCulture.Name;
     var isArabic = culture.StartsWith("ar");
     var recentOrders = ViewData["RecentOrders"] as List<RecentOrderWidgetViewModel> ?? new();
+    var analytics7d = ViewData["Analytics7d"] as DAKKN.Application.DTOs.DashboardAnalyticsDto;
+    var analytics30d = ViewData["Analytics30d"] as DAKKN.Application.DTOs.DashboardAnalyticsDto;
 }
 
 <div class="space-y-8 pb-12">
@@ -111,14 +114,18 @@
             <div class="flex justify-between items-center">
                 <h3 class="text-lg font-bold text-admin-primary">@Localizer["admin_sales_chart"]</h3>
                 <div class="flex gap-2">
-                    <select class="bg-admin-page border border-admin-border text-admin-secondary text-[11px] font-bold uppercase tracking-wider rounded-lg px-3 py-1.5 outline-none focus:ring-1 focus:ring-primary cursor-pointer">
-                        <option>@Localizer["admin_chart_7d"]</option>
-                        <option>@Localizer["admin_chart_30d"]</option>
+                    <select class="chart-period-select bg-admin-page border border-admin-border text-admin-secondary text-[11px] font-bold uppercase tracking-wider rounded-lg px-3 py-1.5 outline-none focus:ring-1 focus:ring-primary cursor-pointer">
+                        <option value="7">@Localizer["admin_chart_7d"]</option>
+                        <option value="30">@Localizer["admin_chart_30d"]</option>
                     </select>
                 </div>
             </div>
             <div class="relative h-[280px]">
-                <canvas id="salesChart"></canvas>
+                <canvas id="salesChart" class="@((analytics7d?.DailyData?.Count ?? 0) == 0 && (analytics30d?.DailyData?.Count ?? 0) == 0 ? "hidden" : "")"></canvas>
+                <div id="chart-empty-state" class="@((analytics7d?.DailyData?.Count ?? 0) == 0 && (analytics30d?.DailyData?.Count ?? 0) == 0 ? "flex" : "hidden") flex-col items-center justify-center h-full text-admin-secondary">
+                    <span class="material-symbols-outlined text-5xl mb-3">bar_chart</span>
+                    <p class="font-bold">@Localizer["admin_chart_no_data"]</p>
+                </div>
             </div>
         </div>
 
@@ -216,78 +223,102 @@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const ctx = document.getElementById('salesChart').getContext('2d');
-            const isDark = document.documentElement.classList.contains('dark');
-            
-            const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
-            const textColor = isDark ? '#7d93ae' : '#94a3b8';
-            const primaryColor = '#0e908c';
-            const secondaryColor = '#00b4d8';
+        try {
+            @{
+                var camelCase = new System.Text.Json.JsonSerializerOptions { PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase };
+            }
+            const analytics7d = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(analytics7d?.DailyData ?? new List<DAKKN.Application.DTOs.DailyAnalytics>(), camelCase));
+            const analytics30d = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(analytics30d?.DailyData ?? new List<DAKKN.Application.DTOs.DailyAnalytics>(), camelCase));
 
-            const data = {
-                labels: ['@Localizer["admin_sat"]', '@Localizer["admin_sun"]', '@Localizer["admin_mon"]', '@Localizer["admin_tue"]', '@Localizer["admin_wed"]', '@Localizer["admin_thu"]', '@Localizer["admin_fri"]'],
-                datasets: [
-                    {
-                        label: '@Localizer["admin_stat_revenue"]',
-                        data: [4200, 3800, 5100, 4900, 6200, 5800, 7500],
-                        borderColor: primaryColor,
-                        backgroundColor: primaryColor + '10',
-                        fill: true,
-                        tension: 0.4,
-                        borderWidth: 3,
-                        pointRadius: 4,
-                        pointBackgroundColor: primaryColor
-                    },
-                    {
-                        label: '@Localizer["admin_stat_orders"]',
-                        data: [120, 95, 145, 130, 160, 155, 190],
-                        borderColor: secondaryColor,
-                        borderWidth: 2,
-                        borderDash: [5, 5],
-                        pointRadius: 0,
-                        tension: 0.4,
-                        fill: false
-                    }
-                ]
-            };
+            document.addEventListener('DOMContentLoaded', () => {
+                const canvas = document.getElementById('salesChart');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                const isDark = document.documentElement.classList.contains('dark');
+                const periodSelect = document.querySelector('.chart-period-select');
+                
+                const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
+                const textColor = isDark ? '#7d93ae' : '#94a3b8';
+                const primaryColor = '#0e908c';
+                const secondaryColor = '#00b4d8';
 
-            new Chart(ctx, {
-                type: 'line',
-                data: data,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: isDark ? '#1e2a38' : '#ffffff',
-                            titleColor: isDark ? '#7d93ae' : '#475569',
-                            bodyColor: isDark ? '#e8edf4' : '#0f172a',
-                            borderColor: isDark ? '#253245' : '#e2e8f0',
-                            borderWidth: 1,
-                            padding: 12,
-                            cornerRadius: 12,
-                            displayColors: false
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: { display: false },
-                            ticks: { color: textColor, font: { size: 11, weight: '600' } }
-                        },
-                        y: {
-                            grid: { color: gridColor },
-                            ticks: { 
-                                color: textColor, 
-                                font: { size: 11, weight: '600' },
-                                callback: value => value >= 1000 ? (value/1000) + 'k' : value
+                function buildChartData(days) {
+                    const data = days === 30 ? analytics30d : analytics7d;
+                    return {
+                        labels: (data || []).map(d => d.label || ''),
+                        datasets: [
+                            {
+                                label: '@Localizer["admin_stat_revenue"]',
+                                data: (data || []).map(d => d.revenue ?? 0),
+                                borderColor: primaryColor,
+                                backgroundColor: primaryColor + '10',
+                                fill: true,
+                                tension: 0.4,
+                                borderWidth: 3,
+                                pointRadius: 4,
+                                pointBackgroundColor: primaryColor
                             },
-                            border: { display: false }
+                            {
+                                label: '@Localizer["admin_stat_orders"]',
+                                data: (data || []).map(d => d.ordersCount ?? 0),
+                                borderColor: secondaryColor,
+                                borderWidth: 2,
+                                borderDash: [5, 5],
+                                pointRadius: 0,
+                                tension: 0.4,
+                                fill: false
+                            }
+                        ]
+                    };
+                }
+
+                const chart = new Chart(ctx, {
+                    type: 'line',
+                    data: buildChartData(7),
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: isDark ? '#1e2a38' : '#ffffff',
+                                titleColor: isDark ? '#7d93ae' : '#475569',
+                                bodyColor: isDark ? '#e8edf4' : '#0f172a',
+                                borderColor: isDark ? '#253245' : '#e2e8f0',
+                                borderWidth: 1,
+                                padding: 12,
+                                cornerRadius: 12,
+                                displayColors: false
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: textColor, font: { size: 11, weight: '600' } }
+                            },
+                            y: {
+                                grid: { color: gridColor },
+                                ticks: { 
+                                    color: textColor, 
+                                    font: { size: 11, weight: '600' },
+                                    callback: value => value >= 1000 ? (value/1000) + 'k' : value
+                                },
+                                border: { display: false }
+                            }
                         }
                     }
+                });
+
+                if (periodSelect) {
+                    periodSelect.addEventListener('change', (e) => {
+                        const days = parseInt(e.target.value, 10);
+                        chart.data = buildChartData(days);
+                        chart.update();
+                    });
                 }
             });
-        });
+        } catch (e) {
+            console.error('Chart init error:', e);
+        }
     </script>
 }

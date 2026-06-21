@@ -66,7 +66,86 @@
                                             {
                                                 <div class="w-12 h-12 rounded-lg border border-border dark:border-outline/20 overflow-hidden bg-surface-container-low flex-shrink-0">
                                                     <img src="@item.ProductImageUrl" alt="@item.ProductName" class="w-full h-full object-cover">
-                                                </div>
+</div>
+
+<!-- Cancel Order Modal -->
+<div id="cancel-modal" class="fixed inset-0 z-[100] flex items-center justify-center hidden" aria-modal="true" role="dialog">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick="closeCancelModal()"></div>
+    <div class="relative bg-surface dark:bg-inverse-surface rounded-[32px] shadow-2xl border border-border dark:border-outline/10 p-xl max-w-md w-[90%] mx-4">
+        <button onclick="closeCancelModal()" class="absolute top-4 end-4 w-10 h-10 rounded-full bg-surface-container dark:bg-surface-container-high hover:bg-primary/10 flex items-center justify-center text-text-secondary hover:text-primary transition-all">
+            <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+        <div class="w-14 h-14 rounded-2xl bg-error/10 flex items-center justify-center mx-auto mb-lg">
+            <span class="material-symbols-outlined text-3xl text-error">cancel</span>
+        </div>
+        <h3 class="text-h3 font-bold text-center text-text-primary dark:text-inverse-on-surface mb-sm">@Localizer["order_cancel"]</h3>
+        <p class="text-body text-center text-text-secondary mb-xl">@Localizer["order_cancel_confirm"]</p>
+        <div class="space-y-lg">
+            <div class="flex flex-col gap-xs">
+                <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["order_cancel_reason_ph"]</label>
+                <textarea id="cancel-reason" rows="3" class="bg-surface-container dark:bg-surface-container-high border border-border dark:border-outline/10 rounded-xl p-md w-full resize-none focus:ring-1 focus:ring-primary outline-none" placeholder="@Localizer["order_cancel_reason_ph"]"></textarea>
+            </div>
+            <div class="flex gap-md">
+                <button onclick="closeCancelModal()" class="flex-1 bg-surface-container dark:bg-surface-container-high border border-border dark:border-outline/10 px-lg py-3 rounded-full font-bold hover:brightness-95 transition-all">
+                    @Localizer["order_cancel_back"]
+                </button>
+                <button id="confirm-cancel-btn" onclick="submitCancel()" class="flex-1 bg-error text-on-primary px-lg py-3 rounded-full font-bold hover:brightness-110 transition-all">
+                    @Localizer["order_cancel"]
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let cancelOrderId = null;
+
+        function openCancelModal(orderId) {
+            cancelOrderId = orderId;
+            document.getElementById('cancel-reason').value = '';
+            document.getElementById('cancel-modal').classList.remove('hidden');
+        }
+
+        function closeCancelModal() {
+            document.getElementById('cancel-modal').classList.add('hidden');
+            cancelOrderId = null;
+        }
+
+        function submitCancel() {
+            const btn = document.getElementById('confirm-cancel-btn');
+            btn.disabled = true;
+            btn.textContent = '@Localizer["loading"]';
+
+            const reason = document.getElementById('cancel-reason').value.trim();
+
+            fetch('/customer/order-details/' + cancelOrderId + '/cancel', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]')?.value || ''
+                },
+                body: JSON.stringify({ reason: reason || null })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    alert(data.message || '@Localizer["order_cancel_error"]');
+                    btn.disabled = false;
+                    btn.textContent = '@Localizer["order_cancel"]';
+                }
+            })
+            .catch(err => {
+                console.error('Cancel error:', err);
+                alert('@Localizer["order_cancel_error"]');
+                btn.disabled = false;
+                btn.textContent = '@Localizer["order_cancel"]';
+            });
+        }
+    </script>
+}
                                             }
                                             <p class="font-bold text-text-primary dark:text-inverse-on-surface">@item.ProductName</p>
                                         </div>
@@ -154,9 +233,15 @@
 
             @if (Model.Status == OrderStatus.Pending || Model.Status == OrderStatus.Confirmed || Model.Status == OrderStatus.Processing)
             {
-                <form asp-action="CancelOrder" asp-route-id="@Model.Id" method="post">
-                    <button type="submit" class="w-full bg-error text-on-primary px-lg py-3 rounded-full font-bold hover:brightness-110 transition-all" onclick="return confirm('@Localizer["order_cancel_confirm"]')">
-                        @Localizer["order_cancel"]
+                <button onclick="openCancelModal('@Model.Id')" class="w-full bg-error text-on-primary px-lg py-3 rounded-full font-bold hover:brightness-110 transition-all">
+                    @Localizer["order_cancel"]
+                </button>
+            }
+            @if (Model.Status == OrderStatus.Cancelled || Model.Status == OrderStatus.Delivered)
+            {
+                <form asp-action="DeleteOrder" asp-route-id="@Model.Id" method="post">
+                    <button type="submit" class="w-full bg-outline text-on-primary px-lg py-3 rounded-full font-bold hover:brightness-110 transition-all" onclick="return confirm('@Localizer["order_delete_confirm"]')">
+                        @Localizer["order_delete"]
                     </button>
                 </form>
             }

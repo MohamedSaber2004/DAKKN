@@ -1,1 +1,1 @@
-ظبط ال direction بتاع ال order details في صفحة الادمن for language
+/admin/content when savechange handle messages from result in toast 

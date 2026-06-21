@@ -22,6 +22,7 @@ namespace DAKKN.Persistence
         public DbSet<ShippingGovernorate> ShippingGovernorates => Set<ShippingGovernorate>();
         public DbSet<InventoryTransaction> InventoryTransactions => Set<InventoryTransaction>();
         public DbSet<SystemSetting> SystemSettings => Set<SystemSetting>();
+        public DbSet<LandingPageSetting> LandingPageSettings => Set<LandingPageSetting>();
         public DbSet<UserFavorite> UserFavorites => Set<UserFavorite>();
         public DbSet<Order> Orders => Set<Order>();
         public DbSet<OrderItem> OrderItems => Set<OrderItem>();

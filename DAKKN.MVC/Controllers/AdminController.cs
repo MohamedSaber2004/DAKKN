@@ -16,6 +16,7 @@ using DAKKN.Application.Features.ShippingGovernorates.Commands.DeleteShippingGov
 using DAKKN.Application.Features.ShippingGovernorates.Commands.ToggleShippingGovernorateStatus;
 using DAKKN.Application.Features.ShippingGovernorates.Commands.UpdateShippingGovernorate;
 using DAKKN.Application.Features.ShippingGovernorates.Queries.GetShippingGovernorates;
+using DAKKN.Application.Features.Dashboard.Queries.GetDashboardAnalytics;
 using DAKKN.Application.Features.Dashboard.Queries.GetDashboardInventoryStats;
 using DAKKN.Application.Features.Orders.Queries.GetOrders;
 using DAKKN.Application.Features.Orders.Queries.GetOrderDetails;
@@ -32,6 +33,9 @@ using DAKKN.Application.Features.Users.Queries.ExportUsers;
 using DAKKN.Application.Features.Users.Queries.GetAllUsers;
 using DAKKN.Application.Features.Users.Queries.GetUserSettings;
 using DAKKN.Application.Features.Users.Queries.GetUserStats;
+using DAKKN.Application.Features.CMS.Commands.UpdateLandingPageSettings;
+using DAKKN.Application.Features.CMS.DTOs;
+using DAKKN.Application.Features.CMS.Queries.GetLandingPageSettings;
 using DAKKN.Application.Localization;
 using DAKKN.Domain.Enums;
 using DAKKN.MVC.ViewModels.Admin;
@@ -84,6 +88,9 @@ namespace DAKKN.MVC.Controllers
                 TotalUsers = orderStats.TotalUsers
             };
 
+            var analytics7d = await _mediator.Send(new GetDashboardAnalyticsQuery(Days: 7));
+            var analytics30d = await _mediator.Send(new GetDashboardAnalyticsQuery(Days: 30));
+
             ViewData["RecentOrders"] = recentOrders.Select(o => new RecentOrderWidgetViewModel
             {
                 Id = o.Id,
@@ -93,6 +100,9 @@ namespace DAKKN.MVC.Controllers
                 TotalAmount = o.TotalAmount,
                 CreatedAt = o.CreatedAt
             }).ToList();
+
+            ViewData["Analytics7d"] = analytics7d;
+            ViewData["Analytics30d"] = analytics30d;
 
             return View(viewModel);
         }
@@ -361,19 +371,127 @@ namespace DAKKN.MVC.Controllers
             return View(viewModel);
         }
 
+        [HttpPost("content/upload-image")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UploadContentImage(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return Json(new { success = false, message = _localizer[LocalizationKeys.UploadFileMessages.Requried.Value] });
+
+            var (uploaded, result) = await _imageValidator.UploadImage(file, 0);
+            if (!uploaded)
+                return Json(new { success = false, message = result });
+
+            var url = $"/files/{result}";
+            return Json(new { success = true, imageUrl = url });
+        }
+
         [HttpGet("content")]
-        public IActionResult Content()
+        public async Task<IActionResult> Content()
         {
             ViewData["Title"] = _localizer["admin_content_mgmt"];
-            var model = new ContentManagementViewModel();
+            var settings = await _mediator.Send(new GetLandingPageSettingsQuery());
+            var model = MapToViewModel(settings);
+
+            var allProducts = await _mediator.Send(new GetProductsQuery(null, null, 1, 200));
+            var allCategories = await _mediator.Send(new GetCategoriesQuery(IncludeInactive: true));
+
+            var storedFeaturedIds = new HashSet<string>(
+                (model.Products.SelectedProductIds ?? string.Empty)
+                .Split(',', StringSplitOptions.RemoveEmptyEntries));
+
+            model.Products.AllProducts = allProducts.Items.Select(p => new ProductManagementItem
+            {
+                Id = p.Id.ToString(),
+                Name = p.Name,
+                Category = p.CategoryName,
+                ImageUrl = p.ImageFullUrl ?? p.ImageUrl ?? string.Empty,
+                IsFeatured = storedFeaturedIds.Contains(p.Id.ToString())
+            }).ToList();
+
+            model.Categories.AllCategories = allCategories.Select(c => new CategoryManagementItem
+            {
+                Id = c.Id.ToString(),
+                Name = c.CategoryName,
+                Icon = "category",
+                IsFeatured = false
+            }).ToList();
+
             return View(model);
         }
 
         [HttpPost("content/update")]
-        public IActionResult UpdateContent([FromBody] ContentManagementViewModel model)
+        public async Task<IActionResult> UpdateContent()
         {
-            // Logic to save settings to database would go here
+            using var reader = new StreamReader(Request.Body);
+            var body = await reader.ReadToEndAsync();
+            var incoming = System.Text.Json.JsonSerializer.Deserialize<System.Text.Json.JsonElement>(body);
+
+            var existingDto = await _mediator.Send(new GetLandingPageSettingsQuery());
+            var existingVm = MapToViewModel(existingDto);
+
+            var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+            if (incoming.TryGetProperty("sectionOrder", out var sectionOrder))
+                existingVm.SectionOrder = System.Text.Json.JsonSerializer.Deserialize<SectionOrderViewModel>(sectionOrder.GetRawText(), options) ?? new();
+            if (incoming.TryGetProperty("hero", out var hero))
+                existingVm.Hero = System.Text.Json.JsonSerializer.Deserialize<HeroSettingsViewModel>(hero.GetRawText(), options) ?? new();
+            if (incoming.TryGetProperty("about", out var about))
+                existingVm.About = System.Text.Json.JsonSerializer.Deserialize<AboutSettingsViewModel>(about.GetRawText(), options) ?? new();
+            if (incoming.TryGetProperty("categories", out var categories))
+                existingVm.Categories = System.Text.Json.JsonSerializer.Deserialize<FeaturedCategoriesViewModel>(categories.GetRawText(), options) ?? new();
+            if (incoming.TryGetProperty("products", out var products))
+                existingVm.Products = System.Text.Json.JsonSerializer.Deserialize<FeaturedProductsViewModel>(products.GetRawText(), options) ?? new();
+            if (incoming.TryGetProperty("testimonials", out var testimonials))
+                existingVm.Testimonials = System.Text.Json.JsonSerializer.Deserialize<TestimonialsSettingsViewModel>(testimonials.GetRawText(), options) ?? new();
+            if (incoming.TryGetProperty("contact", out var contact))
+                existingVm.Contact = System.Text.Json.JsonSerializer.Deserialize<ContactSettingsViewModel>(contact.GetRawText(), options) ?? new();
+
+            var settings = MapToDto(existingVm);
+            await _mediator.Send(settings);
             return Json(new { success = true });
+        }
+
+        private static ContentManagementViewModel MapToViewModel(LandingPageSettingsDto dto)
+        {
+            return new ContentManagementViewModel
+            {
+                SectionOrder = DeserializeOrDefault<SectionOrderViewModel>(dto.SectionOrder),
+                Hero =         DeserializeOrDefault<HeroSettingsViewModel>(dto.Hero),
+                About =        DeserializeOrDefault<AboutSettingsViewModel>(dto.About),
+                Categories =   DeserializeOrDefault<FeaturedCategoriesViewModel>(dto.Categories),
+                Products =     DeserializeOrDefault<FeaturedProductsViewModel>(dto.Products),
+                Testimonials = DeserializeOrDefault<TestimonialsSettingsViewModel>(dto.Testimonials),
+                Contact =      DeserializeOrDefault<ContactSettingsViewModel>(dto.Contact),
+            };
+        }
+
+        private static UpdateLandingPageSettingsCommand MapToDto(ContentManagementViewModel model)
+        {
+            return new UpdateLandingPageSettingsCommand
+            {
+                SectionOrder = System.Text.Json.JsonSerializer.Serialize(model.SectionOrder),
+                Hero =         System.Text.Json.JsonSerializer.Serialize(model.Hero),
+                About =        System.Text.Json.JsonSerializer.Serialize(model.About),
+                Categories =   System.Text.Json.JsonSerializer.Serialize(model.Categories),
+                Products =     System.Text.Json.JsonSerializer.Serialize(model.Products),
+                Testimonials = System.Text.Json.JsonSerializer.Serialize(model.Testimonials),
+                Contact =      System.Text.Json.JsonSerializer.Serialize(model.Contact),
+            };
+        }
+
+        private static T DeserializeOrDefault<T>(string json) where T : new()
+        {
+            if (string.IsNullOrEmpty(json) || json == "{}" || json == "[]")
+                return new T();
+            try
+            {
+                return System.Text.Json.JsonSerializer.Deserialize<T>(json) ?? new T();
+            }
+            catch
+            {
+                return new T();
+            }
         }
 
         [HttpGet("settings")]

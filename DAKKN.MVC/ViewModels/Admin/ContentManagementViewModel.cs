@@ -11,7 +11,6 @@ namespace DAKKN.MVC.ViewModels.Admin
         public AboutSettingsViewModel About { get; set; } = new();
         public TestimonialsSettingsViewModel Testimonials { get; set; } = new();
         public ContactSettingsViewModel Contact { get; set; } = new();
-        public GlobalPricingViewModel Pricing { get; set; } = new();
     }
 
     public class SectionOrderViewModel
@@ -117,14 +116,8 @@ namespace DAKKN.MVC.ViewModels.Admin
     public class FeaturedProductsViewModel
     {
         public bool AutoSelectBestSellers { get; set; } = true;
-        public List<ProductManagementItem> AllProducts { get; set; } = new()
-        {
-            new ProductManagementItem { Id = "PRD-001", Name = "Retro Cassette", Category = "Die-Cut", IsFeatured = true, ImageUrl = "https://lh3.googleusercontent.com/..." },
-            new ProductManagementItem { Id = "PRD-002", Name = "Neon Skull", Category = "Holographic", IsFeatured = true, ImageUrl = "https://lh3.googleusercontent.com/..." },
-            new ProductManagementItem { Id = "PRD-003", Name = "Pixel Heart", Category = "Clear", IsFeatured = false, ImageUrl = "https://lh3.googleusercontent.com/..." },
-            new ProductManagementItem { Id = "PRD-004", Name = "Galaxy Explorer", Category = "Die-Cut", IsFeatured = true, ImageUrl = "https://lh3.googleusercontent.com/..." },
-            new ProductManagementItem { Id = "PRD-005", Name = "Cyberpunk Ramen", Category = "Matte", IsFeatured = false, ImageUrl = "https://lh3.googleusercontent.com/..." }
-        };
+        public string SelectedProductIds { get; set; } = string.Empty;
+        public List<ProductManagementItem> AllProducts { get; set; } = new();
     }
 
     public class ProductManagementItem
@@ -136,18 +129,4 @@ namespace DAKKN.MVC.ViewModels.Admin
         public bool IsFeatured { get; set; }
     }
 
-    public class GlobalPricingViewModel
-    {
-        [Display(Name = "Base Price (EGP)")]
-        public decimal BasePrice { get; set; } = 70;
-
-        [Display(Name = "Hologram Effect (EGP)")]
-        public decimal HologramSurcharge { get; set; } = 10;
-
-        [Display(Name = "Custom Cut (EGP)")]
-        public decimal CustomCutSurcharge { get; set; } = 5;
-
-        [Display(Name = "Shipping Rate (EGP)")]
-        public decimal ShippingRate { get; set; } = 45;
-    }
 }

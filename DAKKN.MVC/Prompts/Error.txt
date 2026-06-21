@@ -1,43 +1,27 @@
-﻿﻿INSERT INTO [dbo].[OrderStatusHistories] ([Id], [ChangedBy], [CreatedAt], [CreatedBy], [DeletedAt], [DeletedBy], [IsActive], [IsDeleted], [NewStatus], [Notes], [OldStatus], [OrderId], [UpdatedAt], [UpdatedBy])
-﻿VALUES (@p78, @p79, @p80, @p81, @p82, @p83, @p84, @p85, @p86, @p87, @p88, @p89, @p90, @p91);
-﻿[19:14:46 INF] Order ORD-20260621-390A8C created by user 66332bc5-b6f5-4a58-af29-3609a87ce5a5
-﻿[19:14:46 INF] Handled Request: PlaceOrderCommand
-﻿[19:14:46 WRN] Dakkn Long Running Request: PlaceOrderCommand (1156 milliseconds)
-﻿[19:14:46 INF] Executing RedirectResult, redirecting to /customer/confirmation/10af2887-ba1c-4d76-b958-636799cee62b.
-﻿[19:14:47 INF] Executed action DAKKN.MVC.Controllers.CustomerController.PlaceOrder (DAKKN.Appearence) in 2298.2442ms
-﻿[19:14:47 INF] Executed endpoint 'DAKKN.MVC.Controllers.CustomerController.PlaceOrder (DAKKN.Appearence)'
-﻿[19:14:50 ERR] An unhandled exception has occurred while executing the request.
-﻿System.InvalidOperationException: The 'Microsoft.AspNetCore.Mvc.ViewFeatures.Infrastructure.DefaultTempDataSerializer' cannot serialize an object of type 'Microsoft.Extensions.Localization.LocalizedString'.
-﻿   at Microsoft.AspNetCore.Mvc.ViewFeatures.Infrastructure.DefaultTempDataSerializer.Serialize(IDictionary`2 values)
-﻿   at Microsoft.AspNetCore.Mvc.ViewFeatures.CookieTempDataProvider.SaveTempData(HttpContext context, IDictionary`2 values)
-﻿   at Microsoft.AspNetCore.Mvc.ViewFeatures.TempDataDictionary.Save()
-﻿   at Microsoft.AspNetCore.Mvc.ViewFeatures.Filters.SaveTempDataFilter.OnResultExecuted(ResultExecutedContext context)
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.ResultNext[TFilter,TFilterAsync](State& next, Scope& scope, Object& state, Boolean& isCompleted)
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeResultFilters()
-﻿--- End of stack trace from previous location ---
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextResourceFilter>g__Awaited|25_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
-﻿   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
-﻿   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
-﻿   at Microsoft.AspNetCore.OutputCaching.OutputCacheMiddleware.InvokeAwaited(HttpContext httpContext, IReadOnlyList`1 policies)
-﻿   at Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
-﻿   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
-﻿   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
-﻿   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
-﻿   at Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
-﻿   at NWebsec.AspNetCore.Middleware.Middleware.CspMiddleware.Invoke(HttpContext context)
-﻿   at NWebsec.AspNetCore.Middleware.Middleware.MiddlewareBase.Invoke(HttpContext context)
-﻿   at NWebsec.AspNetCore.Middleware.Middleware.MiddlewareBase.Invoke(HttpContext context)
-﻿   at NWebsec.AspNetCore.Middleware.Middleware.MiddlewareBase.Invoke(HttpContext context)
-﻿   at NWebsec.AspNetCore.Middleware.Middleware.MiddlewareBase.Invoke(HttpContext context)
-﻿   at NWebsec.AspNetCore.Middleware.Middleware.MiddlewareBase.Invoke(HttpContext context)
-﻿   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
-﻿[19:14:50 INF] Request finished HTTP/2 POST https://localhost:44308/customer/place-order - 500 null text/html; charset=utf-8 5081.7869ms
-﻿[19:14:50 INF] Request starting HTTP/2 GET https://localhost:44308/_vs/browserLink - null null
-﻿[19:14:50 INF] Request starting HTTP/2 GET https://localhost:44308/_framework/aspnetcore-browser-refresh.js - null null
-﻿[19:14:50 INF] Request finished HTTP/2 GET https://localhost:44308/_framework/aspnetcore-browser-refresh.js - 200 14936 application/javascript; charset=utf-8 0.8402ms
-﻿[19:14:50 INF] Request finished HTTP/2 GET https://localhost:44308/_vs/browserLink - 200 null text/javascript; charset=UTF-8 9.8562ms
+﻿﻿INNER JOIN [dbo].[Categories] AS [c] ON [t].[CategoryId] = [c].[Id]
+﻿[20:42:19 INF] Handled Request: GetProductsQuery
+﻿[20:42:19 WRN] Dakkn Long Running Request: GetProductsQuery (1168 milliseconds)
+﻿[20:42:19 ERR] An unhandled exception has occurred while executing the request.
+﻿System.InvalidOperationException: A second operation was started on this context instance before a previous operation completed. This is usually caused by different threads concurrently using the same instance of DbContext. For more information on how to avoid threading issues with DbContext, see https://go.microsoft.com/fwlink/?linkid=2097913.
+﻿   at Microsoft.EntityFrameworkCore.Infrastructure.Internal.ConcurrencyDetector.EnterCriticalSection()
+﻿   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+﻿   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
+﻿   at DAKKN.Application.Features.Categories.Queries.GetCategories.GetCategoriesQueryHandler.Handle(GetCategoriesQuery request, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Features\Categories\Queries\GetCategories\GetCategoriesQueryHandler.cs:line 53
+﻿   at DAKKN.Application.Common.Behaviours.LoggingBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\LoggingBehaviour.cs:line 39
+﻿   at DAKKN.Application.Common.Behaviours.PerformanceBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\PerformanceBehaviour.cs:line 23
+﻿   at DAKKN.Application.Common.Behaviours.ValidationBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\ValidationBehaviour.cs:line 28
+﻿   at DAKKN.Application.Common.Behaviours.UnhandledExceptionBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\UnhandledExceptionBehaviour.cs:line 20
+﻿   at DAKKN.MVC.Controllers.HomeController.Index() in E:\DAKKN\DAKKN.MVC\Controllers\HomeController.cs:line 42
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextExceptionFilterAsync>g__Awaited|26_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+﻿[20:42:19 INF] Executing ObjectResult, writing value of type 'DAKKN.Application.Common.Models.ApiResponse`1[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+﻿[20:42:20 INF] Executed action DAKKN.MVC.Controllers.HomeController.Index (DAKKN.Appearence) in 3090.1727ms
+﻿[20:42:20 INF] Executed endpoint 'DAKKN.MVC.Controllers.HomeController.Index (DAKKN.Appearence)'
+﻿[20:42:20 INF] The response could not be cached for this request.
+﻿[20:42:20 INF] Request finished HTTP/2 GET https://localhost:44308/ - 500 null application/json; charset=utf-8 3408.8995ms

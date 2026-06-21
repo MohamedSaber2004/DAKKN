@@ -22,14 +22,6 @@
                     <span class="material-symbols-outlined">info</span>
                     <span class="font-body-lg">@Localizer["section_about"]</span>
                 </button>
-                <button onclick="switchTab('featured-categories')" id="tab-featured-categories" class="content-tab-btn flex items-center gap-md p-3 rounded-xl transition-all duration-200 text-left rtl:text-right w-full">
-                    <span class="material-symbols-outlined">category</span>
-                    <span class="font-body-lg">@Localizer["admin_featured_categories"]</span>
-                </button>
-                <button onclick="switchTab('featured-products')" id="tab-featured-products" class="content-tab-btn flex items-center gap-md p-3 rounded-xl transition-all duration-200 text-left rtl:text-right w-full">
-                    <span class="material-symbols-outlined">star</span>
-                    <span class="font-body-lg">@Localizer["admin_featured_products"]</span>
-                </button>
                 <button onclick="switchTab('customer-stories')" id="tab-customer-stories" class="content-tab-btn flex items-center gap-md p-3 rounded-xl transition-all duration-200 text-left rtl:text-right w-full">
                     <span class="material-symbols-outlined">forum</span>
                     <span class="font-body-lg">@Localizer["section_testimonials"]</span>
@@ -38,16 +30,19 @@
                     <span class="material-symbols-outlined">contact_support</span>
                     <span class="font-body-lg">@Localizer["section_contact"]</span>
                 </button>
-                <button onclick="switchTab('global-pricing')" id="tab-global-pricing" class="content-tab-btn flex items-center gap-md p-3 rounded-xl transition-all duration-200 text-left rtl:text-right w-full">
-                    <span class="material-symbols-outlined">payments</span>
-                    <span class="font-body-lg">@Localizer["admin_global_pricing"]</span>
-                </button>
             </nav>
         </div>
     </aside>
 
     <!-- Main Editor Area -->
     <div class="flex-1 min-w-0">
+        <!-- Toast Container -->
+        <div id="toastCms" class="fixed bottom-8 ltr:right-8 rtl:left-8 z-[200] flex flex-col gap-3"></div>
+        <!-- Global Save All Button -->
+        <button onclick="saveAllChanges()" class="fixed bottom-8 right-8 z-50 bg-primary text-on-primary px-2xl py-lg rounded-full font-bold shadow-xl hover:scale-105 transition-all flex items-center gap-md">
+            <span class="material-symbols-outlined">save</span>
+            @Localizer["admin_save_all_changes"]
+        </button>
         <!-- Section: Order Management -->
         <div id="panel-section-order" class="content-panel bg-surface dark:bg-inverse-surface rounded-[32px] shadow-medium border border-border dark:border-outline/10 p-xl transition-all duration-300">
             <div class="flex justify-between items-center mb-xl">
@@ -106,15 +101,20 @@
                         <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_desc"]</label>
                         <textarea rows="4" placeholder="@Localizer["admin_hero_desc_ph"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.Hero.Description</textarea>
                     </div>
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_btn_text"]</label>
+                        <input id="hero-btn-text" type="text" value="@Model.Hero.ButtonText" placeholder="@Localizer["btn_shop"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                    </div>
                 </div>
                 <div class="flex flex-col gap-lg">
                     <div class="aspect-video rounded-3xl bg-surface-container dark:bg-surface-container-high border-2 border-dashed border-border dark:border-outline/20 flex flex-col items-center justify-center p-xl relative group overflow-hidden">
-                        <img src="@Model.Hero.ImageUrl" class="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-10 transition-opacity">
+                        <img id="hero-image-preview" src="@Model.Hero.ImageUrl" class="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-10 transition-opacity">
                         <span class="material-symbols-outlined text-4xl text-outline mb-sm">image</span>
                         <span class="font-bold text-text-secondary">@Localizer["admin_hero_image_update"]</span>
-                        <input type="file" class="absolute inset-0 opacity-0 cursor-pointer">
+                        <input id="hero-image-input" type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer">
                     </div>
-                    <button class="bg-primary text-on-primary py-md rounded-full font-bold shadow-medium hover:scale-103 transition-all">@Localizer["admin_save_changes"]</button>
+                    <input id="hero-image-url-input" type="hidden" value="@Model.Hero.ImageUrl">
+                    <button class="bg-primary text-on-primary py-md rounded-full font-bold shadow-medium hover:scale-103 transition-all" onclick="saveHeroSection()">@Localizer["admin_save_changes"]</button>
                 </div>
             </div>
         </div>
@@ -126,11 +126,11 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
                     <div class="flex flex-col gap-xs">
                         <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_about_title"]</label>
-                        <input type="text" value="@Model.About.Title" placeholder="@Localizer["admin_about_title_ph"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                        <input id="about-title" type="text" value="@Model.About.Title" placeholder="@Localizer["admin_about_title_ph"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
                     </div>
                     <div class="flex flex-col gap-xs">
                         <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_about_desc"]</label>
-                        <textarea rows="2" placeholder="@Localizer["admin_about_desc_ph"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.About.Description</textarea>
+                        <textarea id="about-desc" rows="2" placeholder="@Localizer["admin_about_desc_ph"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.About.Description</textarea>
                     </div>
                 </div>
 
@@ -141,8 +141,8 @@
                             <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">1</span>
                             <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 1)</h4>
                         </div>
-                        <input type="text" value="@Model.About.Feature1Title" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-border rounded-lg p-md mb-sm">
-                        <textarea rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-border rounded-lg p-md text-sm">@Model.About.Feature1Desc</textarea>
+                            <input id="about-feat1-title" type="text" value="@Model.About.Feature1Title" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-border rounded-lg p-md mb-sm">
+                        <textarea id="about-feat1-desc" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-border rounded-lg p-md text-sm">@Model.About.Feature1Desc</textarea>
                     </div>
                     <!-- Feature 2 -->
                     <div class="bg-surface-container dark:bg-surface-container-high p-lg rounded-2xl border border-border">
@@ -150,8 +150,8 @@
                             <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">2</span>
                             <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 2)</h4>
                         </div>
-                        <input type="text" value="@Model.About.Feature2Title" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-border rounded-lg p-md mb-sm">
-                        <textarea rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-border rounded-lg p-md text-sm">@Model.About.Feature2Desc</textarea>
+                        <input id="about-feat2-title" type="text" value="@Model.About.Feature2Title" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-border rounded-lg p-md mb-sm">
+                        <textarea id="about-feat2-desc" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-border rounded-lg p-md text-sm">@Model.About.Feature2Desc</textarea>
                     </div>
                     <!-- Feature 3 -->
                     <div class="bg-surface-container dark:bg-surface-container-high p-lg rounded-2xl border border-border">
@@ -159,11 +159,11 @@
                             <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">3</span>
                             <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 3)</h4>
                         </div>
-                        <input type="text" value="@Model.About.Feature3Title" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-border rounded-lg p-md mb-sm">
-                        <textarea rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-border rounded-lg p-md text-sm">@Model.About.Feature3Desc</textarea>
+                        <input id="about-feat3-title" type="text" value="@Model.About.Feature3Title" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-border rounded-lg p-md mb-sm">
+                        <textarea id="about-feat3-desc" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-border rounded-lg p-md text-sm">@Model.About.Feature3Desc</textarea>
                     </div>
                 </div>
-                <button class="bg-primary text-on-primary px-xl py-md rounded-full font-bold">@Localizer["admin_save_changes"]</button>
+                <button onclick="saveAboutSection()" class="bg-primary text-on-primary px-xl py-md rounded-full font-bold">@Localizer["admin_save_changes"]</button>
             </div>
         </div>
 
@@ -174,7 +174,7 @@
                     <h2 class="font-h2 text-h2 font-bold">@Localizer["section_testimonials"]</h2>
                     <p class="text-text-secondary">@Localizer["admin_testimonials_desc"]</p>
                 </div>
-                <button class="bg-primary text-on-primary px-xl py-md rounded-full font-bold">@Localizer["admin_save_changes"]</button>
+                <button onclick="saveTestimonialsSection()" class="bg-primary text-on-primary px-xl py-md rounded-full font-bold">@Localizer["admin_save_changes"]</button>
             </div>
 
             <div class="overflow-x-auto">
@@ -188,28 +188,38 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var review in Model.Testimonials.Reviews)
+                        @if (Model.Testimonials.Reviews.Count == 0)
                         {
-                            <tr class="border-b border-border/50 hover:bg-surface-container transition-colors">
+                            <tr>
+                                <td colspan="4" class="py-lg px-lg text-center text-outline">
+                                    <span class="material-symbols-outlined text-4xl block mb-2">rate_review</span>
+                                    @Localizer["admin_testimonials_empty"]
+                                </td>
+                            </tr>
+                        }
+                        @foreach (var review in Model.Testimonials.Reviews.Select((r, i) => new { r, i }))
+                        {
+                            <tr class="border-b border-border/50 hover:bg-surface-container transition-colors" data-idx="@review.i">
                                 <td class="py-lg px-lg">
-                                    <button class="text-2xl @(review.IsFeatured ? "text-yellow-500" : "text-outline/30 hover:text-yellow-500/50") transition-colors">
-                                        <span class="material-symbols-outlined @(review.IsFeatured ? "filled-icon" : "")">star</span>
+                                    <button class="star-featured text-2xl @(review.r.IsFeatured ? "text-yellow-500" : "text-outline/30 hover:text-yellow-500/50") transition-colors" onclick="toggleFeatured(this)">
+                                        <span class="material-symbols-outlined @(review.r.IsFeatured ? "filled-icon" : "")">star</span>
                                     </button>
                                 </td>
                                 <td class="py-lg px-lg">
-                                    <div class="font-bold text-text-primary">@review.Name</div>
-                                    <div class="text-xs text-outline">@review.Role</div>
+                                    <div><input type="text" class="review-name w-full bg-transparent border-none p-0 font-bold text-text-primary focus:ring-0" value="@review.r.Name" /></div>
+                                    <div><input type="text" class="review-role w-full bg-transparent border-none p-0 text-xs text-outline focus:ring-0" value="@review.r.Role" /></div>
                                 </td>
                                 <td class="py-lg px-lg max-w-xs">
-                                    <textarea class="w-full bg-transparent border-none p-0 text-sm focus:ring-0 resize-none">@review.Quote</textarea>
+                                    <textarea class="review-quote w-full bg-transparent border-none p-0 text-sm focus:ring-0 resize-none">@review.r.Quote</textarea>
                                 </td>
                                 <td class="py-lg px-lg">
                                     <div class="flex text-yellow-500">
-                                        @for (int i = 0; i < 5; i++)
+                                        @for (int j = 0; j < 5; j++)
                                         {
-                                            <span class="material-symbols-outlined text-sm @(i < review.Rating ? "filled-icon" : "")">star</span>
+                                            <span class="material-symbols-outlined text-sm cursor-pointer @(j < review.r.Rating ? "filled-icon" : "")" onclick="setRating(this, @review.i, @j)">star</span>
                                         }
                                     </div>
+                                    <input type="hidden" class="review-rating" value="@review.r.Rating" />
                                 </td>
                             </tr>
                         }
@@ -225,15 +235,15 @@
                 <div class="space-y-lg">
                     <div class="flex flex-col gap-xs">
                         <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_contact_email"]</label>
-                        <input type="email" value="@Model.Contact.Email" placeholder="support@dakkn.com" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                        <input id="contact-email" type="email" value="@Model.Contact.Email" placeholder="support@dakkn.com" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
                     </div>
                     <div class="flex flex-col gap-xs">
                         <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_contact_phone"]</label>
-                        <input type="text" value="@Model.Contact.Phone" placeholder="+20 1xx xxx xxxx" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                        <input id="contact-phone" type="text" value="@Model.Contact.Phone" placeholder="+20 1xx xxx xxxx" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
                     </div>
                     <div class="flex flex-col gap-xs">
                         <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_contact_address"]</label>
-                        <textarea rows="3" placeholder="Street name, City, Country" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.Contact.Address</textarea>
+                        <textarea id="contact-address" rows="3" placeholder="Street name, City, Country" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.Contact.Address</textarea>
                     </div>
                 </div>
                 <div class="bg-primary/5 rounded-3xl p-xl flex flex-col items-center justify-center text-center border border-primary/10">
@@ -242,141 +252,9 @@
                     <p class="text-text-secondary text-sm">@Localizer["admin_map_integration_p"]</p>
                 </div>
             </div>
-            <button class="mt-xl bg-primary text-on-primary px-xl py-md rounded-full font-bold">@Localizer["admin_save_changes"]</button>
+            <button onclick="saveContactSection()" class="mt-xl bg-primary text-on-primary px-xl py-md rounded-full font-bold">@Localizer["admin_save_changes"]</button>
         </div>
 
-        <!-- Section: Global Pricing -->
-        <div id="panel-global-pricing" class="content-panel hidden bg-surface dark:bg-inverse-surface rounded-[32px] shadow-medium border border-border dark:border-outline/10 p-xl">
-             <div class="flex items-center gap-md mb-xl">
-                <span class="material-symbols-outlined text-primary text-4xl">payments</span>
-                <div>
-                    <h2 class="font-h2 text-h2 font-bold">@Localizer["admin_global_pricing"]</h2>
-                    <p class="text-text-secondary">@Localizer["admin_global_pricing_desc"]</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-lg">
-                <div class="bg-surface-container dark:bg-surface-container-high p-xl rounded-3xl border border-border relative overflow-hidden">
-                    <div class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -mr-12 -mt-12 transition-transform group-hover:scale-110"></div>
-                    <label class="text-sm font-bold text-outline block mb-sm">@Localizer["admin_base_price"]</label>
-                    <div class="flex items-baseline gap-xs">
-                        <input type="number" value="@Model.Pricing.BasePrice" class="bg-transparent border-none p-0 text-3xl font-bold w-full focus:ring-0">
-                        <span class="text-outline font-bold">@Localizer["egp"]</span>
-                    </div>
-                </div>
-
-                <div class="bg-surface-container dark:bg-surface-container-high p-xl rounded-3xl border border-border">
-                    <label class="text-sm font-bold text-outline block mb-sm">@Localizer["admin_effect_hologram"]</label>
-                    <div class="flex items-baseline gap-xs">
-                        <span class="text-primary font-bold">+</span>
-                        <input type="number" value="@Model.Pricing.HologramSurcharge" class="bg-transparent border-none p-0 text-3xl font-bold w-full focus:ring-0">
-                        <span class="text-outline font-bold">@Localizer["egp"]</span>
-                    </div>
-                </div>
-
-                <div class="bg-surface-container dark:bg-surface-container-high p-xl rounded-3xl border border-border">
-                    <label class="text-sm font-bold text-outline block mb-sm">@Localizer["admin_effect_custom_cut"]</label>
-                    <div class="flex items-baseline gap-xs">
-                        <span class="text-primary font-bold">+</span>
-                        <input type="number" value="@Model.Pricing.CustomCutSurcharge" class="bg-transparent border-none p-0 text-3xl font-bold w-full focus:ring-0">
-                        <span class="text-outline font-bold">@Localizer["egp"]</span>
-                    </div>
-                </div>
-
-                <div class="bg-surface-container dark:bg-surface-container-high p-xl rounded-3xl border border-border">
-                    <label class="text-sm font-bold text-outline block mb-sm">@Localizer["admin_shipping_flat"]</label>
-                    <div class="flex items-baseline gap-xs">
-                        <input type="number" value="@Model.Pricing.ShippingRate" class="bg-transparent border-none p-0 text-3xl font-bold w-full focus:ring-0">
-                        <span class="text-outline font-bold">@Localizer["egp"]</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-xl p-lg bg-primary/5 rounded-2xl flex items-center gap-md border border-primary/10">
-                <span class="material-symbols-outlined text-primary">info</span>
-                <p class="text-sm text-text-primary dark:text-inverse-on-surface">
-                    @Localizer["admin_pricing_info"]
-                </p>
-            </div>
-            
-            <button class="mt-xl bg-primary text-on-primary px-12 py-md rounded-full font-bold shadow-medium hover:scale-103 transition-all">
-                @Localizer["admin_pricing_update_all"]
-            </button>
-        </div>
-
-        <!-- Section: Featured Categories -->
-        <div id="panel-featured-categories" class="content-panel hidden bg-surface dark:bg-inverse-surface rounded-[32px] shadow-medium border border-border dark:border-outline/10 p-xl">
-            <div class="flex justify-between items-center mb-xl">
-                <div>
-                    <h2 class="font-h2 text-h2 font-bold">@Localizer["admin_featured_categories"]</h2>
-                    <p class="text-text-secondary">@Localizer["admin_featured_cat_desc"]</p>
-                </div>
-                <div class="px-lg py-sm bg-primary/10 text-primary rounded-full font-bold text-sm">
-                    <span id="cat-selection-count">0</span> / 6 @Localizer["admin_selected_count"].Value.Split(' ')[2]
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-md">
-                @foreach (var cat in Model.Categories.AllCategories)
-                {
-                    <div onclick="toggleCategory('@cat.Id')" id="cat-card-@cat.Id" class="category-select-card group cursor-pointer bg-surface-container dark:bg-surface-container-high p-lg rounded-2xl border-2 @(cat.IsFeatured ? "border-primary bg-primary/5" : "border-transparent") transition-all text-center">
-                        <div class="w-12 h-12 rounded-full bg-surface dark:bg-inverse-surface mx-auto flex items-center justify-center mb-md shadow-small group-hover:scale-110 transition-transform">
-                            <span class="material-symbols-outlined @(cat.IsFeatured ? "text-primary filled-icon" : "text-outline")">@cat.Icon</span>
-                        </div>
-                        <h4 class="font-bold text-sm @(cat.IsFeatured ? "text-primary" : "text-text-primary")">@cat.Name</h4>
-                        <div class="mt-sm">
-                            <span class="status-badge text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider @(cat.IsFeatured ? "bg-primary text-on-primary" : "bg-outline/10 text-outline")">
-                                @(cat.IsFeatured ? Localizer["admin_select"] : Localizer["admin_unselect"])
-                            </span>
-                        </div>
-                        <input type="checkbox" id="cat-check-@cat.Id" class="hidden" @(cat.IsFeatured ? "checked" : "")>
-                    </div>
-                }
-            </div>
-            <button class="mt-xl bg-primary text-on-primary px-xl py-md rounded-full font-bold shadow-medium">@Localizer["admin_save_changes"]</button>
-        </div>
-
-        <!-- Section: Featured Products -->
-        <div id="panel-featured-products" class="content-panel hidden bg-surface dark:bg-inverse-surface rounded-[32px] shadow-medium border border-border dark:border-outline/10 p-xl">
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-lg mb-xl">
-                <div>
-                    <h2 class="font-h2 text-h2 font-bold">@Localizer["admin_featured_products"]</h2>
-                    <p class="text-text-secondary">@Localizer["admin_featured_prod_desc"]</p>
-                </div>
-                <div class="flex items-center gap-md bg-surface-container p-md rounded-2xl border border-border">
-                    <span class="font-bold text-sm">@Localizer["admin_auto_select"]</span>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="auto-select-toggle" class="sr-only peer" onchange="toggleAutoMode(this.checked)" @(Model.Products.AutoSelectBestSellers ? "checked" : "")>
-                        <div class="w-11 h-6 bg-outline/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:ltr:left-[2px] after:rtl:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-                    </label>
-                </div>
-            </div>
-
-            <div id="manual-product-grid" class="@(Model.Products.AutoSelectBestSellers ? "opacity-50 pointer-events-none" : "") transition-opacity">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-lg">
-                    @foreach (var prod in Model.Products.AllProducts)
-                    {
-                        <div class="product-select-card bg-surface-container dark:bg-surface-container-high rounded-3xl border border-border overflow-hidden group">
-                            <div class="aspect-square relative overflow-hidden bg-white/5">
-                                <img src="@prod.ImageUrl" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                                <button onclick="toggleProduct('@prod.Id')" id="prod-star-@prod.Id" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-surface/90 backdrop-blur-sm shadow-medium flex items-center justify-center transition-all @(prod.IsFeatured ? "text-yellow-500 scale-110" : "text-outline/50 hover:text-yellow-500")">
-                                    <span class="material-symbols-outlined @(prod.IsFeatured ? "filled-icon" : "")">star</span>
-                                </button>
-                                <div class="absolute bottom-4 left-4 bg-primary text-on-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
-                                    @prod.Category
-                                </div>
-                            </div>
-                            <div class="p-lg">
-                                <h4 class="font-bold text-lg mb-xs">@prod.Name</h4>
-                                <p class="text-xs text-outline font-medium">SKU: @prod.Id</p>
-                            </div>
-                            <input type="checkbox" id="prod-check-@prod.Id" class="hidden" @(prod.IsFeatured ? "checked" : "")>
-                        </div>
-                    }
-                </div>
-            </div>
-            <button class="mt-xl bg-primary text-on-primary px-xl py-md rounded-full font-bold shadow-medium">@Localizer["admin_save_changes"]</button>
-        </div>
     </div>
 </div>
 
@@ -416,9 +294,9 @@
         const sectionToTabMap = {
             'hero': 'hero-banner',
             'about': 'about-us',
-            'categories': 'featured-categories',
-            'shop': 'featured-products',
-            'all-products': 'featured-products', // Redirecting to products for now
+            'categories': 'section-order',
+            'shop': 'section-order',
+            'all-products': 'section-order',
             'testimonials': 'customer-stories',
             'contact': 'contact-info'
         };
@@ -484,80 +362,235 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    alert('@Localizer["admin_save_success"]');
+                    showToast('@Localizer["admin_save_success"]', 'success');
+                } else {
+                    showToast(data.message || '@Localizer["admin_save_error"]', 'error');
                 }
             })
             .catch(error => console.error('Error:', error));
         }
 
-        function toggleCategory(id) {
-            const card = document.getElementById('cat-card-' + id);
-            const checkbox = document.getElementById('cat-check-' + id);
-            const icon = card.querySelector('.material-symbols-outlined');
-            const badge = card.querySelector('.status-badge');
-            const title = card.querySelector('h4');
+        function uploadHeroImage(file) {
+            const formData = new FormData();
+            formData.append('file', file);
 
-            checkbox.checked = !checkbox.checked;
-
-            if (checkbox.checked) {
-                card.classList.add('border-primary', 'bg-primary/5');
-                card.classList.remove('border-transparent');
-                icon.classList.add('text-primary', 'filled-icon');
-                icon.classList.remove('text-outline');
-                badge.classList.add('bg-primary', 'text-on-primary');
-                badge.classList.remove('bg-outline/10', 'text-outline');
-                badge.innerText = '@Localizer["admin_select"]';
-                title.classList.add('text-primary');
-                title.classList.remove('text-text-primary');
-            } else {
-                card.classList.remove('border-primary', 'bg-primary/5');
-                card.classList.add('border-transparent');
-                icon.classList.remove('text-primary', 'filled-icon');
-                icon.classList.add('text-outline');
-                badge.classList.remove('bg-primary', 'text-on-primary');
-                badge.classList.add('bg-outline/10', 'text-outline');
-                badge.innerText = '@Localizer["admin_unselect"]';
-                title.classList.remove('text-primary');
-                title.classList.add('text-text-primary');
-            }
-            updateCategoryCount();
+            fetch('/admin/content/upload-image', {
+                method: 'POST',
+                headers: { 'RequestVerificationToken': window.csrfToken },
+                body: formData
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('hero-image-preview').src = data.imageUrl;
+                    document.getElementById('hero-image-preview').classList.remove('opacity-30');
+                    document.getElementById('hero-image-url-input').value = data.imageUrl;
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(e => console.error('Upload error:', e));
         }
 
-        function updateCategoryCount() {
-            const count = document.querySelectorAll('.category-select-card input[type="checkbox"]:checked').length;
-            document.getElementById('cat-selection-count').innerText = count;
+        function saveHeroSection() {
+            const data = {
+                hero: {
+                    badge: document.querySelector('#panel-hero-banner input[placeholder*="Industrial Grade Quality"]')?.value || '',
+                    titleA: document.querySelector('#panel-hero-banner .grid-cols-2 input:nth-child(1)')?.value || '',
+                    titleB: document.querySelector('#panel-hero-banner .grid-cols-2 input:nth-child(2)')?.value || '',
+                    titleC: document.querySelector('#panel-hero-banner .grid-cols-2 input:nth-child(3)')?.value || '',
+                    titleD: document.querySelector('#panel-hero-banner .grid-cols-2 input:nth-child(4)')?.value || '',
+                    description: document.querySelector('#panel-hero-banner textarea')?.value || '',
+                    buttonText: document.getElementById('hero-btn-text')?.value || '',
+                    imageUrl: document.getElementById('hero-image-url-input')?.value || ''
+                }
+            };
+
+            fetch('/admin/content/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': window.csrfToken
+                },
+                body: JSON.stringify(data)
+            })
+            .then(r => r.json())
+            .then(d => { if (d.success) showToast('@Localizer["admin_save_success"]', 'success'); else showToast(d.message || '@Localizer["admin_save_error"]', 'error'); })
+            .catch(e => showToast('@Localizer["admin_save_error"]', 'error'));
         }
 
-        function toggleAutoMode(enabled) {
-            const grid = document.getElementById('manual-product-grid');
-            if (enabled) {
-                grid.classList.add('opacity-50', 'pointer-events-none');
-            } else {
-                grid.classList.remove('opacity-50', 'pointer-events-none');
-            }
-        }
-
-        function toggleProduct(id) {
-            const starBtn = document.getElementById('prod-star-' + id);
-            const checkbox = document.getElementById('prod-check-' + id);
-            const icon = starBtn.querySelector('.material-symbols-outlined');
-
-            checkbox.checked = !checkbox.checked;
-
-            if (checkbox.checked) {
-                starBtn.classList.add('text-yellow-500', 'scale-110');
-                starBtn.classList.remove('text-outline/50');
-                icon.classList.add('filled-icon');
-            } else {
-                starBtn.classList.remove('text-yellow-500', 'scale-110');
-                starBtn.classList.add('text-outline/50');
+        function toggleFeatured(btn) {
+            const icon = btn.querySelector('span');
+            const isFeatured = icon.classList.contains('filled-icon');
+            if (isFeatured) {
                 icon.classList.remove('filled-icon');
+                btn.classList.replace('text-yellow-500', 'text-outline/30');
+                btn.classList.add('hover:text-yellow-500/50');
+            } else {
+                icon.classList.add('filled-icon');
+                btn.classList.replace('text-outline/30', 'text-yellow-500');
+                btn.classList.replace('hover:text-yellow-500/50', '');
             }
+        }
+
+        function setRating(el, idx, rating) {
+            const row = el.closest('tr');
+            const stars = row.querySelectorAll('.text-yellow-500 .material-symbols-outlined');
+            stars.forEach((s, i) => {
+                if (i <= rating) s.classList.add('filled-icon');
+                else s.classList.remove('filled-icon');
+            });
+            row.querySelector('.review-rating').value = rating + 1;
+        }
+
+        function saveAboutSection() {
+            const data = {
+                about: {
+                    title: document.getElementById('about-title')?.value || '',
+                    description: document.getElementById('about-desc')?.value || '',
+                    feature1Title: document.getElementById('about-feat1-title')?.value || '',
+                    feature1Desc: document.getElementById('about-feat1-desc')?.value || '',
+                    feature2Title: document.getElementById('about-feat2-title')?.value || '',
+                    feature2Desc: document.getElementById('about-feat2-desc')?.value || '',
+                    feature3Title: document.getElementById('about-feat3-title')?.value || '',
+                    feature3Desc: document.getElementById('about-feat3-desc')?.value || ''
+                }
+            };
+            postCmsData(data);
+        }
+
+        function saveTestimonialsSection() {
+            const reviews = [];
+            document.querySelectorAll('#panel-customer-stories tbody tr').forEach(row => {
+                const isFeatured = row.querySelector('.star-featured .filled-icon') !== null;
+                const rating = parseInt(row.querySelector('.review-rating')?.value) || 0;
+                reviews.push({
+                    name: row.querySelector('.review-name')?.value || '',
+                    role: row.querySelector('.review-role')?.value || '',
+                    quote: row.querySelector('.review-quote')?.value || '',
+                    rating: rating,
+                    isFeatured: isFeatured
+                });
+            });
+            postCmsData({ testimonials: { title: '', description: '', reviews: reviews } });
+        }
+
+        function saveContactSection() {
+            const data = {
+                contact: {
+                    email: document.getElementById('contact-email')?.value || '',
+                    phone: document.getElementById('contact-phone')?.value || '',
+                    address: document.getElementById('contact-address')?.value || ''
+                }
+            };
+            postCmsData(data);
+        }
+
+        function saveAllChanges() {
+            // Collect section order
+            const el = document.getElementById('sortable-sections');
+            let sectionOrder = null;
+            if (el) {
+                const sections = Array.from(el.children).map((c, index) => ({
+                    id: c.dataset.id,
+                    displayOrder: index,
+                    isVisible: c.querySelector('input[type="checkbox"]').checked
+                }));
+                sectionOrder = { sections: sections };
+            }
+
+            // Collect hero
+            const hero = {
+                badge: document.querySelector('#panel-hero-banner input[placeholder*="Industrial Grade Quality"]')?.value || '',
+                titleA: document.querySelector('#panel-hero-banner .grid-cols-2 input:nth-child(1)')?.value || '',
+                titleB: document.querySelector('#panel-hero-banner .grid-cols-2 input:nth-child(2)')?.value || '',
+                titleC: document.querySelector('#panel-hero-banner .grid-cols-2 input:nth-child(3)')?.value || '',
+                titleD: document.querySelector('#panel-hero-banner .grid-cols-2 input:nth-child(4)')?.value || '',
+                description: document.querySelector('#panel-hero-banner textarea')?.value || '',
+                buttonText: document.querySelector('#panel-hero-banner .flex.flex-col button')?.previousElementSibling?.value || '',
+                imageUrl: document.getElementById('hero-image-url-input')?.value || ''
+            };
+
+            // Collect about
+            const about = {
+                title: document.getElementById('about-title')?.value || '',
+                description: document.getElementById('about-desc')?.value || '',
+                feature1Title: document.getElementById('about-feat1-title')?.value || '',
+                feature1Desc: document.getElementById('about-feat1-desc')?.value || '',
+                feature2Title: document.getElementById('about-feat2-title')?.value || '',
+                feature2Desc: document.getElementById('about-feat2-desc')?.value || '',
+                feature3Title: document.getElementById('about-feat3-title')?.value || '',
+                feature3Desc: document.getElementById('about-feat3-desc')?.value || ''
+            };
+
+            // Collect testimonials
+            const reviews = [];
+            document.querySelectorAll('#panel-customer-stories tbody tr').forEach(row => {
+                const isFeatured = row.querySelector('.star-featured .filled-icon') !== null;
+                const rating = parseInt(row.querySelector('.review-rating')?.value) || 0;
+                reviews.push({
+                    name: row.querySelector('.review-name')?.value || '',
+                    role: row.querySelector('.review-role')?.value || '',
+                    quote: row.querySelector('.review-quote')?.value || '',
+                    rating: rating,
+                    isFeatured: isFeatured
+                });
+            });
+
+            // Collect contact
+            const contact = {
+                email: document.getElementById('contact-email')?.value || '',
+                phone: document.getElementById('contact-phone')?.value || '',
+                address: document.getElementById('contact-address')?.value || ''
+            };
+
+            const payload = {};
+            if (sectionOrder) payload.sectionOrder = sectionOrder;
+            payload.hero = hero;
+            payload.about = about;
+            payload.testimonials = { title: '', description: '', reviews: reviews };
+            payload.contact = contact;
+
+            postCmsData(payload);
+        }
+
+        function postCmsData(data) {
+            fetch('/admin/content/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': window.csrfToken
+                },
+                body: JSON.stringify(data)
+            })
+            .then(r => r.json())
+            .then(d => { if (d.success) showToast('@Localizer["admin_save_success"]', 'success'); else showToast(d.message || '@Localizer["admin_save_error"]', 'error'); })
+            .catch(e => showToast('@Localizer["admin_save_error"]', 'error'));
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toastCms');
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? 'bg-primary' : 'bg-red-500';
+            const icon = type === 'success' ? 'check_circle' : 'error';
+            toast.className = `${bgColor} text-white px-6 py-4 rounded-2xl shadow-xl flex items-center gap-3 animate-slide-in opacity-0 translate-y-4 transition-all duration-300`;
+            toast.innerHTML = '<span class="material-symbols-outlined">' + icon + '</span><span class="text-sm font-bold">' + message + '</span>';
+            container.appendChild(toast);
+            setTimeout(() => { toast.classList.remove('opacity-0', 'translate-y-4'); toast.classList.add('opacity-100', 'translate-y-0'); }, 10);
+            setTimeout(() => { toast.classList.add('opacity-0', 'translate-y--4'); setTimeout(() => toast.remove(), 300); }, 4000);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
             initSortable();
-            updateCategoryCount();
+
+            const heroInput = document.getElementById('hero-image-input');
+            if (heroInput) {
+                heroInput.addEventListener('change', (e) => {
+                    if (e.target.files && e.target.files[0]) {
+                        uploadHeroImage(e.target.files[0]);
+                    }
+                });
+            }
         });
     </script>
 }

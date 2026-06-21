@@ -40,6 +40,9 @@ namespace DAKKN.Application.Features.Orders.Commands.CancelOrder
             if (!order.CanCancel())
                 throw new BadRequestException(_localizer[LocalizationKeys.OrderMessages.CannotCancel.Value]);
 
+            if (_currentUser.IsAuthenticated && order.UserId != _currentUser.UserId)
+                throw new UnAuthorizedException();
+
             var changedBy = _currentUser.IsAuthenticated ? _currentUser.UserId.ToString() : "System";
 
             await _unitOfWork.BeginTransactionAsync();

@@ -14,6 +14,10 @@ namespace DAKKN.Application.Common.Interfaces
         DbSet<Category> Categories { get; }
         DbSet<ShippingGovernorate> ShippingGovernorates { get; }
         DbSet<SystemSetting> SystemSettings { get; }
+        DbSet<LandingPageSetting> LandingPageSettings { get; }
+        DbSet<Order> Orders { get; }
+        DbSet<OrderItem> OrderItems { get; }
+        DbSet<OrderStatusHistory> OrderStatusHistories { get; }
         DbSet<UserFavorite> UserFavorites { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }

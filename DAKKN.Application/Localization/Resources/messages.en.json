@@ -849,6 +849,7 @@
   "admin_hero_badge": "Hero Badge",
   "admin_hero_title_segments": "Main Title (Segments)",
   "admin_hero_desc": "Hero Description",
+  "admin_hero_btn_text": "Button Text",
   "admin_hero_image_update": "Update Hero Image",
   "admin_save_changes": "Save Changes",
   "admin_global_pricing_desc": "Set site-wide pricing rules and surcharges.",
@@ -863,7 +864,9 @@
   "section_all_products": "Browse All Products",
   "section_testimonials": "Customer Stories",
   "section_contact": "Contact Form",
+  "admin_save_all_changes": "Save All Changes",
   "admin_save_success": "Layout saved successfully!",
+  "admin_save_error": "Failed to save changes. Please try again.",
   "admin_about_title": "Section Title (Main)",
   "admin_about_title_ph": "e.g., Engineered for Extremes",
   "admin_about_desc": "Main Description",
@@ -1355,6 +1358,8 @@
   "order_cancel": "Cancel Order",
   "order_cancel_confirm": "Are you sure you want to cancel this order?",
   "order_cancel_reason_ph": "Reason for cancellation (optional)",
+  "order_cancel_error": "Failed to cancel order. Please try again.",
+  "order_cancel_back": "Go Back",
   "order_action_updated": "{0} updated the status to {1}",
   "order_action_created": "Order created",
   "order_status_Pending": "Pending",
@@ -1408,5 +1413,7 @@
   "admin_reset_filter": "Reset",
   "admin_order_actions": "Actions",
   "admin_order_next": "Next",
-  "admin_order_prev": "Previous"
+  "admin_order_prev": "Previous",
+  "admin_order_no_items": "No items in this order",
+  "admin_testimonials_empty": "No testimonials yet"
 }

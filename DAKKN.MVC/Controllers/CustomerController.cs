@@ -17,6 +17,7 @@ using DAKKN.Application.Features.Orders.Queries.GetCustomerOrders;
 using DAKKN.Application.Features.Orders.Queries.GetOrderDetails;
 using DAKKN.Application.Features.Orders.Commands.PlaceOrder;
 using DAKKN.Application.Features.Orders.Commands.CancelOrder;
+using DAKKN.Application.Features.Orders.Commands.DeleteOrder;
 using DAKKN.Application.Features.Users.Queries.GetUserSettings;
 using DAKKN.Application.Features.Users.Commands.UpdateUserSettings;
 using DAKKN.Application.Features.Cart.Queries.GetCart;
@@ -210,6 +211,50 @@ namespace DAKKN.MVC.Controllers
             {
                 return NotFound();
             }
+        }
+
+        [HttpPost("order-details/{id}/cancel")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CancelOrder(Guid id, [FromBody] CancelOrderRequest? request)
+        {
+            try
+            {
+                await mediator.Send(new CancelOrderCommand(id, request?.Reason));
+                return Json(new { success = true, message = localizer[LocalizationKeys.OrderMessages.Cancelled.Value].Value });
+            }
+            catch (NotFoundException)
+            {
+                return Json(new { success = false, message = localizer[LocalizationKeys.OrderMessages.NotFound.Value].Value });
+            }
+            catch (BadRequestException ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+            catch (UnAuthorizedException)
+            {
+                return Json(new { success = false, message = localizer["auth.access_denied.message"].Value });
+            }
+        }
+
+        [HttpPost("order-details/{id}/delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteOrder(Guid id)
+        {
+            try
+            {
+                await mediator.Send(new DeleteOrderCommand(id));
+                TempData["SuccessMessage"] = localizer["order_deleted"].Value;
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (BadRequestException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
+
+            return RedirectToAction(nameof(Orders));
         }
 
         [HttpGet("custom-order")]
@@ -470,4 +515,5 @@ namespace DAKKN.MVC.Controllers
     public record RemoveFavoriteRequest(Guid ProductId);
     public record ChangePasswordRequest(string CurrentPassword, string NewPassword, string ConfirmPassword);
     public record DeleteAccountRequest(string CurrentPassword, string ConfirmationText);
+    public record CancelOrderRequest(string? Reason);
 }

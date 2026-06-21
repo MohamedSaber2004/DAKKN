@@ -848,6 +848,7 @@
   "admin_hero_badge": "بادج البانر (Badge)",
   "admin_hero_title_segments": "العنوان الرئيسي (أجزاء)",
   "admin_hero_desc": "وصف البانر",
+  "admin_hero_btn_text": "نص الزر",
   "admin_hero_image_update": "تحديث صورة البانر",
   "admin_save_changes": "حفظ التغييرات",
   "admin_global_pricing_desc": "تعيين قواعد التسعير والرسوم الإضافية على مستوى الموقع.",
@@ -862,7 +863,9 @@
   "section_all_products": "تصفح جميع المنتجات",
   "section_testimonials": "قصص العملاء",
   "section_contact": "نموذج الاتصال",
+  "admin_save_all_changes": "حفظ جميع التغييرات",
   "admin_save_success": "تم حفظ التخطيط بنجاح!",
+  "admin_save_error": "فشل حفظ التغييرات. حاول مرة أخرى.",
   "admin_about_title": "عنوان القسم (الرئيسي)",
   "admin_about_title_ph": "مثال: مصممة لتتحمل القسوة",
   "admin_about_desc": "الوصف الرئيسي",
@@ -1363,6 +1366,8 @@
   "order_cancel": "إلغاء الطلب",
   "order_cancel_confirm": "هل أنت متأكد من رغبتك في إلغاء هذا الطلب؟",
   "order_cancel_reason_ph": "سبب الإلغاء (اختياري)",
+  "order_cancel_error": "فشل إلغاء الطلب. حاول مرة أخرى.",
+  "order_cancel_back": "رجوع",
   "order_action_updated": "قام {0} بتحديث الحالة إلى {1}",
   "order_action_created": "تم إنشاء الطلب",
   "order_status_Pending": "قيد الانتظار",
@@ -1416,5 +1421,7 @@
   "admin_reset_filter": "إعادة تعيين",
   "admin_order_actions": "إجراءات",
   "admin_order_next": "التالي",
-  "admin_order_prev": "السابق"
+  "admin_order_prev": "السابق",
+  "admin_order_no_items": "لا توجد عناصر في هذا الطلب",
+  "admin_testimonials_empty": "لا توجد تقييمات بعد"
 }

@@ -57,6 +57,10 @@ namespace DAKKN.Application.Features.Products.Queries.GetProducts
                 else if (request.SortBy == "highest")
                     query = query.OrderByDescending(p => p.QuantityInStock);
             }
+            else
+            {
+                query = query.OrderByDescending(p => p.CreatedAt);
+            }
 
             var projected = query.Select(p => new ProductDto
             {

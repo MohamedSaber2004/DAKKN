@@ -131,12 +131,15 @@
                                         var culture = System.Globalization.CultureInfo.CurrentCulture.Name;
                                         var isAr = culture.StartsWith("ar");
                                     }
-                                    <select name="newStatus" dir="@(isAr ? "rtl" : "ltr")" class="bg-transparent border border-border dark:border-outline/20 rounded-lg text-[11px] py-1 outline-none focus:ring-1 focus:ring-primary cursor-pointer">
-                                        @foreach (var s in Enum.GetValues<OrderStatus>())
-                                        {
-                                            <option value="@((int)s)" selected="@(s == order.Status)">@Localizer[$"order_status_{s.ToString()}"]</option>
-                                        }
-                                    </select>
+                                    <div class="relative">
+                                        <select name="newStatus" dir="@(isAr ? "rtl" : "ltr")" class="bg-transparent border border-border dark:border-outline/20 rounded-lg text-[11px] py-1 ltr:pl-2 ltr:pr-6 rtl:pr-2 rtl:pl-6 outline-none focus:ring-1 focus:ring-primary cursor-pointer appearance-none">
+                                            @foreach (var s in Enum.GetValues<OrderStatus>())
+                                            {
+                                                <option value="@((int)s)" selected="@(s == order.Status)">@Localizer[$"order_status_{s.ToString()}"]</option>
+                                            }
+                                        </select>
+                                        <span class="material-symbols-outlined absolute ltr:right-1 rtl:left-1 top-1/2 -translate-y-1/2 pointer-events-none text-[11px] text-text-secondary">arrow_drop_down</span>
+                                    </div>
                                     <button type="submit" class="inline-flex items-center justify-center w-7 h-7 rounded-full text-text-secondary hover:text-primary hover:bg-primary/10 transition-all" title="@Localizer["admin_order_update_status"]">
                                         <span class="material-symbols-outlined text-sm">save</span>
                                     </button>

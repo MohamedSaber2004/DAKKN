@@ -23,16 +23,22 @@
         <div class="text-xs uppercase tracking-[0.2em] text-outline font-bold mb-2">@Localizer["order_number"]</div>
         <div class="text-3xl font-bold text-primary mb-xl">@Model.OrderNumber</div>
 
-            <div class="grid grid-cols-2 gap-lg border-t border-border dark:border-outline/10 pt-xl">
-                <div>
+            <div class="border-t border-border dark:border-outline/10 pt-xl space-y-md">
+                <div class="flex justify-between">
                     <p class="text-[10px] uppercase font-bold text-outline">@Localizer["order_date"]</p>
                     <p class="font-bold">@Model.CreatedAt.ToString("MMMM dd, yyyy")</p>
                 </div>
-                <div>
-                    <p class="text-[10px] uppercase font-bold text-outline">@Localizer["checkout_qty"]</p>
-                    <p class="font-bold">@Model.Items.Count</p>
+                <div class="border-t border-border/50 dark:border-outline/5 pt-md space-y-sm">
+                    <p class="text-[10px] uppercase font-bold text-outline mb-sm">@Localizer["checkout_items"]</p>
+                    @foreach (var item in Model.Items)
+                    {
+                        <div class="flex justify-between items-center py-1">
+                            <span class="font-medium text-sm text-left">@item.ProductName</span>
+                            <span class="font-bold text-sm">@Localizer["checkout_qty"]: @item.Quantity</span>
+                        </div>
+                    }
                 </div>
-                <div class="col-span-2 bg-surface-container dark:bg-white/5 p-4 rounded-2xl flex justify-between items-center mt-md">
+                <div class="bg-surface-container dark:bg-white/5 p-4 rounded-2xl flex justify-between items-center">
                     <span class="font-medium">@Localizer["order_total"]</span>
                     <span class="text-xl font-bold text-primary">@Model.TotalAmount.ToString("N2") @Html.Raw(Localizer["Currency_EGP"])</span>
                 </div>
