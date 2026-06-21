@@ -507,7 +507,7 @@
                 titleC: document.querySelector('#panel-hero-banner .grid-cols-2 input:nth-child(3)')?.value || '',
                 titleD: document.querySelector('#panel-hero-banner .grid-cols-2 input:nth-child(4)')?.value || '',
                 description: document.querySelector('#panel-hero-banner textarea')?.value || '',
-                buttonText: document.querySelector('#panel-hero-banner .flex.flex-col button')?.previousElementSibling?.value || '',
+                buttonText: document.getElementById('hero-btn-text')?.value || '',
                 imageUrl: document.getElementById('hero-image-url-input')?.value || ''
             };
 

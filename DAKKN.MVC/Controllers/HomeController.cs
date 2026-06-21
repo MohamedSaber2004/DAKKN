@@ -27,6 +27,7 @@ namespace DAKKN.MVC.Controllers
             _localizer = localizer;
         }
 
+        [OutputCache(NoStore = true)]
         public async Task<IActionResult> Index()
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)

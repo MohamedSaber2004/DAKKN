@@ -1,1 +1,380 @@
-/admin/content when savechange handle messages from result in toast 
+Use this prompt:
+
+You are a Senior ASP.NET Core 8 MVC, Clean Architecture, MediatR CQRS, EF Core, Localization, Tailwind CSS, CMS, and E-Commerce engineer working on the DAKKN project.
+
+Context:
+
+I have implemented a Content Management Center (CMS) in the Admin Dashboard.
+
+The CMS allows administrators to:
+
+- Reorder Landing Page sections
+- Enable/Disable sections using toggle switches
+- Save section visibility settings
+
+Example sections:
+
+- Hero
+- Featured Products
+- Categories
+- About Us
+- Testimonials
+- Contact Form
+- All Products
+
+Problem:
+
+When I disable a section in CMS and click:
+
+"حفظ جميع التغييرات"
+
+The setting is saved successfully in the admin page.
+
+However:
+
+The section still appears on the Landing Page.
+
+Example:
+
+I disabled:
+
+"المنتجات المميزة"
+
+but the Featured Products section is still rendered on the Home page.
+
+=================================================
+GOAL
+=================================================
+
+Make Landing Page section visibility fully dynamic and controlled by CMS settings.
+
+If a section is disabled:
+
+It must NOT render at all.
+
+=================================================
+ROOT CAUSE ANALYSIS
+=================================================
+
+Audit the complete flow:
+
+CMS UI
+↓
+ViewModel
+↓
+Command
+↓
+Handler
+↓
+Database
+↓
+Landing Page Query
+↓
+Landing Page ViewModel
+↓
+Landing Page Razor View
+
+Determine why visibility changes are not reflected on the Home page.
+
+=================================================
+VERIFY DATABASE PERSISTENCE
+=================================================
+
+Check:
+
+LandingSection
+
+ContentSection
+
+LandingPageSettings
+
+CMSSection
+
+(or whichever entity is used)
+
+Verify:
+
+IsVisible
+
+IsEnabled
+
+DisplayOnLanding
+
+ShowInHomePage
+
+or equivalent property
+
+is actually saved.
+
+Confirm:
+
+Database values are updated correctly.
+
+=================================================
+VERIFY LANDING PAGE QUERY
+=================================================
+
+Audit:
+
+GetLandingPageQuery
+
+GetLandingPageSettingsQuery
+
+GetHomePageQuery
+
+LandingPageViewModel
+
+Verify:
+
+Landing page loads section visibility settings from database.
+
+Possible bug:
+
+Landing page is using:
+
+Hardcoded defaults
+
+OR
+
+Cached data
+
+OR
+
+Mock data
+
+OR
+
+Static ViewModel
+
+instead of CMS settings.
+
+=================================================
+VERIFY VIEWMODEL MAPPING
+=================================================
+
+Audit:
+
+Entity
+↓
+DTO
+↓
+ViewModel
+
+Verify:
+
+IsVisible
+
+ShowSection
+
+Enabled
+
+VisibilityStatus
+
+properties are mapped correctly.
+
+=================================================
+VERIFY RAZOR RENDERING
+=================================================
+
+Audit Landing Page views.
+
+Current possible behavior:
+
+Section always renders:
+
+@if (true)
+
+or
+
+section rendered unconditionally.
+
+Replace with:
+
+@if (Model.FeaturedProductsSection.IsVisible)
+
+{
+    Render Section
+}
+
+Apply to ALL sections.
+
+=================================================
+SECTIONS TO VERIFY
+=================================================
+
+Hero
+
+Featured Products
+
+Categories
+
+About Us
+
+Testimonials
+
+Reviews
+
+Partners
+
+Contact Form
+
+All Products
+
+Footer Widgets
+
+Newsletter
+
+Any CMS-controlled section.
+
+=================================================
+CACHE INVALIDATION
+=================================================
+
+If caching exists:
+
+MemoryCache
+
+DistributedCache
+
+OutputCache
+
+ResponseCache
+
+CMS Cache
+
+Verify:
+
+Cache is refreshed after CMS changes.
+
+Requirements:
+
+After clicking Save:
+
+Updated visibility should immediately appear on Landing Page.
+
+=================================================
+SECTION ORDERING
+=================================================
+
+Verify section ordering also works.
+
+If admin changes:
+
+Hero → Categories → Featured Products
+
+Landing page must render in same order.
+
+No hardcoded ordering.
+
+=================================================
+LOCALIZATION
+=================================================
+
+Verify:
+
+Arabic
+
+English
+
+Section names
+
+CMS labels
+
+Visibility status
+
+No localization keys should appear.
+
+=================================================
+RESPONSIVE DESIGN
+=================================================
+
+Verify:
+
+Desktop
+
+Tablet
+
+Mobile
+
+Hidden sections should not leave:
+
+Empty space
+
+Margins
+
+Padding gaps
+
+Blank containers
+
+=================================================
+TEST SCENARIOS
+=================================================
+
+Scenario 1:
+
+Disable Featured Products.
+
+Expected:
+
+Featured Products completely removed from Landing Page.
+
+Scenario 2:
+
+Disable Categories.
+
+Expected:
+
+Categories section hidden.
+
+Scenario 3:
+
+Disable Hero.
+
+Expected:
+
+Hero section hidden.
+
+Scenario 4:
+
+Disable all sections.
+
+Expected:
+
+Only enabled sections render.
+
+Scenario 5:
+
+Re-enable section.
+
+Expected:
+
+Section appears immediately.
+
+=================================================
+DELIVERABLES
+=================================================
+
+Provide:
+
+1. Root cause analysis.
+2. Exact file paths involved.
+3. Before code.
+4. After code.
+5. Database fixes.
+6. Query fixes.
+7. Mapping fixes.
+8. Razor fixes.
+9. Cache fixes.
+10. Testing scenarios.
+
+Important:
+
+- Follow DAKKN Clean Architecture.
+- Use MediatR only.
+- No hardcoded section visibility.
+- Landing Page must fully respect CMS visibility settings.
+- Disabled sections must never render.
+- Section ordering must come from database.
+- Ensure production-ready implementation.
+
+Most likely the CMS is saving IsVisible = false correctly, but the Landing Page Razor view is still rendering sections unconditionally or the homepage query is not loading the updated CMS settings from the database.

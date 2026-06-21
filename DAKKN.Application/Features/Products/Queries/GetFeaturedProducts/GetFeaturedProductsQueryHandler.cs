@@ -31,31 +31,41 @@ namespace DAKKN.Application.Features.Products.Queries.GetFeaturedProducts
                     using var doc = JsonDocument.Parse(cmsProductsSetting.Value);
                     var root = doc.RootElement;
 
-                    if (root.TryGetProperty("selectedProductIds", out var ids))
+                    string? raw = null;
+                    if (root.ValueKind == JsonValueKind.Object)
                     {
-                        var raw = ids.GetString();
-                        if (!string.IsNullOrEmpty(raw))
+                        foreach (var prop in root.EnumerateObject())
                         {
-                            foreach (var idStr in raw.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                            if (string.Equals(prop.Name, "selectedProductIds", StringComparison.OrdinalIgnoreCase))
                             {
-                                if (Guid.TryParse(idStr.Trim(), out var gid))
-                                    manualIds.Add(gid);
+                                raw = prop.Value.GetString();
+                                break;
                             }
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(raw))
+                    {
+                        foreach (var idStr in raw.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                        {
+                            if (Guid.TryParse(idStr.Trim(), out var gid))
+                                manualIds.Add(gid);
                         }
                     }
                 }
                 catch { }
             }
 
+            var baseQuery = productRepo.GetAllAsync(null).AsNoTracking()
+                .Include(p => p.Category)
+                .Where(p => !p.IsDeleted && p.IsActive);
+
             List<ProductDto> products = new();
 
             if (manualIds.Count > 0)
             {
-                var query = productRepo.GetAllAsync(null).AsNoTracking()
-                    .Include(p => p.Category)
-                    .Where(p => !p.IsDeleted && p.IsActive && manualIds.Contains(p.Id));
-
-                var all = await query
+                var all = await baseQuery
+                    .Where(p => manualIds.Contains(p.Id))
                     .Select(p => new ProductDto
                     {
                         Id = p.Id,
@@ -89,6 +99,74 @@ namespace DAKKN.Application.Features.Products.Queries.GetFeaturedProducts
                     .Select(id => lookup[id])
                     .Take(8)
                     .ToList();
+            }
+
+            if (products.Count == 0)
+            {
+                var sevenDaysAgo = DateTime.UtcNow.AddDays(-7);
+                products = await baseQuery
+                    .Where(p => p.CreatedAt >= sevenDaysAgo)
+                    .OrderByDescending(p => p.CreatedAt)
+                    .Take(8)
+                    .Select(p => new ProductDto
+                    {
+                        Id = p.Id,
+                        Name = p.Name,
+                        ArName = p.ArName,
+                        Description = p.Description,
+                        ArDescription = p.ArDescription,
+                        Price = p.Price,
+                        AverageRating = p.AverageRating,
+                        ReviewCount = p.ReviewCount,
+                        ImageUrl = p.ImageUrl,
+                        FinishOptions = p.FinishOptions,
+                        SizeOptions = p.SizeOptions,
+                        CategoryId = p.CategoryId,
+                        CategoryName = p.Category.CategoryName,
+                        CategoryArName = p.Category.ArName,
+                        CreatedAt = p.CreatedAt,
+                        UpdatedAt = p.UpdatedAt,
+                        IsActive = p.IsActive,
+                        IsDeleted = p.IsDeleted,
+                        QuantityInStock = p.QuantityInStock,
+                        DangerQuantity = p.DangerQuantity,
+                        StockStatus = p.StockStatus.ToString(),
+                        IsInStock = p.IsInStock
+                    })
+                    .ToListAsync(cancellationToken);
+
+                if (products.Count == 0)
+                {
+                    products = await baseQuery
+                        .OrderByDescending(p => p.CreatedAt)
+                        .Take(8)
+                        .Select(p => new ProductDto
+                        {
+                            Id = p.Id,
+                            Name = p.Name,
+                            ArName = p.ArName,
+                            Description = p.Description,
+                            ArDescription = p.ArDescription,
+                            Price = p.Price,
+                            AverageRating = p.AverageRating,
+                            ReviewCount = p.ReviewCount,
+                            ImageUrl = p.ImageUrl,
+                            FinishOptions = p.FinishOptions,
+                            SizeOptions = p.SizeOptions,
+                            CategoryId = p.CategoryId,
+                            CategoryName = p.Category.CategoryName,
+                            CategoryArName = p.Category.ArName,
+                            CreatedAt = p.CreatedAt,
+                            UpdatedAt = p.UpdatedAt,
+                            IsActive = p.IsActive,
+                            IsDeleted = p.IsDeleted,
+                            QuantityInStock = p.QuantityInStock,
+                            DangerQuantity = p.DangerQuantity,
+                            StockStatus = p.StockStatus.ToString(),
+                            IsInStock = p.IsInStock
+                        })
+                        .ToListAsync(cancellationToken);
+                }
             }
 
             foreach (var item in products)
