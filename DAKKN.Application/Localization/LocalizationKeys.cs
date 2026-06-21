@@ -252,6 +252,28 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString BasicP = new("profile_basic_p");
             public static readonly KeyString SettingsSubtitle = new("profile_settings_subtitle");
             public static readonly KeyString ProfilePicFormat = new("profile_pic_format");
+
+            public static readonly KeyString CurrentPassword = new("profile_current_password");
+            public static readonly KeyString NewPassword = new("profile_new_password");
+            public static readonly KeyString ConfirmPassword = new("profile_confirm_password");
+            public static readonly KeyString PasswordChanged = new("profile_password_changed");
+            public static readonly KeyString PasswordChangeError = new("profile_password_change_error");
+            public static readonly KeyString WrongCurrentPassword = new("profile_wrong_current_password");
+            public static readonly KeyString PasswordRequirements = new("profile_password_requirements");
+            public static readonly KeyString WeakPassword = new("profile_weak_password");
+            public static readonly KeyString ShowPassword = new("profile_show_password");
+            public static readonly KeyString HidePassword = new("profile_hide_password");
+
+            public static readonly KeyString DeleteAccountWarning = new("profile_delete_account_warning");
+            public static readonly KeyString DeleteAccountConfirm = new("profile_delete_account_confirm");
+            public static readonly KeyString DeleteAccountTypeConfirm = new("profile_delete_account_type_confirm");
+            public static readonly KeyString DeleteAccountPassword = new("profile_delete_account_password");
+            public static readonly KeyString DeleteAccountSuccess = new("profile_delete_account_success");
+            public static readonly KeyString DeleteAccountError = new("profile_delete_account_error");
+            public static readonly KeyString Cancel = new("profile_cancel");
+            public static readonly KeyString Confirm = new("profile_confirm");
+            public static readonly KeyString TypeDeleteToConfirm = new("profile_type_delete_to_confirm");
+            public static readonly KeyString AccountDeleted = new("profile_account_deleted");
         }
 
         public static class Support

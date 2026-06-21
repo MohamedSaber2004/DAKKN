@@ -3,6 +3,7 @@ using DAKKN.Application.DTOs;
 using DAKKN.Application.Common.Exceptions;
 using DAKKN.MVC.ViewModels.Customer;
 using DAKKN.MVC.ViewModels.Admin;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 
 using DAKKN.Appearence.Filters;
@@ -10,6 +11,8 @@ using DAKKN.Domain.Enums;
 using Microsoft.Extensions.Localization;
 using DAKKN.Application.Localization;
 using MediatR;
+using DAKKN.Application.Features.AccountSecurity.Commands.ChangePassword;
+using DAKKN.Application.Features.AccountSecurity.Commands.DeleteAccount;
 using DAKKN.Application.Features.Users.Queries.GetUserSettings;
 using DAKKN.Application.Features.Users.Commands.UpdateUserSettings;
 using DAKKN.Application.Features.Cart.Queries.GetCart;
@@ -322,6 +325,72 @@ namespace DAKKN.MVC.Controllers
             });
         }
 
+        [HttpPost("profile/change-password")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+        {
+            try
+            {
+                await mediator.Send(new ChangePasswordCommand(
+                    request.CurrentPassword,
+                    request.NewPassword,
+                    request.ConfirmPassword));
+
+                return Json(new
+                {
+                    success = true,
+                    message = localizer[LocalizationKeys.Profile.PasswordChanged.Value].ToString()
+                });
+            }
+            catch (BadRequestException ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+            catch (ValidationException ex)
+            {
+                var errors = ex.Errors.SelectMany(e => e.Value);
+                return Json(new { success = false, message = string.Join(" ", errors) });
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, message = localizer[LocalizationKeys.Profile.PasswordChangeError.Value].ToString() });
+            }
+        }
+
+        [HttpPost("profile/delete-account")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAccount([FromBody] DeleteAccountRequest request)
+        {
+            try
+            {
+                await mediator.Send(new DeleteAccountCommand(
+                    request.CurrentPassword,
+                    request.ConfirmationText));
+
+                await HttpContext.SignOutAsync();
+
+                return Json(new
+                {
+                    success = true,
+                    message = localizer[LocalizationKeys.Profile.DeleteAccountSuccess.Value].ToString(),
+                    redirectUrl = Url.Action("Index", "Home")
+                });
+            }
+            catch (BadRequestException ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+            catch (ValidationException ex)
+            {
+                var errors = ex.Errors.SelectMany(e => e.Value);
+                return Json(new { success = false, message = string.Join(" ", errors) });
+            }
+            catch (Exception)
+            {
+                return Json(new { success = false, message = localizer[LocalizationKeys.Profile.DeleteAccountError.Value].ToString() });
+            }
+        }
+
         [HttpGet("support")]
         public IActionResult Support()
         {
@@ -360,4 +429,6 @@ namespace DAKKN.MVC.Controllers
 
     public record ToggleFavoriteRequest(Guid ProductId);
     public record RemoveFavoriteRequest(Guid ProductId);
+    public record ChangePasswordRequest(string CurrentPassword, string NewPassword, string ConfirmPassword);
+    public record DeleteAccountRequest(string CurrentPassword, string ConfirmationText);
 }

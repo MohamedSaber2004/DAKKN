@@ -43,6 +43,11 @@ namespace DAKKN.Application.Features.Auth.Comands.SignIn
                 throw new BadRequestException(_localizer[LocalizationKeys.AuthMessages.InvalidCredentials.Key]);
             }
 
+            if (user.IsDeleted)
+            {
+                throw new BadRequestException(_localizer[LocalizationKeys.Profile.AccountDeleted.Value]);
+            }
+
             // Generate Access Token
             var roles = await _userManager.GetRolesAsync(user);
             var accessToken = _jwtTokenService.GenerateAccessToken(user, roles);

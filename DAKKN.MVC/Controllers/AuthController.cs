@@ -9,8 +9,10 @@ using DAKKN.Application.Features.Auth.Comands.SignUp;
 using DAKKN.Application.Features.Auth.Comands.VerifyForgetPasswordOtp;
 using DAKKN.Application.Features.Auth.Commands.ResetPassword;
 using DAKKN.Application.Features.Auth.DTOs;
+using DAKKN.Application.Localization;
 using DAKKN.Domain.Entities;
 using DAKKN.MVC.Mock;
+using Microsoft.Extensions.Localization;
 using DAKKN.MVC.ViewModels.Auth;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
@@ -32,19 +34,22 @@ namespace DAKKN.MVC.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly GoogleAuthSettings _googleAuthSettings;
         private readonly IWebHostEnvironment _env;
+        private readonly IStringLocalizer<Messages> _localizer;
 
         public AuthController(
             IWebHostEnvironment env,
             IMediator mediator,
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IOptions<GoogleAuthSettings> googleAuthSettings)
+            IOptions<GoogleAuthSettings> googleAuthSettings,
+            IStringLocalizer<Messages> localizer)
         {
             _env = env;
             _mediator = mediator;
             _userManager = userManager;
             _signInManager = signInManager;
             _googleAuthSettings = googleAuthSettings.Value;
+            _localizer = localizer;
         }
 
         // ──────────────────────────────────────────────
@@ -66,10 +71,16 @@ namespace DAKKN.MVC.Controllers
 
             try
             {
+                var user = await _userManager.FindByEmailAsync(vm.Email);
+                if (user != null && user.IsDeleted)
+                {
+                    ModelState.AddModelError(string.Empty, _localizer[LocalizationKeys.Profile.AccountDeleted.Value].ToString());
+                    return View(vm);
+                }
+
                 var result = await _mediator.Send(new SignInCommand(vm.Email, vm.Password, vm.RememberMe));
                 
                 // Sign in via Identity Cookies to support MVC page requests
-                var user = await _userManager.FindByEmailAsync(vm.Email);
                 if (user != null)
                 {
                     await _signInManager.SignInAsync(user, vm.RememberMe);
