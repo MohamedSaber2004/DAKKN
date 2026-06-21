@@ -177,6 +177,17 @@
                 <button onclick="saveTestimonialsSection()" class="bg-primary text-on-primary px-xl py-md rounded-full font-bold">@Localizer["admin_save_changes"]</button>
             </div>
 
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-xl">
+                <div class="flex flex-col gap-xs">
+                    <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_testi_title"]</label>
+                    <input id="testi-title" type="text" value="@Model.Testimonials.Title" placeholder="Community Stories" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                </div>
+                <div class="flex flex-col gap-xs">
+                    <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_testi_desc"]</label>
+                    <textarea id="testi-desc" rows="2" placeholder="See how our stickers hold up in the real world." class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.Testimonials.Description</textarea>
+                </div>
+            </div>
+
             <div class="overflow-x-auto">
                 <table class="w-full text-left rtl:text-right">
                     <thead class="border-b border-border">
@@ -472,7 +483,7 @@
                     isFeatured: isFeatured
                 });
             });
-            postCmsData({ testimonials: { title: '', description: '', reviews: reviews } });
+            postCmsData({ testimonials: { title: document.getElementById('testi-title')?.value || '', description: document.getElementById('testi-desc')?.value || '', reviews: reviews } });
         }
 
         function saveContactSection() {
@@ -548,7 +559,7 @@
             if (sectionOrder) payload.sectionOrder = sectionOrder;
             payload.hero = hero;
             payload.about = about;
-            payload.testimonials = { title: '', description: '', reviews: reviews };
+            payload.testimonials = { title: document.getElementById('testi-title')?.value || '', description: document.getElementById('testi-desc')?.value || '', reviews: reviews };
             payload.contact = contact;
 
             postCmsData(payload);

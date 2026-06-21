@@ -1415,5 +1415,7 @@
   "admin_order_next": "Next",
   "admin_order_prev": "Previous",
   "admin_order_no_items": "No items in this order",
-  "admin_testimonials_empty": "No testimonials yet"
+  "admin_testimonials_empty": "No testimonials yet",
+  "testimonials_empty_title": "No customer reviews yet",
+  "testimonials_empty_msg": "Be the first to share your experience with DAKKN products."
 }

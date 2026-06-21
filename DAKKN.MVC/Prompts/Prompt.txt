@@ -1,354 +1,314 @@
 Use this prompt:
 
-You are a Senior ASP.NET Core 8 MVC, Clean Architecture, MediatR CQRS, EF Core, Localization, Tailwind CSS, CMS, and E-Commerce engineer working on the DAKKN project.
+You are a Senior ASP.NET Core 8 MVC, Clean Architecture, MediatR CQRS, EF Core, Tailwind CSS, UX/UI, and Frontend Architecture engineer working on the DAKKN project.
 
 Context:
 
-I have implemented a Content Management Center (CMS) in the Admin Dashboard.
+The Testimonials section on the Landing Page has serious UI/UX issues.
 
-The CMS allows administrators to:
+Current Problems:
 
-- Reorder Landing Page sections
-- Enable/Disable sections using toggle switches
-- Save section visibility settings
+1. Large empty white space above testimonials.
+2. Testimonials are not visually centered.
+3. Section looks unfinished and disconnected from the rest of the landing page.
+4. Cards have poor visual hierarchy.
+5. No section title is visible.
+6. No subtitle is visible.
+7. Cards look too small relative to section height.
+8. Excessive padding and margins create wasted space.
+9. The section does not match the premium style of the rest of the DAKKN landing page.
+10. Mobile responsiveness needs verification.
 
-Example sections:
+Goal:
 
-- Hero
-- Featured Products
-- Categories
-- About Us
-- Testimonials
-- Contact Form
-- All Products
+Redesign the entire Testimonials section with a modern premium e-commerce style consistent with the DAKKN Landing Page.
 
-Problem:
+=================================================
+DESIGN REQUIREMENTS
+=================================================
 
-When I disable a section in CMS and click:
+Create a professional section structure:
 
-"حفظ جميع التغييرات"
+Section Header:
+- Localized title
+- Localized subtitle
 
-The setting is saved successfully in the admin page.
+English Example:
 
-However:
+What Our Customers Say
+Real experiences from creators, businesses, and customers who trust DAKKN.
 
-The section still appears on the Landing Page.
+Arabic Example:
+
+آراء عملائنا
+تجارب حقيقية من العملاء والشركات الذين يثقون في داكن.
+
+=================================================
+LAYOUT
+=================================================
+
+Remove unnecessary empty space.
+
+Reduce top spacing significantly.
+
+Center content correctly.
+
+Container:
+
+max-w-7xl
+mx-auto
+px-4 sm:px-6 lg:px-8
+
+Proper vertical spacing:
+
+py-16
+lg:py-24
+
+=================================================
+TESTIMONIAL CARDS
+=================================================
+
+Redesign cards completely.
+
+Card Features:
+
+- Rounded corners
+- Soft shadow
+- Hover animation
+- Border
+- Modern spacing
 
 Example:
 
-I disabled:
-
-"المنتجات المميزة"
-
-but the Featured Products section is still rendered on the Home page.
-
-=================================================
-GOAL
-=================================================
-
-Make Landing Page section visibility fully dynamic and controlled by CMS settings.
-
-If a section is disabled:
-
-It must NOT render at all.
+rounded-3xl
+border
+shadow-sm
+hover:shadow-xl
+transition-all
+duration-300
 
 =================================================
-ROOT CAUSE ANALYSIS
+CARD CONTENT
 =================================================
 
-Audit the complete flow:
+Each card should include:
 
-CMS UI
-↓
-ViewModel
-↓
-Command
-↓
-Handler
-↓
-Database
-↓
-Landing Page Query
-↓
-Landing Page ViewModel
-↓
-Landing Page Razor View
+1. Customer avatar
+2. Customer name
+3. Customer role/title
+4. Star rating
+5. Review text
+6. Optional date
 
-Determine why visibility changes are not reflected on the Home page.
+Layout:
+
+★★★★★
+
+Review Text
+
+Customer Avatar + Name + Title
 
 =================================================
-VERIFY DATABASE PERSISTENCE
+AVATAR DESIGN
 =================================================
 
-Check:
+If customer image exists:
 
-LandingSection
+Display image.
 
-ContentSection
+If image is null:
 
-LandingPageSettings
+Generate avatar circle using first letter.
 
-CMSSection
+Example:
 
-(or whichever entity is used)
+S
 
-Verify:
+for Sarah
 
-IsVisible
+Avatar:
 
-IsEnabled
-
-DisplayOnLanding
-
-ShowInHomePage
-
-or equivalent property
-
-is actually saved.
-
-Confirm:
-
-Database values are updated correctly.
+w-12 h-12
+rounded-full
 
 =================================================
-VERIFY LANDING PAGE QUERY
+STAR RATING
 =================================================
 
-Audit:
+Display dynamic rating.
 
-GetLandingPageQuery
+Support:
 
-GetLandingPageSettingsQuery
+1–5 stars
 
-GetHomePageQuery
+Use:
 
-LandingPageViewModel
+Filled stars
 
-Verify:
+Empty stars
 
-Landing page loads section visibility settings from database.
-
-Possible bug:
-
-Landing page is using:
-
-Hardcoded defaults
-
-OR
-
-Cached data
-
-OR
-
-Mock data
-
-OR
-
-Static ViewModel
-
-instead of CMS settings.
+Localization safe.
 
 =================================================
-VERIFY VIEWMODEL MAPPING
+GRID SYSTEM
 =================================================
 
-Audit:
+Desktop:
 
-Entity
-↓
-DTO
-↓
-ViewModel
+3 cards per row
 
-Verify:
+Tablet:
 
-IsVisible
+2 cards per row
 
-ShowSection
+Mobile:
 
-Enabled
+1 card per row
 
-VisibilityStatus
+Example:
 
-properties are mapped correctly.
+grid-cols-1
+md:grid-cols-2
+xl:grid-cols-3
 
 =================================================
-VERIFY RAZOR RENDERING
+CAROUSEL SUPPORT
 =================================================
 
-Audit Landing Page views.
+If testimonials > 6:
 
-Current possible behavior:
-
-Section always renders:
-
-@if (true)
-
-or
-
-section rendered unconditionally.
-
-Replace with:
-
-@if (Model.FeaturedProductsSection.IsVisible)
-
-{
-    Render Section
-}
-
-Apply to ALL sections.
-
-=================================================
-SECTIONS TO VERIFY
-=================================================
-
-Hero
-
-Featured Products
-
-Categories
-
-About Us
-
-Testimonials
-
-Reviews
-
-Partners
-
-Contact Form
-
-All Products
-
-Footer Widgets
-
-Newsletter
-
-Any CMS-controlled section.
-
-=================================================
-CACHE INVALIDATION
-=================================================
-
-If caching exists:
-
-MemoryCache
-
-DistributedCache
-
-OutputCache
-
-ResponseCache
-
-CMS Cache
-
-Verify:
-
-Cache is refreshed after CMS changes.
+Use slider/carousel.
 
 Requirements:
 
-After clicking Save:
+Auto slide optional.
 
-Updated visibility should immediately appear on Landing Page.
+Navigation arrows.
+
+Pagination dots.
+
+Touch support on mobile.
 
 =================================================
-SECTION ORDERING
+ANIMATIONS
 =================================================
 
-Verify section ordering also works.
+Add subtle animation:
 
-If admin changes:
+Fade in.
 
-Hero → Categories → Featured Products
+Translate Y.
 
-Landing page must render in same order.
+Hover scale.
 
-No hardcoded ordering.
+Avoid excessive motion.
+
+=================================================
+DARK MODE
+=================================================
+
+Fully support:
+
+Light Mode
+
+Dark Mode
+
+Verify:
+
+Backgrounds
+
+Text colors
+
+Borders
+
+Cards
+
+Stars
 
 =================================================
 LOCALIZATION
 =================================================
 
-Verify:
+Support:
 
 Arabic
 
 English
 
-Section names
+RTL
 
-CMS labels
-
-Visibility status
-
-No localization keys should appear.
-
-=================================================
-RESPONSIVE DESIGN
-=================================================
+LTR
 
 Verify:
 
-Desktop
+Alignment
 
-Tablet
+Card direction
 
-Mobile
+Spacing
 
-Hidden sections should not leave:
-
-Empty space
-
-Margins
-
-Padding gaps
-
-Blank containers
+Typography
 
 =================================================
-TEST SCENARIOS
+DATA SOURCE
 =================================================
 
-Scenario 1:
+Audit testimonial loading.
 
-Disable Featured Products.
+Verify:
 
-Expected:
+Landing Page Query
+DTO
+ViewModel
+CMS Settings
 
-Featured Products completely removed from Landing Page.
+Remove any hardcoded testimonials.
 
-Scenario 2:
+Load dynamically from database.
 
-Disable Categories.
+=================================================
+EMPTY STATE
+=================================================
 
-Expected:
+If no testimonials exist:
 
-Categories section hidden.
+Show professional placeholder.
 
-Scenario 3:
+Example:
 
-Disable Hero.
+"No customer reviews available yet."
 
-Expected:
+Do NOT leave blank space.
 
-Hero section hidden.
+Do NOT render empty containers.
 
-Scenario 4:
+=================================================
+PERFORMANCE
+=================================================
 
-Disable all sections.
+Optimize:
 
-Expected:
+Images
 
-Only enabled sections render.
+Lazy loading
 
-Scenario 5:
+Rendering
 
-Re-enable section.
+Responsive layout
 
-Expected:
+=================================================
+ACCESSIBILITY
+=================================================
 
-Section appears immediately.
+Add:
+
+aria labels
+
+semantic headings
+
+keyboard navigation
+
+proper contrast
 
 =================================================
 DELIVERABLES
@@ -356,25 +316,23 @@ DELIVERABLES
 
 Provide:
 
-1. Root cause analysis.
-2. Exact file paths involved.
+1. Root cause analysis of current layout issues.
+2. Exact file paths.
 3. Before code.
 4. After code.
-5. Database fixes.
-6. Query fixes.
-7. Mapping fixes.
-8. Razor fixes.
-9. Cache fixes.
-10. Testing scenarios.
+5. Tailwind improvements.
+6. Responsive improvements.
+7. RTL fixes.
+8. Dark mode fixes.
+9. Localization fixes.
+10. Final premium DAKKN testimonial design implementation.
 
 Important:
 
-- Follow DAKKN Clean Architecture.
-- Use MediatR only.
-- No hardcoded section visibility.
-- Landing Page must fully respect CMS visibility settings.
-- Disabled sections must never render.
-- Section ordering must come from database.
-- Ensure production-ready implementation.
+- Keep DAKKN branding consistent.
+- Remove all excessive whitespace.
+- Make testimonials visually balanced.
+- Match the quality of modern Shopify, Stripe, and Apple-inspired landing pages.
+- Ensure the section looks premium, professional, and production-ready.
 
-Most likely the CMS is saving IsVisible = false correctly, but the Landing Page Razor view is still rendering sections unconditionally or the homepage query is not loading the updated CMS settings from the database.
+From the screenshot, the biggest visual problem is not the cards themselves—it's the huge unused vertical space and missing section header, which makes the testimonials look like they are floating in the middle of an empty page. The redesign should focus on spacing, hierarchy, and card sizing first.

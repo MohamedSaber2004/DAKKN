@@ -1423,5 +1423,7 @@
   "admin_order_next": "التالي",
   "admin_order_prev": "السابق",
   "admin_order_no_items": "لا توجد عناصر في هذا الطلب",
-  "admin_testimonials_empty": "لا توجد تقييمات بعد"
+  "admin_testimonials_empty": "لا توجد تقييمات بعد",
+  "testimonials_empty_title": "لا توجد تقييمات للعملاء بعد",
+  "testimonials_empty_msg": "كن أول من يشارك تجربته مع منتجات داكن."
 }

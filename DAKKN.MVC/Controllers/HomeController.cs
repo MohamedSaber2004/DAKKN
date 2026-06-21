@@ -77,7 +77,6 @@ namespace DAKKN.MVC.Controllers
         {
             testimonials.Reviews = testimonials.Reviews
                 .OrderByDescending(r => r.Rating)
-                .Take(3)
                 .ToList();
             return testimonials;
         }
