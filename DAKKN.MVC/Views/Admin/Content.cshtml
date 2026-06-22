@@ -481,14 +481,12 @@
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'RequestVerificationToken': window.csrfToken
                 },
-                body: 'returnUrl=/admin/content'
-            })
-            .then(r => {
-                if (r.redirected) window.location.href = r.url;
-                return r.text();
+                body: 'returnUrl=/admin/content',
+                redirect: 'manual'
             })
             .then(() => {
-                const label = document.querySelector(`input[data-review-id="${reviewId}"]`).closest('label').querySelector('span:last-child');
+                const checkbox = document.querySelector(`input[data-review-id="${reviewId}"]`);
+                const label = checkbox.closest('label').querySelector('span:last-child');
                 if (isDisplayed) {
                     label.textContent = '@Localizer["admin_displayed"]';
                     label.className = 'ltr:ml-2 rtl:mr-2 text-xs font-medium text-primary';
@@ -498,7 +496,10 @@
                 }
                 showToast(isDisplayed ? '@Localizer["admin_review_displayed"]' : '@Localizer["admin_review_hidden"]', 'success');
             })
-            .catch(() => showToast('@Localizer["admin_save_error"]', 'error'));
+            .catch(() => {
+                document.querySelector(`input[data-review-id="${reviewId}"]`).checked = !isDisplayed;
+                showToast('@Localizer["admin_save_error"]', 'error');
+            });
         }
 
         function saveAboutSection() {
