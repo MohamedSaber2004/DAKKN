@@ -94,9 +94,8 @@ namespace DAKKN.Application.Features.Products.Queries.GetProducts
             {
                 if (!string.IsNullOrEmpty(item.ImageUrl))
                 {
-                    item.ImageFullUrl = item.ImageUrl.StartsWith("http") || item.ImageUrl.StartsWith("/")
-                        ? item.ImageUrl
-                        : $"/files/{item.ImageUrl}";
+                    var fileName = Path.GetFileName(item.ImageUrl);
+                    item.ImageFullUrl = string.IsNullOrEmpty(fileName) ? string.Empty : $"/files/{fileName}";
                     item.ImageUrl = item.ImageFullUrl;
                 }
             }

@@ -24,6 +24,7 @@ namespace DAKKN.Appearence.Services
                 return new NotFoundFileInfo(subpath);
             }
 
+            // Format: {place}_{actualFileName} (legacy with underscore separator)
             if (fileNameWithPrefix.Contains('_'))
             {
                 var parts = fileNameWithPrefix.Split('_');
@@ -41,6 +42,21 @@ namespace DAKKN.Appearence.Services
                 }
             }
 
+            // Format: {place}{timestamp}{ext} (current, no separator)
+            if (fileNameWithPrefix.Length > 1 && char.IsDigit(fileNameWithPrefix[0]))
+            {
+                var place = fileNameWithPrefix[0] - '0';
+                var folderPath = UploadPaths.GetPath(place);
+
+                if (!string.IsNullOrEmpty(folderPath))
+                {
+                    var fileLocation = Path.Combine(_wwwRootPath, folderPath, fileNameWithPrefix);
+                    if (File.Exists(fileLocation))
+                        return new PhysicalFileInfo(new FileInfo(fileLocation));
+                }
+            }
+
+            // Brute-force fallback — search all upload paths
             foreach (var path in UploadPaths.GetAllPaths())
             {
                 if (string.IsNullOrWhiteSpace(path)) continue;

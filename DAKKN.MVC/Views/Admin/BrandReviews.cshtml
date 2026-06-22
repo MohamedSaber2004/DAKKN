@@ -43,7 +43,7 @@
                                 <span class="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center shrink-0">@(slot + 1)</span>
                                 @if (!string.IsNullOrEmpty(review.ProfilePictureUrl))
                                 {
-                                    <img src="/files/@review.ProfilePictureUrl" alt="" class="w-7 h-7 rounded-full object-cover shrink-0" />
+                                    <img src="@review.ProfilePictureUrl" alt="" class="w-7 h-7 rounded-full object-cover shrink-0" onerror="this.onerror=null;this.src='/images/placeholders/product-placeholder.svg'" />
                                 }
                                 else
                                 {
@@ -163,7 +163,7 @@
                                 <div class="flex items-center gap-3">
                                     @if (!string.IsNullOrEmpty(review.ProfilePictureUrl))
                                     {
-                                        <img src="/files/@review.ProfilePictureUrl" alt="" class="w-9 h-9 rounded-full object-cover border border-admin-border" />
+                                        <img src="@review.ProfilePictureUrl" alt="" class="w-9 h-9 rounded-full object-cover border border-admin-border" onerror="this.onerror=null;this.src='/images/placeholders/product-placeholder.svg'" />
                                     }
                                     else
                                     {
@@ -324,7 +324,7 @@
 
         var avatar = document.getElementById('modalAvatar');
         if (img) {
-            avatar.innerHTML = '<img src="/files/' + img + '" alt="" class="w-12 h-12 rounded-full object-cover" />';
+            avatar.innerHTML = '<img src="' + img + '" alt="" class="w-12 h-12 rounded-full object-cover" onerror="this.onerror=null;this.src=\'/images/placeholders/product-placeholder.svg\'" />';
         } else {
             avatar.innerHTML = name.charAt(0) || '?';
         }

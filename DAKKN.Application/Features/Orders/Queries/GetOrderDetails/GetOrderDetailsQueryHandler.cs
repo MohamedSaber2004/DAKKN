@@ -60,7 +60,9 @@ namespace DAKKN.Application.Features.Orders.Queries.GetOrderDetails
                 {
                     ProductId = i.ProductId,
                     ProductName = i.ProductName,
-                    ProductImageUrl = i.ProductImageUrl,
+                    ProductImageUrl = string.IsNullOrEmpty(i.ProductImageUrl)
+                        ? null
+                        : $"/files/{Path.GetFileName(i.ProductImageUrl)}",
                     Quantity = i.Quantity,
                     UnitPrice = i.UnitPrice,
                     TotalPrice = i.TotalPrice

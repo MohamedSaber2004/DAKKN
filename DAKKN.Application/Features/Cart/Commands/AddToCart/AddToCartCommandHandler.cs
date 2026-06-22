@@ -52,9 +52,7 @@ namespace DAKKN.Application.Features.Cart.Commands.AddToCart
                     ArName = product.ArName,
                     Price = product.Price,
                     ImageUrl = string.IsNullOrEmpty(product.ImageUrl) ? null
-                        : product.ImageUrl.StartsWith("http") || product.ImageUrl.StartsWith("/")
-                            ? product.ImageUrl
-                            : $"/files/{product.ImageUrl}",
+                        : $"/files/{Path.GetFileName(product.ImageUrl)}",
                     Quantity = request.Quantity,
                     QuantityInStock = product.QuantityInStock
                 });

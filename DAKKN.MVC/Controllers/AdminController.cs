@@ -935,13 +935,21 @@ namespace DAKKN.MVC.Controllers
 
             if (model.ImageFile != null)
             {
-                var result = await _mediator.Send(new UpdateImageCommand
+                try
                 {
-                    File = model.ImageFile,
-                    UploadPlace = 1
-                });
-                var baseUrl = $"{Request.Scheme}://{Request.Host}";
-                imageUrl = $"{baseUrl}/files/{result}";
+                    var result = await _mediator.Send(new UpdateImageCommand
+                    {
+                        File = model.ImageFile,
+                        UploadPlace = 1
+                    });
+                    imageUrl = result;
+                }
+                catch
+                {
+                    TempData["Error"] = _localizer[LocalizationKeys.UploadFileMessages.FileUploadFailed.Value];
+                    model.AvailableCategories = await _mediator.Send(new GetCategoriesQuery());
+                    return View(model);
+                }
             }
 
             var command = new CreateProductCommand(
@@ -1016,9 +1024,8 @@ namespace DAKKN.MVC.Controllers
                     ArDescription = product.ArDescription,
                     Price = product.Price,
                     CategoryId = product.CategoryId,
-                    ExistingImageUrl = string.IsNullOrEmpty(product.ImageUrl) || product.ImageUrl.StartsWith("http")
-                        ? product.ImageUrl
-                        : $"{Request.Scheme}://{Request.Host}/files/{product.ImageUrl.TrimStart('/')}",
+                    ExistingImageUrl = string.IsNullOrEmpty(product.ImageUrl) ? string.Empty
+                        : $"/files/{Path.GetFileName(product.ImageUrl)}",
                     SizeOptions = product.SizeOptions,
                     QuantityInStock = product.QuantityInStock,
                     DangerQuantity = product.DangerQuantity,
@@ -1048,18 +1055,22 @@ namespace DAKKN.MVC.Controllers
 
             if (model.ImageFile != null)
             {
-                var oldFileName = string.IsNullOrEmpty(model.ExistingImageUrl)
-                    ? null
-                    : Path.GetFileName(model.ExistingImageUrl.TrimEnd('/'));
-
-                var result = await _mediator.Send(new UpdateImageCommand
+                try
                 {
-                    File = model.ImageFile,
-                    UploadPlace = 1,
-                    ImageName = oldFileName
-                });
-                var baseUrl = $"{Request.Scheme}://{Request.Host}";
-                imageUrl = $"{baseUrl}/files/{result}";
+                    var result = await _mediator.Send(new UpdateImageCommand
+                    {
+                        File = model.ImageFile,
+                        UploadPlace = 1
+                    });
+                    imageUrl = result;
+                }
+                catch
+                {
+                    TempData["Error"] = _localizer[LocalizationKeys.UploadFileMessages.FileUploadFailed.Value];
+                    ViewData["Title"] = _localizer["admin_product_edit_title"];
+                    model.AvailableCategories = await _mediator.Send(new GetCategoriesQuery());
+                    return View("AddProduct", model);
+                }
             }
 
             var command = new UpdateProductCommand(

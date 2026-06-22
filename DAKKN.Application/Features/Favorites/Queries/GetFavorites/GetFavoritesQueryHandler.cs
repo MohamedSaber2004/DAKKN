@@ -58,9 +58,8 @@ namespace DAKKN.Application.Features.Favorites.Queries.GetFavorites
             {
                 if (!string.IsNullOrEmpty(item.ImageUrl))
                 {
-                    item.ImageFullUrl = item.ImageUrl.StartsWith("http") || item.ImageUrl.StartsWith("/")
-                        ? item.ImageUrl
-                        : $"/files/{item.ImageUrl}";
+                    item.ImageFullUrl = string.IsNullOrEmpty(item.ImageUrl) ? string.Empty
+                        : $"/files/{Path.GetFileName(item.ImageUrl)}";
                     item.ImageUrl = item.ImageFullUrl;
                 }
             }

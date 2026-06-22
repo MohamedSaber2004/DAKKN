@@ -25,9 +25,7 @@ namespace DAKKN.Application.Features.Products.Queries.GetProductById
             var category = await _unitOfWork.GetRepository<Category>().FindByKeyAsync(product.CategoryId, cancellationToken);
 
             var resolvedUrl = string.IsNullOrEmpty(product.ImageUrl) ? string.Empty
-                : product.ImageUrl.StartsWith("http") || product.ImageUrl.StartsWith("/")
-                    ? product.ImageUrl
-                    : $"/files/{product.ImageUrl}";
+                : $"/files/{Path.GetFileName(product.ImageUrl)}";
 
             return new ProductDto
             {

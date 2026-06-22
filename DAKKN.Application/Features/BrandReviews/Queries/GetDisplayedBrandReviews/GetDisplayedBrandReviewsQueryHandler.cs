@@ -25,7 +25,7 @@ namespace DAKKN.Application.Features.BrandReviews.Queries.GetDisplayedBrandRevie
                 .Take(3)
                 .ToListAsync(cancellationToken);
 
-            return reviews.Select(r => new BrandReviewDto
+            var result = reviews.Select(r => new BrandReviewDto
             {
                 Id = r.Id,
                 UserId = r.UserId,
@@ -42,6 +42,16 @@ namespace DAKKN.Application.Features.BrandReviews.Queries.GetDisplayedBrandRevie
                 UpdatedAt = r.UpdatedAt,
                 ApprovedAt = r.ApprovedAt
             }).ToList();
+
+            foreach (var item in result)
+            {
+                if (!string.IsNullOrEmpty(item.ProfilePictureUrl))
+                {
+                    item.ProfilePictureUrl = $"/files/{Path.GetFileName(item.ProfilePictureUrl)}";
+                }
+            }
+
+            return result;
         }
     }
 }

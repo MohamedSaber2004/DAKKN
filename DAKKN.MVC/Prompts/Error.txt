@@ -1,14 +1,13 @@
-﻿client:382 Cross-Origin-Opener-Policy policy would block the window.postMessage call.
-Su @ client:382
-client:382 Cross-Origin-Opener-Policy policy would block the window.postMessage call.
-Su @ client:382
-check-google-account:1  Failed to load resource: net::ERR_CONNECTION_REFUSED
-login:475 Google account check error: TypeError: Failed to fetch
-    at Vs.handleCredentialResponse [as callback] (login:449:25)
-    at _.Qu.Oa (client:383:361)
-    at Vs.Oa (client:392:47)
-    at Su.c.port1.onmessage (client:382:135)
-(anonymous) @ login:475
-[NEW] Explain Console errors by using Copilot in Edge: click  to explain an error. Learn moreDon't show again
-button?theme=outline&size=large&width=400&shape=rectangular&text=signin_with&logo_alignment=left&is…:1  Failed to load resource: the server responded with a status of 400 ()
-m=credential_button_library:88 [GSI_LOGGER]: The given origin is not allowed for the given client ID.
+﻿M [dbo].[UserSettings] AS [u]
+﻿WHERE [u].[UserId] = @__userId_0
+﻿[18:42:06 INF] Handled Request: GetUserSettingsQuery
+﻿[18:42:06 INF] Executing endpoint 'DAKKN.MVC.Controllers.AdminController.EditProduct (DAKKN.Appearence)'
+﻿[18:42:06 INF] Route matched with {action = "EditProduct", controller = "Admin"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] EditProduct(System.Guid, DAKKN.MVC.ViewModels.Admin.AddProductViewModel) on controller DAKKN.MVC.Controllers.AdminController (DAKKN.Appearence).
+﻿[18:42:06 ERR] Dakkn Request: Unhandled Exception for Request UpdateImageCommand
+﻿DAKKN.Application.Common.Exceptions.ValidationException: One or more validation failures
+﻿   at DAKKN.Application.Common.Behaviours.ValidationBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\ValidationBehaviour.cs:line 26
+﻿   at DAKKN.Application.Common.Behaviours.UnhandledExceptionBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\UnhandledExceptionBehaviour.cs:line 20
+﻿[18:42:06 INF] Executing BadRequestObjectResult, writing value of type 'DAKKN.Application.Common.Models.ApiResponse`1[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+﻿[18:42:06 INF] Executed action DAKKN.MVC.Controllers.AdminController.EditProduct (DAKKN.Appearence) in 494.4234ms
+﻿[18:42:06 INF] Executed endpoint 'DAKKN.MVC.Controllers.AdminController.EditProduct (DAKKN.Appearence)'
+﻿[18:42:07 INF] Request finished HTTP/2 POST https://localhost:44308/admin/edit-product/8d2a9914-c918-4f5d-aca3-3b3ada2a935c - 400 null application/json; charset=utf-8 917.0482ms
