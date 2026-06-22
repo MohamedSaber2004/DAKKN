@@ -1,27 +1,14 @@
-﻿﻿INNER JOIN [dbo].[Categories] AS [c] ON [t].[CategoryId] = [c].[Id]
-﻿[20:42:19 INF] Handled Request: GetProductsQuery
-﻿[20:42:19 WRN] Dakkn Long Running Request: GetProductsQuery (1168 milliseconds)
-﻿[20:42:19 ERR] An unhandled exception has occurred while executing the request.
-﻿System.InvalidOperationException: A second operation was started on this context instance before a previous operation completed. This is usually caused by different threads concurrently using the same instance of DbContext. For more information on how to avoid threading issues with DbContext, see https://go.microsoft.com/fwlink/?linkid=2097913.
-﻿   at Microsoft.EntityFrameworkCore.Infrastructure.Internal.ConcurrencyDetector.EnterCriticalSection()
-﻿   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
-﻿   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.EntityFrameworkQueryableExtensions.ToListAsync[TSource](IQueryable`1 source, CancellationToken cancellationToken)
-﻿   at DAKKN.Application.Features.Categories.Queries.GetCategories.GetCategoriesQueryHandler.Handle(GetCategoriesQuery request, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Features\Categories\Queries\GetCategories\GetCategoriesQueryHandler.cs:line 53
-﻿   at DAKKN.Application.Common.Behaviours.LoggingBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\LoggingBehaviour.cs:line 39
-﻿   at DAKKN.Application.Common.Behaviours.PerformanceBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\PerformanceBehaviour.cs:line 23
-﻿   at DAKKN.Application.Common.Behaviours.ValidationBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\ValidationBehaviour.cs:line 28
-﻿   at DAKKN.Application.Common.Behaviours.UnhandledExceptionBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\UnhandledExceptionBehaviour.cs:line 20
-﻿   at DAKKN.MVC.Controllers.HomeController.Index() in E:\DAKKN\DAKKN.MVC\Controllers\HomeController.cs:line 42
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextExceptionFilterAsync>g__Awaited|26_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
-﻿[20:42:19 INF] Executing ObjectResult, writing value of type 'DAKKN.Application.Common.Models.ApiResponse`1[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
-﻿[20:42:20 INF] Executed action DAKKN.MVC.Controllers.HomeController.Index (DAKKN.Appearence) in 3090.1727ms
-﻿[20:42:20 INF] Executed endpoint 'DAKKN.MVC.Controllers.HomeController.Index (DAKKN.Appearence)'
-﻿[20:42:20 INF] The response could not be cached for this request.
-﻿[20:42:20 INF] Request finished HTTP/2 GET https://localhost:44308/ - 500 null application/json; charset=utf-8 3408.8995ms
+﻿client:382 Cross-Origin-Opener-Policy policy would block the window.postMessage call.
+Su @ client:382
+client:382 Cross-Origin-Opener-Policy policy would block the window.postMessage call.
+Su @ client:382
+check-google-account:1  Failed to load resource: net::ERR_CONNECTION_REFUSED
+login:475 Google account check error: TypeError: Failed to fetch
+    at Vs.handleCredentialResponse [as callback] (login:449:25)
+    at _.Qu.Oa (client:383:361)
+    at Vs.Oa (client:392:47)
+    at Su.c.port1.onmessage (client:382:135)
+(anonymous) @ login:475
+[NEW] Explain Console errors by using Copilot in Edge: click  to explain an error. Learn moreDon't show again
+button?theme=outline&size=large&width=400&shape=rectangular&text=signin_with&logo_alignment=left&is…:1  Failed to load resource: the server responded with a status of 400 ()
+m=credential_button_library:88 [GSI_LOGGER]: The given origin is not allowed for the given client ID.

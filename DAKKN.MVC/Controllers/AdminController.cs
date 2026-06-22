@@ -42,6 +42,13 @@ using DAKKN.MVC.ViewModels.Admin;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
+using DAKKN.Application.Features.BrandReviews.Queries.GetAdminBrandReviews;
+using DAKKN.Application.Features.BrandReviews.Commands.ApproveBrandReview;
+using DAKKN.Application.Features.BrandReviews.Commands.RejectBrandReview;
+using DAKKN.Application.Features.BrandReviews.Commands.ToggleDisplayBrandReview;
+using DAKKN.Application.Features.BrandReviews.Commands.DeleteBrandReview;
+using DAKKN.Application.Features.BrandReviews.Commands.UpdateDisplayOrderBrandReview;
+using System.Security.Claims;
 
 namespace DAKKN.MVC.Controllers
 {
@@ -450,6 +457,99 @@ namespace DAKKN.MVC.Controllers
             var settings = MapToDto(existingVm);
             await _mediator.Send(settings);
             return Json(new { success = true });
+        }
+
+        [HttpGet("brand-reviews")]
+        public async Task<IActionResult> BrandReviews(string? statusFilter, int? ratingFilter, string? searchTerm, string? sortBy)
+        {
+            ViewData["Title"] = _localizer["brand_reviews_admin_title"];
+            ViewData["currentAction"] = "BrandReviews";
+
+            var query = new GetAdminBrandReviewsQuery(statusFilter, ratingFilter, searchTerm, sortBy);
+            var reviews = await _mediator.Send(query);
+
+            var vm = new AdminBrandReviewsViewModel
+            {
+                Reviews = reviews,
+                StatusFilter = statusFilter,
+                RatingFilter = ratingFilter,
+                SearchTerm = searchTerm,
+                SortBy = sortBy
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost("brand-reviews/toggle-display/{id}")]
+        public async Task<IActionResult> ToggleDisplayBrandReview(Guid id, string? returnUrl)
+        {
+            try
+            {
+                await _mediator.Send(new ToggleDisplayBrandReviewCommand(id));
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+            return Redirect(returnUrl ?? "/admin/brand-reviews");
+        }
+
+        [HttpPost("brand-reviews/approve/{id}")]
+        public async Task<IActionResult> ApproveBrandReview(Guid id, string? returnUrl)
+        {
+            try
+            {
+                var adminId = GetUserId();
+                await _mediator.Send(new ApproveBrandReviewCommand(id, adminId));
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+            return Redirect(returnUrl ?? "/admin/brand-reviews");
+        }
+
+        [HttpPost("brand-reviews/reject/{id}")]
+        public async Task<IActionResult> RejectBrandReview(Guid id, string? returnUrl)
+        {
+            try
+            {
+                await _mediator.Send(new RejectBrandReviewCommand(id));
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+            return Redirect(returnUrl ?? "/admin/brand-reviews");
+        }
+
+        [HttpPost("brand-reviews/delete/{id}")]
+        public async Task<IActionResult> DeleteBrandReview(Guid id, string? returnUrl)
+        {
+            var userId = GetUserId();
+            await _mediator.Send(new DeleteBrandReviewCommand(id, userId));
+            return Redirect(returnUrl ?? "/admin/brand-reviews");
+        }
+
+        [HttpPost("brand-reviews/update-display-order/{id}")]
+        public async Task<IActionResult> UpdateDisplayOrderBrandReview(Guid id, [FromForm] UpdateDisplayOrderBrandReviewCommand command)
+        {
+            try
+            {
+                command = command with { Id = id };
+                await _mediator.Send(command);
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+            return Redirect("/admin/brand-reviews");
+        }
+
+        private Guid GetUserId()
+        {
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return Guid.TryParse(userIdClaim, out var userId) ? userId : Guid.Empty;
         }
 
         private static ContentManagementViewModel MapToViewModel(LandingPageSettingsDto dto)

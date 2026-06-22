@@ -211,6 +211,10 @@
                 <span class="material-symbols-outlined @(currentAction == "Content" ? "filled-icon" : "") flex-shrink-0">edit_note</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_content_mgmt"]</span>
             </a>
+            <a asp-controller="Admin" asp-action="BrandReviews" class="nav-item flex items-center gap-md @(currentAction == "BrandReviews" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["brand_reviews_admin_title"]">
+                <span class="material-symbols-outlined @(currentAction == "BrandReviews" ? "filled-icon" : "") flex-shrink-0">rate_review</span>
+                <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["brand_reviews_admin_title"]</span>
+            </a>
 
             <a asp-controller="Admin" asp-action="Shipping" class="nav-item flex items-center gap-md @(currentAction == "Shipping" || currentAction == "CreateShipping" || currentAction == "EditShipping" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer[LocalizationKeys.AdminShipping.Title.Key]">
                 <span class="material-symbols-outlined @(currentAction == "Shipping" || currentAction == "CreateShipping" || currentAction == "EditShipping" ? "filled-icon" : "") flex-shrink-0">local_shipping</span>

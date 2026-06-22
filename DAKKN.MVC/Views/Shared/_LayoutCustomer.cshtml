@@ -182,6 +182,10 @@
                 <span class="material-symbols-outlined @(currentAction == "Support" ? "filled-icon" : "")">support_agent</span>
                 <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["nav_support"]</span>
             </a>
+            <a asp-controller="Customer" asp-action="BrandReviews" class="nav-item flex items-center gap-md @(currentAction == "BrandReviews" ? "bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["brand_reviews_my_reviews"]">
+                <span class="material-symbols-outlined @(currentAction == "BrandReviews" ? "filled-icon" : "")">rate_review</span>
+                <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["brand_reviews_my_reviews"]</span>
+            </a>
             <a asp-controller="Customer" asp-action="Profile" class="nav-item flex items-center gap-md @(currentAction == "Profile" ? "bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200 mt-auto" title="@Localizer["nav_profile"]">
                 <span class="material-symbols-outlined @(currentAction == "Profile" ? "filled-icon" : "")">person</span>
                 <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["nav_profile"]</span>
@@ -272,6 +276,10 @@
         <a asp-controller="Customer" asp-action="Support" class="mob-nav-item @(currentAction == "Support" ? "active" : "")">
             <span class="material-symbols-outlined">support_agent</span>
             <span>@Localizer["nav_support"]</span>
+        </a>
+        <a asp-controller="Customer" asp-action="Reviews" class="mob-nav-item @(currentAction == "Reviews" ? "active" : "")">
+            <span class="material-symbols-outlined">rate_review</span>
+            <span>@Localizer["reviews_my_reviews"]</span>
         </a>
         <a asp-controller="Customer" asp-action="Profile" class="mob-nav-item @(currentAction == "Profile" ? "active" : "")">
             <span class="material-symbols-outlined">person</span>

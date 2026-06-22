@@ -29,6 +29,9 @@ using DAKKN.Application.Features.Favorites.Commands.ToggleFavorite;
 using DAKKN.Application.Features.Favorites.Commands.RemoveFavorite;
 using DAKKN.Application.Features.ShippingGovernorates.Queries.GetActiveShippingGovernorates;
 using DAKKN.MVC.ViewModels.Landing;
+using DAKKN.Application.Features.BrandReviews.Queries.GetCustomerBrandReviews;
+using DAKKN.Application.Features.BrandReviews.Commands.DeleteBrandReview;
+using System.Security.Claims;
 
 namespace DAKKN.MVC.Controllers
 {
@@ -508,6 +511,30 @@ namespace DAKKN.MVC.Controllers
 
             TempData["SuccessMessage"] = "Your support ticket has been created successfully!";
             return RedirectToAction("Support");
+        }
+
+        [HttpGet("brand-reviews")]
+        public async Task<IActionResult> BrandReviews()
+        {
+            ViewData["Title"] = localizer["brand_reviews_my_reviews"];
+            var userId = GetUserId();
+            var reviews = await mediator.Send(new GetCustomerBrandReviewsQuery(userId));
+            return View(new CustomerBrandReviewsViewModel { Reviews = reviews });
+        }
+
+        [HttpPost("brand-reviews/delete/{id}")]
+        public async Task<IActionResult> DeleteBrandReview(Guid id)
+        {
+            var userId = GetUserId();
+            await mediator.Send(new DeleteBrandReviewCommand(id, userId));
+            TempData["SuccessMessage"] = localizer["brand_reviews.deleted"];
+            return RedirectToAction("BrandReviews");
+        }
+
+        private Guid GetUserId()
+        {
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return Guid.TryParse(userIdClaim, out var userId) ? userId : Guid.Empty;
         }
     }
 

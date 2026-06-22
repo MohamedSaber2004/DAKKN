@@ -1,0 +1,231 @@
+@using DAKKN.MVC.ViewModels.Customer
+@model CustomerBrandReviewsViewModel
+@inject IStringLocalizer<Messages> Localizer
+@{
+    Layout = "_LayoutCustomer";
+    ViewData["Title"] = Localizer["brand_reviews_my_reviews"];
+    var culture = System.Globalization.CultureInfo.CurrentCulture.Name;
+    var isArabic = culture.StartsWith("ar");
+}
+
+<div class="max-w-4xl mx-auto">
+    <div class="flex items-center justify-between mb-xl">
+        <div>
+            <h1 class="text-2xl font-black text-text-primary dark:text-inverse-on-surface">@Localizer["brand_reviews_my_reviews"]</h1>
+            <p class="text-text-secondary dark:text-outline-variant text-sm mt-1">@Localizer["brand_reviews_admin_desc"]</p>
+        </div>
+    </div>
+
+    <!-- Write a Review -->
+    <div class="bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 rounded-3xl p-xl mb-xl">
+        <h3 class="text-xl font-bold text-text-primary dark:text-inverse-on-surface mb-lg">@Localizer["brand_reviews_write"]</h3>
+        <form id="brandReviewForm" class="space-y-lg">
+            <div>
+                <label class="block font-bold text-sm text-text-primary dark:text-inverse-on-surface mb-2">@Localizer["brand_reviews_rating"]</label>
+                <div class="flex items-center gap-1 text-3xl">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        <span class="material-symbols-outlined text-4xl cursor-pointer text-outline-variant dark:text-slate-600 hover:text-yellow-500 transition-colors star-select" data-value="@i">star</span>
+                    }
+                </div>
+                <input type="hidden" name="Rating" id="rating-value" value="0" />
+            </div>
+            <div>
+                <label class="block font-bold text-sm text-text-primary dark:text-inverse-on-surface mb-2">@Localizer["brand_reviews_review_text"]</label>
+                <textarea name="ReviewText" id="review-text" rows="4" class="w-full bg-surface-container dark:bg-[#0a1020] border border-border dark:border-outline/20 rounded-2xl px-4 py-3 text-text-primary dark:text-inverse-on-surface outline-none focus:border-primary transition-colors" placeholder="@Localizer["brand_reviews_review_text"]"></textarea>
+            </div>
+            <button type="submit" class="bg-primary text-on-primary px-8 py-3 rounded-full font-bold text-sm hover:scale-105 transition-all">@Localizer["brand_reviews_submit"]</button>
+        </form>
+    </div>
+
+    @if (TempData["SuccessMessage"] is string successMsg)
+    {
+        <div class="bg-success/10 text-success px-4 py-3 rounded-2xl text-sm font-bold mb-lg">@successMsg</div>
+    }
+
+    @if (!Model.Reviews.Any())
+    {
+        <div class="text-center py-3xl">
+            <span class="material-symbols-outlined text-6xl text-outline-variant dark:text-slate-600 mb-4">reviews</span>
+            <h3 class="text-xl font-bold text-text-primary dark:text-inverse-on-surface mb-2">@Localizer["brand_reviews_no_reviews"]</h3>
+            <p class="text-text-secondary mb-6">@Localizer["brand_reviews_no_reviews_desc"]</p>
+            <a asp-controller="Home" asp-action="Index" class="bg-primary text-on-primary px-6 py-3 rounded-full font-bold text-sm hover:scale-105 transition-all inline-flex items-center gap-2">
+                <span class="material-symbols-outlined">edit_note</span>
+                @Localizer["brand_reviews_write"]
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="grid grid-cols-1 gap-lg">
+            @foreach (var review in Model.Reviews)
+            {
+                <div class="bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 rounded-3xl p-xl">
+                    <div class="flex items-start justify-between gap-lg">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-3">
+                                @if (!string.IsNullOrEmpty(review.ProfilePictureUrl))
+                                {
+                                    <img src="/files/@review.ProfilePictureUrl" alt="" class="w-10 h-10 rounded-full object-cover" />
+                                }
+                                else
+                                {
+                                    <div class="w-10 h-10 rounded-full bg-primary/20 dark:bg-primary/10 flex items-center justify-center text-primary font-bold text-sm uppercase">
+                                        @(review.CustomerName?.Length > 0 ? review.CustomerName[0] : '?')
+                                    </div>
+                                }
+                                <div>
+                                    <div class="flex items-center gap-1">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            <span class="material-symbols-outlined text-sm @(i <= review.Rating ? "text-yellow-500 filled-icon" : "text-outline-variant dark:text-slate-600")">star</span>
+                                        }
+                                    </div>
+                                    <div class="flex items-center gap-2 mt-0.5">
+                                        <span class="text-xs text-outline-variant dark:text-slate-500">@review.CreatedAt.ToString("MMM dd, yyyy")</span>
+                                        @if (!review.IsApproved)
+                                        {
+                                            <span class="text-xs text-amber-600 dark:text-amber-400 font-semibold">@Localizer["brand_reviews_status_pending"]</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(review.ReviewTitle))
+                            {
+                                <h4 class="font-bold text-text-primary dark:text-inverse-on-surface mb-1">@review.ReviewTitle</h4>
+                            }
+                            <p class="text-text-secondary text-sm leading-relaxed">@review.ReviewText</p>
+                        </div>
+
+                        <div class="flex flex-col items-end gap-2 shrink-0">
+                            <form method="post" asp-action="DeleteBrandReview" asp-route-id="@review.Id" class="inline" id="custDeleteForm-@review.Id">
+                                @Html.AntiForgeryToken()
+                                <button type="button" onclick="confirmDelete('custDeleteForm-@review.Id')" class="text-error hover:text-error/80 text-sm font-bold transition-colors">
+                                    @Localizer["brand_reviews_delete"]
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<div id="brand-review-toast" class="fixed bottom-6 ltr:right-6 rtl:left-6 z-[200] flex flex-col gap-3"></div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="fixed inset-0 z-[300] flex items-center justify-center hidden">
+    <div class="absolute inset-0 bg-black/50" onclick="closeDeleteModal()"></div>
+    <div class="relative bg-white dark:bg-[#0f1629] rounded-2xl shadow-2xl max-w-sm w-full mx-4 p-6 text-center">
+        <div class="w-14 h-14 mx-auto mb-4 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center">
+            <span class="material-symbols-outlined text-3xl text-red-500">delete_forever</span>
+        </div>
+        <h3 class="text-lg font-bold text-admin-primary mb-2">@Localizer["brand_reviews_delete_title"]</h3>
+        <p class="text-sm text-admin-secondary mb-6">@Localizer["brand_reviews_delete_confirm"]</p>
+        <div class="flex items-center gap-3 justify-center">
+            <button onclick="closeDeleteModal()" class="px-5 py-2.5 rounded-xl border border-border dark:border-outline/20 text-text-primary dark:text-inverse-on-surface text-sm font-bold hover:bg-surface-container dark:hover:bg-[#0a1020] transition-all">@Localizer["brand_reviews_cancel"]</button>
+            <button id="confirmDeleteBtn" class="px-5 py-2.5 rounded-xl bg-error text-white text-sm font-bold hover:bg-error/90 transition-all">@Localizer["brand_reviews_delete"]</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    var pendingDeleteFormId = null;
+
+    function confirmDelete(formId) {
+        pendingDeleteFormId = formId;
+        document.getElementById('deleteModal').classList.remove('hidden');
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.add('hidden');
+        pendingDeleteFormId = null;
+    }
+
+    document.getElementById('confirmDeleteBtn')?.addEventListener('click', function() {
+        if (pendingDeleteFormId) {
+            document.getElementById(pendingDeleteFormId).submit();
+        }
+        closeDeleteModal();
+    });
+
+    document.getElementById('deleteModal')?.addEventListener('click', function(e) {
+        if (e.target === this) closeDeleteModal();
+    });
+
+    function showReviewToast(text, type) {
+        var container = document.getElementById('brand-review-toast');
+        var toast = document.createElement('div');
+        var isSuccess = type === 'success';
+        toast.className = 'flex items-center gap-3 px-5 py-4 rounded-2xl shadow-xl font-bold text-sm border ' +
+            (isSuccess
+                ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800'
+                : 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800');
+        toast.innerHTML = '<span class="material-symbols-outlined text-lg">' + (isSuccess ? 'check_circle' : 'error') + '</span><span>' + text + '</span>';
+        container.appendChild(toast);
+        setTimeout(function () { toast.style.opacity = '0'; toast.style.transform = 'translateX(100%)'; setTimeout(function () { toast.remove(); }, 300); }, 4000);
+    }
+
+    document.querySelectorAll('.star-select').forEach(function(star) {
+        star.addEventListener('click', function() {
+            var val = parseInt(this.dataset.value);
+            document.getElementById('rating-value').value = val;
+            document.querySelectorAll('.star-select').forEach(function(s) {
+                var sv = parseInt(s.dataset.value);
+                if (sv <= val) {
+                    s.classList.add('text-yellow-500', 'filled-icon');
+                    s.classList.remove('text-outline-variant', 'dark:text-slate-600');
+                } else {
+                    s.classList.remove('text-yellow-500', 'filled-icon');
+                    s.classList.add('text-outline-variant', 'dark:text-slate-600');
+                }
+            });
+        });
+        star.addEventListener('mouseenter', function() {
+            var val = parseInt(this.dataset.value);
+            document.querySelectorAll('.star-select').forEach(function(s) {
+                var sv = parseInt(s.dataset.value);
+                if (sv <= val) {
+                    s.classList.add('text-yellow-400');
+                }
+            });
+        });
+        star.addEventListener('mouseleave', function() {
+            document.querySelectorAll('.star-select').forEach(function(s) {
+                s.classList.remove('text-yellow-400');
+            });
+        });
+    });
+
+    document.getElementById('brandReviewForm')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        var rating = document.getElementById('rating-value').value;
+        if (rating === '0') {
+            showReviewToast('@Localizer["brand_reviews_required"]', 'error');
+            return;
+        }
+        var data = {
+            rating: parseInt(rating),
+            reviewTitle: '',
+            reviewText: document.getElementById('review-text').value
+        };
+        try {
+            var response = await fetch('/api/v1/brand-reviews', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (response.ok) {
+                showReviewToast('@Localizer["brand_reviews.created"]', 'success');
+                location.reload();
+            } else {
+            var err = await response.json();
+            showReviewToast(err.message || err.title || '@Localizer["brand_reviews_error_occurred"]', 'error');
+            }
+        } catch {
+            showReviewToast('@Localizer["brand_reviews_error_occurred"]', 'error');
+        }
+    });
+</script>

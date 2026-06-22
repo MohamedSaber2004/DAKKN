@@ -1,338 +1,558 @@
-Use this prompt:
+f your goal is product reviews from customers (not a separate testimonial system), and then allowing the admin to choose some customer reviews to appear as testimonials on the landing page, use this prompt:
 
-You are a Senior ASP.NET Core 8 MVC, Clean Architecture, MediatR CQRS, EF Core, Tailwind CSS, UX/UI, and Frontend Architecture engineer working on the DAKKN project.
-
-Context:
-
-The Testimonials section on the Landing Page has serious UI/UX issues.
-
-Current Problems:
-
-1. Large empty white space above testimonials.
-2. Testimonials are not visually centered.
-3. Section looks unfinished and disconnected from the rest of the landing page.
-4. Cards have poor visual hierarchy.
-5. No section title is visible.
-6. No subtitle is visible.
-7. Cards look too small relative to section height.
-8. Excessive padding and margins create wasted space.
-9. The section does not match the premium style of the rest of the DAKKN landing page.
-10. Mobile responsiveness needs verification.
-
-Goal:
-
-Redesign the entire Testimonials section with a modern premium e-commerce style consistent with the DAKKN Landing Page.
+You are a Senior ASP.NET Core 8 MVC + Clean Architecture + MediatR + Entity Framework Core + ASP.NET Identity + Tailwind CSS engineer working on the DAKKN project.
 
 =================================================
-DESIGN REQUIREMENTS
+GOAL
 =================================================
 
-Create a professional section structure:
+Implement a complete Product Rating & Review System.
 
-Section Header:
-- Localized title
-- Localized subtitle
+Customers should be able to rate products they purchased and write reviews about their experience.
 
-English Example:
+Admins should be able to manage these reviews and optionally feature selected reviews in the Landing Page Testimonials section.
 
-What Our Customers Say
-Real experiences from creators, businesses, and customers who trust DAKKN.
-
-Arabic Example:
-
-آراء عملائنا
-تجارب حقيقية من العملاء والشركات الذين يثقون في داكن.
+The system must be fully dynamic and database-driven.
 
 =================================================
-LAYOUT
+BUSINESS FLOW
 =================================================
 
-Remove unnecessary empty space.
+1. Customer purchases a product.
 
-Reduce top spacing significantly.
+2. After purchase:
+   - Customer can submit a rating.
+   - Customer can write a review.
+   - Customer can edit their review.
+   - Customer can delete their review.
 
-Center content correctly.
+3. Product ratings affect:
+   - Product Average Rating
+   - Product Rating Count
 
-Container:
+4. Admin can:
+   - Approve review
+   - Reject review
+   - Hide review
+   - Delete review
+   - Mark review as Featured Testimonial
 
-max-w-7xl
-mx-auto
-px-4 sm:px-6 lg:px-8
-
-Proper vertical spacing:
-
-py-16
-lg:py-24
+5. Landing Page:
+   - Display only reviews marked as Featured Testimonials.
+   - Maximum 3 featured reviews.
+   - Completely dynamic.
 
 =================================================
-TESTIMONIAL CARDS
+ENTITY DESIGN
 =================================================
 
-Redesign cards completely.
+Create ProductReview entity.
 
-Card Features:
+Properties:
 
-- Rounded corners
-- Soft shadow
-- Hover animation
-- Border
-- Modern spacing
+Id
+
+ProductId
+
+UserId
+
+Rating
+
+ReviewTitle
+
+ReviewText
+
+IsApproved
+
+IsFeatured
+
+IsHidden
+
+CreatedAt
+
+UpdatedAt
+
+ApprovedAt
+
+ApprovedBy
+
+=================================================
+RELATIONSHIPS
+=================================================
+
+Product
+1 -> Many ProductReviews
+
+ApplicationUser
+1 -> Many ProductReviews
+
+=================================================
+PRODUCT ENTITY UPDATES
+=================================================
+
+Add:
+
+AverageRating
+
+ReviewCount
 
 Example:
 
-rounded-3xl
-border
-shadow-sm
-hover:shadow-xl
-transition-all
-duration-300
+AverageRating = 4.7
+
+ReviewCount = 128
+
+Update automatically whenever:
+
+- Review added
+- Review edited
+- Review deleted
+- Review approved
+- Review hidden
 
 =================================================
-CARD CONTENT
+CUSTOMER PRODUCT DETAILS PAGE
 =================================================
 
-Each card should include:
+Add Reviews Section.
 
-1. Customer avatar
-2. Customer name
-3. Customer role/title
-4. Star rating
-5. Review text
-6. Optional date
+Display:
 
-Layout:
+Average Rating
 
-★★★★★
+Review Count
+
+Stars
+
+Review List
+
+Example:
+
+★★★★★ 4.8 (125 Reviews)
+
+=================================================
+ADD REVIEW
+=================================================
+
+Customer can click:
+
+Write Review
+
+Fields:
+
+Rating:
+1–5 stars
+
+Title
+
+Comment
+
+Validation:
+
+Rating required
+
+Comment required
+
+Maximum length validation
+
+=================================================
+PURCHASE VALIDATION
+=================================================
+
+Only customers who purchased the product can review it.
+
+Prevent reviews from users who never ordered the product.
+
+Display:
+
+"You must purchase this product before reviewing it."
+
+=================================================
+ONE REVIEW PER PRODUCT
+=================================================
+
+One user can only have one review per product.
+
+If review already exists:
+
+Show:
+
+Edit Review
+
+instead of:
+
+Write Review
+
+=================================================
+CUSTOMER DASHBOARD
+=================================================
+
+Create:
+
+My Reviews Page
+
+Display:
+
+Product
+
+Rating
+
+Review
+
+Date
+
+Status
+
+Actions
+
+Allow:
+
+Edit
+
+Delete
+
+=================================================
+PRODUCT PAGE DISPLAY
+=================================================
+
+Display approved reviews only.
+
+Show:
+
+Customer Name
+
+Rating
+
+Review Title
 
 Review Text
 
-Customer Avatar + Name + Title
-
-=================================================
-AVATAR DESIGN
-=================================================
-
-If customer image exists:
-
-Display image.
-
-If image is null:
-
-Generate avatar circle using first letter.
+Date
 
 Example:
 
-S
+★★★★★
 
-for Sarah
+Excellent quality
 
-Avatar:
+The sticker quality exceeded expectations...
 
-w-12 h-12
-rounded-full
+Mohamed Saber
 
-=================================================
-STAR RATING
-=================================================
-
-Display dynamic rating.
-
-Support:
-
-1–5 stars
-
-Use:
-
-Filled stars
-
-Empty stars
-
-Localization safe.
+June 2026
 
 =================================================
-GRID SYSTEM
+ADMIN DASHBOARD
 =================================================
 
-Desktop:
+Create:
 
-3 cards per row
+Reviews Management Page
 
-Tablet:
+=================================================
+ADMIN TABLE
+=================================================
 
-2 cards per row
+Columns:
 
-Mobile:
+Review ID
 
-1 card per row
+Product
+
+Customer
+
+Rating
+
+Review Title
+
+Created Date
+
+Status
+
+Featured
+
+Actions
+
+=================================================
+FILTERS
+=================================================
+
+All
+
+Pending
+
+Approved
+
+Rejected
+
+Featured
+
+Hidden
+
+5 Stars
+
+4 Stars
+
+3 Stars
+
+2 Stars
+
+1 Star
+
+=================================================
+ADMIN ACTIONS
+=================================================
+
+Approve
+
+Reject
+
+Hide
+
+Unhide
+
+Delete
+
+Feature
+
+Unfeature
+
+=================================================
+FEATURED TESTIMONIALS
+=================================================
+
+Admin can toggle:
+
+IsFeatured
+
+Rules:
+
+Only approved reviews can be featured.
+
+Maximum:
+
+3 featured reviews.
+
+If admin selects more than 3:
+
+Automatically remove oldest featured review
+
+OR
+
+Display validation message.
+
+=================================================
+LANDING PAGE TESTIMONIALS
+=================================================
+
+Remove all hardcoded testimonials.
+
+Load dynamically from ProductReviews.
+
+Conditions:
+
+IsApproved = true
+
+IsFeatured = true
+
+IsHidden = false
+
+Take Top 3
+
+Display:
+
+Customer Name
+
+Rating Stars
+
+Review Text
+
+Product Name
+
+Customer Avatar
+
+Review Date
+
+=================================================
+PRODUCT LISTINGS
+=================================================
+
+Display rating summary on:
+
+Landing Page
+
+Shop Page
+
+Category Page
+
+Customer Dashboard
+
+Admin Dashboard
+
+Product Cards
 
 Example:
 
-grid-cols-1
-md:grid-cols-2
-xl:grid-cols-3
+★★★★★ 4.8
+
+(125 Reviews)
 
 =================================================
-CAROUSEL SUPPORT
+ADMIN DASHBOARD STATISTICS
 =================================================
 
-If testimonials > 6:
+Add widgets:
 
-Use slider/carousel.
+Total Reviews
 
-Requirements:
+Pending Reviews
 
-Auto slide optional.
+Approved Reviews
 
-Navigation arrows.
+Featured Reviews
 
-Pagination dots.
+Average Product Rating
 
-Touch support on mobile.
+Highest Rated Product
 
-=================================================
-ANIMATIONS
-=================================================
-
-Add subtle animation:
-
-Fade in.
-
-Translate Y.
-
-Hover scale.
-
-Avoid excessive motion.
-
-=================================================
-DARK MODE
-=================================================
-
-Fully support:
-
-Light Mode
-
-Dark Mode
-
-Verify:
-
-Backgrounds
-
-Text colors
-
-Borders
-
-Cards
-
-Stars
+Lowest Rated Product
 
 =================================================
 LOCALIZATION
 =================================================
 
+Support Arabic and English.
+
+Localize:
+
+Reviews
+
+Ratings
+
+Write Review
+
+Edit Review
+
+Delete Review
+
+Approve
+
+Reject
+
+Featured
+
+Average Rating
+
+Review Count
+
+Review Submitted
+
+Review Updated
+
+Review Deleted
+
+=================================================
+DARK MODE
+=================================================
+
 Support:
 
-Arabic
+Landing Page
 
-English
+Shop
 
-RTL
+Customer Dashboard
 
-LTR
-
-Verify:
-
-Alignment
-
-Card direction
-
-Spacing
-
-Typography
+Admin Dashboard
 
 =================================================
-DATA SOURCE
+SECURITY
 =================================================
 
-Audit testimonial loading.
+Only authenticated customers can review.
 
-Verify:
+Only customers who purchased the product can review.
 
-Landing Page Query
-DTO
-ViewModel
-CMS Settings
+Only one review per user per product.
 
-Remove any hardcoded testimonials.
+Prevent XSS.
 
-Load dynamically from database.
+Prevent HTML injection.
 
-=================================================
-EMPTY STATE
-=================================================
-
-If no testimonials exist:
-
-Show professional placeholder.
-
-Example:
-
-"No customer reviews available yet."
-
-Do NOT leave blank space.
-
-Do NOT render empty containers.
+Prevent unauthorized edits.
 
 =================================================
-PERFORMANCE
+CQRS IMPLEMENTATION
 =================================================
 
-Optimize:
+Create:
 
-Images
+Commands:
 
-Lazy loading
+CreateProductReviewCommand
 
-Rendering
+UpdateProductReviewCommand
 
-Responsive layout
+DeleteProductReviewCommand
 
-=================================================
-ACCESSIBILITY
-=================================================
+ApproveProductReviewCommand
 
-Add:
+RejectProductReviewCommand
 
-aria labels
+FeatureProductReviewCommand
 
-semantic headings
+UnfeatureProductReviewCommand
 
-keyboard navigation
+Queries:
 
-proper contrast
+GetProductReviewsQuery
+
+GetCustomerReviewsQuery
+
+GetAdminReviewsQuery
+
+GetFeaturedTestimonialsQuery
 
 =================================================
 DELIVERABLES
 =================================================
 
+Generate:
+
+- Entity
+- EF Configuration
+- Migration
+- Commands
+- Queries
+- Handlers
+- DTOs
+- ViewModels
+- Customer Dashboard Pages
+- Product Details Page
+- Admin Reviews Management
+- Landing Page Testimonials Integration
+- Rating Calculation Logic
+- Localization Resources
+- Tailwind UI
+- Validation
+- Authorization
+
 Provide:
 
-1. Root cause analysis of current layout issues.
-2. Exact file paths.
-3. Before code.
-4. After code.
-5. Tailwind improvements.
-6. Responsive improvements.
-7. RTL fixes.
-8. Dark mode fixes.
-9. Localization fixes.
-10. Final premium DAKKN testimonial design implementation.
+1. File paths
+2. Before code
+3. After code
+4. Explanation of every change
 
-Important:
+IMPORTANT:
 
-- Keep DAKKN branding consistent.
-- Remove all excessive whitespace.
-- Make testimonials visually balanced.
-- Match the quality of modern Shopify, Stripe, and Apple-inspired landing pages.
-- Ensure the section looks premium, professional, and production-ready.
+- Follow DAKKN Clean Architecture.
+- Use MediatR only.
+- No direct DbContext access from MVC views.
+- No mock data.
+- Everything must come from database.
+- Reviews are about products purchased by customers.
+- Featured Testimonials are selected from real customer product reviews.
+- Preserve all existing functionality.
 
-From the screenshot, the biggest visual problem is not the cards themselves—it's the huge unused vertical space and missing section header, which makes the testimonials look like they are floating in the middle of an empty page. The redesign should focus on spacing, hierarchy, and card sizing first.
+This version models the common e-commerce flow used by Amazon, Noon, Jumia, and Shopify stores: customer reviews products they've bought, product ratings are calculated automatically, and admins can promote the best reviews to the landing page testimonials section.

@@ -2,6 +2,8 @@ using DAKKN.Application.Features.Categories.Queries.GetCategories;
 using DAKKN.Application.Features.CMS.Queries.GetLandingPageSettings;
 using DAKKN.Application.Features.Products.Queries.GetFeaturedProducts;
 using DAKKN.Application.Features.Products.Queries.GetProducts;
+using DAKKN.Application.Features.BrandReviews.DTOs;
+using DAKKN.Application.Features.BrandReviews.Queries.GetDisplayedBrandReviews;
 using DAKKN.Application.Localization;
 using DAKKN.MVC.Models;
 using DAKKN.MVC.ViewModels.Admin;
@@ -39,6 +41,7 @@ namespace DAKKN.MVC.Controllers
             var categories = await _mediator.Send(new GetCategoriesQuery());
             var allProducts = await _mediator.Send(new GetProductsQuery(null, null, 1, 8));
             var cmsSettings = await _mediator.Send(new GetLandingPageSettingsQuery());
+            var brandReviews = await _mediator.Send(new GetDisplayedBrandReviewsQuery());
 
             var hasCmsData = cmsSettings.Hero != "{}" && !string.IsNullOrEmpty(cmsSettings.Hero);
 
@@ -62,7 +65,7 @@ namespace DAKKN.MVC.Controllers
                 AllProducts = allProducts,
                 Hero = DeserializeOrDefault<HeroSettingsViewModel>(cmsSettings.Hero),
                 About = DeserializeOrDefault<AboutSettingsViewModel>(cmsSettings.About),
-                Testimonials = SortTopRatedTestimonials(DeserializeOrDefault<TestimonialsSettingsViewModel>(cmsSettings.Testimonials)),
+                Testimonials = MergeTestimonials(DeserializeOrDefault<TestimonialsSettingsViewModel>(cmsSettings.Testimonials), brandReviews),
                 Contact = DeserializeOrDefault<ContactSettingsViewModel>(cmsSettings.Contact),
                 HasCmsData = hasCmsData,
                 VisibleSections = visibleSections,
@@ -73,12 +76,24 @@ namespace DAKKN.MVC.Controllers
             return View(viewModel);
         }
 
-        private static TestimonialsSettingsViewModel SortTopRatedTestimonials(TestimonialsSettingsViewModel testimonials)
+        private static TestimonialsSettingsViewModel MergeTestimonials(TestimonialsSettingsViewModel cms, List<BrandReviewDto> brandReviews)
         {
-            testimonials.Reviews = testimonials.Reviews
-                .OrderByDescending(r => r.Rating)
-                .ToList();
-            return testimonials;
+            if (brandReviews.Count > 0)
+            {
+                cms.Reviews = brandReviews.Select(r => new TestimonialItem
+                {
+                    Name = r.CustomerName,
+                    Role = string.Empty,
+                    Quote = r.ReviewText,
+                    Rating = r.Rating,
+                    IsFeatured = true
+                }).ToList();
+            }
+            else
+            {
+                cms.Reviews = cms.Reviews.OrderByDescending(r => r.Rating).ToList();
+            }
+            return cms;
         }
 
         private static T DeserializeOrDefault<T>(string json) where T : new()

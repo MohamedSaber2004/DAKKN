@@ -65,5 +65,19 @@ namespace DAKKN.Appearence.Routes
         {
             public const string Governorates = Base + "/shipping/governorates";
         }
+
+        public static class BrandReviews
+        {
+            public const string My = Base + "/brand-reviews/my";
+            public const string AdminAll = Base + "/brand-reviews/admin/all";
+            public const string Displayed = Base + "/brand-reviews/displayed";
+            public const string Create = Base + "/brand-reviews";
+            public const string Update = Base + "/brand-reviews/{id}";
+            public const string Delete = Base + "/brand-reviews/{id}";
+            public const string Approve = Base + "/brand-reviews/{id}/approve";
+            public const string Reject = Base + "/brand-reviews/{id}/reject";
+            public const string ToggleDisplay = Base + "/brand-reviews/{id}/toggle-display";
+            public const string UpdateDisplayOrder = Base + "/brand-reviews/{id}/display-order";
+        }
     }
 }

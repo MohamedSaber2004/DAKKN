@@ -333,6 +333,37 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString FetchBtn = new("custom_fetch_btn");
         }
 
+        public static class Reviews
+        {
+            public static readonly KeyString NotFound = new("reviews.not_found");
+            public static readonly KeyString AlreadyReviewed = new("reviews.already_reviewed");
+            public static readonly KeyString OnlyApprovedCanBeFeatured = new("reviews.only_approved_can_be_featured");
+            public static readonly KeyString MaxFeaturedReached = new("reviews.max_featured_reached");
+            public static readonly KeyString Created = new("reviews.created");
+            public static readonly KeyString Updated = new("reviews.updated");
+            public static readonly KeyString Deleted = new("reviews.deleted");
+            public static readonly KeyString Approved = new("reviews.approved");
+            public static readonly KeyString Rejected = new("reviews.rejected");
+            public static readonly KeyString Featured = new("reviews.featured");
+            public static readonly KeyString Unfeatured = new("reviews.unfeatured");
+            public static readonly KeyString Hidden = new("reviews.hidden");
+            public static readonly KeyString Unhidden = new("reviews.unhidden");
+        }
+
+        public static class BrandReviews
+        {
+            public static readonly KeyString NotFound = new("brand_reviews.not_found");
+            public static readonly KeyString MaxDisplayedReached = new("brand_reviews.max_displayed_reached");
+            public static readonly KeyString Created = new("brand_reviews.created");
+            public static readonly KeyString Updated = new("brand_reviews.updated");
+            public static readonly KeyString Deleted = new("brand_reviews.deleted");
+            public static readonly KeyString Approved = new("brand_reviews.approved");
+            public static readonly KeyString Rejected = new("brand_reviews.rejected");
+            public static readonly KeyString Displayed = new("brand_reviews.displayed");
+            public static readonly KeyString Undisplayed = new("brand_reviews.undisplayed");
+            public static readonly KeyString DisplayOrderUpdated = new("brand_reviews.display_order_updated");
+        }
+
         public static class AdminContent
         {
             public static readonly KeyString TestimonialsDesc = new("admin_testimonials_desc");

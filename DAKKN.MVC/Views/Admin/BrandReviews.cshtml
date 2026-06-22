@@ -1,0 +1,356 @@
+@using DAKKN.MVC.ViewModels.Admin
+@model AdminBrandReviewsViewModel
+@inject IStringLocalizer<Messages> Localizer
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = Localizer["brand_reviews_admin_title"];
+    var culture = System.Globalization.CultureInfo.CurrentCulture.Name;
+    var isArabic = culture.StartsWith("ar");
+}
+
+<div class="max-w-6xl mx-auto pb-12">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+        <div>
+            <h3 class="text-2xl font-black text-admin-primary">@Localizer["brand_reviews_admin_title"]</h3>
+            <p class="text-sm text-admin-secondary">@Localizer["brand_reviews_admin_desc"]</p>
+        </div>
+    </div>
+
+    @if (TempData["Error"] is string errorMsg)
+    {
+        <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-4 py-3 rounded-xl text-sm font-bold mb-6">@errorMsg</div>
+    }
+
+    <!-- Landing Page Display Manager -->
+    <div class="premium-card p-6 mb-6">
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <h4 class="text-base font-bold text-admin-primary">@Localizer["brand_reviews_landing_title"]</h4>
+                <p class="text-xs text-admin-secondary mt-0.5">@Localizer["brand_reviews_landing_desc"]</p>
+            </div>
+            <span class="text-xs font-bold text-admin-secondary">@Model.Reviews.Count(r => r.IsDisplayed)/3</span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+            @for (int slot = 0; slot < 3; slot++)
+            {
+                var displayed = Model.Reviews.Where(r => r.IsDisplayed).OrderBy(r => r.DisplayOrder).ToList();
+                var review = slot < displayed.Count ? displayed[slot] : null;
+                <div class="border border-admin-border rounded-xl p-4 @(review != null ? "bg-admin-page" : "border-dashed")">
+                    @if (review != null)
+                    {
+                        <div class="flex items-start justify-between gap-2">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <span class="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center shrink-0">@(slot + 1)</span>
+                                @if (!string.IsNullOrEmpty(review.ProfilePictureUrl))
+                                {
+                                    <img src="/files/@review.ProfilePictureUrl" alt="" class="w-7 h-7 rounded-full object-cover shrink-0" />
+                                }
+                                else
+                                {
+                                    <div class="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs uppercase shrink-0">@(review.CustomerName?.Length > 0 ? review.CustomerName[0] : '?')</div>
+                                }
+                                <div class="min-w-0">
+                                    <div class="text-sm font-medium text-admin-primary truncate">@review.CustomerName</div>
+                                    <div class="flex items-center gap-0.5">
+                                        @for (int s = 1; s <= 5; s++)
+                                        {
+                                            <span class="material-symbols-outlined text-xs @(s <= review.Rating ? "text-amber-500 filled-icon" : "text-outline-variant")">star</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-1 shrink-0">
+                                @if (slot > 0)
+                                {
+                                    <form method="post" asp-action="UpdateDisplayOrderBrandReview" asp-route-id="@review.Id" class="inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="DisplayOrder" value="@(slot - 1)" />
+                                        <button type="submit" class="p-1 text-admin-secondary hover:bg-white dark:hover:bg-[#0f1629] rounded-lg transition-all" title="@Localizer["brand_reviews_move_up"]">
+                                            <span class="material-symbols-outlined text-lg">keyboard_arrow_up</span>
+                                        </button>
+                                    </form>
+                                }
+                                @if (slot < displayed.Count - 1)
+                                {
+                                    <form method="post" asp-action="UpdateDisplayOrderBrandReview" asp-route-id="@review.Id" class="inline">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="DisplayOrder" value="@(slot + 1)" />
+                                        <button type="submit" class="p-1 text-admin-secondary hover:bg-white dark:hover:bg-[#0f1629] rounded-lg transition-all" title="@Localizer["brand_reviews_move_down"]">
+                                            <span class="material-symbols-outlined text-lg">keyboard_arrow_down</span>
+                                        </button>
+                                    </form>
+                                }
+                                <form method="post" asp-action="ToggleDisplayBrandReview" asp-route-id="@review.Id" class="inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="p-1 text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all" title="@Localizer["brand_reviews_undisplay"]">
+                                        <span class="material-symbols-outlined text-lg">remove_circle</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="flex items-center justify-center py-2">
+                            <span class="text-xs text-admin-secondary">@Localizer["brand_reviews_landing_empty_slot"]</span>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <form method="get" class="premium-card p-6 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+                <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider block mb-1.5">@Localizer["brand_reviews_status"]</label>
+                <select name="statusFilter" class="w-full bg-admin-page border border-admin-border rounded-xl px-3 py-2.5 text-sm text-admin-primary focus:outline-none focus:ring-2 focus:ring-primary/30">
+                    <option value="">@Localizer["brand_reviews_filter_all"]</option>
+                    <option value="pending" selected="@(Model.StatusFilter == "pending")">@Localizer["brand_reviews_filter_pending"]</option>
+                    <option value="approved" selected="@(Model.StatusFilter == "approved")">@Localizer["brand_reviews_filter_approved"]</option>
+                    <option value="displayed" selected="@(Model.StatusFilter == "displayed")">@Localizer["brand_reviews_filter_displayed"]</option>
+                    <option value="rejected" selected="@(Model.StatusFilter == "rejected")">@Localizer["brand_reviews_filter_rejected"]</option>
+                </select>
+            </div>
+            <div>
+                <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider block mb-1.5">@Localizer["brand_reviews_rating"]</label>
+                <select name="ratingFilter" class="w-full bg-admin-page border border-admin-border rounded-xl px-3 py-2.5 text-sm text-admin-primary focus:outline-none focus:ring-2 focus:ring-primary/30">
+                    <option value="">@Localizer["brand_reviews_filter_all"]</option>
+                    @for (int i = 5; i >= 1; i--)
+                    {
+                        <option value="@i" selected="@(Model.RatingFilter == i)">@Localizer[$"brand_reviews_filter_{i}star"]</option>
+                    }
+                </select>
+            </div>
+            <div>
+                <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider block mb-1.5">@Localizer["brand_reviews_search_ph"]</label>
+                <input type="text" name="searchTerm" value="@Model.SearchTerm" class="w-full bg-admin-page border border-admin-border rounded-xl px-3 py-2.5 text-sm text-admin-primary focus:outline-none focus:ring-2 focus:ring-primary/30" placeholder="@Localizer["brand_reviews_search_ph"]" />
+            </div>
+            <div>
+                <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider block mb-1.5">&nbsp;</label>
+                <button type="submit" class="w-full px-4 py-2.5 bg-primary text-on-primary rounded-xl text-sm font-bold hover:scale-103 active:scale-95 transition-all">@Localizer["brand_reviews_filter"]</button>
+            </div>
+        </div>
+    </form>
+
+    @if (!Model.Reviews.Any())
+    {
+        <div class="text-center py-3xl">
+            <span class="material-symbols-outlined text-6xl text-outline-variant dark:text-slate-600 mb-4">reviews</span>
+            <h3 class="text-xl font-bold text-admin-primary mb-2">@Localizer["brand_reviews_no_reviews"]</h3>
+        </div>
+    }
+    else
+    {
+        <div class="premium-card overflow-hidden">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="bg-admin-page border-b border-admin-border">
+                        <th class="text-start px-6 py-4 text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["brand_reviews_customer_name"]</th>
+                        <th class="text-start px-6 py-4 text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["brand_reviews_review_title"]</th>
+                        <th class="text-center px-6 py-4 text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["brand_reviews_rating"]</th>
+                        <th class="text-start px-6 py-4 text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["brand_reviews_date"]</th>
+                        <th class="text-center px-6 py-4 text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["brand_reviews_status"]</th>
+                        <th class="text-end px-6 py-4 text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["brand_reviews_actions"]</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-admin-border">
+                    @foreach (var review in Model.Reviews)
+                    {
+                        <tr class="hover:bg-admin-page/50 transition-colors">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    @if (!string.IsNullOrEmpty(review.ProfilePictureUrl))
+                                    {
+                                        <img src="/files/@review.ProfilePictureUrl" alt="" class="w-9 h-9 rounded-full object-cover border border-admin-border" />
+                                    }
+                                    else
+                                    {
+                                        <div class="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs uppercase border border-admin-border">
+                                            @(review.CustomerName?.Length > 0 ? review.CustomerName[0] : '?')
+                                        </div>
+                                    }
+                                    <span class="font-medium text-admin-primary">@review.CustomerName</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-admin-secondary max-w-[220px] truncate">@(!string.IsNullOrEmpty(review.ReviewTitle) ? review.ReviewTitle : "—")</td>
+                            <td class="px-6 py-4 text-center">
+                                <div class="flex items-center justify-center gap-0.5">
+                                    @for (int s = 1; s <= 5; s++)
+                                    {
+                                        <span class="material-symbols-outlined text-base @(s <= review.Rating ? "text-amber-500 filled-icon" : "text-outline-variant")">star</span>
+                                    }
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-admin-secondary whitespace-nowrap">@review.CreatedAt.ToString("MMM dd, yyyy")</td>
+                            <td class="px-6 py-4 text-center">
+                                @if (review.IsDisplayed)
+                                {
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+                                        @Localizer["brand_reviews_status_displayed"]
+                                    </span>
+                                }
+                                else if (review.IsApproved)
+                                {
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                        @Localizer["brand_reviews_status_approved"]
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 text-xs font-semibold">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                                        @Localizer["brand_reviews_status_pending"]
+                                    </span>
+                                }
+                            </td>
+                            <td class="px-6 py-4 text-center">
+                                <div class="flex items-center justify-center gap-1">
+                                    <button type="button" onclick="openReviewModal('@review.Id', '@review.CustomerName', '@(review.ProfilePictureUrl ?? "")', @review.Rating, '@(review.ReviewTitle?.Replace("'", "\\'") ?? "")', '@(review.ReviewText?.Replace("'", "\\'")?.Replace(Environment.NewLine, "\\n") ?? "")', '@review.CreatedAt.ToString("yyyy-MM-dd")', @(review.IsDisplayed ? "true" : "false"))" class="p-2 text-admin-secondary hover:bg-admin-page rounded-lg transition-all" title="@Localizer["brand_reviews_view"]">
+                                        <span class="material-symbols-outlined text-lg">visibility</span>
+                                    </button>
+                                    @if (!review.IsDisplayed && !review.IsApproved)
+                                    {
+                                        <form method="post" asp-action="ApproveBrandReview" asp-route-id="@review.Id" class="inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="p-2 text-emerald-500 hover:bg-emerald-50 rounded-lg transition-all" title="@Localizer["brand_reviews_approve"]">
+                                                <span class="material-symbols-outlined text-lg">check_circle</span>
+                                            </button>
+                                        </form>
+                                        <form method="post" asp-action="RejectBrandReview" asp-route-id="@review.Id" class="inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="p-2 text-red-400 hover:bg-red-50 rounded-lg transition-all" title="@Localizer["brand_reviews_reject"]">
+                                                <span class="material-symbols-outlined text-lg">cancel</span>
+                                            </button>
+                                        </form>
+                                    }
+                                    @if (review.IsDisplayed || review.IsApproved)
+                                    {
+                                        <form method="post" asp-action="ToggleDisplayBrandReview" asp-route-id="@review.Id" class="inline">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="p-2 @(review.IsDisplayed ? "text-primary" : "text-admin-secondary") hover:bg-admin-page rounded-lg transition-all" title="@(review.IsDisplayed ? Localizer["brand_reviews_undisplay"] : Localizer["brand_reviews_display"])">
+                                                <span class="material-symbols-outlined text-lg">@(review.IsDisplayed ? "visibility" : "visibility_off")</span>
+                                            </button>
+                                        </form>
+                                    }
+                                    <form method="post" asp-action="DeleteBrandReview" asp-route-id="@review.Id" class="inline" id="deleteForm-@review.Id">
+                                        @Html.AntiForgeryToken()
+                                        <button type="button" onclick="confirmDelete('deleteForm-@review.Id')" class="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-all" title="@Localizer["brand_reviews_delete"]">
+                                            <span class="material-symbols-outlined text-lg">delete</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+<!-- Review Detail Modal -->
+<div id="reviewModal" class="fixed inset-0 z-[200] flex items-center justify-center hidden">
+    <div class="absolute inset-0 bg-black/50" onclick="closeReviewModal()"></div>
+    <div class="relative bg-white dark:bg-[#0f1629] rounded-2xl shadow-2xl max-w-lg w-full mx-4 p-6 max-h-[80vh] overflow-y-auto">
+        <div class="flex items-start justify-between mb-4">
+            <h3 class="text-lg font-bold text-admin-primary">@Localizer["brand_reviews_view"]</h3>
+            <button onclick="closeReviewModal()" class="p-1 text-admin-secondary hover:bg-admin-page rounded-lg transition-all">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        <div id="modalContent" class="space-y-4">
+            <div class="flex items-center gap-3">
+                <div id="modalAvatar" class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-lg uppercase border border-admin-border"></div>
+                <div>
+                    <div id="modalName" class="font-bold text-admin-primary"></div>
+                    <div id="modalDate" class="text-xs text-admin-secondary"></div>
+                </div>
+            </div>
+            <div id="modalStars" class="flex items-center gap-0.5"></div>
+            <div id="modalStatus" class="flex items-center gap-2"></div>
+            <div id="modalTitle" class="font-bold text-admin-primary text-base"></div>
+            <div id="modalText" class="text-sm text-admin-secondary leading-relaxed whitespace-pre-line"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="fixed inset-0 z-[300] flex items-center justify-center hidden">
+    <div class="absolute inset-0 bg-black/50" onclick="closeDeleteModal()"></div>
+    <div class="relative bg-white dark:bg-[#0f1629] rounded-2xl shadow-2xl max-w-sm w-full mx-4 p-6 text-center">
+        <div class="w-14 h-14 mx-auto mb-4 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center">
+            <span class="material-symbols-outlined text-3xl text-red-500">delete_forever</span>
+        </div>
+        <h3 class="text-lg font-bold text-admin-primary mb-2">@Localizer["brand_reviews_delete_title"]</h3>
+        <p class="text-sm text-admin-secondary mb-6">@Localizer["brand_reviews_delete_confirm"]</p>
+        <div class="flex items-center gap-3 justify-center">
+            <button onclick="closeDeleteModal()" class="px-5 py-2.5 rounded-xl border border-admin-border text-admin-primary text-sm font-bold hover:bg-admin-page transition-all">@Localizer["brand_reviews_cancel"]</button>
+            <button id="confirmDeleteBtn" class="px-5 py-2.5 rounded-xl bg-red-500 text-white text-sm font-bold hover:bg-red-600 transition-all">@Localizer["brand_reviews_delete"]</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    var pendingDeleteFormId = null;
+
+    function confirmDelete(formId) {
+        pendingDeleteFormId = formId;
+        document.getElementById('deleteModal').classList.remove('hidden');
+    }
+
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.add('hidden');
+        pendingDeleteFormId = null;
+    }
+
+    document.getElementById('confirmDeleteBtn')?.addEventListener('click', function() {
+        if (pendingDeleteFormId) {
+            document.getElementById(pendingDeleteFormId).submit();
+        }
+        closeDeleteModal();
+    });
+
+    document.getElementById('deleteModal')?.addEventListener('click', function(e) {
+        if (e.target === this) closeDeleteModal();
+    });
+
+    function openReviewModal(id, name, img, rating, title, text, date, isDisplayed) {
+        document.getElementById('modalName').textContent = name;
+        document.getElementById('modalDate').textContent = date;
+
+        var avatar = document.getElementById('modalAvatar');
+        if (img) {
+            avatar.innerHTML = '<img src="/files/' + img + '" alt="" class="w-12 h-12 rounded-full object-cover" />';
+        } else {
+            avatar.innerHTML = name.charAt(0) || '?';
+        }
+
+        var starsHtml = '';
+        for (var s = 1; s <= 5; s++) {
+            starsHtml += '<span class="material-symbols-outlined text-lg ' + (s <= rating ? 'text-amber-500 filled-icon' : 'text-outline-variant') + '">star</span>';
+        }
+        document.getElementById('modalStars').innerHTML = starsHtml;
+
+        document.getElementById('modalStatus').innerHTML = isDisplayed
+            ? '<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-semibold"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span> @Localizer["brand_reviews_status_displayed"]</span>'
+            : '<span class="text-xs text-admin-secondary">@Localizer["brand_reviews_not_displayed"]</span>';
+
+        document.getElementById('modalTitle').textContent = title || '';
+        document.getElementById('modalTitle').style.display = title ? 'block' : 'none';
+        document.getElementById('modalText').textContent = text;
+
+        document.getElementById('reviewModal').classList.remove('hidden');
+    }
+
+    function closeReviewModal() {
+        document.getElementById('reviewModal').classList.add('hidden');
+    }
+
+    document.getElementById('reviewModal')?.addEventListener('click', function(e) {
+        if (e.target === this) closeReviewModal();
+    });
+</script>
