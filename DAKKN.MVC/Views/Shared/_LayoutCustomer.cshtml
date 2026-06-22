@@ -32,6 +32,15 @@
         }
         catch { /* Fallback to default */ }
     }
+
+    string ResolveProfileUrl(string? url, string name)
+    {
+        if (string.IsNullOrEmpty(url))
+            return $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(name)}&background=69d2cf&color=005957";
+        if (url.StartsWith("http") || url.StartsWith("/"))
+            return url;
+        return $"/files/{url}";
+    }
 }
 <!DOCTYPE html>
 <html lang="@culture" dir="@dir" id="html-root" class="@(isDarkMode ? "dark" : "")" data-dakkn-loading="true" style="--primary-color: @primaryColor; --primary-rgb: @primaryRgb;">
@@ -232,7 +241,7 @@
 
                     <a asp-action="Profile" class="flex items-center gap-md p-1.5 ltr:pr-4 rtl:pl-4 rounded-full bg-surface-container dark:bg-white/5 border border-border dark:border-white/10 hover:border-primary/30 transition-all">
                         <div class="w-8 h-8 rounded-full overflow-hidden shadow-small">
-                            <img src="@(!string.IsNullOrEmpty(profilePictureUrl) ? $"/files/{profilePictureUrl}" : $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(fullName)}&background=69d2cf&color=005957")" class="w-full h-full object-cover" alt="User profile avatar">
+                            <img src="@(ResolveProfileUrl(profilePictureUrl, fullName))" class="w-full h-full object-cover" alt="User profile avatar">
                         </div>
                         <span class="hidden sm:block font-bold text-sm text-text-primary dark:text-white">@(fullName.Split(' ')[0])</span>
                     </a>

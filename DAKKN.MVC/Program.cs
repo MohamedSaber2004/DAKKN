@@ -54,19 +54,19 @@ namespace DAKKN.MVC
 
             builder.Host.UseSerilog();
 
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
-builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromDays(7);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-    options.Cookie.Name = ".DAKKN.GuestCart";
-});
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromDays(7);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+                options.Cookie.Name = ".DAKKN.GuestCart";
+            });
 
-builder.Services.AddScoped<IGuestCartStorage, SessionCartStorage>();
+            builder.Services.AddScoped<IGuestCartStorage, SessionCartStorage>();
 
             builder.Services.AddApplication(builder.Configuration);
             builder.Services.AddPersistence(builder.Configuration);
@@ -387,7 +387,7 @@ builder.Services.AddScoped<IGuestCartStorage, SessionCartStorage>();
 
             app.UseRequestLocalization(localizationOptions);
 
-            app.UseOutputCache();
+            //app.UseOutputCache();
 
             app.UseAuthorization();
 

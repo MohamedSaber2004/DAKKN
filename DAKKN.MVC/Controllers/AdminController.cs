@@ -130,7 +130,9 @@ namespace DAKKN.MVC.Controllers
                 Phone = u.PhoneNumber ?? "",
                 JoinDate = u.JoinDate,
                 AvatarUrl = !string.IsNullOrEmpty(u.ProfilePictureUrl)
-                    ? $"/files/{u.ProfilePictureUrl}"
+                    ? u.ProfilePictureUrl.StartsWith("http") || u.ProfilePictureUrl.StartsWith("/")
+                        ? u.ProfilePictureUrl
+                        : $"/files/{u.ProfilePictureUrl}"
                     : $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(u.FullName ?? "User")}&background=random",
                 Role = u.Roles.Contains("Admin") ? UserRole.Admin : UserRole.Customer,
                 Status = u.Status switch
@@ -423,6 +425,8 @@ namespace DAKKN.MVC.Controllers
                 Icon = "category",
                 IsFeatured = false
             }).ToList();
+
+            model.BrandReviews = await _mediator.Send(new GetAdminBrandReviewsQuery(null, null, null, null));
 
             return View(model);
         }
@@ -824,13 +828,17 @@ namespace DAKKN.MVC.Controllers
 
             try
             {
-                string? imageUrl = string.IsNullOrEmpty(model.ExistingImageUrl) ? null : model.ExistingImageUrl;
+                var rawCategoryUrl = model.ExistingImageUrl;
+                string? imageUrl = string.IsNullOrEmpty(rawCategoryUrl) ? null
+                    : rawCategoryUrl.StartsWith("http")
+                        ? rawCategoryUrl
+                        : Path.GetFileName(rawCategoryUrl.TrimEnd('/'));
 
                 if (model.ImageFile != null)
                 {
-                    var oldFileName = string.IsNullOrEmpty(model.ExistingImageUrl)
+                    var oldFileName = string.IsNullOrEmpty(rawCategoryUrl) || rawCategoryUrl.StartsWith("http")
                         ? null
-                        : Path.GetFileName(model.ExistingImageUrl.TrimEnd('/'));
+                        : Path.GetFileName(rawCategoryUrl.TrimEnd('/'));
 
                     var result = await _mediator.Send(new UpdateImageCommand
                     {
@@ -931,7 +939,12 @@ namespace DAKKN.MVC.Controllers
                 return View(model);
             }
 
-            var imageUrl = string.IsNullOrEmpty(model.ExistingImageUrl) ? string.Empty : model.ExistingImageUrl;
+            var rawUrl = model.ExistingImageUrl;
+            var imageUrl = string.IsNullOrEmpty(rawUrl)
+                ? string.Empty
+                : rawUrl.StartsWith("http")
+                    ? rawUrl
+                    : Path.GetFileName(rawUrl.TrimEnd('/'));
 
             if (model.ImageFile != null)
             {
@@ -946,7 +959,7 @@ namespace DAKKN.MVC.Controllers
                 }
                 catch
                 {
-                    TempData["Error"] = _localizer[LocalizationKeys.UploadFileMessages.FileUploadFailed.Value];
+                    TempData["Error"] = _localizer[LocalizationKeys.UploadFileMessages.FileUploadFailed.Value].ToString();
                     model.AvailableCategories = await _mediator.Send(new GetCategoriesQuery());
                     return View(model);
                 }
@@ -966,10 +979,30 @@ namespace DAKKN.MVC.Controllers
                 model.DangerQuantity
             );
 
-            await _mediator.Send(command);
+            try
+            {
+                await _mediator.Send(command);
+                TempData["SuccessMessage"] = _localizer[LocalizationKeys.Products.Created.Value].ToString();
+                return RedirectToAction(nameof(Inventory));
+            }
+            catch (BadRequestException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+            }
+            catch (ValidationException ex)
+            {
+                foreach (var kvp in ex.Errors)
+                {
+                    foreach (var error in kvp.Value)
+                    {
+                        ModelState.AddModelError(kvp.Key, error);
+                    }
+                }
+            }
 
-            TempData["SuccessMessage"] = _localizer[LocalizationKeys.Products.Created.Value].ToString();
-            return RedirectToAction(nameof(Inventory));
+            ViewData["Title"] = _localizer["admin_add_product"];
+            model.AvailableCategories = await _mediator.Send(new GetCategoriesQuery());
+            return View(model);
         }
 
         [HttpPost("delete-product/{id}")]
@@ -1024,8 +1057,7 @@ namespace DAKKN.MVC.Controllers
                     ArDescription = product.ArDescription,
                     Price = product.Price,
                     CategoryId = product.CategoryId,
-                    ExistingImageUrl = string.IsNullOrEmpty(product.ImageUrl) ? string.Empty
-                        : $"/files/{Path.GetFileName(product.ImageUrl)}",
+                    ExistingImageUrl = product.ImageUrl ?? string.Empty,
                     SizeOptions = product.SizeOptions,
                     QuantityInStock = product.QuantityInStock,
                     DangerQuantity = product.DangerQuantity,
@@ -1051,7 +1083,12 @@ namespace DAKKN.MVC.Controllers
                 return View("AddProduct", model);
             }
 
-            var imageUrl = string.IsNullOrEmpty(model.ExistingImageUrl) ? string.Empty : model.ExistingImageUrl;
+            var rawUrl = model.ExistingImageUrl;
+            var imageUrl = string.IsNullOrEmpty(rawUrl)
+                ? string.Empty
+                : rawUrl.StartsWith("http")
+                    ? rawUrl
+                    : Path.GetFileName(rawUrl.TrimEnd('/'));
 
             if (model.ImageFile != null)
             {
@@ -1060,13 +1097,14 @@ namespace DAKKN.MVC.Controllers
                     var result = await _mediator.Send(new UpdateImageCommand
                     {
                         File = model.ImageFile,
-                        UploadPlace = 1
+                        UploadPlace = 1,
+                        ImageName = string.IsNullOrEmpty(imageUrl) || imageUrl.StartsWith("http") || !Path.HasExtension(imageUrl) ? null : imageUrl
                     });
                     imageUrl = result;
                 }
                 catch
                 {
-                    TempData["Error"] = _localizer[LocalizationKeys.UploadFileMessages.FileUploadFailed.Value];
+                    TempData["Error"] = _localizer[LocalizationKeys.UploadFileMessages.FileUploadFailed.Value].ToString();
                     ViewData["Title"] = _localizer["admin_product_edit_title"];
                     model.AvailableCategories = await _mediator.Send(new GetCategoriesQuery());
                     return View("AddProduct", model);
@@ -1088,10 +1126,30 @@ namespace DAKKN.MVC.Controllers
                 model.DangerQuantity
             );
 
-            await _mediator.Send(command);
+            try
+            {
+                await _mediator.Send(command);
+                TempData["SuccessMessage"] = _localizer[LocalizationKeys.Products.Updated.Value].ToString();
+                return RedirectToAction(nameof(Inventory));
+            }
+            catch (BadRequestException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+            }
+            catch (ValidationException ex)
+            {
+                foreach (var kvp in ex.Errors)
+                {
+                    foreach (var error in kvp.Value)
+                    {
+                        ModelState.AddModelError(kvp.Key, error);
+                    }
+                }
+            }
 
-            TempData["SuccessMessage"] = _localizer[LocalizationKeys.Products.Updated.Value].ToString();
-            return RedirectToAction(nameof(Inventory));
+            ViewData["Title"] = _localizer["admin_product_edit_title"];
+            model.AvailableCategories = await _mediator.Send(new GetCategoriesQuery());
+            return View("AddProduct", model);
         }
 
         [HttpGet("inventory-settings")]

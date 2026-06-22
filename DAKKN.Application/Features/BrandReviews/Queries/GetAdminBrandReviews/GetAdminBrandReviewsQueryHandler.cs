@@ -75,7 +75,9 @@ namespace DAKKN.Application.Features.BrandReviews.Queries.GetAdminBrandReviews
             {
                 if (!string.IsNullOrEmpty(item.ProfilePictureUrl))
                 {
-                    item.ProfilePictureUrl = $"/files/{Path.GetFileName(item.ProfilePictureUrl)}";
+                    item.ProfilePictureUrl = item.ProfilePictureUrl.StartsWith("http") || item.ProfilePictureUrl.StartsWith("/")
+                        ? item.ProfilePictureUrl
+                        : $"/files/{Path.GetFileName(item.ProfilePictureUrl)}";
                 }
             }
 

@@ -1,13 +1,1 @@
-﻿M [dbo].[UserSettings] AS [u]
-﻿WHERE [u].[UserId] = @__userId_0
-﻿[18:42:06 INF] Handled Request: GetUserSettingsQuery
-﻿[18:42:06 INF] Executing endpoint 'DAKKN.MVC.Controllers.AdminController.EditProduct (DAKKN.Appearence)'
-﻿[18:42:06 INF] Route matched with {action = "EditProduct", controller = "Admin"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] EditProduct(System.Guid, DAKKN.MVC.ViewModels.Admin.AddProductViewModel) on controller DAKKN.MVC.Controllers.AdminController (DAKKN.Appearence).
-﻿[18:42:06 ERR] Dakkn Request: Unhandled Exception for Request UpdateImageCommand
-﻿DAKKN.Application.Common.Exceptions.ValidationException: One or more validation failures
-﻿   at DAKKN.Application.Common.Behaviours.ValidationBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\ValidationBehaviour.cs:line 26
-﻿   at DAKKN.Application.Common.Behaviours.UnhandledExceptionBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\UnhandledExceptionBehaviour.cs:line 20
-﻿[18:42:06 INF] Executing BadRequestObjectResult, writing value of type 'DAKKN.Application.Common.Models.ApiResponse`1[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
-﻿[18:42:06 INF] Executed action DAKKN.MVC.Controllers.AdminController.EditProduct (DAKKN.Appearence) in 494.4234ms
-﻿[18:42:06 INF] Executed endpoint 'DAKKN.MVC.Controllers.AdminController.EditProduct (DAKKN.Appearence)'
-﻿[18:42:07 INF] Request finished HTTP/2 POST https://localhost:44308/admin/edit-product/8d2a9914-c918-4f5d-aca3-3b3ada2a935c - 400 null application/json; charset=utf-8 917.0482ms
+﻿67A58A3F-AC7B-4EB9-A64E-1A836B363DD8	Pixel Art Sticker Collection	Retro pixel art stickers with classic video game characters and 8-bit inspired designs.	4.99	4.7	55	400	[]	["2\u0022","3\u0022","4\u0022"]	061496B1-DA2A-4DB2-8C27-B2B77E0317E7	2026-06-22 16:17:33.6427466	2026-06-22 16:30:30.0352709	NULL	00000000-0000-0000-0000-000000000000	3cac1f24-29ab-4133-aa0c-df8a4836d011	NULL	0	1	ملصقات فن بكسل قديمة بشخصيات ألعاب فيديو كلاسيكية وتصاميم مستوحاة من 8 بت.	مجموعة ملصقات فن البكسل	0	2026-06-22 16:30:29.9550198	5	0x0000000000001FEE

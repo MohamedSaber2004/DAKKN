@@ -86,7 +86,8 @@ namespace DAKKN.MVC.Controllers
                     Role = string.Empty,
                     Quote = r.ReviewText,
                     Rating = r.Rating,
-                    IsFeatured = true
+                    IsFeatured = true,
+                    ProfilePictureUrl = r.ProfilePictureUrl
                 }).ToList();
             }
             else

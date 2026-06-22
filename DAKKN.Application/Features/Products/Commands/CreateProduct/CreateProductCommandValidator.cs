@@ -34,7 +34,6 @@ namespace DAKKN.Application.Features.Products.Commands.CreateProduct
                 .GreaterThan(0).WithMessage(localizer[LocalizationKeys.ValidationMessages.GreaterThanOrEqual.Value, 0]);
 
             RuleFor(v => v.ImageUrl)
-                .NotEmpty().WithMessage(localizer[LocalizationKeys.ValidationMessages.Required.Value])
                 .MaximumLength(500).WithMessage(localizer[LocalizationKeys.ValidationMessages.MaxLength.Value, 500]);
 
             RuleFor(v => v.CategoryId)

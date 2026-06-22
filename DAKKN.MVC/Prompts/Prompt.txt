@@ -1,558 +1,76 @@
-f your goal is product reviews from customers (not a separate testimonial system), and then allowing the admin to choose some customer reviews to appear as testimonials on the landing page, use this prompt:
-
-You are a Senior ASP.NET Core 8 MVC + Clean Architecture + MediatR + Entity Framework Core + ASP.NET Identity + Tailwind CSS engineer working on the DAKKN project.
-
-=================================================
-GOAL
-=================================================
-
-Implement a complete Product Rating & Review System.
-
-Customers should be able to rate products they purchased and write reviews about their experience.
-
-Admins should be able to manage these reviews and optionally feature selected reviews in the Landing Page Testimonials section.
-
-The system must be fully dynamic and database-driven.
-
-=================================================
-BUSINESS FLOW
-=================================================
-
-1. Customer purchases a product.
-
-2. After purchase:
-   - Customer can submit a rating.
-   - Customer can write a review.
-   - Customer can edit their review.
-   - Customer can delete their review.
-
-3. Product ratings affect:
-   - Product Average Rating
-   - Product Rating Count
-
-4. Admin can:
-   - Approve review
-   - Reject review
-   - Hide review
-   - Delete review
-   - Mark review as Featured Testimonial
-
-5. Landing Page:
-   - Display only reviews marked as Featured Testimonials.
-   - Maximum 3 featured reviews.
-   - Completely dynamic.
-
-=================================================
-ENTITY DESIGN
-=================================================
-
-Create ProductReview entity.
-
-Properties:
-
-Id
-
-ProductId
-
-UserId
-
-Rating
-
-ReviewTitle
-
-ReviewText
-
-IsApproved
-
-IsFeatured
-
-IsHidden
-
-CreatedAt
-
-UpdatedAt
-
-ApprovedAt
-
-ApprovedBy
-
-=================================================
-RELATIONSHIPS
-=================================================
-
-Product
-1 -> Many ProductReviews
-
-ApplicationUser
-1 -> Many ProductReviews
-
-=================================================
-PRODUCT ENTITY UPDATES
-=================================================
-
-Add:
-
-AverageRating
-
-ReviewCount
-
-Example:
-
-AverageRating = 4.7
-
-ReviewCount = 128
-
-Update automatically whenever:
-
-- Review added
-- Review edited
-- Review deleted
-- Review approved
-- Review hidden
-
-=================================================
-CUSTOMER PRODUCT DETAILS PAGE
-=================================================
-
-Add Reviews Section.
-
-Display:
-
-Average Rating
-
-Review Count
-
-Stars
-
-Review List
-
-Example:
-
-★★★★★ 4.8 (125 Reviews)
-
-=================================================
-ADD REVIEW
-=================================================
-
-Customer can click:
-
-Write Review
-
-Fields:
-
-Rating:
-1–5 stars
-
-Title
-
-Comment
-
-Validation:
-
-Rating required
-
-Comment required
-
-Maximum length validation
-
-=================================================
-PURCHASE VALIDATION
-=================================================
-
-Only customers who purchased the product can review it.
-
-Prevent reviews from users who never ordered the product.
-
-Display:
-
-"You must purchase this product before reviewing it."
-
-=================================================
-ONE REVIEW PER PRODUCT
-=================================================
-
-One user can only have one review per product.
-
-If review already exists:
-
-Show:
-
-Edit Review
-
-instead of:
-
-Write Review
-
-=================================================
-CUSTOMER DASHBOARD
-=================================================
-
-Create:
-
-My Reviews Page
-
-Display:
-
-Product
-
-Rating
-
-Review
-
-Date
-
-Status
-
-Actions
-
-Allow:
-
-Edit
-
-Delete
-
-=================================================
-PRODUCT PAGE DISPLAY
-=================================================
-
-Display approved reviews only.
-
-Show:
-
-Customer Name
-
-Rating
-
-Review Title
-
-Review Text
-
-Date
-
-Example:
-
-★★★★★
-
-Excellent quality
-
-The sticker quality exceeded expectations...
-
-Mohamed Saber
-
-June 2026
-
-=================================================
-ADMIN DASHBOARD
-=================================================
-
-Create:
-
-Reviews Management Page
-
-=================================================
-ADMIN TABLE
-=================================================
-
-Columns:
-
-Review ID
-
-Product
-
-Customer
-
-Rating
-
-Review Title
-
-Created Date
-
-Status
-
-Featured
-
-Actions
-
-=================================================
-FILTERS
-=================================================
-
-All
-
-Pending
-
-Approved
-
-Rejected
-
-Featured
-
-Hidden
-
-5 Stars
-
-4 Stars
-
-3 Stars
-
-2 Stars
-
-1 Star
-
-=================================================
-ADMIN ACTIONS
-=================================================
-
-Approve
-
-Reject
-
-Hide
-
-Unhide
-
-Delete
-
-Feature
-
-Unfeature
-
-=================================================
-FEATURED TESTIMONIALS
-=================================================
-
-Admin can toggle:
-
-IsFeatured
-
-Rules:
-
-Only approved reviews can be featured.
-
-Maximum:
-
-3 featured reviews.
-
-If admin selects more than 3:
-
-Automatically remove oldest featured review
-
-OR
-
-Display validation message.
-
-=================================================
-LANDING PAGE TESTIMONIALS
-=================================================
-
-Remove all hardcoded testimonials.
-
-Load dynamically from ProductReviews.
-
-Conditions:
-
-IsApproved = true
-
-IsFeatured = true
-
-IsHidden = false
-
-Take Top 3
-
-Display:
-
-Customer Name
-
-Rating Stars
-
-Review Text
-
-Product Name
-
-Customer Avatar
-
-Review Date
-
-=================================================
-PRODUCT LISTINGS
-=================================================
-
-Display rating summary on:
-
-Landing Page
-
-Shop Page
-
-Category Page
-
-Customer Dashboard
-
-Admin Dashboard
-
-Product Cards
-
-Example:
-
-★★★★★ 4.8
-
-(125 Reviews)
-
-=================================================
-ADMIN DASHBOARD STATISTICS
-=================================================
-
-Add widgets:
-
-Total Reviews
-
-Pending Reviews
-
-Approved Reviews
-
-Featured Reviews
-
-Average Product Rating
-
-Highest Rated Product
-
-Lowest Rated Product
-
-=================================================
-LOCALIZATION
-=================================================
-
-Support Arabic and English.
-
-Localize:
-
-Reviews
-
-Ratings
-
-Write Review
-
-Edit Review
-
-Delete Review
-
-Approve
-
-Reject
-
-Featured
-
-Average Rating
-
-Review Count
-
-Review Submitted
-
-Review Updated
-
-Review Deleted
-
-=================================================
-DARK MODE
-=================================================
-
-Support:
-
-Landing Page
-
-Shop
-
-Customer Dashboard
-
-Admin Dashboard
-
-=================================================
-SECURITY
-=================================================
-
-Only authenticated customers can review.
-
-Only customers who purchased the product can review.
-
-Only one review per user per product.
-
-Prevent XSS.
-
-Prevent HTML injection.
-
-Prevent unauthorized edits.
-
-=================================================
-CQRS IMPLEMENTATION
-=================================================
-
-Create:
-
-Commands:
-
-CreateProductReviewCommand
-
-UpdateProductReviewCommand
-
-DeleteProductReviewCommand
-
-ApproveProductReviewCommand
-
-RejectProductReviewCommand
-
-FeatureProductReviewCommand
-
-UnfeatureProductReviewCommand
-
-Queries:
-
-GetProductReviewsQuery
-
-GetCustomerReviewsQuery
-
-GetAdminReviewsQuery
-
-GetFeaturedTestimonialsQuery
-
-=================================================
-DELIVERABLES
-=================================================
-
-Generate:
-
-- Entity
-- EF Configuration
-- Migration
-- Commands
-- Queries
-- Handlers
-- DTOs
-- ViewModels
-- Customer Dashboard Pages
-- Product Details Page
-- Admin Reviews Management
-- Landing Page Testimonials Integration
-- Rating Calculation Logic
-- Localization Resources
-- Tailwind UI
-- Validation
-- Authorization
-
-Provide:
-
-1. File paths
-2. Before code
-3. After code
-4. Explanation of every change
-
-IMPORTANT:
-
-- Follow DAKKN Clean Architecture.
-- Use MediatR only.
-- No direct DbContext access from MVC views.
-- No mock data.
-- Everything must come from database.
-- Reviews are about products purchased by customers.
-- Featured Testimonials are selected from real customer product reviews.
-- Preserve all existing functionality.
-
-This version models the common e-commerce flow used by Amazon, Noon, Jumia, and Shopify stores: customer reviews products they've bought, product ratings are calculated automatically, and admins can promote the best reviews to the landing page testimonials section.
+If you want an AI (or ChatGPT) to investigate the real root cause of images not loading across your entire ASP.NET Core MVC site, use this prompt:
+
+Act as a Senior ASP.NET Core MVC Architect and Debugging Expert.
+
+My project runs successfully, pages load correctly, but ALL images across the entire website are not displayed.
+
+Your task is NOT to guess. Your task is to find the ROOT CAUSE.
+
+Follow this investigation process:
+
+1. Analyze the complete project structure.
+2. Check Program.cs and Startup configuration.
+3. Verify UseStaticFiles() middleware configuration.
+4. Verify wwwroot folder existence and structure.
+5. Check image physical locations.
+6. Check image URLs generated in Razor Views.
+7. Check Layout files (_Layout.cshtml).
+8. Check image paths in:
+   - img tags
+   - CSS background-image URLs
+   - JavaScript-generated images
+9. Check environment-specific configurations.
+10. Check publish/deployment settings.
+11. Check IIS/Kestrel static file serving settings.
+12. Check file permissions.
+13. Check case-sensitivity issues.
+14. Check browser Network Tab errors.
+15. Check Console errors.
+16. Check MIME type problems.
+17. Check URL rewriting issues.
+18. Check image upload and storage logic if images come from database.
+19. Check database image paths.
+20. Check Razor path helpers:
+    - Url.Content()
+    - asp-append-version
+    - ~/ paths
+
+For every issue found:
+
+- Explain WHY it causes images not to load.
+- Show evidence from the code.
+- Explain how to reproduce the issue.
+- Provide the exact fix.
+- Provide the corrected code.
+
+Do not stop at symptoms.
+
+Keep investigating until the actual root cause is identified.
+
+At the end provide:
+
+## Root Cause
+[exact reason]
+
+## Proof
+[files and code lines proving it]
+
+## Fix
+[exact code changes]
+
+## Verification Steps
+[how to confirm images are loading again]
+
+Wait until I upload the project files before starting the investigation.
+
+For an even stronger result, upload these files with the prompt:
+
+Program.cs
+_Layout.cshtml
+Any view containing <img>
+appsettings.json
+Screenshot of Browser Network Tab (F12 → Network)
+Screenshot of Console Tab
+Screenshot of Solution Explorer showing wwwroot
+
+This usually allows identification of the exact root cause in a few minutes rather than guessing.

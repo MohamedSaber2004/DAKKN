@@ -1,3 +1,4 @@
+using DAKKN.Application.Features.BrandReviews.DTOs;
 using System.ComponentModel.DataAnnotations;
 
 namespace DAKKN.MVC.ViewModels.Admin
@@ -11,6 +12,7 @@ namespace DAKKN.MVC.ViewModels.Admin
         public AboutSettingsViewModel About { get; set; } = new();
         public TestimonialsSettingsViewModel Testimonials { get; set; } = new();
         public ContactSettingsViewModel Contact { get; set; } = new();
+        public List<BrandReviewDto> BrandReviews { get; set; } = new();
     }
 
     public class SectionOrderViewModel
@@ -80,6 +82,7 @@ namespace DAKKN.MVC.ViewModels.Admin
         public string Quote { get; set; } = string.Empty;
         public int Rating { get; set; }
         public bool IsFeatured { get; set; }
+        public string? ProfilePictureUrl { get; set; }
     }
 
     public class ContactSettingsViewModel

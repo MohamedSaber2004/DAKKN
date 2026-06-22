@@ -173,8 +173,9 @@ namespace DAKKN.Application.Features.Products.Queries.GetFeaturedProducts
             {
                 if (!string.IsNullOrEmpty(item.ImageUrl))
                 {
-                    var fileName = Path.GetFileName(item.ImageUrl);
-                    item.ImageFullUrl = string.IsNullOrEmpty(fileName) ? string.Empty : $"/files/{fileName}";
+                    item.ImageFullUrl = item.ImageUrl.StartsWith("http") || item.ImageUrl.StartsWith("/")
+                        ? item.ImageUrl
+                        : $"/files/{Path.GetFileName(item.ImageUrl)}";
                     item.ImageUrl = item.ImageFullUrl;
                 }
             }
