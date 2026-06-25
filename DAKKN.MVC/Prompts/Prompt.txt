@@ -1,165 +1,233 @@
-Use the following prompt to perform a complete audit and fix of the About Us section and its integration with the Admin Content Control / Content Management module.
+Analyze the entire DAKKN repository and perform a complete authentication UI/UX theme consistency audit.
 
-Analyze the entire DAKKN solution and perform a complete review of the Landing Page "About Us" section and its integration with the Admin Content Management module.
+Problem:
+The Landing Page supports Light Mode and Dark Mode.
 
-Current Goal:
-The About Us section should be fully manageable from the Admin Dashboard and should behave consistently with the rest of the landing page content.
+When a user changes the theme on the Landing Page and then navigates to:
 
-Tasks:
+* Sign In
+* Sign Up
+* Forgot Password
+* Reset Password
+* Verify OTP
+* Email Confirmation
+* Resend Verification
+* Change Password
+* Account Activation
+* External Login pages
+* Any Authentication-related page
 
-1. Perform Full Analysis
-   - Locate all files related to:
-     - About Us section
-     - Landing Page rendering
-     - Content Management
-     - CMS settings
-     - DTOs
-     - Commands/Queries
-     - Services
-     - Repositories
-     - Entities
-     - AutoMapper profiles
-     - ViewModels
-     - Localization resources
-   - Trace the complete flow from database → backend → frontend.
+there are visual inconsistencies between the Landing Page theme and Authentication pages.
 
-2. Identify Existing Problems
-   - Detect any of the following:
-     - Content not appearing on landing page.
-     - Content not updating after admin changes.
-     - Hardcoded values.
-     - Missing mappings.
-     - Missing database fields.
-     - Incorrect caching.
-     - Localization issues.
-     - Null data issues.
-     - Image upload/display issues.
-     - Broken bindings.
-     - Duplicate content sources.
-     - Inconsistent behavior compared to Hero section.
+Goal:
+Create a single, unified theme system across the entire application.
 
-3. Content Management Improvements
-   Ensure the Admin Content Management page allows editing:
+Requirements:
 
-   About Us Section:
-   - Section Badge
-   - Main Title
-   - Subtitle
-   - Description
-   - Statistics
-   - Features
-   - Cards
-   - Images
-   - Icons
-   - Button Text
-   - Button Link
+1. Perform a Full Theme Architecture Audit
 
-   Verify all fields are:
-   - Saved correctly.
-   - Loaded correctly.
-   - Updated correctly.
-   - Displayed correctly.
+Analyze:
 
-4. Multilingual Support
-   Implement proper Arabic and English support.
+* Theme management logic
+* Theme persistence logic
+* Theme initialization
+* LocalStorage usage
+* Cookie usage
+* Theme synchronization
+* Theme switching implementation
+* Dark mode implementation
+* Layout files
+* Shared layouts
+* Authentication layouts
+* Partial views
+* CSS files
+* Tailwind configuration
+* JavaScript theme initialization
+* Razor views
+* MVC layouts
 
-   For every textual field create:
-   - Arabic Version
-   - English Version
+Identify every place where theme handling differs.
 
-   Example:
+2. Root Cause Analysis
 
-   TitleAr
-   TitleEn
+Find all causes of inconsistency such as:
 
-   DescriptionAr
-   DescriptionEn
+* Different layouts using different theme logic
+* Missing dark classes
+* Missing theme initialization
+* Theme flashing during page load
+* LocalStorage not read correctly
+* Cookie not synchronized
+* Theme loaded too late
+* Authentication pages using separate CSS
+* Components not supporting dark mode
+* Hardcoded colors
+* Missing Tailwind dark variants
+* Missing CSS variables
+* Different rendering pipelines
 
-   FeatureTitleAr
-   FeatureTitleEn
+Document every issue discovered.
 
-   FeatureDescriptionAr
-   FeatureDescriptionEn
+3. Authentication Pages Audit
 
-   Requirements:
-   - Admin can edit both languages.
-   - Landing page automatically displays content according to current culture.
-   - No language mixing.
-   - Fallback handling is implemented safely.
+Inspect all auth-related pages:
 
-5. Images and Media
-   Verify:
-   - Images upload successfully.
-   - Images are stored correctly.
-   - URLs are generated correctly.
-   - Old images are cleaned up properly.
-   - Missing images have safe fallbacks.
-   - Responsive rendering works correctly.
+Sign In
 
-6. Statistics and Cards
-   If About Us contains cards/statistics/features:
+Sign Up
 
-   Verify:
-   - Dynamic rendering.
-   - Proper ordering.
-   - CRUD operations from Admin Dashboard.
-   - Validation.
-   - Localization support.
+Forgot Password
 
-7. UI/UX Improvements
-   Improve Admin Content Management page:
+Reset Password
 
-   - Organize About Us settings in a dedicated section.
-   - Use tabs for Arabic and English content.
-   - Show image previews.
-   - Add validation messages.
-   - Improve form structure.
-   - Prevent accidental data loss.
+OTP Verification
 
-8. Clean Architecture Validation
-   Ensure implementation follows project architecture:
+Email Verification
 
-   - Domain layer remains clean.
-   - Application layer contains business logic.
-   - Infrastructure handles persistence.
-   - MVC layer handles presentation only.
-   - CQRS pattern is respected.
-   - AutoMapper mappings are correct.
+Change Password
 
-9. Performance and Caching
-   Review caching strategy.
+Account Lockout
 
-   Ensure:
-   - About Us content refreshes after updates.
-   - Cache invalidation works.
-   - Culture-specific cache keys are used.
-   - No stale content remains.
+Access Denied
 
-10. Testing Checklist
-   Verify:
+External Login
 
-   ✓ Admin edits About Us content.
-   ✓ Changes are persisted.
-   ✓ Changes appear immediately on landing page.
-   ✓ Arabic content appears in Arabic mode.
-   ✓ English content appears in English mode.
-   ✓ Images load correctly.
-   ✓ Features/cards/statistics render correctly.
-   ✓ No null reference exceptions.
-   ✓ Mobile responsiveness remains intact.
+Two Factor Authentication
+
+Any Identity pages
+
+Verify:
+
+* Background colors
+* Cards
+* Inputs
+* Labels
+* Buttons
+* Validation messages
+* Icons
+* Borders
+* Shadows
+* Hover states
+* Focus states
+* Error states
+* Success states
+* Loading states
+
+4. Theme Synchronization
+
+Implement a single source of truth.
+
+Requirements:
+
+* Landing Page theme change must instantly affect Auth pages.
+* Auth pages must read the same theme preference.
+* Theme must persist after:
+
+  * Navigation
+  * Refresh
+  * Login
+  * Logout
+  * Session expiration
+  * Browser restart
+
+Verify LocalStorage, Cookies, and Database settings behavior.
+
+5. Prevent Theme Flashing
+
+Implement proper theme bootstrapping.
+
+Before page render:
+
+* Read theme immediately.
+* Apply dark/light class before content paints.
+* Eliminate FOUC (Flash of Unstyled Content).
+* Eliminate white flash when opening auth pages from dark mode.
+
+6. Shared Design System
+
+Create a reusable design system.
+
+Move all theme colors to:
+
+* CSS variables
+* Tailwind theme configuration
+* Shared component styles
+
+Remove:
+
+* Hardcoded colors
+* Duplicate styles
+* Page-specific theme hacks
+
+7. Component Consistency
+
+Ensure identical styling behavior between:
+
+Landing Page
+
+Authentication Pages
+
+Dashboard
+
+Admin Pages
+
+Profile Pages
+
+Settings Pages
+
+Checkout Pages
+
+Any future pages
+
+All should use the same design tokens.
+
+8. Accessibility Review
+
+Verify:
+
+* Contrast ratios
+* Focus visibility
+* Keyboard navigation
+* Error visibility
+* Dark mode readability
+* Placeholder visibility
+
+9. Mobile Review
+
+Verify theme consistency on:
+
+* Mobile
+* Tablet
+* Desktop
+
+Check responsive layouts in both light and dark modes.
+
+10. Performance Review
+
+Ensure:
+
+* No duplicate theme scripts
+* No duplicate CSS
+* No unnecessary DOM updates
+* No layout shifts
+* No hydration/theme mismatch
 
 11. Deliverables
-   Provide:
 
-   - Root cause analysis of all discovered issues.
-   - List of affected files.
-   - Database changes.
-   - Required migrations.
-   - Updated architecture explanation.
-   - Complete implementation details.
-   - Recommended future improvements.
+Provide:
+
+* Complete root cause analysis.
+* All discovered inconsistencies.
+* List of affected files.
+* List of layout files.
+* List of CSS files.
+* List of JS files.
+* Theme architecture diagram.
+* Refactoring plan.
+* Final implementation.
 
 Important:
-Do not apply quick fixes. Perform a full audit of the About Us section and its Content Management integration, identify every issue, and implement a scalable, maintainable solution consistent with the rest of the DAKKN CMS architecture.
 
-I would also recommend asking the AI to review all Landing Page CMS sections together (Hero, About Us, Features, Services, Statistics, Partners, Testimonials, FAQ, Contact, Footer) because many CMS issues originate from the same root causes: missing mappings, localization gaps, cache invalidation, or inconsistent content-loading services. A single audit often fixes multiple sections at once.
+Do not stop after fixing the visible Sign In and Sign Up pages.
+
+Audit the entire authentication flow and identify every possible theme inconsistency that currently exists or may occur in the future. Implement a centralized, scalable, maintainable theme system that guarantees visual consistency across the whole DAKKN application.

@@ -4,7 +4,7 @@
     var dir = culture == "ar" ? "rtl" : "ltr";
 }
 <!DOCTYPE html>
-<html lang="@culture" dir="@dir" id="html-root" data-dakkn-loading="true">
+<html lang="@culture" dir="@dir" id="html-root" data-dakkn-loading="true" style="--primary-color: #0E908C; --primary-rgb: 14, 144, 140;">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -99,7 +99,7 @@
 
     @await RenderSectionAsync("HeadStyles", required: false)
 </head>
-<body class="bg-white dark:bg-black text-slate-900 dark:text-slate-100 min-h-screen flex flex-col antialiased overflow-x-hidden selection:bg-primary/10">
+<body class="bg-background dark:bg-[#0F172A] text-slate-900 dark:text-slate-100 min-h-screen flex flex-col antialiased overflow-x-hidden selection:bg-primary/10">
 
     <!-- Preloader Overlay -->
     <div id="dakkn-preloader">
@@ -107,6 +107,13 @@
     </div>
 
     @RenderBody()
+
+    <!-- Theme Toggle Floating -->
+    <div class="fixed bottom-6 end-6 z-50">
+        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full shadow-lg transition-all hover:scale-110 active:scale-95">
+            @await Html.PartialAsync("Partials/_ThemeToggle")
+        </div>
+    </div>
 
     <!-- Custom Landing Script for i18n & translations -->
     <script src="~/js/landing.js" asp-append-version="true"></script>

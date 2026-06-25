@@ -102,39 +102,56 @@
 
     <script>
         (function() {
-            const savedTheme = localStorage.getItem('dakkn_theme');
-            const isDark = savedTheme === 'dark';
-            
-            if (isDark) {
+            // Server-side preference takes priority for authenticated users
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <text>
+            var serverIsDark = @(isDarkMode.ToString().ToLower());
+            if (serverIsDark) {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('dakkn_theme', 'dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('dakkn_theme', 'light');
+            }
+                </text>
+            }
+            else
+            {
+                <text>
+            var savedTheme = localStorage.getItem('dakkn_theme');
+            if (savedTheme === 'dark') {
                 document.documentElement.classList.add('dark');
             } else {
                 document.documentElement.classList.remove('dark');
             }
+                </text>
+            }
 
             // Sync language with localStorage
-            const culture = "@culture";
+            var culture = "@culture";
             localStorage.setItem('dakkn_lang', culture);
 
             // Initialize Sidebar State
-            const isCollapsed = localStorage.getItem('dakkn_customer_sidebar_collapsed') === 'true';
+            var isCollapsed = localStorage.getItem('dakkn_customer_sidebar_collapsed') === 'true';
             if (isCollapsed || window.innerWidth < 1280) {
                 document.documentElement.classList.add('sidebar-is-collapsed');
             }
         })();
 
         document.addEventListener('DOMContentLoaded', function() {
-            const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+            var tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
             if (tokenInput) {
                 window.csrfToken = tokenInput.value;
             }
         });
 
         // Failsafe: Ensure preloader is hidden
-        setTimeout(() => {
-            const preloader = document.getElementById('dakkn-preloader');
+        setTimeout(function() {
+            var preloader = document.getElementById('dakkn-preloader');
             if (preloader) {
                 preloader.style.opacity = '0';
-                setTimeout(() => {
+                setTimeout(function() {
                     preloader.remove();
                     document.documentElement.removeAttribute('data-dakkn-loading');
                 }, 400);
