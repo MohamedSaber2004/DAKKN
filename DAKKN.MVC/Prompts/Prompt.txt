@@ -1,76 +1,165 @@
-If you want an AI (or ChatGPT) to investigate the real root cause of images not loading across your entire ASP.NET Core MVC site, use this prompt:
+Use the following prompt to perform a complete audit and fix of the About Us section and its integration with the Admin Content Control / Content Management module.
 
-Act as a Senior ASP.NET Core MVC Architect and Debugging Expert.
+Analyze the entire DAKKN solution and perform a complete review of the Landing Page "About Us" section and its integration with the Admin Content Management module.
 
-My project runs successfully, pages load correctly, but ALL images across the entire website are not displayed.
+Current Goal:
+The About Us section should be fully manageable from the Admin Dashboard and should behave consistently with the rest of the landing page content.
 
-Your task is NOT to guess. Your task is to find the ROOT CAUSE.
+Tasks:
 
-Follow this investigation process:
+1. Perform Full Analysis
+   - Locate all files related to:
+     - About Us section
+     - Landing Page rendering
+     - Content Management
+     - CMS settings
+     - DTOs
+     - Commands/Queries
+     - Services
+     - Repositories
+     - Entities
+     - AutoMapper profiles
+     - ViewModels
+     - Localization resources
+   - Trace the complete flow from database → backend → frontend.
 
-1. Analyze the complete project structure.
-2. Check Program.cs and Startup configuration.
-3. Verify UseStaticFiles() middleware configuration.
-4. Verify wwwroot folder existence and structure.
-5. Check image physical locations.
-6. Check image URLs generated in Razor Views.
-7. Check Layout files (_Layout.cshtml).
-8. Check image paths in:
-   - img tags
-   - CSS background-image URLs
-   - JavaScript-generated images
-9. Check environment-specific configurations.
-10. Check publish/deployment settings.
-11. Check IIS/Kestrel static file serving settings.
-12. Check file permissions.
-13. Check case-sensitivity issues.
-14. Check browser Network Tab errors.
-15. Check Console errors.
-16. Check MIME type problems.
-17. Check URL rewriting issues.
-18. Check image upload and storage logic if images come from database.
-19. Check database image paths.
-20. Check Razor path helpers:
-    - Url.Content()
-    - asp-append-version
-    - ~/ paths
+2. Identify Existing Problems
+   - Detect any of the following:
+     - Content not appearing on landing page.
+     - Content not updating after admin changes.
+     - Hardcoded values.
+     - Missing mappings.
+     - Missing database fields.
+     - Incorrect caching.
+     - Localization issues.
+     - Null data issues.
+     - Image upload/display issues.
+     - Broken bindings.
+     - Duplicate content sources.
+     - Inconsistent behavior compared to Hero section.
 
-For every issue found:
+3. Content Management Improvements
+   Ensure the Admin Content Management page allows editing:
 
-- Explain WHY it causes images not to load.
-- Show evidence from the code.
-- Explain how to reproduce the issue.
-- Provide the exact fix.
-- Provide the corrected code.
+   About Us Section:
+   - Section Badge
+   - Main Title
+   - Subtitle
+   - Description
+   - Statistics
+   - Features
+   - Cards
+   - Images
+   - Icons
+   - Button Text
+   - Button Link
 
-Do not stop at symptoms.
+   Verify all fields are:
+   - Saved correctly.
+   - Loaded correctly.
+   - Updated correctly.
+   - Displayed correctly.
 
-Keep investigating until the actual root cause is identified.
+4. Multilingual Support
+   Implement proper Arabic and English support.
 
-At the end provide:
+   For every textual field create:
+   - Arabic Version
+   - English Version
 
-## Root Cause
-[exact reason]
+   Example:
 
-## Proof
-[files and code lines proving it]
+   TitleAr
+   TitleEn
 
-## Fix
-[exact code changes]
+   DescriptionAr
+   DescriptionEn
 
-## Verification Steps
-[how to confirm images are loading again]
+   FeatureTitleAr
+   FeatureTitleEn
 
-Wait until I upload the project files before starting the investigation.
+   FeatureDescriptionAr
+   FeatureDescriptionEn
 
-For an even stronger result, upload these files with the prompt:
+   Requirements:
+   - Admin can edit both languages.
+   - Landing page automatically displays content according to current culture.
+   - No language mixing.
+   - Fallback handling is implemented safely.
 
-Program.cs
-_Layout.cshtml
-Any view containing <img>
-appsettings.json
-Screenshot of Browser Network Tab (F12 → Network)
-Screenshot of Console Tab
-Screenshot of Solution Explorer showing wwwroot
+5. Images and Media
+   Verify:
+   - Images upload successfully.
+   - Images are stored correctly.
+   - URLs are generated correctly.
+   - Old images are cleaned up properly.
+   - Missing images have safe fallbacks.
+   - Responsive rendering works correctly.
 
-This usually allows identification of the exact root cause in a few minutes rather than guessing.
+6. Statistics and Cards
+   If About Us contains cards/statistics/features:
+
+   Verify:
+   - Dynamic rendering.
+   - Proper ordering.
+   - CRUD operations from Admin Dashboard.
+   - Validation.
+   - Localization support.
+
+7. UI/UX Improvements
+   Improve Admin Content Management page:
+
+   - Organize About Us settings in a dedicated section.
+   - Use tabs for Arabic and English content.
+   - Show image previews.
+   - Add validation messages.
+   - Improve form structure.
+   - Prevent accidental data loss.
+
+8. Clean Architecture Validation
+   Ensure implementation follows project architecture:
+
+   - Domain layer remains clean.
+   - Application layer contains business logic.
+   - Infrastructure handles persistence.
+   - MVC layer handles presentation only.
+   - CQRS pattern is respected.
+   - AutoMapper mappings are correct.
+
+9. Performance and Caching
+   Review caching strategy.
+
+   Ensure:
+   - About Us content refreshes after updates.
+   - Cache invalidation works.
+   - Culture-specific cache keys are used.
+   - No stale content remains.
+
+10. Testing Checklist
+   Verify:
+
+   ✓ Admin edits About Us content.
+   ✓ Changes are persisted.
+   ✓ Changes appear immediately on landing page.
+   ✓ Arabic content appears in Arabic mode.
+   ✓ English content appears in English mode.
+   ✓ Images load correctly.
+   ✓ Features/cards/statistics render correctly.
+   ✓ No null reference exceptions.
+   ✓ Mobile responsiveness remains intact.
+
+11. Deliverables
+   Provide:
+
+   - Root cause analysis of all discovered issues.
+   - List of affected files.
+   - Database changes.
+   - Required migrations.
+   - Updated architecture explanation.
+   - Complete implementation details.
+   - Recommended future improvements.
+
+Important:
+Do not apply quick fixes. Perform a full audit of the About Us section and its Content Management integration, identify every issue, and implement a scalable, maintainable solution consistent with the rest of the DAKKN CMS architecture.
+
+I would also recommend asking the AI to review all Landing Page CMS sections together (Hero, About Us, Features, Services, Statistics, Partners, Testimonials, FAQ, Contact, Footer) because many CMS issues originate from the same root causes: missing mappings, localization gaps, cache invalidation, or inconsistent content-loading services. A single audit often fixes multiple sections at once.

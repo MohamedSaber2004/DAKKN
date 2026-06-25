@@ -850,6 +850,8 @@
   "admin_hero_desc": "وصف البانر",
   "admin_hero_btn_text": "نص الزر",
   "admin_hero_image_update": "تحديث صورة البانر",
+  "admin_hero_lang_ar": "العربية",
+  "admin_hero_lang_en": "الإنجليزية",
   "admin_save_changes": "حفظ التغييرات",
   "admin_global_pricing_desc": "تعيين قواعد التسعير والرسوم الإضافية على مستوى الموقع.",
   "admin_pricing_update_all": "تحديث جميع الأسعار",

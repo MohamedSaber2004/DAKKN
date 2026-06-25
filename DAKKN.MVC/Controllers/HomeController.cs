@@ -5,6 +5,7 @@ using DAKKN.Application.Features.Products.Queries.GetProducts;
 using DAKKN.Application.Features.BrandReviews.DTOs;
 using DAKKN.Application.Features.BrandReviews.Queries.GetDisplayedBrandReviews;
 using DAKKN.Application.Localization;
+using DAKKN.MVC.Helpers;
 using DAKKN.MVC.Models;
 using DAKKN.MVC.ViewModels.Admin;
 using DAKKN.MVC.ViewModels.Landing;
@@ -43,7 +44,10 @@ namespace DAKKN.MVC.Controllers
             var cmsSettings = await _mediator.Send(new GetLandingPageSettingsQuery());
             var brandReviews = await _mediator.Send(new GetDisplayedBrandReviewsQuery());
 
-            var hasCmsData = cmsSettings.Hero != "{}" && !string.IsNullOrEmpty(cmsSettings.Hero);
+            var hasCmsData = IsSectionHasData(cmsSettings.Hero)
+                || IsSectionHasData(cmsSettings.About)
+                || IsSectionHasData(cmsSettings.Testimonials)
+                || IsSectionHasData(cmsSettings.Contact);
 
             var sectionOrder = DeserializeOrDefault<SectionOrderViewModel>(cmsSettings.SectionOrder);
             var visibleSections = sectionOrder.Sections
@@ -63,8 +67,8 @@ namespace DAKKN.MVC.Controllers
                 FeaturedProducts = featuredProducts,
                 Categories = categories,
                 AllProducts = allProducts,
-                Hero = DeserializeOrDefault<HeroSettingsViewModel>(cmsSettings.Hero),
-                About = DeserializeOrDefault<AboutSettingsViewModel>(cmsSettings.About),
+                Hero = HeroHelper.Deserialize(cmsSettings.Hero),
+                About = AboutHelper.Deserialize(cmsSettings.About),
                 Testimonials = MergeTestimonials(DeserializeOrDefault<TestimonialsSettingsViewModel>(cmsSettings.Testimonials), brandReviews),
                 Contact = DeserializeOrDefault<ContactSettingsViewModel>(cmsSettings.Contact),
                 HasCmsData = hasCmsData,
@@ -95,6 +99,11 @@ namespace DAKKN.MVC.Controllers
                 cms.Reviews = cms.Reviews.OrderByDescending(r => r.Rating).ToList();
             }
             return cms;
+        }
+
+        private static bool IsSectionHasData(string json)
+        {
+            return json != "{}" && !string.IsNullOrEmpty(json);
         }
 
         private static T DeserializeOrDefault<T>(string json) where T : new()

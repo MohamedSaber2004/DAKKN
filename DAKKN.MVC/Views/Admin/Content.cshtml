@@ -85,30 +85,68 @@
         <!-- Section: Hero Settings -->
         <div id="panel-hero-banner" class="content-panel hidden bg-surface dark:bg-inverse-surface rounded-[32px] shadow-medium border border-border dark:border-outline/10 p-xl">
             <h2 class="font-h2 text-h2 font-bold mb-xl">@Localizer["admin_hero_settings"]</h2>
+
+            <!-- Language Tabs -->
+            <div class="flex gap-sm mb-xl border-b border-border dark:border-outline/10 pb-sm">
+                <button onclick="switchHeroLang('ar')" id="hero-lang-ar" class="hero-lang-tab active px-lg py-md rounded-xl font-bold text-sm transition-all">@Localizer["admin_hero_lang_ar"]</button>
+                <button onclick="switchHeroLang('en')" id="hero-lang-en" class="hero-lang-tab px-lg py-md rounded-xl font-bold text-sm transition-all">@Localizer["admin_hero_lang_en"]</button>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
+                <!-- Language-Specific Fields -->
                 <div class="space-y-lg">
-                    <div class="flex flex-col gap-xs">
-                        <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_badge"]</label>
-                        <input type="text" value="@Model.Hero.Badge" placeholder="e.g. Industrial Grade Quality" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md focus:ring-primary focus:border-primary transition-all">
-                    </div>
-                    <div class="flex flex-col gap-xs">
-                        <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_title_segments"]</label>
-                        <div class="grid grid-cols-2 gap-sm">
-                            <input type="text" value="@Model.Hero.TitleA" placeholder="Quality You Can" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
-                            <input type="text" value="@Model.Hero.TitleB" placeholder="Feel" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md text-primary font-bold">
-                            <input type="text" value="@Model.Hero.TitleC" placeholder=", Styles You" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
-                            <input type="text" value="@Model.Hero.TitleD" placeholder="Love" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md text-secondary font-bold">
+                    <!-- Arabic Fields -->
+                    <div id="hero-fields-ar" class="hero-lang-fields">
+                        <div class="flex flex-col gap-xs">
+                            <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_badge"] <span class="text-xs text-outline">(Ar)</span></label>
+                            <input id="hero-badge-ar" type="text" value="@Model.Hero.BadgeAr" placeholder="بادج البانر" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md focus:ring-primary focus:border-primary transition-all">
                         </div>
+                        <div class="flex flex-col gap-xs">
+                            <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_title_segments"] <span class="text-xs text-outline">(Ar)</span></label>
+                            <div class="grid grid-cols-2 gap-sm">
+                                <input id="hero-title-a-ar" type="text" value="@Model.Hero.TitleAAr" placeholder="جودة" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                                <input id="hero-title-b-ar" type="text" value="@Model.Hero.TitleBAr" placeholder="تستحق" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md text-primary font-bold">
+                                <input id="hero-title-c-ar" type="text" value="@Model.Hero.TitleCAr" placeholder="، وأنماط" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                                <input id="hero-title-d-ar" type="text" value="@Model.Hero.TitleDAr" placeholder="تعشقها" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md text-secondary font-bold">
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-xs">
+                            <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_desc"] <span class="text-xs text-outline">(Ar)</span></label>
+                            <textarea id="hero-desc-ar" rows="4" placeholder="وصف البانر بالعربية" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.Hero.DescriptionAr</textarea>
+                        </div>
+                        @* <div class="flex flex-col gap-xs">
+                            <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_btn_text"] <span class="text-xs text-outline">(Ar)</span></label>
+                            <input id="hero-btn-text-ar" type="text" value="@Model.Hero.ButtonTextAr" placeholder="نص الزر" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                        </div> *@
                     </div>
-                    <div class="flex flex-col gap-xs">
-                        <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_desc"]</label>
-                        <textarea rows="4" placeholder="@Localizer["admin_hero_desc_ph"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.Hero.Description</textarea>
-                    </div>
-                    <div class="flex flex-col gap-xs">
-                        <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_btn_text"]</label>
-                        <input id="hero-btn-text" type="text" value="@Model.Hero.ButtonText" placeholder="@Localizer["btn_shop"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+
+                    <!-- English Fields -->
+                    <div id="hero-fields-en" class="hero-lang-fields hidden">
+                        <div class="flex flex-col gap-xs">
+                            <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_badge"] <span class="text-xs text-outline">(En)</span></label>
+                            <input id="hero-badge-en" type="text" value="@Model.Hero.BadgeEn" placeholder="e.g. Industrial Grade Quality" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md focus:ring-primary focus:border-primary transition-all">
+                        </div>
+                        <div class="flex flex-col gap-xs">
+                            <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_title_segments"] <span class="text-xs text-outline">(En)</span></label>
+                            <div class="grid grid-cols-2 gap-sm">
+                                <input id="hero-title-a-en" type="text" value="@Model.Hero.TitleAEn" placeholder="Quality You Can" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                                <input id="hero-title-b-en" type="text" value="@Model.Hero.TitleBEn" placeholder="Feel" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md text-primary font-bold">
+                                <input id="hero-title-c-en" type="text" value="@Model.Hero.TitleCEn" placeholder=", Styles You" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                                <input id="hero-title-d-en" type="text" value="@Model.Hero.TitleDEn" placeholder="Love" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md text-secondary font-bold">
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-xs">
+                            <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_desc"] <span class="text-xs text-outline">(En)</span></label>
+                            <textarea id="hero-desc-en" rows="4" placeholder="@Localizer["admin_hero_desc_ph"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.Hero.DescriptionEn</textarea>
+                        </div>
+                        @* <div class="flex flex-col gap-xs">
+                            <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_btn_text"] <span class="text-xs text-outline">(En)</span></label>
+                            <input id="hero-btn-text-en" type="text" value="@Model.Hero.ButtonTextEn" placeholder="@Localizer["btn_shop"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                        </div> *@
                     </div>
                 </div>
+
+                <!-- Image Upload (Shared) -->
                 <div class="flex flex-col gap-lg">
                     <div class="aspect-video rounded-3xl bg-surface-container dark:bg-surface-container-high border-2 border-dashed border-border dark:border-outline/20 flex flex-col items-center justify-center p-xl relative group overflow-hidden">
                         <img id="hero-image-preview" src="@Model.Hero.ImageUrl" class="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-10 transition-opacity">
@@ -125,47 +163,94 @@
         <!-- Section: About Us -->
         <div id="panel-about-us" class="content-panel hidden bg-surface dark:bg-inverse-surface rounded-[32px] shadow-medium border border-border dark:border-outline/10 p-xl">
             <h2 class="font-h2 text-h2 font-bold mb-xl">@Localizer["section_about"]</h2>
+
+            <!-- Language Tabs -->
+            <div class="flex gap-sm mb-xl border-b border-border dark:border-outline/10 pb-sm">
+                <button onclick="switchAboutLang('ar')" id="about-lang-ar" class="about-lang-tab active px-lg py-md rounded-xl font-bold text-sm transition-all">@Localizer["admin_hero_lang_ar"]</button>
+                <button onclick="switchAboutLang('en')" id="about-lang-en" class="about-lang-tab px-lg py-md rounded-xl font-bold text-sm transition-all">@Localizer["admin_hero_lang_en"]</button>
+            </div>
+
             <div class="space-y-xl">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
-                    <div class="flex flex-col gap-xs">
-                        <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_about_title"]</label>
-                        <input id="about-title" type="text" value="@Model.About.Title" placeholder="@Localizer["admin_about_title_ph"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                <!-- Arabic Fields -->
+                <div id="about-fields-ar" class="about-lang-fields">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-2">
+                        <div class="flex flex-col gap-xs">
+                            <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_about_title"] <span class="text-xs text-outline">(Ar)</span></label>
+                            <input id="about-title-ar" type="text" value="@Model.About.TitleAr" placeholder="عنوان القسم" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                        </div>
+                        <div class="flex flex-col gap-xs">
+                            <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_about_desc"] <span class="text-xs text-outline">(Ar)</span></label>
+                            <textarea id="about-desc-ar" rows="2" placeholder="وصف القسم" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.About.DescriptionAr</textarea>
+                        </div>
                     </div>
-                    <div class="flex flex-col gap-xs">
-                        <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_about_desc"]</label>
-                        <textarea id="about-desc" rows="2" placeholder="@Localizer["admin_about_desc_ph"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.About.Description</textarea>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+                        <div class="bg-surface-container dark:bg-surface-container-high p-lg rounded-2xl border border-border">
+                            <div class="flex items-center gap-md mb-md">
+                                <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">1</span>
+                                <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 1) <span class="text-xs text-outline">(Ar)</span></h4>
+                            </div>
+                            <input id="about-feat1-title-ar" type="text" value="@Model.About.Feature1TitleAr" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-border rounded-lg p-md mb-sm">
+                            <textarea id="about-feat1-desc-ar" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-border rounded-lg p-md text-sm">@Model.About.Feature1DescAr</textarea>
+                        </div>
+                        <div class="bg-surface-container dark:bg-surface-container-high p-lg rounded-2xl border border-border">
+                            <div class="flex items-center gap-md mb-md">
+                                <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">2</span>
+                                <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 2) <span class="text-xs text-outline">(Ar)</span></h4>
+                            </div>
+                            <input id="about-feat2-title-ar" type="text" value="@Model.About.Feature2TitleAr" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-border rounded-lg p-md mb-sm">
+                            <textarea id="about-feat2-desc-ar" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-border rounded-lg p-md text-sm">@Model.About.Feature2DescAr</textarea>
+                        </div>
+                        <div class="bg-surface-container dark:bg-surface-container-high p-lg rounded-2xl border border-border">
+                            <div class="flex items-center gap-md mb-md">
+                                <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">3</span>
+                                <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 3) <span class="text-xs text-outline">(Ar)</span></h4>
+                            </div>
+                            <input id="about-feat3-title-ar" type="text" value="@Model.About.Feature3TitleAr" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-border rounded-lg p-md mb-sm">
+                            <textarea id="about-feat3-desc-ar" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-border rounded-lg p-md text-sm">@Model.About.Feature3DescAr</textarea>
+                        </div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
-                    <!-- Feature 1 -->
-                    <div class="bg-surface-container dark:bg-surface-container-high p-lg rounded-2xl border border-border">
-                        <div class="flex items-center gap-md mb-md">
-                            <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">1</span>
-                            <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 1)</h4>
+                <!-- English Fields -->
+                <div id="about-fields-en" class="about-lang-fields hidden">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-2">
+                        <div class="flex flex-col gap-xs">
+                            <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_about_title"] <span class="text-xs text-outline">(En)</span></label>
+                            <input id="about-title-en" type="text" value="@Model.About.TitleEn" placeholder="@Localizer["admin_about_title_ph"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
                         </div>
-                            <input id="about-feat1-title" type="text" value="@Model.About.Feature1Title" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-border rounded-lg p-md mb-sm">
-                        <textarea id="about-feat1-desc" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-border rounded-lg p-md text-sm">@Model.About.Feature1Desc</textarea>
+                        <div class="flex flex-col gap-xs">
+                            <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_about_desc"] <span class="text-xs text-outline">(En)</span></label>
+                            <textarea id="about-desc-en" rows="2" placeholder="@Localizer["admin_about_desc_ph"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.About.DescriptionEn</textarea>
+                        </div>
                     </div>
-                    <!-- Feature 2 -->
-                    <div class="bg-surface-container dark:bg-surface-container-high p-lg rounded-2xl border border-border">
-                        <div class="flex items-center gap-md mb-md">
-                            <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">2</span>
-                            <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 2)</h4>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+                        <div class="bg-surface-container dark:bg-surface-container-high p-lg rounded-2xl border border-border">
+                            <div class="flex items-center gap-md mb-md">
+                                <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">1</span>
+                                <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 1) <span class="text-xs text-outline">(En)</span></h4>
+                            </div>
+                            <input id="about-feat1-title-en" type="text" value="@Model.About.Feature1TitleEn" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-border rounded-lg p-md mb-sm">
+                            <textarea id="about-feat1-desc-en" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-border rounded-lg p-md text-sm">@Model.About.Feature1DescEn</textarea>
                         </div>
-                        <input id="about-feat2-title" type="text" value="@Model.About.Feature2Title" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-border rounded-lg p-md mb-sm">
-                        <textarea id="about-feat2-desc" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-border rounded-lg p-md text-sm">@Model.About.Feature2Desc</textarea>
-                    </div>
-                    <!-- Feature 3 -->
-                    <div class="bg-surface-container dark:bg-surface-container-high p-lg rounded-2xl border border-border">
-                        <div class="flex items-center gap-md mb-md">
-                            <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">3</span>
-                            <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 3)</h4>
+                        <div class="bg-surface-container dark:bg-surface-container-high p-lg rounded-2xl border border-border">
+                            <div class="flex items-center gap-md mb-md">
+                                <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">2</span>
+                                <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 2) <span class="text-xs text-outline">(En)</span></h4>
+                            </div>
+                            <input id="about-feat2-title-en" type="text" value="@Model.About.Feature2TitleEn" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-border rounded-lg p-md mb-sm">
+                            <textarea id="about-feat2-desc-en" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-border rounded-lg p-md text-sm">@Model.About.Feature2DescEn</textarea>
                         </div>
-                        <input id="about-feat3-title" type="text" value="@Model.About.Feature3Title" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-border rounded-lg p-md mb-sm">
-                        <textarea id="about-feat3-desc" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-border rounded-lg p-md text-sm">@Model.About.Feature3Desc</textarea>
+                        <div class="bg-surface-container dark:bg-surface-container-high p-lg rounded-2xl border border-border">
+                            <div class="flex items-center gap-md mb-md">
+                                <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">3</span>
+                                <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 3) <span class="text-xs text-outline">(En)</span></h4>
+                            </div>
+                            <input id="about-feat3-title-en" type="text" value="@Model.About.Feature3TitleEn" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-border rounded-lg p-md mb-sm">
+                            <textarea id="about-feat3-desc-en" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-border rounded-lg p-md text-sm">@Model.About.Feature3DescEn</textarea>
+                        </div>
                     </div>
                 </div>
+
                 <button onclick="saveAboutSection()" class="bg-primary text-on-primary px-xl py-md rounded-full font-bold">@Localizer["admin_save_changes"]</button>
             </div>
         </div>
@@ -340,6 +425,20 @@
     .filled-icon {
         font-variation-settings: 'FILL' 1;
     }
+
+    .hero-lang-tab, .about-lang-tab {
+        color: var(--md-sys-color-text-secondary);
+        border: 1px solid transparent;
+    }
+    .hero-lang-tab:hover, .about-lang-tab:hover {
+        background-color: var(--md-sys-color-surface-container-high);
+        color: var(--md-sys-color-primary);
+    }
+    .hero-lang-tab.active, .about-lang-tab.active {
+        background-color: var(--md-sys-color-primary-container);
+        color: var(--md-sys-color-on-primary-container);
+        border-color: var(--md-sys-color-primary);
+    }
 </style>
 
 @section Scripts {
@@ -447,19 +546,35 @@
             .catch(e => console.error('Upload error:', e));
         }
 
-        function saveHeroSection() {
-            const data = {
-                hero: {
-                    badge: document.querySelector('#panel-hero-banner input[placeholder*="Industrial Grade Quality"]')?.value || '',
-                    titleA: document.querySelector('#panel-hero-banner .grid-cols-2 input:nth-child(1)')?.value || '',
-                    titleB: document.querySelector('#panel-hero-banner .grid-cols-2 input:nth-child(2)')?.value || '',
-                    titleC: document.querySelector('#panel-hero-banner .grid-cols-2 input:nth-child(3)')?.value || '',
-                    titleD: document.querySelector('#panel-hero-banner .grid-cols-2 input:nth-child(4)')?.value || '',
-                    description: document.querySelector('#panel-hero-banner textarea')?.value || '',
-                    buttonText: document.getElementById('hero-btn-text')?.value || '',
-                    imageUrl: document.getElementById('hero-image-url-input')?.value || ''
-                }
+        function switchHeroLang(lang) {
+            document.querySelectorAll('.hero-lang-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('hero-lang-' + lang).classList.add('active');
+            document.querySelectorAll('.hero-lang-fields').forEach(f => f.classList.add('hidden'));
+            document.getElementById('hero-fields-' + lang).classList.remove('hidden');
+        }
+
+        function collectHeroData() {
+            return {
+                badgeAr: document.getElementById('hero-badge-ar')?.value || '',
+                titleAAr: document.getElementById('hero-title-a-ar')?.value || '',
+                titleBAr: document.getElementById('hero-title-b-ar')?.value || '',
+                titleCAr: document.getElementById('hero-title-c-ar')?.value || '',
+                titleDAr: document.getElementById('hero-title-d-ar')?.value || '',
+                descriptionAr: document.getElementById('hero-desc-ar')?.value || '',
+                buttonTextAr: document.getElementById('hero-btn-text-ar')?.value || '',
+                badgeEn: document.getElementById('hero-badge-en')?.value || '',
+                titleAEn: document.getElementById('hero-title-a-en')?.value || '',
+                titleBEn: document.getElementById('hero-title-b-en')?.value || '',
+                titleCEn: document.getElementById('hero-title-c-en')?.value || '',
+                titleDEn: document.getElementById('hero-title-d-en')?.value || '',
+                descriptionEn: document.getElementById('hero-desc-en')?.value || '',
+                buttonTextEn: document.getElementById('hero-btn-text-en')?.value || '',
+                imageUrl: document.getElementById('hero-image-url-input')?.value || ''
             };
+        }
+
+        function saveHeroSection() {
+            const data = { hero: collectHeroData() };
 
             fetch('/admin/content/update', {
                 method: 'POST',
@@ -502,19 +617,36 @@
             });
         }
 
-        function saveAboutSection() {
-            const data = {
-                about: {
-                    title: document.getElementById('about-title')?.value || '',
-                    description: document.getElementById('about-desc')?.value || '',
-                    feature1Title: document.getElementById('about-feat1-title')?.value || '',
-                    feature1Desc: document.getElementById('about-feat1-desc')?.value || '',
-                    feature2Title: document.getElementById('about-feat2-title')?.value || '',
-                    feature2Desc: document.getElementById('about-feat2-desc')?.value || '',
-                    feature3Title: document.getElementById('about-feat3-title')?.value || '',
-                    feature3Desc: document.getElementById('about-feat3-desc')?.value || ''
-                }
+        function switchAboutLang(lang) {
+            document.querySelectorAll('.about-lang-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('about-lang-' + lang).classList.add('active');
+            document.querySelectorAll('.about-lang-fields').forEach(f => f.classList.add('hidden'));
+            document.getElementById('about-fields-' + lang).classList.remove('hidden');
+        }
+
+        function collectAboutData() {
+            return {
+                titleAr: document.getElementById('about-title-ar')?.value || '',
+                titleEn: document.getElementById('about-title-en')?.value || '',
+                descriptionAr: document.getElementById('about-desc-ar')?.value || '',
+                descriptionEn: document.getElementById('about-desc-en')?.value || '',
+                feature1TitleAr: document.getElementById('about-feat1-title-ar')?.value || '',
+                feature1TitleEn: document.getElementById('about-feat1-title-en')?.value || '',
+                feature1DescAr: document.getElementById('about-feat1-desc-ar')?.value || '',
+                feature1DescEn: document.getElementById('about-feat1-desc-en')?.value || '',
+                feature2TitleAr: document.getElementById('about-feat2-title-ar')?.value || '',
+                feature2TitleEn: document.getElementById('about-feat2-title-en')?.value || '',
+                feature2DescAr: document.getElementById('about-feat2-desc-ar')?.value || '',
+                feature2DescEn: document.getElementById('about-feat2-desc-en')?.value || '',
+                feature3TitleAr: document.getElementById('about-feat3-title-ar')?.value || '',
+                feature3TitleEn: document.getElementById('about-feat3-title-en')?.value || '',
+                feature3DescAr: document.getElementById('about-feat3-desc-ar')?.value || '',
+                feature3DescEn: document.getElementById('about-feat3-desc-en')?.value || ''
             };
+        }
+
+        function saveAboutSection() {
+            const data = { about: collectAboutData() };
             postCmsData(data);
         }
 
@@ -546,29 +678,11 @@
                 sectionOrder = { sections: sections };
             }
 
-            // Collect hero
-            const hero = {
-                badge: document.querySelector('#panel-hero-banner input[placeholder*="Industrial Grade Quality"]')?.value || '',
-                titleA: document.querySelector('#panel-hero-banner .grid-cols-2 input:nth-child(1)')?.value || '',
-                titleB: document.querySelector('#panel-hero-banner .grid-cols-2 input:nth-child(2)')?.value || '',
-                titleC: document.querySelector('#panel-hero-banner .grid-cols-2 input:nth-child(3)')?.value || '',
-                titleD: document.querySelector('#panel-hero-banner .grid-cols-2 input:nth-child(4)')?.value || '',
-                description: document.querySelector('#panel-hero-banner textarea')?.value || '',
-                buttonText: document.getElementById('hero-btn-text')?.value || '',
-                imageUrl: document.getElementById('hero-image-url-input')?.value || ''
-            };
+            // Collect hero (bilingual)
+            const hero = collectHeroData();
 
-            // Collect about
-            const about = {
-                title: document.getElementById('about-title')?.value || '',
-                description: document.getElementById('about-desc')?.value || '',
-                feature1Title: document.getElementById('about-feat1-title')?.value || '',
-                feature1Desc: document.getElementById('about-feat1-desc')?.value || '',
-                feature2Title: document.getElementById('about-feat2-title')?.value || '',
-                feature2Desc: document.getElementById('about-feat2-desc')?.value || '',
-                feature3Title: document.getElementById('about-feat3-title')?.value || '',
-                feature3Desc: document.getElementById('about-feat3-desc')?.value || ''
-            };
+            // Collect about (bilingual)
+            const about = collectAboutData();
 
             // Collect contact
             const contact = {

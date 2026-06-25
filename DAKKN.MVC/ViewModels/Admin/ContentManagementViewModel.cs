@@ -39,29 +39,46 @@ namespace DAKKN.MVC.ViewModels.Admin
 
     public class HeroSettingsViewModel
     {
-        public string Badge { get; set; } = "Industrial Grade Quality";
-        public string TitleA { get; set; } = "Quality You Can";
-        public string TitleB { get; set; } = "Feel";
-        public string TitleC { get; set; } = ", Styles You";
-        public string TitleD { get; set; } = "Love";
-        public string Description { get; set; } = "Engineered with 5-layer vinyl construction...";
-        public string ButtonText { get; set; } = "Shop Best Sellers";
+        public string BadgeAr { get; set; } = string.Empty;
+        public string TitleAAr { get; set; } = string.Empty;
+        public string TitleBAr { get; set; } = string.Empty;
+        public string TitleCAr { get; set; } = string.Empty;
+        public string TitleDAr { get; set; } = string.Empty;
+        public string DescriptionAr { get; set; } = string.Empty;
+        public string ButtonTextAr { get; set; } = string.Empty;
+
+        public string BadgeEn { get; set; } = string.Empty;
+        public string TitleAEn { get; set; } = string.Empty;
+        public string TitleBEn { get; set; } = string.Empty;
+        public string TitleCEn { get; set; } = string.Empty;
+        public string TitleDEn { get; set; } = string.Empty;
+        public string DescriptionEn { get; set; } = string.Empty;
+        public string ButtonTextEn { get; set; } = string.Empty;
+
         public string ImageUrl { get; set; } = "https://lh3.googleusercontent.com/...";
     }
 
     public class AboutSettingsViewModel
     {
-        public string Title { get; set; } = "Engineered for Extremes";
-        public string Description { get; set; } = "Our stickers aren't just printed; they are manufactured...";
-        
-        public string Feature1Title { get; set; } = "5-Layer Construction";
-        public string Feature1Desc { get; set; } = "From the strong adhesive base...";
-        
-        public string Feature2Title { get; set; } = "Vibrant Customization";
-        public string Feature2Desc { get; set; } = "High-fidelity 8-color printing...";
-        
-        public string Feature3Title { get; set; } = "Industrial Durability";
-        public string Feature3Desc { get; set; } = "Dishwasher safe, weather-proof...";
+        public string TitleAr { get; set; } = string.Empty;
+        public string TitleEn { get; set; } = string.Empty;
+        public string DescriptionAr { get; set; } = string.Empty;
+        public string DescriptionEn { get; set; } = string.Empty;
+
+        public string Feature1TitleAr { get; set; } = string.Empty;
+        public string Feature1TitleEn { get; set; } = string.Empty;
+        public string Feature1DescAr { get; set; } = string.Empty;
+        public string Feature1DescEn { get; set; } = string.Empty;
+
+        public string Feature2TitleAr { get; set; } = string.Empty;
+        public string Feature2TitleEn { get; set; } = string.Empty;
+        public string Feature2DescAr { get; set; } = string.Empty;
+        public string Feature2DescEn { get; set; } = string.Empty;
+
+        public string Feature3TitleAr { get; set; } = string.Empty;
+        public string Feature3TitleEn { get; set; } = string.Empty;
+        public string Feature3DescAr { get; set; } = string.Empty;
+        public string Feature3DescEn { get; set; } = string.Empty;
     }
 
     public class TestimonialsSettingsViewModel

@@ -38,6 +38,7 @@ using DAKKN.Application.Features.CMS.DTOs;
 using DAKKN.Application.Features.CMS.Queries.GetLandingPageSettings;
 using DAKKN.Application.Localization;
 using DAKKN.Domain.Enums;
+using DAKKN.MVC.Helpers;
 using DAKKN.MVC.ViewModels.Admin;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -561,8 +562,8 @@ namespace DAKKN.MVC.Controllers
             return new ContentManagementViewModel
             {
                 SectionOrder = DeserializeOrDefault<SectionOrderViewModel>(dto.SectionOrder),
-                Hero =         DeserializeOrDefault<HeroSettingsViewModel>(dto.Hero),
-                About =        DeserializeOrDefault<AboutSettingsViewModel>(dto.About),
+                Hero =         HeroHelper.Deserialize(dto.Hero),
+                About =        AboutHelper.Deserialize(dto.About),
                 Categories =   DeserializeOrDefault<FeaturedCategoriesViewModel>(dto.Categories),
                 Products =     DeserializeOrDefault<FeaturedProductsViewModel>(dto.Products),
                 Testimonials = DeserializeOrDefault<TestimonialsSettingsViewModel>(dto.Testimonials),

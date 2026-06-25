@@ -851,6 +851,8 @@
   "admin_hero_desc": "Hero Description",
   "admin_hero_btn_text": "Button Text",
   "admin_hero_image_update": "Update Hero Image",
+  "admin_hero_lang_ar": "Arabic",
+  "admin_hero_lang_en": "English",
   "admin_save_changes": "Save Changes",
   "admin_global_pricing_desc": "Set site-wide pricing rules and surcharges.",
   "admin_pricing_update_all": "Update All Prices",
