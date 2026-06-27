@@ -20,5 +20,9 @@ namespace DAKKN.MVC.ViewModels.Landing
         public HashSet<string> VisibleSections { get; set; } = new();
         public List<string> OrderedSectionIds { get; set; } = new();
         public string BaseUrl { get; set; } = string.Empty;
+        public int TotalProducts { get; set; }
+        public int TotalCategories { get; set; }
+        public int TotalCustomers { get; set; }
+        public int TotalOrders { get; set; }
     }
 }

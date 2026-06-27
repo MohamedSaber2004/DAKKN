@@ -23,15 +23,6 @@
             var settings = await Mediator.Send(new GetUserSettingsQuery());
             isDarkMode = settings.IsDarkMode;
             themeName = settings.Theme;
-            primaryColor = settings.PrimaryColor ?? "#0E908C";
-
-            if (primaryColor.StartsWith("#") && primaryColor.Length == 7)
-            {
-                var r = Convert.ToInt32(primaryColor.Substring(1, 2), 16);
-                var g = Convert.ToInt32(primaryColor.Substring(3, 2), 16);
-                var b = Convert.ToInt32(primaryColor.Substring(5, 2), 16);
-                primaryRgb = $"{r}, {g}, {b}";
-            }
         }
         catch { /* Fallback to default */ }
     }
@@ -42,7 +33,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta name="robots" content="noindex, nofollow" />
-    <title>@ViewData["Title"] - @Localizer["brand"] @Localizer["admin_dashboard"]</title>
+    <title>@ViewData["Title"]</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -57,6 +48,7 @@
 
     <!-- Admin Stylesheet -->
     <link rel="stylesheet" href="~/css/landing.css" asp-append-version="true" />
+<link rel="stylesheet" href="~/css/common.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
 
     <style>
@@ -173,15 +165,6 @@
 
     <!-- SideNavBar -->
     <aside id="admin-sidebar" class="hidden md:flex flex-col admin-sidebar ltr:left-0 ltr:border-r rtl:right-0 rtl:border-l h-screen w-64 shadow-medium z-40 relative flex-shrink-0 transition-all duration-300 bg-surface dark:bg-[#1E293B] border-border dark:border-white/5">
-        <div class="p-lg border-b border-border dark:border-white/5 flex flex-col items-center justify-center gap-sm group cursor-pointer overflow-hidden">
-            <div class="admin-logo-container transition-all duration-300">
-                <img src="/images/logo.png" alt='@Localizer["logo_alt"]' class="h-16 admin-logo-img dark:brightness-125 transition-all duration-300" />
-            </div>
-            <div class="admin-brand-info text-center transition-all duration-300">
-                <h1 class="font-h2 text-h2 font-bold text-primary dark:text-primary-light whitespace-nowrap">@Localizer["brand"]</h1>
-                <p class="font-body text-body text-text-secondary dark:text-outline-variant whitespace-nowrap">@Localizer["admin_dashboard"]</p>
-            </div>
-        </div>
         <nav class="flex-1 overflow-y-auto custom-scrollbar py-md px-sm flex flex-col gap-sm">
             <a asp-controller="Admin" asp-action="Index" class="nav-item flex items-center gap-md @(currentAction == "Index" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-xl px-4 py-3 transition-all duration-200" title="@Localizer["admin_overview"]">
                 <span class="material-symbols-outlined @(currentAction == "Index" ? "filled-icon" : "") flex-shrink-0">dashboard</span>
@@ -216,10 +199,6 @@
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["brand_reviews_admin_title"]</span>
             </a>
 
-            <a asp-controller="Admin" asp-action="Shipping" class="nav-item flex items-center gap-md @(currentAction == "Shipping" || currentAction == "CreateShipping" || currentAction == "EditShipping" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer[LocalizationKeys.AdminShipping.Title.Key]">
-                <span class="material-symbols-outlined @(currentAction == "Shipping" || currentAction == "CreateShipping" || currentAction == "EditShipping" ? "filled-icon" : "") flex-shrink-0">local_shipping</span>
-                <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer[LocalizationKeys.AdminShipping.Title.Key]</span>
-            </a>
 
             <a asp-controller="Admin" asp-action="Settings" class="nav-item flex items-center gap-md @(currentAction == "Settings" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl mt-auto transition-all duration-200" title="@Localizer["admin_settings"]">
                 <span class="material-symbols-outlined @(currentAction == "Settings" ? "filled-icon" : "") flex-shrink-0">settings</span>
@@ -254,7 +233,7 @@
                     <span class="material-symbols-outlined" id="sidebar-toggle-icon">menu_open</span>
                 </button>
                 <div class="admin-logo-container md:hidden">
-                    <img src="/images/logo.png" alt='@Localizer["logo_alt"]' class="h-10 admin-logo-img dark:brightness-125" />
+                    
                 </div>
                 <div class="hidden md:block">
                     <h2 class="font-h3 text-h3 font-bold text-text-primary dark:text-white">@ViewData["Title"]</h2>

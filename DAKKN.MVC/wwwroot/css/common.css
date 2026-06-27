@@ -1,0 +1,43 @@
+/* common.css – shared design tokens and palette */
+:root {
+  /* Primary brand color (used across dashboards and landing) */
+  --primary-color: #0E908C;
+  --primary-rgb: 14, 144, 140;
+  /* Light and dark background colors */
+  --background-light: #F8FAFC; /* Tailwind gray-50 */
+  --background-dark: #0F172A; /* Tailwind slate-900 */
+  /* Text colors */
+  --text-primary-light: #1F2937; /* gray-800 */
+  --text-primary-dark: #F9FAFB; /* gray-50 */
+  /* Surface colors for cards, inputs, etc. */
+  --surface-light: #FFFFFF; /* white */
+  --surface-dark: #1E293B; /* slate-800 */
+}
+
+/* Utility classes using the variables (fallback for Tailwind) */
+.bg-primary { background-color: var(--primary-color) !important; }
+.text-primary { color: var(--primary-color) !important; }
+.bg-background { background-color: var(--background-light) !important; }
+.dark .bg-background { background-color: var(--background-dark) !important; }
+.text-text-primary { color: var(--text-primary-light) !important; }
+.dark .text-text-primary { color: var(--text-primary-dark) !important; }
+.bg-surface { background-color: var(--surface-light) !important; }
+.dark .bg-surface { background-color: var(--surface-dark) !important; }
+
+/* ── Success / Error / Warning Tokens ─────────────── */
+:root {
+  --success-color: #059669;
+  --success-bg:    #f0fdf4;
+  --error-color:   #ba1a1a;
+  --error-bg:      #fef2f2;
+  --warn-color:    #d97706;
+  --warn-bg:       #fffbeb;
+}
+.dark {
+  --success-color: #34c97a;
+  --success-bg:    #0a1f17;
+  --error-color:   #f06464;
+  --error-bg:      #1f0d0d;
+  --warn-color:    #f5a623;
+  --warn-bg:       #1f180a;
+}

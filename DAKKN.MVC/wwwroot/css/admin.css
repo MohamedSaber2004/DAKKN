@@ -29,15 +29,15 @@
 
 /* ── Admin Dashboard Token System ─────────────────── */
 :root {
-  --admin-page-bg:       #f8fafb;
-  --admin-sidebar-bg:    #ffffff;
-  --admin-card-bg:       #ffffff;
-  --admin-border:        #e2e8f0; /* slate-200 */
-  --admin-input-bg:      #f1f5f9; /* slate-100 */
-  --admin-input-border:  #cbd5e1; /* slate-300 */
-  --admin-text-primary:  #0f172a; /* slate-900 */
-  --admin-text-secondary:#475569; /* slate-600 */
-  --admin-text-muted:    #94a3b8; /* slate-400 */
+  --admin-page-bg:       #F8FAFB;
+  --admin-sidebar-bg:    #FFFFFF;
+  --admin-card-bg:       #FFFFFF;
+  --admin-border:        #E8EDF0;
+  --admin-input-bg:      #EAEFEE;
+  --admin-input-border:  #BCC9C8;
+  --admin-text-primary:  #1A1A1A;
+  --admin-text-secondary:#6B7280;
+  --admin-text-muted:    #9CA3AF;
 
   /* Status semantic tokens */
   --admin-success-bg:    #f0fdf4;
@@ -49,15 +49,15 @@
 }
 
 .dark {
-  --admin-page-bg:       #0d1117;
-  --admin-sidebar-bg:    #111720;
-  --admin-card-bg:       #161d27;
-  --admin-border:        #1e2a38;
-  --admin-input-bg:      #1a2535;
-  --admin-input-border:  #253245;
-  --admin-text-primary:  #e8edf4;
-  --admin-text-secondary:#7d93ae;
-  --admin-text-muted:    #4a5e74;
+  --admin-page-bg:       #0F172A;
+  --admin-sidebar-bg:    #1E293B;
+  --admin-card-bg:       #1E293B;
+  --admin-border:        rgba(255, 255, 255, 0.05);
+  --admin-input-bg:      rgba(0, 0, 0, 0.2);
+  --admin-input-border:  rgba(255, 255, 255, 0.1);
+  --admin-text-primary:  #F9FAFB;
+  --admin-text-secondary:#9CA3AF;
+  --admin-text-muted:    #6B7280;
 
   /* Status semantic tokens */
   --admin-success-bg:    #0a1f17;

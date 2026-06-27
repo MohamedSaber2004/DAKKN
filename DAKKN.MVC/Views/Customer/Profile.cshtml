@@ -110,30 +110,6 @@
                     </button>
                 </div>
             </div>
-
-            <!-- Color Selection -->
-            <div class="space-y-md pt-lg border-t border-border dark:border-white/10">
-                <h4 class="font-bold text-text-primary dark:text-white">@Localizer["admin_primary_color"]</h4>
-                <div class="flex flex-wrap gap-md">
-                    @{
-                        var colors = new[] { 
-                            new { Name = "Teal", Hex = "#0E908C" },
-                            new { Name = "Blue", Hex = "#3B82F6" },
-                            new { Name = "Purple", Hex = "#8B5CF6" },
-                            new { Name = "Pink", Hex = "#EC4899" },
-                            new { Name = "Orange", Hex = "#F59E0B" }
-                        };
-                    }
-                    @foreach (var color in colors)
-                    {
-                        <button type="button" onclick="setPrimaryColorAndSync('@color.Hex')" 
-                                class="w-10 h-10 rounded-full border-4 transition-all hover:scale-110 shadow-sm"
-                                style="background-color: @color.Hex;"
-                                data-customer-color="@color.Hex">
-                        </button>
-                    }
-                </div>
-            </div>
         </div>
     </section>
 
@@ -611,31 +587,10 @@
             if (activeBtn) activeBtn.classList.add('active', 'border-primary');
         }
 
-        function setPrimaryColorAndSync(color) {
-            document.documentElement.style.setProperty('--primary-color', color);
-            updateColorUI(color);
-            if (typeof syncSettingsToDatabase === 'function') {
-                const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value || window.csrfToken;
-                syncSettingsToDatabase({ primaryColor: color }, token);
-            }
-        }
-
-        function updateColorUI(color) {
-            document.querySelectorAll('[data-customer-color]').forEach(btn => {
-                const btnColor = btn.getAttribute('data-customer-color');
-                if (btnColor === color) {
-                    btn.classList.add('scale-110', 'ring-2', 'ring-offset-2', 'ring-primary');
-                } else {
-                    btn.classList.remove('scale-110', 'ring-2', 'ring-offset-2', 'ring-primary');
-                }
-            });
-        }
 
         document.addEventListener('DOMContentLoaded', () => {
             const currentTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
             updateThemeUI(currentTheme);
-            const currentPrimary = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
-            if (currentPrimary) updateColorUI(currentPrimary);
         });
     </script>
     <style>

@@ -50,7 +50,7 @@
                 <input type="hidden" asp-for="Language" id="hidden-lang" />
                 <input type="hidden" asp-for="IsDarkMode" id="hidden-is-dark" />
                 <input type="hidden" asp-for="LayoutMode" id="hidden-layout" />
-                <input type="hidden" asp-for="PrimaryColor" id="hidden-color" />
+
 
                 <!-- Profile Section -->
                 <section id="section-profile" class="premium-card p-6 sm:p-8 space-y-6 scroll-mt-24">
@@ -145,31 +145,6 @@
                             </div>
                         </div>
 
-                        <!-- Primary Color -->
-                        <div class="space-y-3 pt-6 border-t border-border dark:border-white/5">
-                            <h4 class="text-sm font-bold text-admin-primary">@Localizer["admin_primary_color"]</h4>
-                            <div class="flex flex-wrap gap-3">
-                                @{
-                                    var colors = new[] { 
-                                        new { Name = Localizer["color_teal"].Value, Hex = "#0E908C" },
-                                        new { Name = Localizer["color_blue"].Value, Hex = "#3B82F6" },
-                                        new { Name = Localizer["color_purple"].Value, Hex = "#8B5CF6" },
-                                        new { Name = Localizer["color_pink"].Value, Hex = "#EC4899" },
-                                        new { Name = Localizer["color_orange"].Value, Hex = "#F59E0B" },
-                                        new { Name = Localizer["color_slate"].Value, Hex = "#475569" }
-                                    };
-                                }
-                                @foreach (var color in colors)
-                                {
-                                    <button type="button" onclick="setPrimaryColor('@color.Hex')" 
-                                            class="w-10 h-10 rounded-full border-4 border-transparent hover:scale-105 active:scale-95 transition-all shadow-sm focus-ring"
-                                            style="background-color: @color.Hex;"
-                                            title="@color.Name"
-                                            data-color-btn="@color.Hex">
-                                    </button>
-                                }
-                            </div>
-                        </div>
 
                         <!-- Language -->
                         <div class="space-y-3 pt-6 border-t border-border dark:border-white/5">
@@ -311,21 +286,6 @@
             }
         }
 
-        function setPrimaryColor(color) {
-            document.getElementById('hidden-color').value = color;
-            document.documentElement.style.setProperty('--primary-color', color);
-            
-            document.querySelectorAll('[data-color-btn]').forEach(btn => {
-                btn.classList.remove('border-primary', 'scale-110', 'shadow-lg');
-                btn.classList.add('border-transparent');
-            });
-            
-            const activeBtn = document.querySelector(`[data-color-btn="${color}"]`);
-            if (activeBtn) {
-                activeBtn.classList.remove('border-transparent');
-                activeBtn.classList.add('border-primary', 'scale-110', 'shadow-lg');
-            }
-        }
 
         document.addEventListener('DOMContentLoaded', () => {
             // Sync localStorage with server-side model values on load

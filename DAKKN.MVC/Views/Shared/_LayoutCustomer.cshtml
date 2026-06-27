@@ -19,16 +19,7 @@
             var settings = await Mediator.Send(new GetUserSettingsQuery());
             isDarkMode = settings.IsDarkMode;
             themeName = settings.Theme;
-            primaryColor = settings.PrimaryColor ?? "#0E908C";
             profilePictureUrl = settings.ProfilePictureUrl ?? string.Empty;
-            
-            if (primaryColor.StartsWith("#") && primaryColor.Length == 7)
-            {
-                var r = Convert.ToInt32(primaryColor.Substring(1, 2), 16);
-                var g = Convert.ToInt32(primaryColor.Substring(3, 2), 16);
-                var b = Convert.ToInt32(primaryColor.Substring(5, 2), 16);
-                primaryRgb = $"{r}, {g}, {b}";
-            }
         }
         catch { /* Fallback to default */ }
     }
@@ -47,7 +38,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>@ViewData["Title"] - @Localizer["brand"]</title>
+    <title>@ViewData["Title"]</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -62,6 +53,7 @@
 
     <!-- Shared Styles -->
     <link rel="stylesheet" href="~/css/landing.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/common.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
     <style>
@@ -170,13 +162,6 @@
     <!-- Sidebar -->
     <aside id="customer-sidebar" class="hidden md:flex flex-col customer-sidebar h-screen w-64 shadow-medium z-40 relative flex-shrink-0 transition-all duration-300 bg-surface dark:bg-[#1E293B] border-r border-border dark:border-white/5">
         <div class="p-lg border-b border-border dark:border-white/5 flex flex-col items-center justify-center gap-sm group cursor-pointer overflow-hidden">
-            <div class="logo-container transition-all duration-300">
-                <img src="/images/logo.png" alt='@Localizer["logo_alt"]' class="h-16 logo-img dark:brightness-125 transition-all duration-300" />
-            </div>
-            <div class="brand-info text-center transition-all duration-300">
-                <h1 class="font-h2 text-h2 font-bold text-primary dark:text-primary-light whitespace-nowrap">@Localizer["brand"]</h1>
-                <p class="text-xs font-bold text-text-secondary dark:text-outline-variant uppercase tracking-widest whitespace-nowrap">@Localizer["nav_shop"]</p>
-            </div>
         </div>
 
         <nav class="flex-1 overflow-y-auto no-scrollbar py-md px-sm flex flex-col gap-sm">
