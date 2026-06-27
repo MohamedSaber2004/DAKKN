@@ -1,0 +1,31 @@
+@using Microsoft.Extensions.Localization
+@using DAKKN.Application.Localization
+@inject IStringLocalizer<Messages> Localizer
+@{
+    var isAr = System.Globalization.CultureInfo.CurrentCulture.Name.StartsWith("ar");
+}
+<section id="categories" class="relative py-16 md:py-24 px-4 overflow-hidden bg-surface dark:bg-[#0F172A]">
+    <div class="max-w-7xl mx-auto">
+        <div class="flex items-end justify-between mb-10 scroll-animate">
+            <div>
+                <span class="inline-block text-xs font-bold text-primary bg-primary/10 px-4 py-1.5 rounded-full border border-primary/20 mb-4">@Localizer["cat_section_badge"]</span>
+                <h2 class="text-3xl md:text-4xl font-black text-on-surface dark:text-white">@Localizer["cat_h2"]</h2>
+                <p class="text-on-surface-variant dark:text-slate-400 mt-2">@Localizer["cat_p"]</p>
+            </div>
+            <div class="hidden md:flex items-center gap-2 flex-shrink-0">
+                <button onclick="slidePrev()" class="w-10 h-10 rounded-full bg-surface-container-high dark:bg-slate-800 hover:bg-primary/10 flex items-center justify-center transition-all border border-outline-variant/20 dark:border-white/10" aria-label="Previous">
+                    <span class="material-symbols-outlined text-lg">@(isAr ? "chevron_right" : "chevron_left")</span>
+                </button>
+                <button onclick="slideNext()" class="w-10 h-10 rounded-full bg-surface-container-high dark:bg-slate-800 hover:bg-primary/10 flex items-center justify-center transition-all border border-outline-variant/20 dark:border-white/10" aria-label="Next">
+                    <span class="material-symbols-outlined text-lg">@(isAr ? "chevron_left" : "chevron_right")</span>
+                </button>
+            </div>
+        </div>
+        <div class="relative scroll-animate">
+            <div id="cat-slider-container" class="overflow-hidden -mx-2 px-2">
+                <div id="cat-slider-track" class="flex gap-6 transition-transform duration-500 ease-out will-change-transform"></div>
+            </div>
+            <div id="cat-slider-dots" class="flex justify-center gap-2 mt-8 md:hidden"></div>
+        </div>
+    </div>
+</section>

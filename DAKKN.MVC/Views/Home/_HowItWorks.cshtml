@@ -1,0 +1,37 @@
+@using Microsoft.Extensions.Localization
+@using DAKKN.Application.Localization
+@inject IStringLocalizer<Messages> Localizer
+<section id="how-it-works" class="relative py-16 md:py-24 px-4 overflow-hidden bg-surface dark:bg-[#0F172A]">
+    <div class="deco-blob w-[400px] h-[400px] -top-40 -end-40 bg-primary/5 animate-blob-2"></div>
+    <div class="max-w-6xl mx-auto relative z-10">
+        <div class="text-center mb-12 md:mb-16 scroll-animate">
+            <span class="inline-block text-xs font-bold text-primary bg-primary/10 px-4 py-1.5 rounded-full border border-primary/20 mb-4">@Localizer["how_section_badge"]</span>
+            <h2 class="text-3xl md:text-4xl font-black text-on-surface dark:text-white">@Localizer["how_h2"]</h2>
+            <p class="text-on-surface-variant dark:text-slate-400 mt-3 max-w-xl mx-auto">@Localizer["how_p"]</p>
+        </div>
+        <div class="grid md:grid-cols-4 gap-6 md:gap-8 relative">
+            <div class="hidden md:block absolute top-12 left-[12.5%] right-[12.5%] h-0.5 bg-gradient-to-r from-primary/20 via-primary to-primary/20"></div>
+            @{
+                var steps = new[]
+                {
+                    new { Icon = "person_add", Step = Localizer["how_step1_title"], Title = Localizer["how_step1"], Desc = Localizer["how_step1_desc"], Delay = "100" },
+                    new { Icon = "search", Step = Localizer["how_step2_title"], Title = Localizer["how_step2"], Desc = Localizer["how_step2_desc"], Delay = "200" },
+                    new { Icon = "shopping_cart_checkout", Step = Localizer["how_step3_title"], Title = Localizer["how_step3"], Desc = Localizer["how_step3_desc"], Delay = "300" },
+                    new { Icon = "local_shipping", Step = Localizer["how_step4_title"], Title = Localizer["how_step4"], Desc = Localizer["how_step4_desc"], Delay = "400" },
+                };
+            }
+            @for (int i = 0; i < steps.Length; i++)
+            {
+                var s = steps[i];
+                <div class="relative text-center scroll-animate delay-@s.Delay">
+                    <div class="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-primary to-primary/70 text-white flex items-center justify-center shadow-xl shadow-primary/20 relative z-10">
+                        <span class="material-symbols-outlined text-2xl">@s.Icon</span>
+                    </div>
+                    <span class="inline-block text-xs font-bold text-primary bg-primary/10 px-3 py-1 rounded-full mb-3">@s.Step</span>
+                    <h3 class="text-lg font-bold text-on-surface dark:text-white mb-2">@s.Title</h3>
+                    <p class="text-sm text-on-surface-variant dark:text-slate-400 leading-relaxed">@s.Desc</p>
+                </div>
+            }
+        </div>
+    </div>
+</section>

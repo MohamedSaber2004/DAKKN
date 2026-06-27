@@ -1,0 +1,125 @@
+@using Microsoft.Extensions.Localization
+@using DAKKN.Application.Localization
+@inject IStringLocalizer<Messages> Localizer
+@{
+    var isAr = System.Globalization.CultureInfo.CurrentCulture.Name.StartsWith("ar");
+    var targetLang = isAr ? "en" : "ar";
+    var targetLabel = isAr ? "English" : "العربية";
+}
+<header id="navbar" class="fixed top-0 left-0 right-0 z-50 h-16 md:h-[72px] navbar-animate transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-3 sm:px-4 h-full flex items-center justify-between gap-2 sm:gap-4">
+        <a asp-controller="Home" asp-action="Index" class="flex-shrink-0 logo-glow" aria-label="@Localizer["logo_alt"]">
+            <img src="~/images/logo.png" alt='@Localizer["logo_alt"]' class="h-8 sm:h-10 md:h-12" />
+        </a>
+        <nav class="hidden lg:flex items-center gap-1" role="navigation" aria-label="Main navigation">
+            <a href="#hero" class="nav-link-premium" data-section="hero">@Localizer["nav_home"]</a>
+            <a href="#how-it-works" class="nav-link-premium" data-section="how">@Localizer["nav_how"]</a>
+            <a href="#categories" class="nav-link-premium" data-section="categories">@Localizer["nav_categories"]</a>
+            <a href="#featured-products" class="nav-link-premium" data-section="products">@Localizer["nav_products"]</a>
+            <a href="#testimonials" class="nav-link-premium" data-section="testimonials">@Localizer["nav_reviews"]</a>
+            <a href="#contact" class="nav-link-premium" data-section="contact">@Localizer["nav_contact"]</a>
+        </nav>
+        <div class="flex items-center gap-1 sm:gap-2 md:gap-3">
+            <button id="search-toggle-mobile" class="md:hidden navbar-icon-btn" aria-label="@Localizer["search_placeholder"]">
+                <span class="material-symbols-outlined text-2xl">search</span>
+            </button>
+            <div class="search-container hidden md:flex" role="search">
+                <span class="material-symbols-outlined text-primary/60 text-lg">search</span>
+                <input type="text" id="search-input" placeholder="@Localizer["search_placeholder"]" class="bg-transparent border-none outline-none text-sm w-full px-2 py-1.5 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" aria-label="@Localizer["search_placeholder"]" autocomplete="off" />
+                <div id="search-dropdown" class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#1E293B] rounded-xl shadow-2xl border border-outline-variant/20 dark:border-white/10 hidden overflow-hidden z-50"></div>
+            </div>
+            <a asp-controller="Cart" asp-action="Index" class="navbar-icon-btn relative" aria-label="Cart">
+                <span class="material-symbols-outlined text-2xl">shopping_cart</span>
+                <span id="cart-badge" class="absolute -top-0.5 -end-0.5 bg-primary text-white text-[10px] font-bold min-w-[18px] h-[18px] flex items-center justify-center rounded-full shadow-lg border-2 border-white dark:border-[#0F172A] leading-none">0</span>
+            </a>
+            <button onclick="toggleLang()" class="lang-pill-premium hidden md:inline-flex" aria-label="@Localizer["lang_toggle"]">
+                <span class="material-symbols-outlined text-sm">translate</span>
+                <span>@targetLabel</span>
+            </button>
+            <button onclick="toggleDarkMode()" class="navbar-icon-btn hidden md:flex" aria-label="@Localizer["theme_toggle"]">
+                <span class="material-symbols-outlined text-2xl dark:hidden">dark_mode</span>
+                <span class="material-symbols-outlined text-2xl hidden dark:inline">light_mode</span>
+            </button>
+            <div class="hidden md:flex items-center gap-2 ms-2">
+                <a asp-action="Login" asp-controller="Auth" class="text-sm font-bold text-on-surface dark:text-white hover:text-primary transition-colors px-3 py-2">@Localizer["nav_login"]</a>
+                <a asp-action="Register" asp-controller="Auth" class="text-sm font-bold bg-primary hover:bg-primary-container text-on-primary px-4 py-2 rounded-full transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-95">@Localizer["nav_register"]</a>
+            </div>
+            <button id="hamburger-btn" class="lg:hidden navbar-icon-btn" aria-label="Toggle menu" aria-expanded="false">
+                <span class="material-symbols-outlined text-2xl">menu</span>
+            </button>
+        </div>
+    </div>
+    <!-- Mobile search bar (collapsible) -->
+    <div id="mobile-search-bar" class="hidden md:hidden px-4 pb-3">
+        <div class="search-container w-full flex" role="search">
+            <span class="material-symbols-outlined text-primary/60 text-lg flex-shrink-0">search</span>
+            <input type="text" id="search-input-mobile" placeholder="@Localizer["search_placeholder"]" class="bg-transparent border-none outline-none text-sm w-full px-2 py-2 text-on-surface dark:text-white placeholder:text-on-surface-variant/50" aria-label="@Localizer["search_placeholder"]" autocomplete="off" />
+        </div>
+    </div>
+</header>
+
+<div id="mobile-drawer" class="fixed inset-0 z-40 hidden" role="dialog" aria-modal="true" aria-label="Navigation menu">
+    <div id="drawer-overlay" class="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+    <div id="drawer-panel" class="absolute top-0 end-0 h-full w-72 max-w-[85vw] bg-white dark:bg-[#1E293B] shadow-2xl border-s border-outline-variant/20 dark:border-white/10 overflow-y-auto">
+        <div class="p-6">
+            <div class="flex items-center justify-between mb-8">
+                <img src="~/images/logo.png" alt='@Localizer["logo_alt"]' class="h-9" />
+                <button id="drawer-close" class="w-9 h-9 rounded-full bg-surface-container-high dark:bg-slate-800 flex items-center justify-center hover:bg-primary/10 transition-colors" aria-label="Close menu">
+                    <span class="material-symbols-outlined text-lg">close</span>
+                </button>
+            </div>
+            <nav class="flex flex-col gap-1" role="navigation" aria-label="Mobile navigation">
+                <a href="#hero" class="drawer-link">@Localizer["nav_home"]</a>
+                <a href="#how-it-works" class="drawer-link">@Localizer["nav_how"]</a>
+                <a href="#categories" class="drawer-link">@Localizer["nav_categories"]</a>
+                <a href="#featured-products" class="drawer-link">@Localizer["nav_products"]</a>
+                <a href="#testimonials" class="drawer-link">@Localizer["nav_reviews"]</a>
+                <a href="#contact" class="drawer-link">@Localizer["nav_contact"]</a>
+            </nav>
+            <hr class="my-6 border-outline-variant/20 dark:border-white/10" />
+            <div class="flex flex-col gap-3">
+                <button onclick="toggleLang()" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-primary/5 transition-colors text-sm font-bold text-on-surface dark:text-white">
+                    <span class="material-symbols-outlined text-primary">translate</span>
+                    @targetLabel
+                </button>
+                <button onclick="toggleDarkMode()" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-primary/5 transition-colors text-sm font-bold text-on-surface dark:text-white">
+                    <span class="material-symbols-outlined text-primary dark:hidden">dark_mode</span>
+                    <span class="material-symbols-outlined text-primary hidden dark:inline">light_mode</span>
+                    @Localizer["theme_toggle"]
+                </button>
+            </div>
+            <hr class="my-6 border-outline-variant/20 dark:border-white/10" />
+            <div class="flex flex-col gap-3">
+                <a asp-action="Login" asp-controller="Auth" class="w-full text-center bg-primary hover:bg-primary-container text-on-primary font-bold py-3.5 px-6 rounded-xl transition-all shadow-lg hover:-translate-y-0.5 active:scale-95 text-sm">@Localizer["nav_login"]</a>
+                <a asp-action="Register" asp-controller="Auth" class="w-full text-center bg-surface-container-high dark:bg-slate-800 hover:bg-primary/10 text-on-surface dark:text-slate-200 font-bold py-3.5 px-6 rounded-xl transition-all border border-outline-variant/20 dark:border-white/5 hover:-translate-y-0.5 active:scale-95 text-sm">@Localizer["nav_register"]</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Mobile Bottom Navigation -->
+<nav class="mobile-bottom-nav lg:hidden" role="navigation" aria-label="Mobile bottom navigation">
+    <a href="#hero" class="mob-nav-item" data-section="hero">
+        <span class="material-symbols-outlined">home</span>
+        <span>@Localizer["nav_home"]</span>
+    </a>
+    <a href="#categories" class="mob-nav-item" data-section="categories">
+        <span class="material-symbols-outlined">grid_view</span>
+        <span>@Localizer["nav_categories"]</span>
+    </a>
+    <a href="#featured-products" class="mob-nav-item" data-section="products">
+        <span class="material-symbols-outlined">inventory_2</span>
+        <span>@Localizer["nav_products"]</span>
+    </a>
+    <a asp-controller="Cart" asp-action="Index" class="mob-nav-item relative">
+        <span class="material-symbols-outlined">shopping_cart</span>
+        <span>@Localizer["nav_cart"]</span>
+        <span id="cart-badge-mobile" class="absolute top-0 end-1 bg-primary text-white text-[9px] font-bold min-w-[16px] h-[16px] flex items-center justify-center rounded-full shadow-lg border-2 border-white dark:border-[#0F172A] leading-none">0</span>
+    </a>
+    <a href="#contact" class="mob-nav-item" data-section="contact">
+        <span class="material-symbols-outlined">call</span>
+        <span>@Localizer["nav_contact"]</span>
+    </a>
+</nav>
+
+<div id="search-overlay" class="fixed inset-0 z-30 hidden bg-black/30 backdrop-blur-sm"></div>

@@ -1,0 +1,73 @@
+@using Microsoft.Extensions.Localization
+@using DAKKN.Application.Localization
+@inject IStringLocalizer<Messages> Localizer
+@model DAKKN.MVC.ViewModels.Landing.LandingPageViewModel
+@{
+    var isAr = System.Globalization.CultureInfo.CurrentCulture.Name.StartsWith("ar");
+}
+<footer class="relative bg-[#0B1A1A] dark:bg-black text-white pt-16 pb-8 px-4 overflow-hidden">
+    <div class="absolute inset-0 opacity-[0.03] pointer-events-none" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 24px 24px;"></div>
+    <div class="max-w-7xl mx-auto relative z-10">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-10 mb-12">
+            <div class="col-span-2 md:col-span-1 scroll-animate">
+                <img src="~/images/logo.png" alt='@Localizer["logo_alt"]' class="h-10 sm:h-12 mb-4 brightness-0 invert" />
+                <p class="text-sm text-white/60 leading-relaxed max-w-sm">@Localizer["about_p"]</p>
+                <div class="flex items-center gap-3 mt-6">
+                    <a href="https://www.facebook.com/p/Dakkn-Store-61577816500754/" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary hover:text-white transition-all text-white/60" aria-label="Facebook">
+                        <span class="material-symbols-outlined text-lg">facebook</span>
+                    </a>
+                    <a href="https://www.instagram.com/dakkn_store/" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary hover:text-white transition-all text-white/60" aria-label="Instagram">
+                        <span class="material-symbols-outlined text-lg">instagram</span>
+                    </a>
+                    <a href="https://wa.me/@Model.Contact.Phone" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary hover:text-white transition-all text-white/60" aria-label="WhatsApp">
+                        <span class="material-symbols-outlined text-lg">chat</span>
+                    </a>
+                </div>
+            </div>
+            <div class="scroll-animate delay-100">
+                <span class="block text-sm font-bold text-white/90 mb-4 uppercase tracking-wider">@Localizer["f_about"]</span>
+                <ul class="space-y-3">
+                    <li><a asp-controller="Home" asp-action="About" class="text-sm text-white/60 hover:text-primary transition-colors">@Localizer["f_about"]</a></li>
+                    <li><a asp-controller="Home" asp-action="Terms" class="text-sm text-white/60 hover:text-primary transition-colors">@Localizer["f_terms_full"]</a></li>
+                    <li><a asp-controller="Home" asp-action="Privacy" class="text-sm text-white/60 hover:text-primary transition-colors">@Localizer["f_privacy"]</a></li>
+                    <li><a href="#faq" class="text-sm text-white/60 hover:text-primary transition-colors">@Localizer["f_faqs"]</a></li>
+                </ul>
+            </div>
+            <div class="scroll-animate delay-200">
+                <span class="block text-sm font-bold text-white/90 mb-4 uppercase tracking-wider">@Localizer["contact_title"]</span>
+                <ul class="space-y-3">
+                    <li class="flex items-center gap-3 text-sm text-white/60">
+                        <span class="material-symbols-outlined text-primary text-lg">mail</span>
+                        <a href="mailto:@Model.Contact.Email" class="hover:text-primary transition-colors">@Model.Contact.Email</a>
+                    </li>
+                    <li class="flex items-center gap-3 text-sm text-white/60">
+                        <span class="material-symbols-outlined text-primary text-lg">phone</span>
+                        <a href="tel:@Model.Contact.Phone" class="hover:text-primary transition-colors">@Model.Contact.Phone</a>
+                    </li>
+                    <li class="flex items-center gap-3 text-sm text-white/60">
+                        <span class="material-symbols-outlined text-primary text-lg">location_on</span>
+                        <span>@Model.Contact.Address</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="scroll-animate delay-300">
+                <span class="block text-sm font-bold text-white/90 mb-4 uppercase tracking-wider">@Localizer["nav_shop"]</span>
+                <ul class="space-y-3">
+                    <li><a asp-action="Login" asp-controller="Auth" class="text-sm text-white/60 hover:text-primary transition-colors">@Localizer["nav_all_products"]</a></li>
+                    <li><a asp-action="Register" asp-controller="Auth" class="text-sm text-white/60 hover:text-primary transition-colors">@Localizer["btn_bulk"]</a></li>
+                    <li><a href="#categories" class="text-sm text-white/60 hover:text-primary transition-colors">@Localizer["nav_categories"]</a></li>
+                    <li><a href="#contact" class="text-sm text-white/60 hover:text-primary transition-colors">@Localizer["f_contact"]</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-white/10 pt-8">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/40">
+                <p>@Localizer["footer_copy"]</p>
+                <div class="flex items-center gap-4">
+                    <a asp-controller="Home" asp-action="Privacy" class="hover:text-primary transition-colors">@Localizer["f_privacy"]</a>
+                    <a asp-controller="Home" asp-action="Terms" class="hover:text-primary transition-colors">@Localizer["f_terms_full"]</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>

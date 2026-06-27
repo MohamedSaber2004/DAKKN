@@ -1,0 +1,108 @@
+@using Microsoft.Extensions.Localization
+@using DAKKN.Application.Localization
+@inject IStringLocalizer<Messages> Localizer
+@model DAKKN.MVC.ViewModels.Landing.LandingPageViewModel
+@{
+    var isAr = System.Globalization.CultureInfo.CurrentCulture.Name.StartsWith("ar");
+    string Pick(string ar, string en) => isAr && !string.IsNullOrEmpty(ar) ? ar : en;
+    var badge = Pick(Model.Hero.BadgeAr, Model.Hero.BadgeEn);
+    var titleA = Pick(Model.Hero.TitleAAr, Model.Hero.TitleAEn);
+    var titleB = Pick(Model.Hero.TitleBAr, Model.Hero.TitleBEn);
+    var titleC = Pick(Model.Hero.TitleCAr, Model.Hero.TitleCEn);
+    var titleD = Pick(Model.Hero.TitleDAr, Model.Hero.TitleDEn);
+    var desc = Pick(Model.Hero.DescriptionAr, Model.Hero.DescriptionEn);
+    var btnText = Pick(Model.Hero.ButtonTextAr, Model.Hero.ButtonTextEn);
+}
+<section id="hero" class="relative min-h-[90vh] md:min-h-[85vh] flex items-center pt-16 md:pt-[72px] overflow-hidden bg-gradient-to-br from-primary/5 via-transparent to-amber-50/30 dark:from-primary/10 dark:via-transparent dark:to-slate-900/50">
+    <div class="deco-blob w-[250px] h-[250px] sm:w-[500px] sm:h-[500px] -top-32 -start-32 bg-primary/10 animate-blob-1"></div>
+    <div class="deco-blob w-[200px] h-[200px] sm:w-[400px] sm:h-[400px] -bottom-40 -end-20 bg-amber-400/10 animate-blob-2"></div>
+    <div class="deco-blob w-[150px] h-[150px] sm:w-[300px] sm:h-[300px] top-1/3 end-1/4 bg-cyan-400/10 animate-blob-3"></div>
+    <div class="deco-ring w-[300px] h-[300px] sm:w-[600px] sm:h-[600px] -top-20 -end-20"></div>
+    <div class="deco-ring-solid w-[200px] h-[200px] sm:w-[400px] sm:h-[400px] bottom-10 start-10"></div>
+    <div class="deco-shape-diamond hidden sm:block top-[20%] start-[15%]"></div>
+    <div class="deco-shape-square hidden sm:block top-[65%] end-[12%]"></div>
+    <div class="deco-dots-grid hidden sm:block top-20 end-20"></div>
+    <div class="deco-dots-grid hidden sm:block bottom-20 start-20"></div>
+
+    <div class="max-w-7xl mx-auto px-4 w-full relative z-10">
+        <div class="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+            <div class="text-center lg:text-start @(isAr ? "lg:order-2" : "")">
+                @if (!string.IsNullOrEmpty(badge))
+                {
+                    <span class="inline-flex items-center gap-1.5 bg-primary/10 text-primary text-xs font-bold px-4 py-1.5 rounded-full border border-primary/20 mb-6 scroll-animate">
+                        <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                        @badge
+                    </span>
+                }
+                <h1 class="text-[28px] sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black leading-[1.08] tracking-tight mb-6 scroll-animate delay-100">
+                    @if (!string.IsNullOrEmpty(titleA)) { <span class="text-on-surface dark:text-white">@titleA </span> }
+                    @if (!string.IsNullOrEmpty(titleB)) { <span class="text-primary">@titleB</span> }
+                    @if (!string.IsNullOrEmpty(titleC)) { <span class="text-on-surface dark:text-white">@titleC </span> }
+                    @if (!string.IsNullOrEmpty(titleD)) { <span class="text-primary">@titleD</span> }
+                </h1>
+                @if (!string.IsNullOrEmpty(desc))
+                {
+                    <p class="text-base md:text-lg text-on-surface-variant dark:text-slate-400 leading-relaxed max-w-xl mx-auto lg:mx-0 mb-8 scroll-animate delay-200">@desc</p>
+                }
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 mb-6 max-w-lg mx-auto lg:mx-0 scroll-animate delay-300">
+                    <a asp-action="Register" asp-controller="Auth" class="flex-1 bg-primary hover:bg-primary-container text-on-primary font-bold py-3 sm:py-3.5 px-6 sm:px-8 rounded-xl transition-all shadow-xl hover:shadow-2xl hover:-translate-y-0.5 active:scale-95 text-center text-xs sm:text-sm">@(string.IsNullOrEmpty(btnText) ? Localizer["btn_start_shopping"] : btnText)</a>
+                    <a href="#how-it-works" class="flex-1 bg-white dark:bg-[#1E293B] hover:bg-primary/5 text-on-surface dark:text-white font-bold py-3 sm:py-3.5 px-6 sm:px-8 rounded-xl transition-all border-2 border-outline-variant/30 dark:border-white/10 hover:border-primary/30 hover:-translate-y-0.5 active:scale-95 text-center text-xs sm:text-sm">@Localizer["btn_learn_more"]</a>
+                </div>
+                <!-- Trust badges -->
+                <div class="flex flex-wrap items-center justify-center lg:justify-start gap-x-4 md:gap-x-6 gap-y-2 scroll-animate delay-400">
+                    <span class="flex items-center gap-1.5 md:gap-2 text-[11px] md:text-sm font-medium text-on-surface-variant dark:text-slate-400">
+                        <span class="material-symbols-outlined text-primary text-base md:text-lg">verified</span>
+                        @Localizer["hero_trust_quality"]
+                    </span>
+                    <span class="flex items-center gap-1.5 md:gap-2 text-[11px] md:text-sm font-medium text-on-surface-variant dark:text-slate-400">
+                        <span class="material-symbols-outlined text-primary text-base md:text-lg">local_shipping</span>
+                        @Localizer["hero_trust_shipping"]
+                    </span>
+                    <span class="flex items-center gap-1.5 md:gap-2 text-[11px] md:text-sm font-medium text-on-surface-variant dark:text-slate-400">
+                        <span class="material-symbols-outlined text-primary text-base md:text-lg">support_agent</span>
+                        @Localizer["hero_trust_support"]
+                    </span>
+                </div>
+            </div>
+            <div class="relative @(isAr ? "lg:order-1" : "lg:order-1")">
+                <div class="relative mx-auto max-w-md lg:max-w-full">
+                    <div class="aspect-square rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 dark:from-primary/15 dark:to-transparent p-4 md:p-6 shadow-2xl">
+                        <div class="w-full h-full rounded-xl bg-surface dark:bg-[#1E293B] flex items-center justify-center overflow-hidden shadow-inner">
+                            <img src="@(Model.Hero.ImageUrl ?? "~/images/hero-placeholder.svg")" alt='@Localizer["alt_hero_sticker"]' class="w-full h-full object-contain p-4 md:p-8" loading="eager" fetchpriority="high" />
+                        </div>
+                    </div>
+                    <!-- Floating rating badge -->
+                    <div class="absolute -bottom-2 -start-2 md:-bottom-5 md:-start-5 glass-panel rounded-xl px-2 py-2 md:px-4 md:py-3 shadow-lg max-w-[160px] md:max-w-none">
+                        <div class="flex items-center gap-3">
+                            <div class="flex -space-x-2 rtl:space-x-reverse">
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-cyan-400 border-2 border-white dark:border-[#0F172A] flex items-center justify-center text-white text-xs font-bold">★</div>
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-amber-400 to-rose-400 border-2 border-white dark:border-[#0F172A]"></div>
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-purple-400 border-2 border-white dark:border-[#0F172A]"></div>
+                            </div>
+                            <div class="text-xs">
+                                <span class="font-bold text-on-surface dark:text-white block">4.9 ★</span>
+                                <span class="text-on-surface-variant dark:text-slate-400">@Localizer["hero_trust"]</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Floating delivery badge -->
+                    <div class="absolute -top-2 -end-2 md:-top-5 md:-end-5 glass-panel rounded-xl px-2 py-2 md:px-4 md:py-3 shadow-lg max-w-[140px] md:max-w-none">
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary text-xl">local_shipping</span>
+                            <div class="text-xs">
+                                <span class="font-bold text-on-surface dark:text-white block">@Localizer["hero_delivery_title"]</span>
+                                <span class="text-on-surface-variant dark:text-slate-400">@Localizer["hero_delivery_sub"]</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="absolute bottom-4 left-1/2 -translate-x-1/2 animate-bounce hidden md:block scroll-animate delay-500">
+        <a href="#stats" aria-label="@Localizer["hero_scroll_down"]">
+            <span class="material-symbols-outlined text-on-surface-variant dark:text-slate-500 text-3xl">expand_circle_down</span>
+        </a>
+    </div>
+</section>

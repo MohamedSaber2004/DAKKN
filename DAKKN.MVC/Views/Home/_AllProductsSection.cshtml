@@ -1,0 +1,23 @@
+@using Microsoft.Extensions.Localization
+@using DAKKN.Application.Localization
+@inject IStringLocalizer<Messages> Localizer
+@{
+    var isAr = System.Globalization.CultureInfo.CurrentCulture.Name.StartsWith("ar");
+}
+<section id="all-products" class="relative py-16 md:py-24 px-4 overflow-hidden bg-surface dark:bg-[#0F172A]">
+    <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-10 scroll-animate">
+            <span class="inline-block text-xs font-bold text-primary bg-primary/10 px-4 py-1.5 rounded-full border border-primary/20 mb-4">@Localizer["all_products_badge"]</span>
+            <h2 class="text-3xl md:text-4xl font-black text-on-surface dark:text-white">@Localizer["all_products_h2"]</h2>
+            <p class="text-on-surface-variant dark:text-slate-400 mt-2">@Localizer["all_products_p"]</p>
+        </div>
+        <div class="flex flex-wrap items-center justify-center gap-3 mb-8 scroll-animate" id="prod-cat-filters"></div>
+        <div class="flex items-center justify-center gap-4 mb-8 scroll-animate delay-100">
+            <span class="text-xs font-bold text-on-surface-variant dark:text-slate-400">@Localizer["filter_price"]</span>
+            <input type="range" id="price-slider" min="0" max="1000" step="10" value="1000" oninput="filterPrice(this.value)" class="w-48 md:w-64 h-2 rounded-full appearance-none bg-primary/20 outline-none [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md" />
+            <span id="price-label" class="text-sm font-bold text-primary">@Localizer["all_cats"]</span>
+        </div>
+        <div id="all-prods-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 scroll-animate delay-200"></div>
+        <div id="prods-pagination" class="flex items-center justify-center gap-3 mt-10 scroll-animate"></div>
+    </div>
+</section>
