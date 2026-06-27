@@ -461,12 +461,12 @@
                     const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
                     const ext = '.' + file.name.split('.').pop().toLowerCase();
                     if (!allowedExtensions.includes(ext)) {
-                        showToast('Invalid file type. Allowed: JPG, JPEG, PNG, WEBP.', 'error');
+                        showToast('@Localizer["admin_settings_invalid_file_type"]', 'error');
                         this.value = '';
                         return;
                     }
                     if (file.size > 5 * 1024 * 1024) {
-                        showToast('File too large. Maximum size is 5MB.', 'error');
+                        showToast('@Localizer["admin_settings_file_too_large"]', 'error');
                         this.value = '';
                         return;
                     }
@@ -481,12 +481,12 @@
                         const data = await response.json();
                         if (data.success) {
                             updateAvatar(data.imageUrl);
-                            showToast(data.message || 'Image uploaded successfully.', 'success');
+                            showToast(data.message || '@Localizer["admin_settings_upload_success"]', 'success');
                         } else {
-                            showToast(data.message || 'Upload failed.', 'error');
+                            showToast(data.message || '@Localizer["admin_settings_upload_failed"]', 'error');
                         }
                     } catch {
-                        showToast('Upload failed. Please try again.', 'error');
+                        showToast('@Localizer["admin_settings_upload_retry"]', 'error');
                     } finally {
                         showSpinner(false);
                         this.value = '';
@@ -505,12 +505,12 @@
                         const data = await response.json();
                         if (data.success) {
                             updateAvatar(null);
-                            showToast(data.message || 'Image removed successfully.', 'success');
+                            showToast(data.message || '@Localizer["admin_settings_remove_success"]', 'success');
                         } else {
-                            showToast(data.message || 'Remove failed.', 'error');
+                            showToast(data.message || '@Localizer["admin_settings_remove_failed"]', 'error');
                         }
                     } catch {
-                        showToast('Remove failed. Please try again.', 'error');
+                        showToast('@Localizer["admin_settings_remove_retry"]', 'error');
                     } finally {
                         showSpinner(false);
                     }

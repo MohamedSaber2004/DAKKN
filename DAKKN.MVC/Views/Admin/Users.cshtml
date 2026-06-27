@@ -282,11 +282,11 @@
                     listContainer.innerHTML = tablePart.innerHTML;
                 }
             } else {
-                showToast('Error refreshing list', 'error');
+                showToast('@Localizer["admin_list_refresh_error"]', 'error');
             }
         } catch (error) {
             console.error('Refresh error:', error);
-            showToast('Connection error', 'error');
+            showToast('@Localizer["admin_connection_error"]', 'error');
         } finally {
             if (loader) loader.classList.add('hidden');
         }
@@ -381,11 +381,11 @@
                     document.getElementById('userRole').value = user.roles[0];
                 }
             } else {
-                showToast(result.message || 'Error fetching user', 'error');
+                showToast(result.message || '@Localizer["admin_fetch_error"]', 'error');
             }
         } catch (error) {
             console.error('Fetch user details error:', error);
-            showToast('Connection error', 'error');
+            showToast('@Localizer["admin_connection_error"]', 'error');
         }
     }
 
@@ -437,7 +437,7 @@
                 if (tableLoader) tableLoader.classList.add('hidden');
             }
         } catch (error) {
-            showToast('Server connection failed', 'error');
+            showToast('@Localizer["admin_server_connection_error"]', 'error');
             if (tableLoader) tableLoader.classList.add('hidden');
         } finally {
             setSaveLoading(false);
@@ -513,11 +513,11 @@
                 closeChangePasswordModal();
                 await refreshUserList(); 
             } else {
-                showToast(result.message || 'Error updating password', 'error');
+                showToast(result.message || '@Localizer["admin_password_update_error"]', 'error');
                 if (tableLoader) tableLoader.classList.add('hidden');
             }
         } catch (error) {
-            showToast('Connection error', 'error');
+            showToast('@Localizer["admin_connection_error"]', 'error');
             if (tableLoader) tableLoader.classList.add('hidden');
         } finally {
             setChangePassLoading(false);
@@ -578,11 +578,11 @@
                 const currentPage = new URLSearchParams(window.location.search).get('pageNumber') || 1;
                 await refreshUserList(currentPage); 
             } else {
-                showToast(result.message || 'Error deleting user', 'error');
+                showToast(result.message || '@Localizer["admin_delete_error"]', 'error');
                 if (tableLoader) tableLoader.classList.add('hidden');
             }
         } catch (error) {
-            showToast('Connection error', 'error');
+            showToast('@Localizer["admin_connection_error"]', 'error');
             if (tableLoader) tableLoader.classList.add('hidden');
         } finally {
             setDeleteLoading(false);

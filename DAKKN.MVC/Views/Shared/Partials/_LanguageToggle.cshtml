@@ -7,6 +7,6 @@
 
 <a asp-controller="Translation" asp-action="SetLanguage" asp-route-culture="@targetCulture" asp-route-returnUrl="@returnUrl" 
    class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary dark:text-outline-variant dark:hover:text-primary-light transition-all hover:bg-primary/5 dark:hover:bg-white/5 font-bold text-sm border border-border dark:border-white/5"
-   title="@(culture == "en" ? "Switch to Arabic" : "التغيير إلى الإنجليزية")">
+               title="@(culture == "en" ? Localizer["lang_toggle_switch_to_ar"] : Localizer["lang_toggle_switch_to_en"])">
     @targetLabel
 </a>

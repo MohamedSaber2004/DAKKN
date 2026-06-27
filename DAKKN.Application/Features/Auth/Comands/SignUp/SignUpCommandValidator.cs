@@ -27,7 +27,7 @@ namespace DAKKN.Application.Features.Auth.Comands.SignUp
 
             RuleFor(x => x.PhoneNumber)
                 .NotEmpty().WithMessage(_localizer[LocalizationKeys.ValidationMessages.Required.Key])
-                .Matches(@"^0[0-9]{10,15}$").WithMessage(_localizer["alert.phone_invalid"])
+                .Matches(@"^0[0-9]{10,15}$").WithMessage(_localizer[LocalizationKeys.AuthMessages.InvalidPhoneNumber.Value])
                 .MustAsync(PhoneNumberNotFoundBefore).WithMessage(_localizer[LocalizationKeys.AuthMessages.PhoneNumberFoundBefore.Key]);
 
             RuleFor(x => x.Password)

@@ -592,18 +592,18 @@ async function renderFeaturedProducts() {
                     </div>
                 </a>
                 <div class="flex items-center justify-between mt-auto pt-2">
-                    <span class="text-xl font-bold text-primary">${p.price.toLocaleString()} ${isAr ? 'ج.م' : 'EGP'}</span>
+                    <span class="text-xl font-bold text-primary">${p.price.toLocaleString()} ${currentTranslations.currency || 'EGP'}</span>
                     <div class="flex gap-2">
                         <button data-product-add="${p.id}" data-product-name="${isAr ? (p.arName || p.name) : p.name}" data-product-price="${p.price}" data-product-image="${p.imageUrl || ''}" class="px-3 py-2 rounded-lg bg-primary text-on-primary text-[10px] font-bold hover:bg-primary-container hover:text-primary transition-all flex items-center gap-1">
                             <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
                         </button>
-                        <a href="/shop/product/${p.id}" class="px-3 py-2 rounded-lg bg-primary/10 text-primary text-[10px] font-bold hover:bg-primary hover:text-on-primary transition-all no-underline">View Details</a>
+                        <a href="/shop/product/${p.id}" class="px-3 py-2 rounded-lg bg-primary/10 text-primary text-[10px] font-bold hover:bg-primary hover:text-on-primary transition-all no-underline">${currentTranslations.shop_view_details || 'View Details'}</a>
                     </div>
                 </div>
             </div>`).join('');
     } catch (err) {
         console.error('Error rendering featured products:', err);
-        grid.innerHTML = `<div class="col-span-full text-center py-12"><p class="text-on-surface-variant">Failed to load products.</p></div>`;
+        grid.innerHTML = `<div class="col-span-full text-center py-12"><p class="text-on-surface-variant">${currentTranslations.no_products_title || 'Failed to load products.'}</p></div>`;
     }
 }
 
@@ -697,12 +697,12 @@ async function renderAllProducts() {
                 <div class="product-card glass-panel p-5 rounded-2xl flex flex-col gap-4 scroll-animate visible" style="opacity:1;transform:none;">
                     <div class="aspect-square rounded-xl overflow-hidden relative"><img class="w-full h-full object-cover" src="${resolveImage(p.imageUrl)}" onerror="this.src='${PRODUCT_PLACEHOLDER}'" alt="${isAr ? p.arName : p.name}" loading="lazy"/></div>
                     <div><h3 class="text-lg font-bold text-on-surface dark:text-white">${isAr ? p.arName : p.name}</h3><p class="text-xs text-on-surface-variant dark:text-slate-400">${isAr ? p.categoryArName : p.categoryName}</p></div>
-                    <div class="flex items-center justify-between mt-auto pt-2"><span class="text-xl font-bold text-primary font-sans">${p.price.toLocaleString()} ${isAr ? 'ج.م' : 'EGP'}</span><div class="flex gap-2"><button data-product-add="${p.id}" data-product-name="${isAr ? (p.arName || p.name) : p.name}" data-product-price="${p.price}" data-product-image="${p.imageUrl || ''}" class="px-3 py-2 rounded-lg bg-primary text-on-primary text-[10px] font-bold hover:bg-primary-container hover:text-primary transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_shopping_cart</span></button><a href="/shop/product/${p.id}" class="px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-[10px] font-bold transition-all duration-200">${currentTranslations.shop_view_details || 'View Details'}</a></div></div>
+                    <div class="flex items-center justify-between mt-auto pt-2"><span class="text-xl font-bold text-primary font-sans">${p.price.toLocaleString()} ${currentTranslations.currency || 'EGP'}</span><div class="flex gap-2"><button data-product-add="${p.id}" data-product-name="${isAr ? (p.arName || p.name) : p.name}" data-product-price="${p.price}" data-product-image="${p.imageUrl || ''}" class="px-3 py-2 rounded-lg bg-primary text-on-primary text-[10px] font-bold hover:bg-primary-container hover:text-primary transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_shopping_cart</span></button><a href="/shop/product/${p.id}" class="px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-[10px] font-bold transition-all duration-200">${currentTranslations.shop_view_details || 'View Details'}</a></div></div>
                 </div>`).join('');
         }
         const priceDisplay = document.getElementById('price-val-display');
         if (priceDisplay) {
-            const val = maxPrice >= priceMax ? (isAr ? 'الكل' : 'All') : (isAr ? maxPrice + ' ج.م' : maxPrice + ' EGP');
+            const val = maxPrice >= priceMax ? (currentTranslations.filter_all || 'All') : maxPrice + ' ' + (currentTranslations.currency || 'EGP');
             priceDisplay.textContent = val;
         }
         updatePaginationIndicators(totalPages);
@@ -789,11 +789,11 @@ async function initPriceSlider() {
     }
     if (display) {
         const isAr = document.documentElement.lang.startsWith('ar');
-        display.textContent = isAr ? 'الكل' : 'All';
+        display.textContent = currentTranslations.filter_all || 'All';
     }
     document.querySelectorAll('#price-slider + div span').forEach((el, i) => {
-        if (i === 0) el.textContent = priceMin + ' EGP';
-        if (i === 1) el.textContent = priceMax + ' EGP';
+        if (i === 0) el.textContent = priceMin + ' ' + (currentTranslations.currency || 'EGP');
+        if (i === 1) el.textContent = priceMax + ' ' + (currentTranslations.currency || 'EGP');
     });
 }
 

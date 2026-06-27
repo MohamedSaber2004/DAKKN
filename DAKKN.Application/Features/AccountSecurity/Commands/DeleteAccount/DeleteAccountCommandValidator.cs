@@ -14,7 +14,7 @@ namespace DAKKN.Application.Features.AccountSecurity.Commands.DeleteAccount
             RuleFor(x => x.ConfirmationText)
                 .NotEmpty().WithMessage(localizer[LocalizationKeys.ValidationMessages.Required.Value])
                 .Must(x => x.Equals("DELETE", StringComparison.OrdinalIgnoreCase))
-                .WithMessage("Please type DELETE to confirm.");
+                .WithMessage(localizer[LocalizationKeys.Profile.TypeDeleteToConfirm.Value]);
         }
     }
 }

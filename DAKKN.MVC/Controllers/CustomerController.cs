@@ -509,7 +509,7 @@ namespace DAKKN.MVC.Controllers
                 return View("NewTicket", model);
             }
 
-            TempData["SuccessMessage"] = "Your support ticket has been created successfully!";
+            TempData["SuccessMessage"] = localizer["supp_ticket_created"].Value;
             return RedirectToAction("Support");
         }
 

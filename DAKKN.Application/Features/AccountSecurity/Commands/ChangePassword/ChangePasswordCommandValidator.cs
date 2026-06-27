@@ -14,13 +14,13 @@ namespace DAKKN.Application.Features.AccountSecurity.Commands.ChangePassword
             RuleFor(x => x.NewPassword)
                 .NotEmpty().WithMessage(localizer[LocalizationKeys.ValidationMessages.Required.Value])
                 .MinimumLength(8).WithMessage(localizer[LocalizationKeys.ValidationMessages.MinLength.Value, 8])
-                .Matches("[A-Z]").WithMessage("New password must contain at least one uppercase letter.")
-                .Matches("[a-z]").WithMessage("New password must contain at least one lowercase letter.")
-                .Matches("[0-9]").WithMessage("New password must contain at least one number.");
+                .Matches("[A-Z]").WithMessage(localizer[LocalizationKeys.Profile.PasswordRequirements.Value])
+                .Matches("[a-z]").WithMessage(localizer[LocalizationKeys.Profile.PasswordRequirements.Value])
+                .Matches("[0-9]").WithMessage(localizer[LocalizationKeys.Profile.PasswordRequirements.Value]);
 
             RuleFor(x => x.ConfirmPassword)
                 .NotEmpty().WithMessage(localizer[LocalizationKeys.ValidationMessages.Required.Value])
-                .Equal(x => x.NewPassword).WithMessage("Passwords do not match.");
+                .Equal(x => x.NewPassword).WithMessage(localizer[LocalizationKeys.AuthMessages.PasswordMismatch.Value]);
         }
     }
 }

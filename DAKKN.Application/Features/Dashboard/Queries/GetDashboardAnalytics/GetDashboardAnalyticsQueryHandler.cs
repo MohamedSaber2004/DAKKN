@@ -71,11 +71,10 @@ namespace DAKKN.Application.Features.Dashboard.Queries.GetDashboardAnalytics
 
         private static string GetDayLabel(DateOnly date, bool isArabic)
         {
-            var dayOfWeek = date.DayOfWeek;
-            var shortNames = isArabic
-                ? new[] { "أحد", "اثنين", "ثلاثاء", "أربعاء", "خميس", "جمعة", "سبت" }
-                : new[] { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
-            return shortNames[(int)dayOfWeek];
+            var culture = isArabic
+                ? new System.Globalization.CultureInfo("ar-EG")
+                : System.Globalization.CultureInfo.InvariantCulture;
+            return culture.DateTimeFormat.GetAbbreviatedDayName(date.DayOfWeek);
         }
     }
 }

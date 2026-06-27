@@ -1,233 +1,701 @@
-Analyze the entire DAKKN repository and perform a complete authentication UI/UX theme consistency audit.
+Comprehensive Localization Verification & Fix Prompt (ASP.NET Core MVC)
 
-Problem:
-The Landing Page supports Light Mode and Dark Mode.
+First, read and analyze the entire repository before making any modifications. Do not fix files one by one without understanding the complete localization architecture.
 
-When a user changes the theme on the Landing Page and then navigates to:
+Repository:
+https://github.com/MohamedSaber2004/DAKKN
 
-* Sign In
-* Sign Up
-* Forgot Password
-* Reset Password
-* Verify OTP
-* Email Confirmation
-* Resend Verification
-* Change Password
-* Account Activation
-* External Login pages
-* Any Authentication-related page
+Objective
 
-there are visual inconsistencies between the Landing Page theme and Authentication pages.
+Perform a complete localization audit of the entire project to ensure that every user-facing text is displayed in the correct language (Arabic / English) according to the language requested by the current user.
 
-Goal:
-Create a single, unified theme system across the entire application.
+This is not only about views.
 
-Requirements:
+Verify localization consistency across:
 
-1. Perform a Full Theme Architecture Audit
+Razor Views
+Partial Views
+Layouts
+View Components
+Shared Components
+Controllers
+Services
+Application Layer
+Domain Exceptions
+Validation
+Identity
+Authentication
+Authorization
+API Responses
+Success Messages
+Error Messages
+Notifications
+TempData
+Toast Messages
+JavaScript
+AJAX Responses
+Email Templates
+Client-side Validation
+Server-side Validation
+Resource Files
 
-Analyze:
+The goal is that the entire application behaves as a fully localized bilingual system.
 
-* Theme management logic
-* Theme persistence logic
-* Theme initialization
-* LocalStorage usage
-* Cookie usage
-* Theme synchronization
-* Theme switching implementation
-* Dark mode implementation
-* Layout files
-* Shared layouts
-* Authentication layouts
-* Partial views
-* CSS files
-* Tailwind configuration
-* JavaScript theme initialization
-* Razor views
-* MVC layouts
+Phase 1 — Analyze Current Localization Architecture
 
-Identify every place where theme handling differs.
+Determine:
 
-2. Root Cause Analysis
+How localization is currently configured.
+Which localization providers are used.
+Whether IStringLocalizer is used correctly.
+Whether IViewLocalizer is used in Razor.
+Whether resource files exist.
+Current cultures supported.
+RequestLocalization configuration.
+Cookie-based culture selection.
+Query-string culture.
+Route culture.
+Default culture.
+Resource naming convention.
+SharedResource usage.
 
-Find all causes of inconsistency such as:
+Verify there are no inconsistent localization approaches across the project.
 
-* Different layouts using different theme logic
-* Missing dark classes
-* Missing theme initialization
-* Theme flashing during page load
-* LocalStorage not read correctly
-* Cookie not synchronized
-* Theme loaded too late
-* Authentication pages using separate CSS
-* Components not supporting dark mode
-* Hardcoded colors
-* Missing Tailwind dark variants
-* Missing CSS variables
-* Different rendering pipelines
+Phase 2 — Audit ALL Razor Views
 
-Document every issue discovered.
+Inspect every view.
 
-3. Authentication Pages Audit
+Including:
 
-Inspect all auth-related pages:
+Home
+Landing
+Authentication
+Dashboard
+Admin
+CMS
+Products
+Categories
+Orders
+Users
+Roles
+Settings
+Blogs
+Contact
+Profile
+Error pages
+Shared
+Layouts
+Partial Views
+Components
+Areas
+Identity pages
 
-Sign In
+Verify every visible text.
 
-Sign Up
+Examples:
+
+Headers
+
+Buttons
+
+Labels
+
+Links
+
+Menus
+
+Breadcrumbs
+
+Cards
+
+Tables
+
+Pagination
+
+Search
+
+Filters
+
+Dropdowns
+
+Checkboxes
+
+Radio buttons
+
+Validation summaries
+
+Placeholders
+
+Empty states
+
+No data messages
+
+Loading messages
+
+Tooltips
+
+Modals
+
+Confirmation dialogs
+
+Footer
+
+Sidebar
+
+Navbar
+
+Copyright
+
+Hero sections
+
+Feature sections
+
+Call-to-action sections
+
+Banners
+
+Notifications
+
+Warnings
+
+Descriptions
+
+Titles
+
+Subtitles
+
+SEO metadata
+
+Page titles
+
+Meta descriptions
+
+Accessibility labels
+
+Image alt texts
+
+Everything visible to the user.
+
+There must be no hardcoded Arabic or English text.
+
+Every user-visible string must come from localization resources.
+
+Phase 3 — Verify Language Switching
+
+Switch application between:
+
+English
+
+Arabic
+
+Verify every page.
+
+No page should remain partially translated.
+
+No mixed-language UI.
+
+Examples of failures:
+
+Arabic page with English buttons.
+
+English page with Arabic breadcrumbs.
+
+Arabic sidebar with English menu.
+
+English modal with Arabic validation.
+
+These inconsistencies must be eliminated.
+
+Phase 4 — Verify RTL / LTR Support
+
+When Arabic is selected:
+
+Entire layout should become RTL.
+
+Verify:
+
+Navbar
+
+Sidebar
+
+Cards
+
+Tables
+
+Forms
+
+Dropdowns
+
+Pagination
+
+Icons
+
+Spacing
+
+Margins
+
+Alignment
+
+Text direction
+
+Bootstrap utilities
+
+CSS classes
+
+Flex direction
+
+Input alignment
+
+Modal alignment
+
+Breadcrumb alignment
+
+Grid layout
+
+Buttons
+
+Everything should render naturally in RTL.
+
+When English is selected:
+
+Entire application must switch back to LTR.
+
+Phase 5 — Verify Controller Messages
+
+Inspect every controller.
+
+Find:
+
+TempData
+
+ViewData
+
+ViewBag
+
+Success messages
+
+Failure messages
+
+Warning messages
+
+Delete confirmations
+
+Update confirmations
+
+Create confirmations
+
+Redirect messages
+
+Login messages
+
+Logout messages
+
+Access denied messages
+
+Forbidden messages
+
+Unauthorized messages
+
+Not found messages
+
+Every message must be localized.
+
+No hardcoded strings.
+
+Phase 6 — Verify Application Layer
+
+Inspect:
+
+Commands
+
+Queries
+
+Handlers
+
+Services
+
+Managers
+
+Business logic
+
+Result objects
+
+OperationResult
+
+Response wrappers
+
+Error objects
+
+Domain services
+
+Verify:
+
+Success messages
+
+Business rule messages
+
+Failure messages
+
+Duplicate messages
+
+Validation failures
+
+Permission failures
+
+Everything must be localized.
+
+Phase 7 — Verify Exceptions
+
+Inspect every exception.
+
+Examples:
+
+BusinessException
+
+ValidationException
+
+DomainException
+
+NotFoundException
+
+ForbiddenException
+
+UnauthorizedException
+
+ConflictException
+
+ApplicationException
+
+Every exception message must support localization.
+
+No hardcoded text.
+
+Phase 8 — Verify Validation
+
+Inspect:
+
+FluentValidation
+
+DataAnnotations
+
+Identity validation
+
+Custom validation
+
+ModelState errors
+
+Client validation
+
+Server validation
+
+Every validation message must be localized.
+
+Examples:
+
+Required
+
+Maximum length
+
+Minimum length
+
+Invalid email
+
+Invalid phone
+
+Password complexity
+
+Unique value
+
+Already exists
+
+Invalid file
+
+Invalid image
+
+Invalid format
+
+Date validation
+
+Range validation
+
+Everything.
+
+Phase 9 — Verify Identity
+
+Inspect:
+
+Login
+
+Register
 
 Forgot Password
 
 Reset Password
 
-OTP Verification
-
-Email Verification
+Confirm Email
 
 Change Password
 
-Account Lockout
-
-Access Denied
-
 External Login
 
-Two Factor Authentication
+Lockout
 
-Any Identity pages
+Email confirmation
+
+Authentication errors
+
+IdentityResult errors
+
+Password errors
+
+Role errors
+
+User errors
+
+Account errors
+
+Everything must respect the selected language.
+
+Phase 10 — Verify JavaScript
+
+Inspect every JS file.
+
+Find:
+
+alert()
+
+confirm()
+
+toast()
+
+SweetAlert
+
+Toastr
+
+Bootstrap modal text
+
+AJAX error messages
+
+AJAX success messages
+
+Console messages visible to users
+
+Prompt dialogs
+
+Every user-visible message must be localized.
+
+Phase 11 — Verify AJAX Responses
+
+Inspect every AJAX endpoint.
+
+Return messages should change automatically according to current culture.
+
+Examples:
+
+Saved successfully
+
+Deleted successfully
+
+Unauthorized
+
+Access denied
+
+Validation failed
+
+No data found
+
+Upload completed
+
+Image removed
+
+Everything localized.
+
+Phase 12 — Verify Email Templates
+
+Inspect email templates.
+
+Examples:
+
+Welcome
+
+Reset password
+
+Verification
+
+Notifications
+
+Invitations
+
+Approval
+
+Rejection
+
+Emails should render completely in requested language.
+
+Phase 13 — Verify Resource Files
+
+Inspect every resource file.
 
 Verify:
 
-* Background colors
-* Cards
-* Inputs
-* Labels
-* Buttons
-* Validation messages
-* Icons
-* Borders
-* Shadows
-* Hover states
-* Focus states
-* Error states
-* Success states
-* Loading states
+Missing keys
 
-4. Theme Synchronization
+Duplicate keys
 
-Implement a single source of truth.
+Unused keys
 
-Requirements:
+Incorrect translations
 
-* Landing Page theme change must instantly affect Auth pages.
-* Auth pages must read the same theme preference.
-* Theme must persist after:
+Typos
 
-  * Navigation
-  * Refresh
-  * Login
-  * Logout
-  * Session expiration
-  * Browser restart
+Naming consistency
 
-Verify LocalStorage, Cookies, and Database settings behavior.
+Shared resources
 
-5. Prevent Theme Flashing
+Culture-specific resources
 
-Implement proper theme bootstrapping.
+Resource fallback
 
-Before page render:
+No missing translations.
 
-* Read theme immediately.
-* Apply dark/light class before content paints.
-* Eliminate FOUC (Flash of Unstyled Content).
-* Eliminate white flash when opening auth pages from dark mode.
+Phase 14 — Verify Missing Localizations
 
-6. Shared Design System
+Search entire solution for hardcoded strings.
 
-Create a reusable design system.
+Examples:
 
-Move all theme colors to:
+"Saved Successfully"
 
-* CSS variables
-* Tailwind theme configuration
-* Shared component styles
+"Delete"
 
-Remove:
+"Edit"
 
-* Hardcoded colors
-* Duplicate styles
-* Page-specific theme hacks
+"Login"
 
-7. Component Consistency
+"Cancel"
 
-Ensure identical styling behavior between:
+"Search"
 
-Landing Page
+"Create"
 
-Authentication Pages
+"Error"
 
-Dashboard
+"Success"
 
-Admin Pages
+"Warning"
 
-Profile Pages
+"Are you sure?"
 
-Settings Pages
+"No Data"
 
-Checkout Pages
+"Back"
 
-Any future pages
+"Next"
 
-All should use the same design tokens.
+"Previous"
 
-8. Accessibility Review
+"Loading"
 
-Verify:
+"Upload"
 
-* Contrast ratios
-* Focus visibility
-* Keyboard navigation
-* Error visibility
-* Dark mode readability
-* Placeholder visibility
+"Download"
 
-9. Mobile Review
+Replace every user-facing hardcoded string with localized resources.
 
-Verify theme consistency on:
+Phase 15 — Verify Dynamic Messages
 
-* Mobile
-* Tablet
-* Desktop
+Inspect string interpolation.
 
-Check responsive layouts in both light and dark modes.
+Examples:
 
-10. Performance Review
+User {Name} created successfully.
 
-Ensure:
+Product {ProductName} deleted.
 
-* No duplicate theme scripts
-* No duplicate CSS
-* No unnecessary DOM updates
-* No layout shifts
-* No hydration/theme mismatch
+Order #{Id} updated.
 
-11. Deliverables
+Ensure templates are localized while preserving placeholders.
 
-Provide:
+Phase 16 — Verify Current Culture Usage
 
-* Complete root cause analysis.
-* All discovered inconsistencies.
-* List of affected files.
-* List of layout files.
-* List of CSS files.
-* List of JS files.
-* Theme architecture diagram.
-* Refactoring plan.
-* Final implementation.
+Ensure the selected language is consistently propagated through:
 
-Important:
+Razor Views
+Controllers
+Services
+Validation
+Middleware
+Identity
+AJAX
+APIs
+Background operations (where applicable)
 
-Do not stop after fixing the visible Sign In and Sign Up pages.
+The application must not accidentally fall back to the default language.
 
-Audit the entire authentication flow and identify every possible theme inconsistency that currently exists or may occur in the future. Implement a centralized, scalable, maintainable theme system that guarantees visual consistency across the whole DAKKN application.
+Phase 17 — Produce Final Audit Report
+
+After completing the audit, provide a structured report including:
+
+Localization Coverage
+Total Razor Views audited
+Total Partial Views audited
+Total Layouts audited
+Total Controllers audited
+Total Services audited
+Total Validators audited
+Total Exceptions audited
+Total JavaScript files audited
+Total Resource files audited
+Issues Found
+
+For each issue include:
+
+File path
+Line number (if applicable)
+Problem description
+Root cause
+Recommended fix
+Fix status
+Missing Resource Keys
+
+List all missing localization keys.
+
+Hardcoded Text
+
+List every remaining hardcoded user-facing string.
+
+RTL/LTR Issues
+
+List every layout inconsistency.
+
+Validation Issues
+
+List all validation messages that were not localized.
+
+Identity Issues
+
+List all Identity-related messages requiring localization.
+
+Exception Issues
+
+List every exception that still contains hardcoded text.
+
+Final Result
+
+Confirm that:
+
+Every Razor View is fully localized.
+Every Partial View is localized.
+Every Layout is localized.
+Every Component is localized.
+Every Success Message is localized.
+Every Error Message is localized.
+Every Validation Message is localized.
+Every Exception Message is localized.
+Every Identity Message is localized.
+Every AJAX Response is localized.
+Every Email Template is localized.
+Arabic renders correctly in RTL.
+English renders correctly in LTR.
+No hardcoded user-facing strings remain anywhere in the solution.
+The entire application consistently respects the user's selected language across all layers.

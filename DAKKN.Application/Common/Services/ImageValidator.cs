@@ -82,9 +82,9 @@ namespace DAKKN.Application.Common.Services
 
                 return (true, uniqueFileName);
             }
-            catch (Exception ex)
+            catch
             {
-                return (false, $"Upload failed: {ex.Message}");
+                return (false, _localizer[LocalizationKeys.UploadFileMessages.FileUploadFailed.Value]);
             }
         }
 

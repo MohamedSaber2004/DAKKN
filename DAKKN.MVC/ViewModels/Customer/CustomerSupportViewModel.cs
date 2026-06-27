@@ -18,16 +18,16 @@ namespace DAKKN.MVC.ViewModels.Customer
 
     public class NewTicketViewModel
     {
-        [Required(ErrorMessage = "Subject is required")]
+        [Required(ErrorMessage = "validation.required")]
         [StringLength(100, MinimumLength = 5)]
         public string Subject { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Category is required")]
+        [Required(ErrorMessage = "validation.required")]
         public string Category { get; set; } = string.Empty;
 
         public string? OrderId { get; set; }
 
-        [Required(ErrorMessage = "Message is required")]
+        [Required(ErrorMessage = "validation.required")]
         [StringLength(1000, MinimumLength = 10)]
         public string Message { get; set; } = string.Empty;
 

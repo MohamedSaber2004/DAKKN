@@ -1,9 +1,11 @@
 using DAKKN.Application.Common.Exceptions;
 using DAKKN.Application.Features.Cart.DTOs;
 using DAKKN.Application.Interfaces;
+using DAKKN.Application.Localization;
 using DAKKN.Domain.Entities;
 using DAKKN.Domain.Repositories.Interfaces.Base;
 using MediatR;
+using Microsoft.Extensions.Localization;
 
 namespace DAKKN.Application.Features.Cart.Commands.AddToCart
 {
@@ -11,11 +13,13 @@ namespace DAKKN.Application.Features.Cart.Commands.AddToCart
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IGuestCartStorage _cartStorage;
+        private readonly IStringLocalizer<Messages> _localizer;
 
-        public AddToCartCommandHandler(IUnitOfWork unitOfWork, IGuestCartStorage cartStorage)
+        public AddToCartCommandHandler(IUnitOfWork unitOfWork, IGuestCartStorage cartStorage, IStringLocalizer<Messages> localizer)
         {
             _unitOfWork = unitOfWork;
             _cartStorage = cartStorage;
+            _localizer = localizer;
         }
 
         public async Task<int> Handle(AddToCartCommand request, CancellationToken cancellationToken)
@@ -26,10 +30,10 @@ namespace DAKKN.Application.Features.Cart.Commands.AddToCart
                 throw new NotFoundException(nameof(Product), request.ProductId);
 
             if (!product.IsActive || product.IsDeleted)
-                throw new BadRequestException("Product is not available");
+                throw new BadRequestException(_localizer[LocalizationKeys.CartMessages.ProductNotAvailable]);
 
             if (product.QuantityInStock <= 0)
-                throw new BadRequestException("This product is currently out of stock.");
+                throw new BadRequestException(_localizer[LocalizationKeys.CartMessages.OutOfStock]);
 
             var cart = _cartStorage.GetCart();
             var existing = cart.FirstOrDefault(x => x.ProductId == request.ProductId);
@@ -37,7 +41,7 @@ namespace DAKKN.Application.Features.Cart.Commands.AddToCart
             var requestedTotal = currentCartQty + request.Quantity;
 
             if (requestedTotal > product.QuantityInStock)
-                throw new BadRequestException($"Only {product.QuantityInStock} items available.");
+                throw new BadRequestException(string.Format(_localizer[LocalizationKeys.CartMessages.OnlyAvailable], product.QuantityInStock));
 
             if (existing != null)
             {

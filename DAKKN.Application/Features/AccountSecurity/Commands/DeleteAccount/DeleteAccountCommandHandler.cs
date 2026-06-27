@@ -39,7 +39,7 @@ namespace DAKKN.Application.Features.AccountSecurity.Commands.DeleteAccount
                 throw new NotFoundException(_localizer[LocalizationKeys.AuthMessages.UserNotFound.Value]);
 
             if (!request.ConfirmationText.Equals("DELETE", StringComparison.OrdinalIgnoreCase))
-                throw new BadRequestException("Please type DELETE to confirm account deletion.");
+                throw new BadRequestException(_localizer[LocalizationKeys.Profile.TypeDeleteToConfirm.Value]);
 
             var isPasswordValid = await _userManager.CheckPasswordAsync(user, request.CurrentPassword);
             if (!isPasswordValid)

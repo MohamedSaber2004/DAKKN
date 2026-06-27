@@ -104,7 +104,7 @@ namespace DAKKN.MVC.Controllers
             }
             catch (Exception)
             {
-                ModelState.AddModelError(string.Empty, "An unexpected error occurred.");
+                ModelState.AddModelError(string.Empty, _localizer[LocalizationKeys.ExceptionMessages.UnknownException.Value]);
             }
 
             return View(vm);
@@ -214,7 +214,7 @@ namespace DAKKN.MVC.Controllers
             }
             catch (Exception)
             {
-                ModelState.AddModelError(string.Empty, "An unexpected error occurred.");
+                ModelState.AddModelError(string.Empty, _localizer[LocalizationKeys.ExceptionMessages.UnknownException.Value]);
             }
 
             return View(vm);
@@ -274,11 +274,11 @@ namespace DAKKN.MVC.Controllers
                     var isValid = await _mediator.Send(new VerifyForgetPasswordOtpCommand(vm.Email, vm.Code));
                     if (!isValid)
                     {
-                        ModelState.AddModelError(string.Empty, "invalid_otp");
-                        return View(vm);
-                    }
+                    ModelState.AddModelError(string.Empty, _localizer[LocalizationKeys.AuthMessages.InvalidOtp.Value]);
+                    return View(vm);
+                }
 
-                    TempData["ResetEmail"] = vm.Email;
+                TempData["ResetEmail"] = vm.Email;
                     TempData["ResetToken"] = vm.Code;
                     return RedirectToAction(nameof(ResetPassword));
                 }
@@ -304,7 +304,7 @@ namespace DAKKN.MVC.Controllers
             {
                 if (!AuthMockStore.ValidateOtp(vm.Email, vm.Code))
                 {
-                    ModelState.AddModelError(string.Empty, "invalid_otp");
+                    ModelState.AddModelError(string.Empty, _localizer[LocalizationKeys.AuthMessages.InvalidOtp.Value]);
                     return View(vm);
                 }
 

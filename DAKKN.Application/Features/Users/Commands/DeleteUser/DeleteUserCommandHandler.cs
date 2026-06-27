@@ -35,7 +35,7 @@ namespace DAKKN.Application.Features.Users.Commands.DeleteUser
 
             if (user.Id == _currentUserService.UserId)
             {
-                throw new BadRequestException("You cannot delete yourself.");
+                throw new BadRequestException(_localizer[LocalizationKeys.Profile.DeleteAccountError.Value]);
             }
 
             user.SoftDelete(_currentUserService.UserId.ToString() ?? "System");

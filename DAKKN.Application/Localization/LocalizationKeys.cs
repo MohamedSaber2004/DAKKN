@@ -56,6 +56,8 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString GoogleTokenRequired = new("auth.google_token_required");
             public static readonly KeyString PhoneNumberRequired = new("auth.phone_number_required");
             public static readonly KeyString PhoneNumberFoundBefore = new("auth.phone_number_found_before");
+            public static readonly KeyString InvalidPhoneNumber = new("alert.phone_invalid");
+            public static readonly KeyString InvalidOtp = new("alert.invalid_otp");
         }
 
         public static class ValidationMessages
@@ -153,6 +155,8 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString Empty = new("cart.empty");
             public static readonly KeyString QuantityMustBePositive = new("cart.quantity_must_be_positive");
             public static readonly KeyString ProductNotAvailable = new("cart.product_not_available");
+            public static readonly KeyString OutOfStock = new("cart.product_out_of_stock");
+            public static readonly KeyString OnlyAvailable = new("cart.only_available");
             public static readonly KeyString ProductNotFound = new("cart.product_not_found");
             public static readonly KeyString FreeShipping = new("cart.free_shipping");
             public static readonly KeyString ShippingUpdated = new("cart.shipping_updated");

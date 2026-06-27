@@ -311,6 +311,20 @@
 
 @section Scripts {
     <script>
+        const decodeEntities = (function() {
+            const el = document.createElement('div');
+            return function(str) {
+                if(str && typeof str === 'string') {
+                    el.innerHTML = str;
+                    str = el.textContent;
+                    el.textContent = '';
+                }
+                return str;
+            }
+        })();
+
+        const currencyEgp = decodeEntities('@Html.Raw(Localizer["Currency_EGP"])');
+
         // Prevent default browser behavior for drag-and-drop across the entire window
         window.addEventListener("dragover", function(e) { e.preventDefault(); }, false);
         window.addEventListener("drop", function(e) { e.preventDefault(); }, false);
@@ -486,9 +500,9 @@
             
             const total = (unitPrice * qty) - discount;
             
-            document.getElementById('unit-price').textContent = `${unitPrice.toFixed(2)} EGP`;
-            document.getElementById('discount-val').textContent = `-${discount.toFixed(2)} EGP`;
-            document.getElementById('total-price').textContent = `${total.toFixed(2)} EGP`;
+            document.getElementById('unit-price').textContent = `${unitPrice.toFixed(2)} ${currencyEgp}`;
+            document.getElementById('discount-val').textContent = `-${discount.toFixed(2)} ${currencyEgp}`;
+            document.getElementById('total-price').textContent = `${total.toFixed(2)} ${currencyEgp}`;
         }
 
         function populateReview() {
