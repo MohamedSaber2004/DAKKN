@@ -5,7 +5,7 @@
     var culture = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("en") ? "en" : "ar";
     var dir = culture == "ar" ? "rtl" : "ltr";
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
-    var fullName = User.FindFirstValue("FullName") ?? User.Identity?.Name ?? "User";
+    var fullName = User.FindFirstValue("FullName") ?? User.Identity?.Name ?? Localizer["layout_user_fallback"].Value;
 
     var isDarkMode = false;
     var themeName = "light";
@@ -171,7 +171,7 @@
     <aside id="customer-sidebar" class="hidden md:flex flex-col customer-sidebar h-screen w-64 shadow-medium z-40 relative flex-shrink-0 transition-all duration-300 bg-surface dark:bg-[#1E293B] border-r border-border dark:border-white/5">
         <div class="p-lg border-b border-border dark:border-white/5 flex flex-col items-center justify-center gap-sm group cursor-pointer overflow-hidden">
             <div class="logo-container transition-all duration-300">
-                <img src="/images/logo.png" alt="DAKKN Logo" class="h-16 logo-img dark:brightness-125 transition-all duration-300" />
+                <img src="/images/logo.png" alt='@Localizer["logo_alt"]' class="h-16 logo-img dark:brightness-125 transition-all duration-300" />
             </div>
             <div class="brand-info text-center transition-all duration-300">
                 <h1 class="font-h2 text-h2 font-bold text-primary dark:text-primary-light whitespace-nowrap">@Localizer["brand"]</h1>
@@ -258,7 +258,7 @@
 
                     <a asp-action="Profile" class="flex items-center gap-md p-1.5 ltr:pr-4 rtl:pl-4 rounded-full bg-surface-container dark:bg-white/5 border border-border dark:border-white/10 hover:border-primary/30 transition-all">
                         <div class="w-8 h-8 rounded-full overflow-hidden shadow-small">
-                            <img src="@(ResolveProfileUrl(profilePictureUrl, fullName))" class="w-full h-full object-cover" alt="User profile avatar">
+                            <img src="@(ResolveProfileUrl(profilePictureUrl, fullName))" class="w-full h-full object-cover" alt='@Localizer["profile_avatar_alt"]'>
                         </div>
                         <span class="hidden sm:block font-bold text-sm text-text-primary dark:text-white">@(fullName.Split(' ')[0])</span>
                     </a>

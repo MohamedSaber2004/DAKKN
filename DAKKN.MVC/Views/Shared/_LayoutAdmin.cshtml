@@ -9,7 +9,7 @@
     var fullName = User.FindFirstValue("FullName");
     if (string.IsNullOrWhiteSpace(fullName))
     {
-        fullName = User.Identity?.Name ?? "Admin";
+        fullName = User.Identity?.Name ?? Localizer["admin_fallback_name"].Value;
     }
 
     var isDarkMode = false;
@@ -175,7 +175,7 @@
     <aside id="admin-sidebar" class="hidden md:flex flex-col admin-sidebar ltr:left-0 ltr:border-r rtl:right-0 rtl:border-l h-screen w-64 shadow-medium z-40 relative flex-shrink-0 transition-all duration-300 bg-surface dark:bg-[#1E293B] border-border dark:border-white/5">
         <div class="p-lg border-b border-border dark:border-white/5 flex flex-col items-center justify-center gap-sm group cursor-pointer overflow-hidden">
             <div class="admin-logo-container transition-all duration-300">
-                <img src="/images/logo.png" alt="DAKKN Logo" class="h-16 admin-logo-img dark:brightness-125 transition-all duration-300" />
+                <img src="/images/logo.png" alt='@Localizer["logo_alt"]' class="h-16 admin-logo-img dark:brightness-125 transition-all duration-300" />
             </div>
             <div class="admin-brand-info text-center transition-all duration-300">
                 <h1 class="font-h2 text-h2 font-bold text-primary dark:text-primary-light whitespace-nowrap">@Localizer["brand"]</h1>
@@ -254,7 +254,7 @@
                     <span class="material-symbols-outlined" id="sidebar-toggle-icon">menu_open</span>
                 </button>
                 <div class="admin-logo-container md:hidden">
-                    <img src="/images/logo.png" alt="DAKKN Logo" class="h-10 admin-logo-img dark:brightness-125" />
+                    <img src="/images/logo.png" alt='@Localizer["logo_alt"]' class="h-10 admin-logo-img dark:brightness-125" />
                 </div>
                 <div class="hidden md:block">
                     <h2 class="font-h3 text-h3 font-bold text-text-primary dark:text-white">@ViewData["Title"]</h2>
@@ -273,7 +273,7 @@
                     </button>
                 </div>
                 <div class="w-10 h-10 rounded-full bg-primary-container overflow-hidden cursor-pointer shadow-small border border-border dark:border-white/10">
-                    <img alt="Admin Avatar" class="w-full h-full object-cover" src="https://ui-avatars.com/api/?name=@(fullName)&background=69d2cf&color=005957">
+                    <img alt='@Localizer["admin_avatar_alt"]' class="w-full h-full object-cover" src="https://ui-avatars.com/api/?name=@(fullName)&background=69d2cf&color=005957">
                 </div>
             </div>
         </header>

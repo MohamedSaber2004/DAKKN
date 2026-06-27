@@ -53,7 +53,7 @@
 <nav class="fixed top-0 w-full z-50 flex justify-between items-center px-4 md:px-16 h-16 md:h-20 bg-surface/75 dark:bg-[#0a1020]/85 backdrop-blur-md border-b border-outline-variant/10 dark:border-white/5 shadow-sm navbar-animate">
     <div class="flex items-center gap-4 md:gap-6">
         <a href="#hero" class="logo-glow cursor-pointer" data-section="hero">
-            <img src="~/images/logo.png" alt="DAKKN Logo" class="h-16 md:h-18" />
+            <img src="~/images/logo.png" alt='@Localizer["logo_alt"]' class="h-16 md:h-18" />
         </a>
         <!-- Desktop nav links with icons -->
         <div class="hidden lg:flex items-center gap-1">
@@ -103,7 +103,7 @@
         </a>
 
         <!-- Cart Button (Mobile) -->
-        <a asp-action="Cart" asp-controller="Shop" aria-label="shopping_cart" class="navbar-icon-btn relative scale-90 md:scale-100 dark:text-slate-300 lg:hidden" title="@Localizer["nav_cart"]">
+        <a asp-action="Cart" asp-controller="Shop" aria-label="@Localizer["nav_cart"]" class="navbar-icon-btn relative scale-90 md:scale-100 dark:text-slate-300 lg:hidden" title="@Localizer["nav_cart"]">
             <span class="material-symbols-outlined text-[24px]">shopping_cart</span>
             <span class="absolute -top-0.5 -end-0.5 w-4 h-4 bg-tertiary-container text-on-tertiary-container text-[8px] font-bold rounded-full flex items-center justify-center shadow-sm" id="cart-badge-mobile">0</span>
         </a>
@@ -167,7 +167,7 @@
             <div class="order-1 lg:order-2 lg:col-span-6 relative flex items-center justify-center fade-in-up delay-200 scroll-animate-right">
                 <div class="absolute w-[110%] h-[110%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 to-transparent blur-3xl z-0"></div>
                 <div class="glass-panel rounded-2xl p-3 md:p-4 relative z-10 w-full max-w-sm md:max-w-lg aspect-square flex items-center justify-center overflow-hidden group shadow-2xl">
-                    <img alt="Premium Holographic Sticker" class="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-700 ease-out" src="@(Model.HasCmsData ? ResolveImageUrl(Model.Hero.ImageUrl) : "https://lh3.googleusercontent.com/aida-public/AB6AXuA72PkjHVeCPUlIaHJ3_eGqx62IshGNKsZAFOtRfa4qXiqB34wZxI5n0pDgo8HSGobn8wLB9UH8B7rOFgx0ftpYxUVR1qGU1sd7rA6C2_VP3aAwz5s7_peP44fO51s7n2hY_hMJhSZ5CpWTrmqYh-Pdj0JRr38jLohPnoOObJl3sNfno5qxrwES4-yGrakjXi3fAHd819iPakcoY-dxzBnGcJyo-d0MooPlllmRZCPrT3rq7Enl6Um_MO_W2pYfIMp1t7xZ5BMKLRkR")" onerror="this.onerror=null; this.src='@placeholder'; this.classList.add('opacity-30')"/>
+                    <img alt='@Localizer["hero_image_alt"]' class="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-700 ease-out" src="@(Model.HasCmsData ? ResolveImageUrl(Model.Hero.ImageUrl) : "https://lh3.googleusercontent.com/aida-public/AB6AXuA72PkjHVeCPUlIaHJ3_eGqx62IshGNKsZAFOtRfa4qXiqB34wZxI5n0pDgo8HSGobn8wLB9UH8B7rOFgx0ftpYxUVR1qGU1sd7rA6C2_VP3aAwz5s7_peP44fO51s7n2hY_hMJhSZ5CpWTrmqYh-Pdj0JRr38jLohPnoOObJl3sNfno5qxrwES4-yGrakjXi3fAHd819iPakcoY-dxzBnGcJyo-d0MooPlllmRZCPrT3rq7Enl6Um_MO_W2pYfIMp1t7xZ5BMKLRkR")" onerror="this.onerror=null; this.src='@placeholder'; this.classList.add('opacity-30')"/>
                     
                     <div class="absolute top-3 right-3 md:top-6 md:right-6 bg-surface-container-high/90 dark:bg-slate-800/90 backdrop-blur-md px-3 py-1.5 md:px-4 md:py-2 rounded-full border border-outline-variant/30 flex items-center gap-1.5 md:gap-2 shadow-lg">
                         <span class="material-symbols-outlined text-primary text-base md:text-lg">water_drop</span>
@@ -219,9 +219,9 @@
 
                 <div class="flex items-center gap-3 md:gap-4 mt-4 md:mt-8 pt-4 md:pt-8 border-t border-outline-variant/20 scroll-animate delay-500">
                     <div class="flex -space-x-3 rtl:space-x-reverse">
-                        <img alt="User" class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-background dark:border-black" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsbzfpDCD3KQ9gRe7rlAbOhGlqAxgpNnsZCQHyMVIOnG4wEdkisp37Pb9mnLgYmtx_tBHSaSHatWeM2ypINipat-x4fdPPsOEfFz47R_uU0alEAmhYAtzpqKdMMJoR11cldP3ApUtMyn6o4UisAZjO2gjQhlknWO46MpXKZ166Ug7LrSSZ1Rt_dlP5utpPZJZqMe7tMpd7q-atjlknwSaLOJOoUkw1z0YQ-BFtouwU0-X-DTm8vOWxSrSWCS98GplKFuue88lEBZJb"/>
-                        <img alt="User" class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-background dark:border-black" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQm5pngnzk7PeW1ocBUUkJ6LYFhH-wq3KTlUHn-wdxnN1yZ25bfxSVUNj45WHfjmNwLJfcW2DC2igPRXk2ofVXb3wJGDGEvRfysWc5uKjlTdSrmoFPY8wMM-X3LrcUtkdZUCmSoxn54AHLHjjdZZgma00bPYfmnduCpfuM8aB3KI39hzYyE3W5e6BQfJwGyzBwDp38B7xc61WDA4SFLV6caOGiIApQTZW_gZtZTMO9P655h37z34TffJIasZt4SSLIL5Ft7WKKlaKd"/>
-                        <img alt="User" class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-background dark:border-black" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4J9mlzPKkqHsy5Xpbqb_aeSoq46z6_uxsNrA1nFW-Pfdxmh0h3Rue-7NZ1bPw_nkXvjJoMNwitjW1rNPqqwenUeSn_yfUjMnspzGb76WcXOsevWvqyycqgluwyd8pYZiagwwJ9H6PSef3YhRxV0DSA_KFTrEtOKZQsZ6_YsTmmPFrm596BYhnAeI0vAQOpR7Q_oEWZmBKeBeGP5o1YomNKoU0KCFOMmxKMiGcHLqRCxBXur9Ixg73ivltG6xQ2JIOdOaJL_GkvJ-K"/>
+                        <img alt='@Localizer["user_avatar_alt"]' class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-background dark:border-black" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAsbzfpDCD3KQ9gRe7rlAbOhGlqAxgpNnsZCQHyMVIOnG4wEdkisp37Pb9mnLgYmtx_tBHSaSHatWeM2ypINipat-x4fdPPsOEfFz47R_uU0alEAmhYAtzpqKdMMJoR11cldP3ApUtMyn6o4UisAZjO2gjQhlknWO46MpXKZ166Ug7LrSSZ1Rt_dlP5utpPZJZqMe7tMpd7q-atjlknwSaLOJOoUkw1z0YQ-BFtouwU0-X-DTm8vOWxSrSWCS98GplKFuue88lEBZJb"/>
+                        <img alt='@Localizer["user_avatar_alt"]' class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-background dark:border-black" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQm5pngnzk7PeW1ocBUUkJ6LYFhH-wq3KTlUHn-wdxnN1yZ25bfxSVUNj45WHfjmNwLJfcW2DC2igPRXk2ofVXb3wJGDGEvRfysWc5uKjlTdSrmoFPY8wMM-X3LrcUtkdZUCmSoxn54AHLHjjdZZgma00bPYfmnduCpfuM8aB3KI39hzYyE3W5e6BQfJwGyzBwDp38B7xc61WDA4SFLV6caOGiIApQTZW_gZtZTMO9P655h37z34TffJIasZt4SSLIL5Ft7WKKlaKd"/>
+                        <img alt='@Localizer["user_avatar_alt"]' class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-background dark:border-black" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4J9mlzPKkqHsy5Xpbqb_aeSoq46z6_uxsNrA1nFW-Pfdxmh0h3Rue-7NZ1bPw_nkXvjJoMNwitjW1rNPqqwenUeSn_yfUjMnspzGb76WcXOsevWvqyycqgluwyd8pYZiagwwJ9H6PSef3YhRxV0DSA_KFTrEtOKZQsZ6_YsTmmPFrm596BYhnAeI0vAQOpR7Q_oEWZmBKeBeGP5o1YomNKoU0KCFOMmxKMiGcHLqRCxBXur9Ixg73ivltG6xQ2JIOdOaJL_GkvJ-K"/>
                     </div>
                     <div class="flex flex-col">
                         <div class="flex text-tertiary">
@@ -284,7 +284,7 @@
                             </span>
                         }
                         <div class="flex items-center justify-between mt-auto pt-2">
-                            <span class="text-xl font-bold text-primary">@product.Price.ToString("N0") @(isAr ? "ج.م" : "EGP")</span>
+                            <span class="text-xl font-bold text-primary">@product.Price.ToString("N0") @Localizer["currency"]</span>
                             <div class="flex gap-2">
                                 @if (product.QuantityInStock > 0)
                                 {
@@ -406,22 +406,22 @@
 
             <!-- Navigation Buttons -->
             <div class="flex items-center justify-center gap-4 mt-8">
-                <button onclick="slidePrev()" aria-label="Previous"
+                <button onclick="slidePrev()" aria-label="@Localizer["slider_prev_aria"]"
                         class="w-11 h-11 rounded-full bg-surface dark:bg-[#0d1a2a] border border-primary/20 shadow-md flex items-center justify-center text-primary hover:bg-primary hover:text-white hover:border-primary transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0">
                     <span class="material-symbols-outlined text-xl ltr:block rtl:hidden">chevron_left</span>
                     <span class="material-symbols-outlined text-xl ltr:hidden rtl:block">chevron_right</span>
                 </button>
 
                 <div class="flex gap-2.5 items-center" id="cat-dots">
-                    <button id="cat-dot-0" onclick="slideGoTo(0)" aria-label="Slide 1"
+                    <button id="cat-dot-0" onclick="slideGoTo(0)" aria-label="@string.Format(Localizer["slider_slide_aria"].Value, 1)"
                             class="w-2.5 h-2.5 rounded-full bg-primary transition-all duration-300 hover:scale-125"></button>
-                    <button id="cat-dot-1" onclick="slideGoTo(1)" aria-label="Slide 2"
+                    <button id="cat-dot-1" onclick="slideGoTo(1)" aria-label="@string.Format(Localizer["slider_slide_aria"].Value, 2)"
                             class="w-2.5 h-2.5 rounded-full bg-primary/30 transition-all duration-300 hover:scale-125"></button>
-                    <button id="cat-dot-2" onclick="slideGoTo(2)" aria-label="Slide 3"
+                    <button id="cat-dot-2" onclick="slideGoTo(2)" aria-label="@string.Format(Localizer["slider_slide_aria"].Value, 3)"
                             class="w-2.5 h-2.5 rounded-full bg-primary/30 transition-all duration-300 hover:scale-125"></button>
                 </div>
 
-                <button onclick="slideNext()" aria-label="Next"
+                <button onclick="slideNext()" aria-label="@Localizer["slider_next_aria"]"
                         class="w-11 h-11 rounded-full bg-surface dark:bg-[#0d1a2a] border border-primary/20 shadow-md flex items-center justify-center text-primary hover:bg-primary hover:text-white hover:border-primary transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0">
                     <span class="material-symbols-outlined text-xl ltr:block rtl:hidden">chevron_right</span>
                     <span class="material-symbols-outlined text-xl ltr:hidden rtl:block">chevron_left</span>
@@ -506,7 +506,7 @@
                             </span>
                         }
                         <div class="flex items-center justify-between mt-auto pt-2">
-                            <span class="text-xl font-bold text-primary font-sans">@product.Price.ToString("N0") @(isAr ? "ج.م" : "EGP")</span>
+                            <span class="text-xl font-bold text-primary font-sans">@product.Price.ToString("N0") @Localizer["currency"]</span>
                             <div class="flex gap-2">
                                 @if (product.QuantityInStock > 0)
                                 {
@@ -584,7 +584,7 @@
 
                             <!-- Rating badge + stars row -->
                             <div class="flex items-center justify-between gap-2">
-                                <div class="flex gap-1" aria-label="Rating: @rev.Rating out of 5">
+                                <div class="flex gap-1" aria-label="@string.Format(Localizer["admin_review_rating_aria"].Value, rev.Rating)">
                                     @for (int s = 0; s < 5; s++)
                                     {
                                         <span class="material-symbols-outlined text-sm @(s < rev.Rating ? "text-yellow-500 fill-icon" : "text-outline/20 dark:text-white/10")">star</span>
@@ -681,7 +681,7 @@
 <div id="signin-modal" class="fixed inset-0 z-[100] flex items-center justify-center hidden" aria-modal="true" role="dialog">
     <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
     <div class="relative bg-white dark:bg-[#0f1d30] rounded-3xl shadow-2xl border border-primary/10 dark:border-white/5 p-8 md:p-10 max-w-md w-[90%] mx-4 text-center">
-        <button onclick="hideSignInModal()" class="absolute top-4 end-4 w-10 h-10 rounded-full bg-surface-container-high dark:bg-slate-800 hover:bg-primary/10 flex items-center justify-center text-on-surface-variant dark:text-slate-300 hover:text-primary transition-all" aria-label="Close">
+        <button onclick="hideSignInModal()" class="absolute top-4 end-4 w-10 h-10 rounded-full bg-surface-container-high dark:bg-slate-800 hover:bg-primary/10 flex items-center justify-center text-on-surface-variant dark:text-slate-300 hover:text-primary transition-all" aria-label="@Localizer["close_aria"]">
             <span class="material-symbols-outlined text-xl">close</span>
         </button>
         <div class="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6">
@@ -732,7 +732,7 @@
         <!-- Logo & Copyright (Right on RTL, Left on LTR) -->
         <div class="flex flex-col items-center md:items-end order-1 md:order-3">
             <div class="flex items-center gap-2.5 mb-1">
-                <img src="~/images/logo.png" alt="DAKKN Logo" class="h-14 md:h-16" />
+                <img src="~/images/logo.png" alt='@Localizer["logo_alt"]' class="h-14 md:h-16" />
             </div>
             <p class="text-[11px] font-medium text-cyan-100/70">@Localizer["footer_copy"]</p>
         </div>

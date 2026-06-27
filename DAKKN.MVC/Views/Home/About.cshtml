@@ -32,16 +32,14 @@
         </div>
     </div>
     <div class="flex items-center gap-1 md:gap-3">
-        <a asp-action="Login" asp-controller="Auth" class="navbar-icon-btn scale-90 md:scale-100" title="Account">
+        <a asp-action="Login" asp-controller="Auth" class="navbar-icon-btn scale-90 md:scale-100" title="@Localizer["auth_account"]">
             <span class="material-symbols-outlined text-[24px]">person</span>
         </a>
-        <button aria-label="shopping_cart" class="navbar-icon-btn relative scale-90 md:scale-100" title="Cart">
+        <button aria-label="@Localizer["cart_aria_label"]" class="navbar-icon-btn relative scale-90 md:scale-100" title="@Localizer["nav_cart"]">
             <span class="material-symbols-outlined text-[24px]">shopping_cart</span>
             <span class="absolute top-1.5 right-1.5 rtl:right-auto rtl:left-1.5 w-2 h-2 bg-tertiary-container rounded-full"></span>
         </button>
-        <button id="lang-toggle-btn" onclick="toggleLang()" class="lang-pill-premium text-[11px] md:text-[13px] px-3 md:px-4 py-1.5 md:py-2">
-            @(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") ? "English" : "العربية")
-        </button>
+        @await Html.PartialAsync("Partials/_LanguageToggle")
         @await Html.PartialAsync("Partials/_ThemeToggle")
     </div>
 </nav>

@@ -159,7 +159,7 @@
             <div class="relative z-10 flex flex-col items-center text-center">
                 <div class="mb-12">
                     <a asp-action="Index" asp-controller="Home" class="logo-glow">
-                        <img src="~/images/logo.png" alt="DAKKN" class="h-14 w-auto brightness-0 invert" />
+                        <img src="~/images/logo.png" alt='@Localizer["brand"]' class="h-14 w-auto brightness-0 invert" />
                     </a>
                 </div>
                 
@@ -191,7 +191,7 @@
             <div class="flex justify-between items-center mb-12">
                 <div class="lg:hidden">
                     <a asp-action="Index" asp-controller="Home">
-                        <img src="~/images/logo.png" alt="DAKKN" class="h-8" />
+                        <img src="~/images/logo.png" alt='@Localizer["brand"]' class="h-8" />
                     </a>
                 </div>
                 <div class="flex-grow hidden lg:block"></div>
@@ -200,10 +200,10 @@
                     <!-- Language Switcher -->
                     <div class="flex items-center space-x-2 space-x-reverse text-sm font-bold">
                         <a href="javascript:void(0)" onclick="applyLang('ar', true)" 
-                           class="@(culture == "ar" ? "text-primary border-b-2 border-primary" : "text-slate-400 hover:text-primary") pb-0.5 transition-all">AR</a>
+                            class="@(culture == "ar" ? "text-primary border-b-2 border-primary" : "text-slate-400 hover:text-primary") pb-0.5 transition-all">@Localizer["lang_ar"]</a>
                         <span class="text-slate-300 dark:text-slate-600">/</span>
                         <a href="javascript:void(0)" onclick="applyLang('en', true)" 
-                           class="@(culture == "en" ? "text-primary border-b-2 border-primary" : "text-slate-400 hover:text-primary") pb-0.5 transition-all">EN</a>
+                            class="@(culture == "en" ? "text-primary border-b-2 border-primary" : "text-slate-400 hover:text-primary") pb-0.5 transition-all">@Localizer["lang_en"]</a>
                     </div>
                 </div>
             </div>
@@ -215,7 +215,7 @@
 
             <!-- Footer -->
             <div class="mt-auto pt-8 flex justify-center items-center text-xs text-slate-400 dark:text-slate-600">
-                <p>© @DateTime.Now.Year Dakkn. @Localizer["footer_copy"]</p>
+                <p>© @DateTime.Now.Year @Localizer["brand"]. @Localizer["footer_copy"]</p>
             </div>
         </div>
     </div>

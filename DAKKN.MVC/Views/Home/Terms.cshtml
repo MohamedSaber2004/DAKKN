@@ -16,9 +16,7 @@
         </div>
     </div>
     <div class="flex items-center gap-1 md:gap-3">
-        <button id="lang-toggle-btn" onclick="toggleLang()" class="lang-pill-premium text-[11px] md:text-[13px] px-3 md:px-4 py-1.5 md:py-2">
-            @(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") ? "English" : "العربية")
-        </button>
+        @await Html.PartialAsync("Partials/_LanguageToggle")
         @await Html.PartialAsync("Partials/_ThemeToggle")
     </div>
 </nav>
@@ -57,20 +55,20 @@
             <!-- Sticky Table of Contents (desktop) -->
             <aside class="hidden lg:block w-64 flex-shrink-0">
                 <div class="sticky top-28 glass-panel rounded-2xl p-6 border border-primary/10">
-                    <h2 class="text-xs font-extrabold text-primary uppercase tracking-wider mb-4" data-i18n="terms_toc_title">On This Page</h2>
+                    <h2 class="text-xs font-extrabold text-primary uppercase tracking-wider mb-4" data-i18n="terms_toc_title">@Localizer["terms_toc_title"]</h2>
                     <nav class="flex flex-col gap-1">
-                        <a href="#tc-acceptance" class="toc-link text-sm font-medium text-on-surface-variant hover:text-primary py-1.5 px-3 rounded-lg hover:bg-primary/5 transition-all" data-i18n="terms_sec1_title">1. Acceptance</a>
-                        <a href="#tc-products" class="toc-link text-sm font-medium text-on-surface-variant hover:text-primary py-1.5 px-3 rounded-lg hover:bg-primary/5 transition-all" data-i18n="terms_sec2_title">2. Products & Services</a>
-                        <a href="#tc-pricing" class="toc-link text-sm font-medium text-on-surface-variant hover:text-primary py-1.5 px-3 rounded-lg hover:bg-primary/5 transition-all" data-i18n="terms_sec3_title">3. Pricing & Payment</a>
-                        <a href="#tc-orders" class="toc-link text-sm font-medium text-on-surface-variant hover:text-primary py-1.5 px-3 rounded-lg hover:bg-primary/5 transition-all" data-i18n="terms_sec4_title">4. Orders</a>
-                        <a href="#tc-shipping" class="toc-link text-sm font-medium text-on-surface-variant hover:text-primary py-1.5 px-3 rounded-lg hover:bg-primary/5 transition-all" data-i18n="terms_sec5_title">5. Shipping & Delivery</a>
-                        <a href="#tc-returns" class="toc-link text-sm font-medium text-on-surface-variant hover:text-primary py-1.5 px-3 rounded-lg hover:bg-primary/5 transition-all" data-i18n="terms_sec6_title">6. Returns & Refunds</a>
-                        <a href="#tc-custom" class="toc-link text-sm font-medium text-on-surface-variant hover:text-primary py-1.5 px-3 rounded-lg hover:bg-primary/5 transition-all" data-i18n="terms_sec7_title">7. Custom Orders</a>
-                        <a href="#tc-ip" class="toc-link text-sm font-medium text-on-surface-variant hover:text-primary py-1.5 px-3 rounded-lg hover:bg-primary/5 transition-all" data-i18n="terms_sec8_title">8. Intellectual Property</a>
-                        <a href="#tc-liability" class="toc-link text-sm font-medium text-on-surface-variant hover:text-primary py-1.5 px-3 rounded-lg hover:bg-primary/5 transition-all" data-i18n="terms_sec9_title">9. Liability</a>
-                        <a href="#tc-conduct" class="toc-link text-sm font-medium text-on-surface-variant hover:text-primary py-1.5 px-3 rounded-lg hover:bg-primary/5 transition-all" data-i18n="terms_sec10_title">10. User Conduct</a>
-                        <a href="#tc-governing" class="toc-link text-sm font-medium text-on-surface-variant hover:text-primary py-1.5 px-3 rounded-lg hover:bg-primary/5 transition-all" data-i18n="terms_sec11_title">11. Governing Law</a>
-                        <a href="#tc-changes" class="toc-link text-sm font-medium text-on-surface-variant hover:text-primary py-1.5 px-3 rounded-lg hover:bg-primary/5 transition-all" data-i18n="terms_sec12_title">12. Changes</a>
+                        <a href="#tc-acceptance" class="toc-link text-sm font-medium text-on-surface-variant hover:text-primary py-1.5 px-3 rounded-lg hover:bg-primary/5 transition-all" data-i18n="terms_sec1_title">@Localizer["terms_sec1_title"]</a>
+                        <a href="#tc-products" class="toc-link text-sm font-medium text-on-surface-variant hover:text-primary py-1.5 px-3 rounded-lg hover:bg-primary/5 transition-all" data-i18n="terms_sec2_title">@Localizer["terms_sec2_title"]</a>
+                        <a href="#tc-pricing" class="toc-link text-sm font-medium text-on-surface-variant hover:text-primary py-1.5 px-3 rounded-lg hover:bg-primary/5 transition-all" data-i18n="terms_sec3_title">@Localizer["terms_sec3_title"]</a>
+                        <a href="#tc-orders" class="toc-link text-sm font-medium text-on-surface-variant hover:text-primary py-1.5 px-3 rounded-lg hover:bg-primary/5 transition-all" data-i18n="terms_sec4_title">@Localizer["terms_sec4_title"]</a>
+                        <a href="#tc-shipping" class="toc-link text-sm font-medium text-on-surface-variant hover:text-primary py-1.5 px-3 rounded-lg hover:bg-primary/5 transition-all" data-i18n="terms_sec5_title">@Localizer["terms_sec5_title"]</a>
+                        <a href="#tc-returns" class="toc-link text-sm font-medium text-on-surface-variant hover:text-primary py-1.5 px-3 rounded-lg hover:bg-primary/5 transition-all" data-i18n="terms_sec6_title">@Localizer["terms_sec6_title"]</a>
+                        <a href="#tc-custom" class="toc-link text-sm font-medium text-on-surface-variant hover:text-primary py-1.5 px-3 rounded-lg hover:bg-primary/5 transition-all" data-i18n="terms_sec7_title">@Localizer["terms_sec7_title"]</a>
+                        <a href="#tc-ip" class="toc-link text-sm font-medium text-on-surface-variant hover:text-primary py-1.5 px-3 rounded-lg hover:bg-primary/5 transition-all" data-i18n="terms_sec8_title">@Localizer["terms_sec8_title"]</a>
+                        <a href="#tc-liability" class="toc-link text-sm font-medium text-on-surface-variant hover:text-primary py-1.5 px-3 rounded-lg hover:bg-primary/5 transition-all" data-i18n="terms_sec9_title">@Localizer["terms_sec9_title"]</a>
+                        <a href="#tc-conduct" class="toc-link text-sm font-medium text-on-surface-variant hover:text-primary py-1.5 px-3 rounded-lg hover:bg-primary/5 transition-all" data-i18n="terms_sec10_title">@Localizer["terms_sec10_title"]</a>
+                        <a href="#tc-governing" class="toc-link text-sm font-medium text-on-surface-variant hover:text-primary py-1.5 px-3 rounded-lg hover:bg-primary/5 transition-all" data-i18n="terms_sec11_title">@Localizer["terms_sec11_title"]</a>
+                        <a href="#tc-changes" class="toc-link text-sm font-medium text-on-surface-variant hover:text-primary py-1.5 px-3 rounded-lg hover:bg-primary/5 transition-all" data-i18n="terms_sec12_title">@Localizer["terms_sec12_title"]</a>
                     </nav>
                 </div>
             </aside>
@@ -82,8 +80,8 @@
                 <div class="bg-tertiary-container/30 border border-tertiary/20 rounded-2xl p-5 flex items-start gap-4">
                     <span class="material-symbols-outlined text-tertiary text-2xl flex-shrink-0 mt-0.5">info</span>
                     <div class="text-sm text-on-surface-variant leading-relaxed">
-                        <p class="font-bold text-on-surface mb-1" data-i18n="terms_notice_title">Important Notice</p>
-                        <p data-i18n="terms_notice_p">By accessing this website or placing an order with DAKKN, you confirm that you are at least 16 years of age and agree to be bound by these Terms &amp; Conditions. If you do not agree, please do not use our services.</p>
+                        <p class="font-bold text-on-surface mb-1" data-i18n="terms_notice_title">@Localizer["terms_notice_title"]</p>
+                        <p data-i18n="terms_notice_p">@Localizer["terms_notice_p"]</p>
                     </div>
                 </div>
 
@@ -93,11 +91,11 @@
                         <div class="w-9 h-9 rounded-xl bg-primary/15 flex items-center justify-center flex-shrink-0">
                             <span class="material-symbols-outlined text-primary text-lg">handshake</span>
                         </div>
-                        <h2 class="text-xl font-extrabold text-on-surface" data-i18n="terms_sec1_title">1. Acceptance of Terms</h2>
+                        <h2 class="text-xl font-extrabold text-on-surface" data-i18n="terms_sec1_title">@Localizer["terms_sec1_title"]</h2>
                     </div>
                     <div class="text-sm text-on-surface-variant leading-relaxed flex flex-col gap-3">
-                        <p data-i18n="terms_sec1_p1">These Terms &amp; Conditions ("Terms") govern your use of the DAKKN website and the purchase of products from DAKKN Manufacturing ("DAKKN", "we", "us", or "our"), registered and operating in Damietta, Egypt.</p>
-                        <p data-i18n="terms_sec1_p2">These Terms apply to all visitors, users, and customers. By using our website or placing an order, you enter into a legally binding agreement with DAKKN under these Terms. We reserve the right to amend these Terms at any time; your continued use after changes constitutes acceptance.</p>
+                        <p data-i18n="terms_sec1_p1">@Localizer["terms_sec1_p1"]</p>
+                        <p data-i18n="terms_sec1_p2">@Localizer["terms_sec1_p2"]</p>
                     </div>
                 </div>
 
@@ -109,13 +107,13 @@
                         <div class="w-9 h-9 rounded-xl bg-tertiary-container/40 flex items-center justify-center flex-shrink-0">
                             <span class="material-symbols-outlined text-tertiary text-lg">inventory_2</span>
                         </div>
-                        <h2 class="text-xl font-extrabold text-on-surface" data-i18n="terms_sec2_title">2. Products &amp; Services</h2>
+                        <h2 class="text-xl font-extrabold text-on-surface" data-i18n="terms_sec2_title">@Localizer["terms_sec2_title"]</h2>
                     </div>
                     <div class="text-sm text-on-surface-variant leading-relaxed flex flex-col gap-3">
-                        <p data-i18n="terms_sec2_p">DAKKN manufactures and sells premium vinyl stickers, holographic stickers, die-cut stickers, sticker sheets, custom labels, and related products. We reserve the right to modify, discontinue, or limit availability of any product at any time without notice.</p>
+                        <p data-i18n="terms_sec2_p">@Localizer["terms_sec2_p"]</p>
                         <div class="bg-surface-container-low/70 rounded-xl p-4 border border-outline-variant/20 mt-1">
-                            <p class="font-bold text-on-surface text-xs mb-2 uppercase tracking-wide" data-i18n="terms_sec2_sub_title">Product Descriptions</p>
-                            <p data-i18n="terms_sec2_sub_p">We make every effort to accurately describe and photograph our products. However, colours and finishes may vary slightly depending on your device display. Minor variations from product images do not constitute a defect.</p>
+                            <p class="font-bold text-on-surface text-xs mb-2 uppercase tracking-wide" data-i18n="terms_sec2_sub_title">@Localizer["terms_sec2_sub_title"]</p>
+                            <p data-i18n="terms_sec2_sub_p">@Localizer["terms_sec2_sub_p"]</p>
                         </div>
                     </div>
                 </div>
@@ -128,15 +126,15 @@
                         <div class="w-9 h-9 rounded-xl bg-secondary-container/40 flex items-center justify-center flex-shrink-0">
                             <span class="material-symbols-outlined text-secondary text-lg">payments</span>
                         </div>
-                        <h2 class="text-xl font-extrabold text-on-surface" data-i18n="terms_sec3_title">3. Pricing &amp; Payment</h2>
+                        <h2 class="text-xl font-extrabold text-on-surface" data-i18n="terms_sec3_title">@Localizer["terms_sec3_title"]</h2>
                     </div>
                     <div class="text-sm text-on-surface-variant leading-relaxed flex flex-col gap-3">
                         <ul class="flex flex-col gap-2.5">
-                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-primary text-sm mt-0.5 flex-shrink-0">check_circle</span><span data-i18n="terms_sec3_li1">All prices are listed in Egyptian Pounds (EGP) and include applicable VAT unless otherwise stated.</span></li>
-                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-primary text-sm mt-0.5 flex-shrink-0">check_circle</span><span data-i18n="terms_sec3_li2">Shipping costs, where applicable, are calculated and displayed at checkout before you confirm your order.</span></li>
-                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-primary text-sm mt-0.5 flex-shrink-0">check_circle</span><span data-i18n="terms_sec3_li3">We reserve the right to change prices at any time. The price applicable to your order is the price displayed at the time you place the order.</span></li>
-                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-primary text-sm mt-0.5 flex-shrink-0">check_circle</span><span data-i18n="terms_sec3_li4">Payment must be made in full before your order is processed. We accept major debit/credit cards and other payment methods displayed at checkout.</span></li>
-                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-primary text-sm mt-0.5 flex-shrink-0">check_circle</span><span data-i18n="terms_sec3_li5">In the event of a pricing error, we will notify you and give you the option to proceed at the correct price or cancel your order.</span></li>
+                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-primary text-sm mt-0.5 flex-shrink-0">check_circle</span><span data-i18n="terms_sec3_li1">@Localizer["terms_sec3_li1"]</span></li>
+                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-primary text-sm mt-0.5 flex-shrink-0">check_circle</span><span data-i18n="terms_sec3_li2">@Localizer["terms_sec3_li2"]</span></li>
+                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-primary text-sm mt-0.5 flex-shrink-0">check_circle</span><span data-i18n="terms_sec3_li3">@Localizer["terms_sec3_li3"]</span></li>
+                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-primary text-sm mt-0.5 flex-shrink-0">check_circle</span><span data-i18n="terms_sec3_li4">@Localizer["terms_sec3_li4"]</span></li>
+                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-primary text-sm mt-0.5 flex-shrink-0">check_circle</span><span data-i18n="terms_sec3_li5">@Localizer["terms_sec3_li5"]</span></li>
                         </ul>
                     </div>
                 </div>
@@ -149,17 +147,17 @@
                         <div class="w-9 h-9 rounded-xl bg-primary/15 flex items-center justify-center flex-shrink-0">
                             <span class="material-symbols-outlined text-primary text-lg">receipt_long</span>
                         </div>
-                        <h2 class="text-xl font-extrabold text-on-surface" data-i18n="terms_sec4_title">4. Orders &amp; Order Confirmation</h2>
+                        <h2 class="text-xl font-extrabold text-on-surface" data-i18n="terms_sec4_title">@Localizer["terms_sec4_title"]</h2>
                     </div>
                     <div class="text-sm text-on-surface-variant leading-relaxed flex flex-col gap-3">
-                        <p data-i18n="terms_sec4_p">Placing an order on our website constitutes an offer to purchase the specified products. An order is only accepted and a contract formed when we send you an order confirmation email. We reserve the right to decline or cancel any order at our discretion, including in cases of:</p>
+                        <p data-i18n="terms_sec4_p">@Localizer["terms_sec4_p"]</p>
                         <ul class="flex flex-col gap-2 mt-1">
-                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-on-surface-variant/60 text-sm mt-0.5 flex-shrink-0">radio_button_unchecked</span><span data-i18n="terms_sec4_li1">Product unavailability or stock depletion.</span></li>
-                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-on-surface-variant/60 text-sm mt-0.5 flex-shrink-0">radio_button_unchecked</span><span data-i18n="terms_sec4_li2">Inability to verify payment or suspected fraudulent activity.</span></li>
-                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-on-surface-variant/60 text-sm mt-0.5 flex-shrink-0">radio_button_unchecked</span><span data-i18n="terms_sec4_li3">Errors in product descriptions or pricing.</span></li>
-                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-on-surface-variant/60 text-sm mt-0.5 flex-shrink-0">radio_button_unchecked</span><span data-i18n="terms_sec4_li4">Inability to deliver to your location.</span></li>
+                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-on-surface-variant/60 text-sm mt-0.5 flex-shrink-0">radio_button_unchecked</span><span data-i18n="terms_sec4_li1">@Localizer["terms_sec4_li1"]</span></li>
+                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-on-surface-variant/60 text-sm mt-0.5 flex-shrink-0">radio_button_unchecked</span><span data-i18n="terms_sec4_li2">@Localizer["terms_sec4_li2"]</span></li>
+                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-on-surface-variant/60 text-sm mt-0.5 flex-shrink-0">radio_button_unchecked</span><span data-i18n="terms_sec4_li3">@Localizer["terms_sec4_li3"]</span></li>
+                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-on-surface-variant/60 text-sm mt-0.5 flex-shrink-0">radio_button_unchecked</span><span data-i18n="terms_sec4_li4">@Localizer["terms_sec4_li4"]</span></li>
                         </ul>
-                        <p data-i18n="terms_sec4_footer">If we cancel your order, you will receive a full refund within 5–7 business days.</p>
+                        <p data-i18n="terms_sec4_footer">@Localizer["terms_sec4_footer"]</p>
                     </div>
                 </div>
 
@@ -171,27 +169,27 @@
                         <div class="w-9 h-9 rounded-xl bg-tertiary-container/40 flex items-center justify-center flex-shrink-0">
                             <span class="material-symbols-outlined text-tertiary text-lg">local_shipping</span>
                         </div>
-                        <h2 class="text-xl font-extrabold text-on-surface" data-i18n="terms_sec5_title">5. Shipping &amp; Delivery</h2>
+                        <h2 class="text-xl font-extrabold text-on-surface" data-i18n="terms_sec5_title">@Localizer["terms_sec5_title"]</h2>
                     </div>
                     <div class="text-sm text-on-surface-variant leading-relaxed flex flex-col gap-3">
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                             <div class="glass-panel rounded-xl p-4 border border-primary/10 text-center">
                                 <span class="material-symbols-outlined text-primary text-2xl mb-2 block">business</span>
-                                <p class="font-bold text-on-surface text-xs mb-1" data-i18n="terms_sec5_item1_title">Processing Time</p>
-                                <p data-i18n="terms_sec5_item1_p">1–3 business days after payment confirmation.</p>
+                                <p class="font-bold text-on-surface text-xs mb-1" data-i18n="terms_sec5_item1_title">@Localizer["terms_sec5_item1_title"]</p>
+                                <p data-i18n="terms_sec5_item1_p">@Localizer["terms_sec5_item1_p"]</p>
                             </div>
                             <div class="glass-panel rounded-xl p-4 border border-primary/10 text-center">
                                 <span class="material-symbols-outlined text-primary text-2xl mb-2 block">schedule</span>
-                                <p class="font-bold text-on-surface text-xs mb-1" data-i18n="terms_sec5_item2_title">Domestic Delivery</p>
-                                <p data-i18n="terms_sec5_item2_p">2–5 business days within Egypt via our courier partners.</p>
+                                <p class="font-bold text-on-surface text-xs mb-1" data-i18n="terms_sec5_item2_title">@Localizer["terms_sec5_item2_title"]</p>
+                                <p data-i18n="terms_sec5_item2_p">@Localizer["terms_sec5_item2_p"]</p>
                             </div>
                             <div class="glass-panel rounded-xl p-4 border border-primary/10 text-center">
                                 <span class="material-symbols-outlined text-primary text-2xl mb-2 block">public</span>
-                                <p class="font-bold text-on-surface text-xs mb-1" data-i18n="terms_sec5_item3_title">International</p>
-                                <p data-i18n="terms_sec5_item3_p">7–21 business days. Import duties are the customer's responsibility.</p>
+                                <p class="font-bold text-on-surface text-xs mb-1" data-i18n="terms_sec5_item3_title">@Localizer["terms_sec5_item3_title"]</p>
+                                <p data-i18n="terms_sec5_item3_p">@Localizer["terms_sec5_item3_p"]</p>
                             </div>
                         </div>
-                        <p class="mt-1" data-i18n="terms_sec5_footer">Delivery estimates are indicative. DAKKN is not liable for delays caused by courier services, customs clearance, or circumstances beyond our control. Risk of loss passes to you once we hand the parcel to the carrier.</p>
+                        <p class="mt-1" data-i18n="terms_sec5_footer">@Localizer["terms_sec5_footer"]</p>
                     </div>
                 </div>
 
@@ -203,22 +201,22 @@
                         <div class="w-9 h-9 rounded-xl bg-secondary-container/40 flex items-center justify-center flex-shrink-0">
                             <span class="material-symbols-outlined text-secondary text-lg">assignment_return</span>
                         </div>
-                        <h2 class="text-xl font-extrabold text-on-surface" data-i18n="terms_sec6_title">6. Returns &amp; Refunds</h2>
+                        <h2 class="text-xl font-extrabold text-on-surface" data-i18n="terms_sec6_title">@Localizer["terms_sec6_title"]</h2>
                     </div>
                     <div class="text-sm text-on-surface-variant leading-relaxed flex flex-col gap-3">
                         <div class="bg-primary/5 border border-primary/15 rounded-xl p-4">
-                            <p class="font-bold text-primary text-xs uppercase tracking-wide mb-2" data-i18n="terms_sec6_promise_title">Our Return Promise</p>
-                            <p data-i18n="terms_sec6_promise_p">If your order arrives damaged, defective, or significantly different from what was described, we will replace it or issue a full refund — no hassle.</p>
+                            <p class="font-bold text-primary text-xs uppercase tracking-wide mb-2" data-i18n="terms_sec6_promise_title">@Localizer["terms_sec6_promise_title"]</p>
+                            <p data-i18n="terms_sec6_promise_p">@Localizer["terms_sec6_promise_p"]</p>
                         </div>
-                        <p><strong class="text-on-surface" data-i18n="terms_sec6_window">Return Window:</strong> <span data-i18n="terms_sec6_window_p">You must notify us within 14 days of receiving your order if you wish to return it.</span></p>
-                        <p><strong class="text-on-surface" data-i18n="terms_sec6_cond_title">Conditions:</strong></p>
+                        <p><strong class="text-on-surface" data-i18n="terms_sec6_window">@Localizer["terms_sec6_window"]</strong> <span data-i18n="terms_sec6_window_p">@Localizer["terms_sec6_window_p"]</span></p>
+                        <p><strong class="text-on-surface" data-i18n="terms_sec6_cond_title">@Localizer["terms_sec6_cond_title"]</strong></p>
                         <ul class="flex flex-col gap-2">
-                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-primary text-sm mt-0.5 flex-shrink-0">check_circle</span><span data-i18n="terms_sec6_cond_li1">Items must be unused and in their original condition.</span></li>
-                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-primary text-sm mt-0.5 flex-shrink-0">check_circle</span><span data-i18n="terms_sec6_cond_li2">Returns due to change of mind may be subject to a restocking fee and return shipping costs borne by the customer.</span></li>
-                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-error text-sm mt-0.5 flex-shrink-0">cancel</span><span data-i18n="terms_sec6_cond_li3">Custom or personalised orders cannot be returned unless they are defective.</span></li>
-                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-error text-sm mt-0.5 flex-shrink-0">cancel</span><span data-i18n="terms_sec6_cond_li4">Downloadable digital files are non-refundable once accessed.</span></li>
+                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-primary text-sm mt-0.5 flex-shrink-0">check_circle</span><span data-i18n="terms_sec6_cond_li1">@Localizer["terms_sec6_cond_li1"]</span></li>
+                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-primary text-sm mt-0.5 flex-shrink-0">check_circle</span><span data-i18n="terms_sec6_cond_li2">@Localizer["terms_sec6_cond_li2"]</span></li>
+                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-error text-sm mt-0.5 flex-shrink-0">cancel</span><span data-i18n="terms_sec6_cond_li3">@Localizer["terms_sec6_cond_li3"]</span></li>
+                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-error text-sm mt-0.5 flex-shrink-0">cancel</span><span data-i18n="terms_sec6_cond_li4">@Localizer["terms_sec6_cond_li4"]</span></li>
                         </ul>
-                        <p><strong class="text-on-surface" data-i18n="terms_sec6_refund_title">Refund Processing:</strong> <span data-i18n="terms_sec6_refund_p">Approved refunds will be credited to your original payment method within 7–14 business days.</span></p>
+                        <p><strong class="text-on-surface" data-i18n="terms_sec6_refund_title">@Localizer["terms_sec6_refund_title"]</strong> <span data-i18n="terms_sec6_refund_p">@Localizer["terms_sec6_refund_p"]</span></p>
                     </div>
                 </div>
 
@@ -230,19 +228,19 @@
                         <div class="w-9 h-9 rounded-xl bg-primary/15 flex items-center justify-center flex-shrink-0">
                             <span class="material-symbols-outlined text-primary text-lg">palette</span>
                         </div>
-                        <h2 class="text-xl font-extrabold text-on-surface" data-i18n="terms_sec7_title">7. Custom &amp; Bulk Orders</h2>
+                        <h2 class="text-xl font-extrabold text-on-surface" data-i18n="terms_sec7_title">@Localizer["terms_sec7_title"]</h2>
                     </div>
                     <div class="text-sm text-on-surface-variant leading-relaxed flex flex-col gap-3">
-                        <p data-i18n="terms_sec7_p">When submitting artwork or designs for custom orders, you confirm that:</p>
+                        <p data-i18n="terms_sec7_p">@Localizer["terms_sec7_p"]</p>
                         <ul class="flex flex-col gap-2">
-                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-primary text-sm mt-0.5 flex-shrink-0">check_circle</span><span data-i18n="terms_sec7_li1">You own or have the full legal right to use the submitted artwork, logos, and images.</span></li>
-                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-primary text-sm mt-0.5 flex-shrink-0">check_circle</span><span data-i18n="terms_sec7_li2">The artwork does not infringe any third-party intellectual property rights.</span></li>
-                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-primary text-sm mt-0.5 flex-shrink-0">check_circle</span><span data-i18n="terms_sec7_li3">The content is not illegal, offensive, defamatory, or otherwise inappropriate.</span></li>
+                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-primary text-sm mt-0.5 flex-shrink-0">check_circle</span><span data-i18n="terms_sec7_li1">@Localizer["terms_sec7_li1"]</span></li>
+                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-primary text-sm mt-0.5 flex-shrink-0">check_circle</span><span data-i18n="terms_sec7_li2">@Localizer["terms_sec7_li2"]</span></li>
+                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-primary text-sm mt-0.5 flex-shrink-0">check_circle</span><span data-i18n="terms_sec7_li3">@Localizer["terms_sec7_li3"]</span></li>
                         </ul>
-                        <p data-i18n="terms_sec7_footer">DAKKN reserves the right to refuse any custom order containing content we deem inappropriate. You will indemnify DAKKN against any claims arising from the use of your submitted artwork.</p>
+                        <p data-i18n="terms_sec7_footer">@Localizer["terms_sec7_footer"]</p>
                         <div class="bg-surface-container-low/70 rounded-xl p-4 border border-outline-variant/20 mt-1">
-                            <p class="font-bold text-on-surface text-xs mb-2" data-i18n="terms_sec7_sub_title">Proofing & Approval</p>
-                            <p data-i18n="terms_sec7_sub_p">Custom orders require artwork approval before production. Once you approve a proof, DAKKN will not be responsible for errors in the approved design. Production begins within 1 business day of approval.</p>
+                            <p class="font-bold text-on-surface text-xs mb-2" data-i18n="terms_sec7_sub_title">@Localizer["terms_sec7_sub_title"]</p>
+                            <p data-i18n="terms_sec7_sub_p">@Localizer["terms_sec7_sub_p"]</p>
                         </div>
                     </div>
                 </div>
@@ -255,11 +253,11 @@
                         <div class="w-9 h-9 rounded-xl bg-tertiary-container/40 flex items-center justify-center flex-shrink-0">
                             <span class="material-symbols-outlined text-tertiary text-lg">copyright</span>
                         </div>
-                        <h2 class="text-xl font-extrabold text-on-surface" data-i18n="terms_sec8_title">8. Intellectual Property</h2>
+                        <h2 class="text-xl font-extrabold text-on-surface" data-i18n="terms_sec8_title">@Localizer["terms_sec8_title"]</h2>
                     </div>
                     <div class="text-sm text-on-surface-variant leading-relaxed flex flex-col gap-3">
-                        <p data-i18n="terms_sec8_p1">All content on the DAKKN website — including but not limited to text, graphics, logos, images, product designs, icons, and software — is the exclusive property of DAKKN Manufacturing or its content suppliers and is protected by Egyptian and international copyright and trademark laws.</p>
-                        <p data-i18n="terms_sec8_p2">You may not reproduce, distribute, modify, create derivative works from, publicly display, or commercially exploit any content from this website without our prior written consent. Limited personal, non-commercial use is permitted provided you do not remove any proprietary notices.</p>
+                        <p data-i18n="terms_sec8_p1">@Localizer["terms_sec8_p1"]</p>
+                        <p data-i18n="terms_sec8_p2">@Localizer["terms_sec8_p2"]</p>
                     </div>
                 </div>
 
@@ -271,14 +269,14 @@
                         <div class="w-9 h-9 rounded-xl bg-secondary-container/40 flex items-center justify-center flex-shrink-0">
                             <span class="material-symbols-outlined text-secondary text-lg">balance</span>
                         </div>
-                        <h2 class="text-xl font-extrabold text-on-surface" data-i18n="terms_sec9_title">9. Limitation of Liability</h2>
+                        <h2 class="text-xl font-extrabold text-on-surface" data-i18n="terms_sec9_title">@Localizer["terms_sec9_title"]</h2>
                     </div>
                     <div class="text-sm text-on-surface-variant leading-relaxed flex flex-col gap-3">
-                        <p data-i18n="terms_sec9_p1">To the fullest extent permitted by Egyptian law, DAKKN's total liability to you in connection with any order shall not exceed the purchase price you paid for the relevant product(s).</p>
-                        <p data-i18n="terms_sec9_p2">DAKKN shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the website or products, including loss of profits, data, or business opportunities.</p>
+                        <p data-i18n="terms_sec9_p1">@Localizer["terms_sec9_p1"]</p>
+                        <p data-i18n="terms_sec9_p2">@Localizer["terms_sec9_p2"]</p>
                         <div class="bg-error-container/30 border border-error/20 rounded-xl p-4 mt-1 flex gap-3">
                             <span class="material-symbols-outlined text-error flex-shrink-0">warning</span>
-                            <p data-i18n="terms_sec9_notice_p">Nothing in these Terms limits DAKKN's liability for death or personal injury caused by negligence, or for fraud or fraudulent misrepresentation.</p>
+                            <p data-i18n="terms_sec9_notice_p">@Localizer["terms_sec9_notice_p"]</p>
                         </div>
                     </div>
                 </div>
@@ -291,18 +289,18 @@
                         <div class="w-9 h-9 rounded-xl bg-primary/15 flex items-center justify-center flex-shrink-0">
                             <span class="material-symbols-outlined text-primary text-lg">policy</span>
                         </div>
-                        <h2 class="text-xl font-extrabold text-on-surface" data-i18n="terms_sec10_title">10. Acceptable Use</h2>
+                        <h2 class="text-xl font-extrabold text-on-surface" data-i18n="terms_sec10_title">@Localizer["terms_sec10_title"]</h2>
                     </div>
                     <div class="text-sm text-on-surface-variant leading-relaxed flex flex-col gap-3">
-                        <p data-i18n="terms_sec10_p">You agree not to use the DAKKN website or services to:</p>
+                        <p data-i18n="terms_sec10_p">@Localizer["terms_sec10_p"]</p>
                         <ul class="flex flex-col gap-2">
-                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-error text-sm mt-0.5 flex-shrink-0">cancel</span><span data-i18n="terms_sec10_li1">Violate any applicable law or regulation.</span></li>
-                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-error text-sm mt-0.5 flex-shrink-0">cancel</span><span data-i18n="terms_sec10_li2">Transmit any unsolicited promotional material (spam).</span></li>
-                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-error text-sm mt-0.5 flex-shrink-0">cancel</span><span data-i18n="terms_sec10_li3">Attempt to gain unauthorised access to any part of the website or related systems.</span></li>
-                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-error text-sm mt-0.5 flex-shrink-0">cancel</span><span data-i18n="terms_sec10_li4">Engage in any conduct that could damage, disable, or impair the website.</span></li>
-                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-error text-sm mt-0.5 flex-shrink-0">cancel</span><span data-i18n="terms_sec10_li5">Submit artwork that infringes third-party intellectual property rights or contains illegal content.</span></li>
+                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-error text-sm mt-0.5 flex-shrink-0">cancel</span><span data-i18n="terms_sec10_li1">@Localizer["terms_sec10_li1"]</span></li>
+                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-error text-sm mt-0.5 flex-shrink-0">cancel</span><span data-i18n="terms_sec10_li2">@Localizer["terms_sec10_li2"]</span></li>
+                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-error text-sm mt-0.5 flex-shrink-0">cancel</span><span data-i18n="terms_sec10_li3">@Localizer["terms_sec10_li3"]</span></li>
+                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-error text-sm mt-0.5 flex-shrink-0">cancel</span><span data-i18n="terms_sec10_li4">@Localizer["terms_sec10_li4"]</span></li>
+                            <li class="flex items-start gap-2"><span class="material-symbols-outlined text-error text-sm mt-0.5 flex-shrink-0">cancel</span><span data-i18n="terms_sec10_li5">@Localizer["terms_sec10_li5"]</span></li>
                         </ul>
-                        <p data-i18n="terms_sec10_footer">Violation of these rules may result in immediate termination of your account and cancellation of any pending orders.</p>
+                        <p data-i18n="terms_sec10_footer">@Localizer["terms_sec10_footer"]</p>
                     </div>
                 </div>
 
@@ -314,11 +312,11 @@
                         <div class="w-9 h-9 rounded-xl bg-tertiary-container/40 flex items-center justify-center flex-shrink-0">
                             <span class="material-symbols-outlined text-tertiary text-lg">gavel</span>
                         </div>
-                        <h2 class="text-xl font-extrabold text-on-surface" data-i18n="terms_sec11_title">11. Governing Law &amp; Disputes</h2>
+                        <h2 class="text-xl font-extrabold text-on-surface" data-i18n="terms_sec11_title">@Localizer["terms_sec11_title"]</h2>
                     </div>
                     <div class="text-sm text-on-surface-variant leading-relaxed flex flex-col gap-3">
-                        <p data-i18n="terms_sec11_p1">These Terms are governed by the laws of the Arab Republic of Egypt. Any disputes arising from these Terms or your use of our services shall be subject to the exclusive jurisdiction of the competent courts of Damietta Governorate, Egypt.</p>
-                        <p data-i18n="terms_sec11_p2">Before resorting to legal proceedings, we encourage you to contact us to resolve any issue informally. We are committed to addressing your concerns promptly and fairly.</p>
+                        <p data-i18n="terms_sec11_p1">@Localizer["terms_sec11_p1"]</p>
+                        <p data-i18n="terms_sec11_p2">@Localizer["terms_sec11_p2"]</p>
                     </div>
                 </div>
 
@@ -330,11 +328,11 @@
                         <div class="w-9 h-9 rounded-xl bg-secondary-container/40 flex items-center justify-center flex-shrink-0">
                             <span class="material-symbols-outlined text-secondary text-lg">autorenew</span>
                         </div>
-                        <h2 class="text-xl font-extrabold text-on-surface" data-i18n="terms_sec12_title">12. Changes to These Terms</h2>
+                        <h2 class="text-xl font-extrabold text-on-surface" data-i18n="terms_sec12_title">@Localizer["terms_sec12_title"]</h2>
                     </div>
                     <div class="text-sm text-on-surface-variant leading-relaxed flex flex-col gap-3">
-                        <p data-i18n="terms_sec12_p1">We may revise these Terms from time to time. The most current version will always be posted on this page with the effective date. If we make material changes, we may notify you via email or a prominent notice on the website. Your continued use of the site or services after changes take effect constitutes acceptance of the revised Terms.</p>
-                        <p><span data-i18n="terms_sec12_p2_a">If you have questions about these Terms, please contact us at </span><a href="mailto:legal@dakkn.com" class="text-primary font-semibold hover:underline" data-i18n="terms_sec12_p2_link">legal@dakkn.com</a>.</p>
+                        <p data-i18n="terms_sec12_p1">@Localizer["terms_sec12_p1"]</p>
+                        <p><span data-i18n="terms_sec12_p2_a">@Localizer["terms_sec12_p2_a"]</span><a href="mailto:legal@dakkn.com" class="text-primary font-semibold hover:underline" data-i18n="terms_sec12_p2_link">@Localizer["terms_sec12_p2_link"]</a>.</p>
                     </div>
                 </div>
 
@@ -345,15 +343,15 @@
     <!-- ── Related Links ────────────────────────────────────────── -->
     <section class="py-12 px-4 md:px-16 bg-cyan-50 border-t border-outline-variant/10">
         <div class="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p class="text-sm text-on-surface-variant font-medium" data-i18n="terms_legal_docs">Also read our other legal documents:</p>
+            <p class="text-sm text-on-surface-variant font-medium" data-i18n="terms_legal_docs">@Localizer["terms_legal_docs"]</p>
             <div class="flex gap-3">
                 <a href="/Home/Privacy" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl border border-primary/20 text-primary font-bold text-sm hover:bg-primary hover:text-white hover:border-primary transition-all duration-200">
                     <span class="material-symbols-outlined text-sm">shield</span>
-                    <span data-i18n="terms_related_privacy">Privacy Policy</span>
+                    <span data-i18n="terms_related_privacy">@Localizer["terms_related_privacy"]</span>
                 </a>
                 <a href="/Home/Contact" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary/10 text-primary font-bold text-sm hover:bg-primary hover:text-white transition-all duration-200">
                     <span class="material-symbols-outlined text-sm">support_agent</span>
-                    <span data-i18n="terms_related_contact">Contact Us</span>
+                    <span data-i18n="terms_related_contact">@Localizer["terms_related_contact"]</span>
                 </a>
             </div>
         </div>
@@ -364,14 +362,14 @@
 <!-- Footer -->
 <footer class="relative w-full py-12 px-4 md:px-16 grid grid-cols-1 md:grid-cols-12 gap-8 bg-white border-t border-outline-variant/10">
     <div class="md:col-span-5 flex flex-col gap-4">
-        <a href="/" class="text-2xl font-black text-on-surface hover:text-primary transition-colors" data-i18n="pp_footer_brand">DAKKN</a>
-        <p class="text-xs text-on-surface-variant" data-i18n="pp_footer_copy">© 2025 DAKKN Manufacturing. All rights reserved.</p>
+        <a href="/" class="text-2xl font-black text-on-surface hover:text-primary transition-colors" data-i18n="pp_footer_brand">@Localizer["pp_footer_brand"]</a>
+        <p class="text-xs text-on-surface-variant" data-i18n="pp_footer_copy">@Localizer["pp_footer_copy"]</p>
     </div>
     <div class="md:col-span-7 flex flex-wrap gap-6 md:justify-end items-center">
-        <a href="/" class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors duration-200">Home</a>
-        <a href="/Home/Privacy" class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors duration-200">Privacy Policy</a>
-        <a href="/Home/Terms" class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors duration-200">Terms</a>
-        <a href="/#contact" class="text-xs font-semibold text-primary transition-colors duration-200">Contact</a>
+        <a href="/" class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors duration-200">@Localizer["nav_shop"]</a>
+        <a href="/Home/Privacy" class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors duration-200">@Localizer["pp_footer_privacy"]</a>
+        <a href="/Home/Terms" class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors duration-200">@Localizer["pp_footer_terms"]</a>
+        <a href="/#contact" class="text-xs font-semibold text-primary transition-colors duration-200">@Localizer["pp_footer_contact"]</a>
     </div>
 </footer>
 

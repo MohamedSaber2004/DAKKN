@@ -4,7 +4,7 @@
 @{
     Layout = "_LayoutCustomer";
     var dashboard = Model.Dashboard;
-    var fullName = User.FindFirstValue("FullName") ?? User.Identity?.Name ?? "User";
+    var fullName = User.FindFirstValue("FullName") ?? User.Identity?.Name ?? Localizer["customer_greeting_fallback"].Value;
     var firstName = fullName.Split(' ')[0];
 }
 
@@ -40,7 +40,7 @@
             </div>
 
             <div class="w-full md:w-80 h-64 bg-surface-container-low dark:bg-black/20 rounded-3xl flex items-center justify-center relative overflow-hidden group border border-border dark:border-white/5">
-                <img src="/images/logo.png" class="w-32 opacity-20 dark:opacity-10 grayscale group-hover:scale-110 group-hover:rotate-12 transition-transform duration-700" alt="DAKKN">
+                <img src="/images/logo.png" class="w-32 opacity-20 dark:opacity-10 grayscale group-hover:scale-110 group-hover:rotate-12 transition-transform duration-700" alt='@Localizer["brand"]'>
                 <div class="absolute inset-0 flex items-center justify-center">
                     <div class="w-48 h-48 border-2 border-dashed border-primary/30 rounded-full animate-spin-slow"></div>
                 </div>

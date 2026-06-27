@@ -99,20 +99,20 @@
                     <div id="hero-fields-ar" class="hero-lang-fields">
                         <div class="flex flex-col gap-xs">
                             <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_badge"] <span class="text-xs text-outline">(Ar)</span></label>
-                            <input id="hero-badge-ar" type="text" value="@Model.Hero.BadgeAr" placeholder="بادج البانر" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md focus:ring-primary focus:border-primary transition-all">
+                            <input id="hero-badge-ar" type="text" value="@Model.Hero.BadgeAr" placeholder="@Localizer["admin_content_ph_badge_ar"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md focus:ring-primary focus:border-primary transition-all">
                         </div>
                         <div class="flex flex-col gap-xs">
                             <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_title_segments"] <span class="text-xs text-outline">(Ar)</span></label>
                             <div class="grid grid-cols-2 gap-sm">
-                                <input id="hero-title-a-ar" type="text" value="@Model.Hero.TitleAAr" placeholder="جودة" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
-                                <input id="hero-title-b-ar" type="text" value="@Model.Hero.TitleBAr" placeholder="تستحق" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md text-primary font-bold">
-                                <input id="hero-title-c-ar" type="text" value="@Model.Hero.TitleCAr" placeholder="، وأنماط" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
-                                <input id="hero-title-d-ar" type="text" value="@Model.Hero.TitleDAr" placeholder="تعشقها" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md text-secondary font-bold">
+                                <input id="hero-title-a-ar" type="text" value="@Model.Hero.TitleAAr" placeholder="@Localizer["admin_content_ph_hero_title_a_ar"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                                <input id="hero-title-b-ar" type="text" value="@Model.Hero.TitleBAr" placeholder="@Localizer["admin_content_ph_hero_title_b_ar"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md text-primary font-bold">
+                                <input id="hero-title-c-ar" type="text" value="@Model.Hero.TitleCAr" placeholder="@Localizer["admin_content_ph_hero_title_c_ar"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                                <input id="hero-title-d-ar" type="text" value="@Model.Hero.TitleDAr" placeholder="@Localizer["admin_content_ph_hero_title_d_ar"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md text-secondary font-bold">
                             </div>
                         </div>
                         <div class="flex flex-col gap-xs">
                             <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_desc"] <span class="text-xs text-outline">(Ar)</span></label>
-                            <textarea id="hero-desc-ar" rows="4" placeholder="وصف البانر بالعربية" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.Hero.DescriptionAr</textarea>
+                            <textarea id="hero-desc-ar" rows="4" placeholder="@Localizer["admin_content_ph_hero_desc_ar"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.Hero.DescriptionAr</textarea>
                         </div>
                         @* <div class="flex flex-col gap-xs">
                             <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_btn_text"] <span class="text-xs text-outline">(Ar)</span></label>
@@ -124,15 +124,15 @@
                     <div id="hero-fields-en" class="hero-lang-fields hidden">
                         <div class="flex flex-col gap-xs">
                             <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_badge"] <span class="text-xs text-outline">(En)</span></label>
-                            <input id="hero-badge-en" type="text" value="@Model.Hero.BadgeEn" placeholder="e.g. Industrial Grade Quality" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md focus:ring-primary focus:border-primary transition-all">
+                            <input id="hero-badge-en" type="text" value="@Model.Hero.BadgeEn" placeholder="@Localizer["admin_content_ph_badge_en"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md focus:ring-primary focus:border-primary transition-all">
                         </div>
                         <div class="flex flex-col gap-xs">
                             <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_title_segments"] <span class="text-xs text-outline">(En)</span></label>
                             <div class="grid grid-cols-2 gap-sm">
-                                <input id="hero-title-a-en" type="text" value="@Model.Hero.TitleAEn" placeholder="Quality You Can" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
-                                <input id="hero-title-b-en" type="text" value="@Model.Hero.TitleBEn" placeholder="Feel" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md text-primary font-bold">
-                                <input id="hero-title-c-en" type="text" value="@Model.Hero.TitleCEn" placeholder=", Styles You" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
-                                <input id="hero-title-d-en" type="text" value="@Model.Hero.TitleDEn" placeholder="Love" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md text-secondary font-bold">
+                                <input id="hero-title-a-en" type="text" value="@Model.Hero.TitleAEn" placeholder="@Localizer["admin_content_ph_hero_title_a_en"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                                <input id="hero-title-b-en" type="text" value="@Model.Hero.TitleBEn" placeholder="@Localizer["admin_content_ph_hero_title_b_en"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md text-primary font-bold">
+                                <input id="hero-title-c-en" type="text" value="@Model.Hero.TitleCEn" placeholder="@Localizer["admin_content_ph_hero_title_c_en"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                                <input id="hero-title-d-en" type="text" value="@Model.Hero.TitleDEn" placeholder="@Localizer["admin_content_ph_hero_title_d_en"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md text-secondary font-bold">
                             </div>
                         </div>
                         <div class="flex flex-col gap-xs">
@@ -176,11 +176,11 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-2">
                         <div class="flex flex-col gap-xs">
                             <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_about_title"] <span class="text-xs text-outline">(Ar)</span></label>
-                            <input id="about-title-ar" type="text" value="@Model.About.TitleAr" placeholder="عنوان القسم" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                            <input id="about-title-ar" type="text" value="@Model.About.TitleAr" placeholder="@Localizer["admin_content_ph_about_title_ar"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
                         </div>
                         <div class="flex flex-col gap-xs">
                             <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_about_desc"] <span class="text-xs text-outline">(Ar)</span></label>
-                            <textarea id="about-desc-ar" rows="2" placeholder="وصف القسم" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.About.DescriptionAr</textarea>
+                            <textarea id="about-desc-ar" rows="2" placeholder="@Localizer["admin_content_ph_about_desc_ar"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.About.DescriptionAr</textarea>
                         </div>
                     </div>
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
@@ -268,11 +268,11 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-xl">
                 <div class="flex flex-col gap-xs">
                     <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_testi_title"]</label>
-                    <input id="testi-title" type="text" value="@Model.Testimonials.Title" placeholder="Community Stories" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                    <input id="testi-title" type="text" value="@Model.Testimonials.Title" placeholder="@Localizer["admin_content_ph_testi_title"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
                 </div>
                 <div class="flex flex-col gap-xs">
                     <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_testi_desc"]</label>
-                    <textarea id="testi-desc" rows="2" placeholder="See how our stickers hold up in the real world." class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.Testimonials.Description</textarea>
+                    <textarea id="testi-desc" rows="2" placeholder="@Localizer["admin_content_ph_testi_desc"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.Testimonials.Description</textarea>
                 </div>
             </div>
 
@@ -331,7 +331,7 @@
                                         <p class="text-sm text-text-secondary line-clamp-2">&ldquo;@review.ReviewText&rdquo;</p>
                                     </td>
                                     <td class="py-md px-lg">
-                                        <div class="flex gap-0.5" aria-label="Rating: @review.Rating out of 5">
+                                        <div class="flex gap-0.5" aria-label="@string.Format(Localizer["admin_review_rating_aria"].Value, review.Rating)">
                                             @for (int j = 0; j < 5; j++)
                                             {
                                                 <span class="material-symbols-outlined text-sm @(j < review.Rating ? "text-yellow-500 fill-icon" : "text-outline/20")">star</span>
@@ -375,15 +375,15 @@
                 <div class="space-y-lg">
                     <div class="flex flex-col gap-xs">
                         <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_contact_email"]</label>
-                        <input id="contact-email" type="email" value="@Model.Contact.Email" placeholder="support@dakkn.com" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                        <input id="contact-email" type="email" value="@Model.Contact.Email" placeholder="@Localizer["admin_content_ph_contact_email"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
                     </div>
                     <div class="flex flex-col gap-xs">
                         <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_contact_phone"]</label>
-                        <input id="contact-phone" type="text" value="@Model.Contact.Phone" placeholder="+20 1xx xxx xxxx" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                        <input id="contact-phone" type="text" value="@Model.Contact.Phone" placeholder="@Localizer["admin_content_ph_contact_phone"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
                     </div>
                     <div class="flex flex-col gap-xs">
                         <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_contact_address"]</label>
-                        <textarea id="contact-address" rows="3" placeholder="Street name, City, Country" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.Contact.Address</textarea>
+                        <textarea id="contact-address" rows="3" placeholder="@Localizer["admin_content_ph_contact_address"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.Contact.Address</textarea>
                     </div>
                 </div>
                 <div class="bg-primary/5 rounded-3xl p-xl flex flex-col items-center justify-center text-center border border-primary/10">

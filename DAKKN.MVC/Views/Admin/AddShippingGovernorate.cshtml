@@ -37,13 +37,13 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="space-y-1.5">
                         <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer[LocalizationKeys.AdminShipping.Name.Key]</label>
-                        <input asp-for="Name" type="text" placeholder="e.g. Cairo" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all" />
+                        <input asp-for="Name" type="text" placeholder="@Localizer["admin_content_ph_gov_name_en"]" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all" />
                         <span asp-validation-for="Name" class="text-xs text-red-500"></span>
                     </div>
 
                     <div class="space-y-1.5">
                         <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer[LocalizationKeys.AdminShipping.ArName.Key]</label>
-                        <input asp-for="ArName" type="text" placeholder="مثال: القاهرة" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all" />
+                        <input asp-for="ArName" type="text" placeholder="@Localizer["admin_content_ph_gov_name_ar"]" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all" />
                         <span asp-validation-for="ArName" class="text-xs text-red-500"></span>
                     </div>
                 </div>

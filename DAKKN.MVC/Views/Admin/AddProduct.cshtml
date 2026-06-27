@@ -41,22 +41,22 @@
                     <div class="space-y-4">
                         <div class="space-y-1.5">
                             <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_product_name"] (@Localizer["admin_lang_en"])</label>
-                            <input asp-for="Name" type="text" placeholder="e.g. Retro Sticker Pack" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all" />
+                            <input asp-for="Name" type="text" placeholder="@Localizer["admin_content_ph_product_name_en"]" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all" />
                         </div>
 
                         <div class="space-y-1.5">
                             <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_product_name"] (@Localizer["admin_lang_ar"])</label>
-                            <input asp-for="ArName" type="text" placeholder="مثال: حزمة ملصقات ريترو" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all" />
+                            <input asp-for="ArName" type="text" placeholder="@Localizer["admin_content_ph_product_name_ar"]" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all" />
                         </div>
 
                         <div class="space-y-1.5">
                             <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_product_desc"] (@Localizer["admin_lang_en"])</label>
-                            <textarea asp-for="Description" rows="5" placeholder="Write a detailed product description here..." class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all resize-none"></textarea>
+                            <textarea asp-for="Description" rows="5" placeholder="@Localizer["admin_content_ph_product_desc_en"]" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all resize-none"></textarea>
                         </div>
 
                         <div class="space-y-1.5">
                             <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_product_desc"] (@Localizer["admin_lang_ar"])</label>
-                            <textarea asp-for="ArDescription" rows="5" placeholder="اكتب وصفاً تفصيلياً للمنتج هنا..." class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all resize-none"></textarea>
+                            <textarea asp-for="ArDescription" rows="5" placeholder="@Localizer["admin_content_ph_product_desc_ar"]" class="w-full bg-admin-page border border-admin-border rounded-xl px-4 py-3 outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all resize-none"></textarea>
                         </div>
 
                         <div class="space-y-1.5">
@@ -85,7 +85,7 @@
                     @if (Model.IsEdit && !string.IsNullOrEmpty(Model.ExistingImageUrl))
                     {
                         <div class="relative w-40 h-40 rounded-2xl overflow-hidden border border-admin-border group">
-                            <img src="@Model.ExistingImageUrl" alt="Current Product" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='/images/placeholders/product-placeholder.svg'" />
+                            <img src="@Model.ExistingImageUrl" alt='@Localizer["admin_content_ph_product_image_alt"]' class="w-full h-full object-cover" onerror="this.onerror=null; this.src='/images/placeholders/product-placeholder.svg'" />
                             <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                 <span class="text-white text-xs font-bold">@Localizer["admin_product_image_current"]</span>
                             </div>

@@ -26,7 +26,7 @@
             <div class="flex items-center gap-lg">
                 <div class="relative group">
                     <div class="w-24 h-24 rounded-full overflow-hidden border-4 border-surface dark:border-[#1E293B] shadow-small">
-                        <img id="profileAvatar" alt="User Avatar" class="w-full h-full object-cover"
+                        <img id="profileAvatar" alt='@Localizer["profile_avatar_alt"]' class="w-full h-full object-cover"
                              src="@(Model.HasProfileImage ? Model.ProfileImageSrc : $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(Model.FullName)}&background=69d2cf&color=005957&size=200")">
                     </div>
                     <!-- Loading Spinner Overlay -->
@@ -267,7 +267,7 @@
                 <!-- Type DELETE -->
                 <div class="space-y-2">
                     <label class="block font-bold text-sm text-outline dark:text-outline-variant uppercase tracking-wider px-1">@Localizer["profile_delete_account_type_confirm"]</label>
-                    <input id="da-confirm-text" type="text" placeholder="DELETE" class="w-full px-4 py-3 bg-surface-container dark:bg-black/20 rounded-2xl border border-border dark:border-white/10 text-text-primary dark:text-white focus:ring-2 focus:ring-error outline-none transition-all placeholder:text-text-secondary">
+                    <input id="da-confirm-text" type="text" placeholder="@Localizer["profile_delete_ph"]" class="w-full px-4 py-3 bg-surface-container dark:bg-black/20 rounded-2xl border border-border dark:border-white/10 text-text-primary dark:text-white focus:ring-2 focus:ring-error outline-none transition-all placeholder:text-text-secondary">
                 </div>
 
                 <!-- Current Password -->
@@ -347,7 +347,7 @@
             if (/[0-9]/.test(val)) score++;
 
             var colors = ['', 'bg-red-500', 'bg-orange-500', 'bg-yellow-500', 'bg-green-500'];
-            var labels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
+            var labels = ['', '@Localizer["password_strength_weak"]', '@Localizer["password_strength_fair"]', '@Localizer["password_strength_good"]', '@Localizer["password_strength_strong"]'];
 
             bars.forEach(function (bar, i) {
                 bar.className = 'h-1 flex-1 rounded-full transition-all ' + (i < score ? colors[score] : 'bg-gray-200 dark:bg-gray-700');
