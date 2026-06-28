@@ -83,6 +83,36 @@
                 padding-left: 0 !important;
                 padding-right: 0 !important;
             }
+
+            /* Tablet expanded: user clicked toggle to show full sidebar with text */
+            .tablet-sidebar-expanded .admin-sidebar {
+                width: 256px !important;
+                position: fixed !important;
+                top: 0; bottom: 0; left: 0;
+                z-index: 200 !important;
+                box-shadow: 4px 0 24px rgba(0,0,0,0.15) !important;
+            }
+            [dir="rtl"].tablet-sidebar-expanded .admin-sidebar {
+                left: auto !important; right: 0;
+            }
+            .tablet-sidebar-expanded .admin-sidebar .sidebar-text { display: inline !important; }
+            .tablet-sidebar-expanded .admin-sidebar .nav-item {
+                justify-content: flex-start !important;
+                padding-left: 16px !important;
+                padding-right: 16px !important;
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+            }
+            .tablet-sidebar-expanded .admin-sidebar .add-product-btn span:last-child { display: inline !important; }
+            .tablet-sidebar-expanded .admin-sidebar .add-product-btn {
+                width: 100% !important; height: 52px !important;
+                padding: 0 16px !important; border-radius: 18px !important;
+            }
+            .tablet-sidebar-expanded .admin-sidebar .admin-brand-info {
+                justify-content: flex-start !important;
+                padding-left: 24px !important;
+                padding-right: 24px !important;
+            }
         }
 
         .sidebar-is-collapsed .admin-sidebar {
@@ -173,8 +203,9 @@
             localStorage.setItem('dakkn_lang', culture);
 
             // Initialize Sidebar State
+            // Only apply JS-collapsed class on desktop (tablet uses CSS media query for icon-only mode)
             const isCollapsed = localStorage.getItem('dakkn_sidebar_collapsed') === 'true';
-            if (isCollapsed || window.innerWidth < 1280) {
+            if (isCollapsed && window.innerWidth >= 1280) {
                 document.documentElement.classList.add('sidebar-is-collapsed');
             }
         })();
@@ -186,29 +217,7 @@
             }
         });
 
-        // ── Silent session refresh on page load ─────
-        (function() {
-            var rt = localStorage.getItem('dakkn_refresh_token');
-            if (!rt) return;
-            fetch('/auth/refresh-token?token=' + encodeURIComponent(rt), { method: 'POST' })
-                .then(function(r) {
-                    if (r.ok) return r.json();
-                    if (r.status === 401 || r.status === 400) throw new Error('Invalid');
-                    return null;
-                })
-                .then(function(data) {
-                    if (data && data.accessToken) {
-                        localStorage.setItem('dakkn_access_token', data.accessToken);
-                        localStorage.setItem('dakkn_refresh_token', data.refreshToken);
-                    }
-                })
-                .catch(function(e) {
-                    if (e.message === 'Invalid') {
-                        localStorage.removeItem('dakkn_access_token');
-                        localStorage.removeItem('dakkn_refresh_token');
-                    }
-                });
-        })();
+        // ── No JWT silent refresh needed for admin (uses cookie auth) ─────
 
         // Failsafe: Ensure preloader is hidden even if scripts fail or hang
         setTimeout(() => {
@@ -233,30 +242,31 @@
 
     <!-- Mobile Bottom Nav (visible only on < 768px) -->
     <nav id="admin-bottom-nav" class="items-center justify-around px-2 py-2 gap-1">
-        <a asp-controller="Admin" asp-action="Index" class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all @(currentAction == "Index" ? "text-primary" : "text-text-secondary dark:text-outline-variant")" title="@Localizer["admin_overview"]">
-            <span class="material-symbols-outlined text-[22px] @(currentAction == "Index" ? "filled-icon" : "")" style="font-size:22px">dashboard</span>
-            <span class="text-[10px] font-semibold">@Localizer["admin_overview"]</span>
+        <a asp-controller="Admin" asp-action="Index" class="admin-bnav-item @(currentAction == "Index" ? "admin-bnav-active" : "")" title="@Localizer["admin_overview"]">
+            <span class="material-symbols-outlined @(currentAction == "Index" ? "filled-icon" : "")">dashboard</span>
+            <span>@Localizer["admin_overview"]</span>
         </a>
-        <a asp-controller="Admin" asp-action="Orders" class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all @(currentAction == "Orders" ? "text-primary" : "text-text-secondary dark:text-outline-variant")" title="@Localizer["admin_orders"]">
-            <span class="material-symbols-outlined text-[22px] @(currentAction == "Orders" ? "filled-icon" : "")" style="font-size:22px">shopping_cart</span>
-            <span class="text-[10px] font-semibold">@Localizer["admin_orders"]</span>
+        <a asp-controller="Admin" asp-action="Orders" class="admin-bnav-item @(currentAction == "Orders" ? "admin-bnav-active" : "")" title="@Localizer["admin_orders"]">
+            <span class="material-symbols-outlined @(currentAction == "Orders" ? "filled-icon" : "")">shopping_cart</span>
+            <span>@Localizer["admin_orders"]</span>
         </a>
-        <a asp-controller="Admin" asp-action="AddProduct" class="flex flex-col items-center gap-0.5 px-2 py-1" title="@Localizer["admin_add_product"]">
-            <span class="w-11 h-11 bg-primary text-on-primary rounded-2xl flex items-center justify-center shadow-md">
-                <span class="material-symbols-outlined" style="font-size:22px">add</span>
-            </span>
+        <a asp-controller="Admin" asp-action="AddProduct" class="admin-bnav-fab" title="@Localizer["admin_add_product"]">
+            <span class="material-symbols-outlined">add</span>
         </a>
-        <a asp-controller="Admin" asp-action="Inventory" class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all @(currentAction == "Inventory" ? "text-primary" : "text-text-secondary dark:text-outline-variant")" title="@Localizer["admin_inventory"]">
-            <span class="material-symbols-outlined text-[22px] @(currentAction == "Inventory" ? "filled-icon" : "")" style="font-size:22px">inventory_2</span>
-            <span class="text-[10px] font-semibold">@Localizer["admin_inventory"]</span>
+        <a asp-controller="Admin" asp-action="Inventory" class="admin-bnav-item @(currentAction == "Inventory" ? "admin-bnav-active" : "")" title="@Localizer["admin_inventory"]">
+            <span class="material-symbols-outlined @(currentAction == "Inventory" ? "filled-icon" : "")">inventory_2</span>
+            <span>@Localizer["admin_inventory"]</span>
         </a>
-        <a asp-controller="Admin" asp-action="Users" class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all @(currentAction == "Users" ? "text-primary" : "text-text-secondary dark:text-outline-variant")" title="@Localizer["admin_users"]">
-            <span class="material-symbols-outlined text-[22px] @(currentAction == "Users" ? "filled-icon" : "")" style="font-size:22px">group</span>
-            <span class="text-[10px] font-semibold">@Localizer["admin_users"]</span>
+        <a asp-controller="Admin" asp-action="Users" class="admin-bnav-item @(currentAction == "Users" ? "admin-bnav-active" : "")" title="@Localizer["admin_users"]">
+            <span class="material-symbols-outlined @(currentAction == "Users" ? "filled-icon" : "")">group</span>
+            <span>@Localizer["admin_users"]</span>
         </a>
     </nav>
+    <!-- Tablet Sidebar Overlay (visible only on tablet when sidebar is expanded) -->
+    <div id="tablet-sidebar-overlay" class="hidden md:block xl:hidden fixed inset-0 z-[199] bg-slate-900/40 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300" onclick="collapseSidebarTablet()"></div>
 
     <!-- SideNavBar (desktop/tablet) -->
+
     <aside id="admin-sidebar" class="hidden md:flex flex-col admin-sidebar ltr:left-0 ltr:border-r rtl:right-0 rtl:border-l h-screen w-64 shadow-medium z-40 relative flex-shrink-0 transition-all duration-300 bg-surface dark:bg-[#1E293B] border-border dark:border-white/5">
         <div class="px-6 py-5 flex items-center gap-3 border-b border-border dark:border-white/5 admin-brand-info">
             <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-lg flex-shrink-0 shadow-sm">D</div>
@@ -369,22 +379,40 @@
         // Sidebar Toggle Logic
         function toggleSidebar() {
             if (window.innerWidth < 768) {
-                // On mobile, nothing — bottom nav handles navigation; hamburger toggles slide-over drawer
+                // On mobile, bottom nav handles navigation; hamburger toggles slide-over drawer
                 document.documentElement.classList.toggle('mobile-sidebar-open');
             } else {
                 // On tablet/desktop, toggle collapse between full/icon-only
                 const isTablet = window.innerWidth < 1280;
                 if (isTablet) {
-                    // Tablet: CSS media query already forces icon-only;
-                    // toggle adds/removes the sidebar-is-collapsed class for explicit user override
-                    const isCollapsed = document.documentElement.classList.toggle('tablet-sidebar-expanded');
-                    document.documentElement.classList.toggle('sidebar-is-collapsed', !isCollapsed);
-                    updateSidebarIcon(!isCollapsed);
+                    // Tablet: CSS media query makes sidebar icon-only by default.
+                    // Toggle 'tablet-sidebar-expanded' to show full sidebar with text.
+                    const isExpanded = document.documentElement.classList.toggle('tablet-sidebar-expanded');
+                    updateSidebarIcon(!isExpanded);
+                    setTabletOverlay(isExpanded);
                 } else {
                     const isCollapsed = document.documentElement.classList.toggle('sidebar-is-collapsed');
                     localStorage.setItem('dakkn_sidebar_collapsed', isCollapsed);
                     updateSidebarIcon(isCollapsed);
                 }
+            }
+        }
+
+        function collapseSidebarTablet() {
+            document.documentElement.classList.remove('tablet-sidebar-expanded');
+            updateSidebarIcon(true);
+            setTabletOverlay(false);
+        }
+
+        function setTabletOverlay(show) {
+            const overlay = document.getElementById('tablet-sidebar-overlay');
+            if (!overlay) return;
+            if (show) {
+                overlay.style.opacity = '1';
+                overlay.style.pointerEvents = 'auto';
+            } else {
+                overlay.style.opacity = '0';
+                overlay.style.pointerEvents = 'none';
             }
         }
 
@@ -394,6 +422,7 @@
                 icon.textContent = isCollapsed ? 'menu' : 'menu_open';
             }
         }
+
 
         function submitLogout() {
             const form = document.getElementById('logout-form');
@@ -416,16 +445,18 @@
                 }
             });
 
-            const isCollapsed = document.documentElement.classList.contains('sidebar-is-collapsed');
-            updateSidebarIcon(isCollapsed);
-
             // On desktop only, restore collapsed state from localStorage
             if (window.innerWidth >= 1280) {
                 const savedCollapsed = localStorage.getItem('dakkn_sidebar_collapsed') === 'true';
                 if (savedCollapsed) {
                     document.documentElement.classList.add('sidebar-is-collapsed');
                     updateSidebarIcon(true);
+                } else {
+                    updateSidebarIcon(false);
                 }
+            } else {
+                // Tablet or mobile: sidebar starts as icon-only (CSS handles it); icon shows 'menu'
+                updateSidebarIcon(true);
             }
         });
     </script>
