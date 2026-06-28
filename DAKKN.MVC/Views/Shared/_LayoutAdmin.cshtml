@@ -60,12 +60,36 @@
             overflow: hidden;
         }
 
+        /* Tablet: sidebar auto-collapses to icon-only (80px) */
+        @@media (min-width: 768px) and (max-width: 1279px) {
+            .admin-sidebar {
+                width: 80px !important;
+            }
+            .admin-sidebar .sidebar-text { display: none !important; }
+            .admin-sidebar .nav-item {
+                justify-content: center !important;
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+                margin-left: 8px !important;
+                margin-right: 8px !important;
+            }
+            .admin-sidebar .add-product-btn span:last-child { display: none !important; }
+            .admin-sidebar .add-product-btn {
+                width: 44px !important; height: 44px !important;
+                padding: 0 !important; border-radius: 50% !important;
+            }
+            .admin-sidebar .admin-brand-info {
+                justify-content: center !important;
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+            }
+        }
+
         .sidebar-is-collapsed .admin-sidebar {
             width: 80px !important;
         }
 
-        .sidebar-is-collapsed .sidebar-text,
-        .sidebar-is-collapsed .admin-brand-info {
+        .sidebar-is-collapsed .sidebar-text {
             opacity: 0;
             pointer-events: none;
             width: 0;
@@ -98,6 +122,26 @@
 
         .nav-item {
             transition: all 0.2s ease;
+        }
+
+        /* Mobile Bottom Nav */
+        #admin-bottom-nav {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            z-index: 100;
+            display: none;
+            background: var(--surface, #fff);
+            border-top: 1px solid var(--border-color, rgba(0,0,0,.08));
+            box-shadow: 0 -4px 24px rgba(0,0,0,.10);
+            padding-bottom: env(safe-area-inset-bottom, 0);
+        }
+        @@media (max-width: 767px) {
+            #admin-bottom-nav { display: flex !important; }
+            #admin-canvas { padding-bottom: 80px !important; }
+        }
+        .dark #admin-bottom-nav {
+            background: #1E293B;
+            border-top-color: rgba(255,255,255,.06);
         }
     </style>
 
@@ -187,8 +231,37 @@
     <!-- Sidebar Overlay for Mobile -->
     <div id="sidebar-overlay" class="sidebar-overlay md:hidden" onclick="toggleSidebar()"></div>
 
-    <!-- SideNavBar -->
+    <!-- Mobile Bottom Nav (visible only on < 768px) -->
+    <nav id="admin-bottom-nav" class="items-center justify-around px-2 py-2 gap-1">
+        <a asp-controller="Admin" asp-action="Index" class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all @(currentAction == "Index" ? "text-primary" : "text-text-secondary dark:text-outline-variant")" title="@Localizer["admin_overview"]">
+            <span class="material-symbols-outlined text-[22px] @(currentAction == "Index" ? "filled-icon" : "")" style="font-size:22px">dashboard</span>
+            <span class="text-[10px] font-semibold">@Localizer["admin_overview"]</span>
+        </a>
+        <a asp-controller="Admin" asp-action="Orders" class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all @(currentAction == "Orders" ? "text-primary" : "text-text-secondary dark:text-outline-variant")" title="@Localizer["admin_orders"]">
+            <span class="material-symbols-outlined text-[22px] @(currentAction == "Orders" ? "filled-icon" : "")" style="font-size:22px">shopping_cart</span>
+            <span class="text-[10px] font-semibold">@Localizer["admin_orders"]</span>
+        </a>
+        <a asp-controller="Admin" asp-action="AddProduct" class="flex flex-col items-center gap-0.5 px-2 py-1" title="@Localizer["admin_add_product"]">
+            <span class="w-11 h-11 bg-primary text-on-primary rounded-2xl flex items-center justify-center shadow-md">
+                <span class="material-symbols-outlined" style="font-size:22px">add</span>
+            </span>
+        </a>
+        <a asp-controller="Admin" asp-action="Inventory" class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all @(currentAction == "Inventory" ? "text-primary" : "text-text-secondary dark:text-outline-variant")" title="@Localizer["admin_inventory"]">
+            <span class="material-symbols-outlined text-[22px] @(currentAction == "Inventory" ? "filled-icon" : "")" style="font-size:22px">inventory_2</span>
+            <span class="text-[10px] font-semibold">@Localizer["admin_inventory"]</span>
+        </a>
+        <a asp-controller="Admin" asp-action="Users" class="flex flex-col items-center gap-0.5 px-3 py-1.5 rounded-xl transition-all @(currentAction == "Users" ? "text-primary" : "text-text-secondary dark:text-outline-variant")" title="@Localizer["admin_users"]">
+            <span class="material-symbols-outlined text-[22px] @(currentAction == "Users" ? "filled-icon" : "")" style="font-size:22px">group</span>
+            <span class="text-[10px] font-semibold">@Localizer["admin_users"]</span>
+        </a>
+    </nav>
+
+    <!-- SideNavBar (desktop/tablet) -->
     <aside id="admin-sidebar" class="hidden md:flex flex-col admin-sidebar ltr:left-0 ltr:border-r rtl:right-0 rtl:border-l h-screen w-64 shadow-medium z-40 relative flex-shrink-0 transition-all duration-300 bg-surface dark:bg-[#1E293B] border-border dark:border-white/5">
+        <div class="px-6 py-5 flex items-center gap-3 border-b border-border dark:border-white/5 admin-brand-info">
+            <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-lg flex-shrink-0 shadow-sm">D</div>
+            <span class="font-bold text-lg text-admin-primary tracking-wide sidebar-text">DAKKN</span>
+        </div>
         <nav class="flex-1 overflow-y-auto custom-scrollbar py-md px-sm flex flex-col gap-sm">
             <a asp-controller="Admin" asp-action="Index" class="nav-item flex items-center gap-md @(currentAction == "Index" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-xl px-4 py-3 transition-all duration-200" title="@Localizer["admin_overview"]">
                 <span class="material-symbols-outlined @(currentAction == "Index" ? "filled-icon" : "") flex-shrink-0">dashboard</span>
@@ -256,8 +329,8 @@
                 <button onclick="toggleSidebar()" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary dark:text-outline-variant dark:hover:text-primary-light transition-colors hover:bg-primary/5 dark:hover:bg-white/5">
                     <span class="material-symbols-outlined" id="sidebar-toggle-icon">menu_open</span>
                 </button>
-                <div class="admin-logo-container md:hidden">
-                    
+                <div class="md:hidden">
+                    <h2 class="text-base font-bold text-text-primary dark:text-white truncate max-w-[160px]">@ViewData["Title"]</h2>
                 </div>
                 <div class="hidden md:block">
                     <h2 class="font-h3 text-h3 font-bold text-text-primary dark:text-white">@ViewData["Title"]</h2>
@@ -296,11 +369,22 @@
         // Sidebar Toggle Logic
         function toggleSidebar() {
             if (window.innerWidth < 768) {
+                // On mobile, nothing — bottom nav handles navigation; hamburger toggles slide-over drawer
                 document.documentElement.classList.toggle('mobile-sidebar-open');
             } else {
-                const isCollapsed = document.documentElement.classList.toggle('sidebar-is-collapsed');
-                localStorage.setItem('dakkn_sidebar_collapsed', isCollapsed);
-                updateSidebarIcon(isCollapsed);
+                // On tablet/desktop, toggle collapse between full/icon-only
+                const isTablet = window.innerWidth < 1280;
+                if (isTablet) {
+                    // Tablet: CSS media query already forces icon-only;
+                    // toggle adds/removes the sidebar-is-collapsed class for explicit user override
+                    const isCollapsed = document.documentElement.classList.toggle('tablet-sidebar-expanded');
+                    document.documentElement.classList.toggle('sidebar-is-collapsed', !isCollapsed);
+                    updateSidebarIcon(!isCollapsed);
+                } else {
+                    const isCollapsed = document.documentElement.classList.toggle('sidebar-is-collapsed');
+                    localStorage.setItem('dakkn_sidebar_collapsed', isCollapsed);
+                    updateSidebarIcon(isCollapsed);
+                }
             }
         }
 
@@ -321,19 +405,29 @@
         }
 
         // Initialize State on Load
-        (function() {
+        document.addEventListener('DOMContentLoaded', () => {
+            // Automatically wrap tables in overflow-x-auto if not already wrapped
+            document.querySelectorAll('#admin-canvas table').forEach(table => {
+                if (!table.parentElement.classList.contains('overflow-x-auto') && !table.classList.contains('no-wrap-table')) {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'overflow-x-auto custom-scrollbar my-4 rounded-xl border border-admin-border bg-admin-card';
+                    table.parentNode.insertBefore(wrapper, table);
+                    wrapper.appendChild(table);
+                }
+            });
+
             const isCollapsed = document.documentElement.classList.contains('sidebar-is-collapsed');
             updateSidebarIcon(isCollapsed);
 
-            window.addEventListener('resize', () => {
-                if (window.innerWidth < 1280) {
-                    if (!document.documentElement.classList.contains('sidebar-is-collapsed')) {
-                        document.documentElement.classList.add('sidebar-is-collapsed');
-                        updateSidebarIcon(true);
-                    }
+            // On desktop only, restore collapsed state from localStorage
+            if (window.innerWidth >= 1280) {
+                const savedCollapsed = localStorage.getItem('dakkn_sidebar_collapsed') === 'true';
+                if (savedCollapsed) {
+                    document.documentElement.classList.add('sidebar-is-collapsed');
+                    updateSidebarIcon(true);
                 }
-            });
-        })();
+            }
+        });
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

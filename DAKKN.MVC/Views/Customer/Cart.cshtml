@@ -6,7 +6,7 @@
 
 <div class="max-w-7xl mx-auto px-lg py-xl">
     <div class="mb-xl">
-        <h1 class="font-h1 text-h1 font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["cart_h1"]</h1>
+        <h1 class="customer-page-title text-text-primary dark:text-inverse-on-surface">@Localizer["cart_h1"]</h1>
         <div class="flex items-center gap-2 mt-2">
             <span class="w-2 h-2 rounded-full" id="shipping-status-dot"></span>
             <p id="free-shipping-info" class="text-sm text-text-secondary"></p>
@@ -18,8 +18,8 @@
             <div id="cart-items-container" class="space-y-md">
                 @if (Model.IsEmpty)
                 {
-                    <div id="cart-empty-state" class="py-32 text-center space-y-xl bg-surface dark:bg-inverse-surface rounded-[40px] border border-dashed border-border dark:border-outline/20">
-                        <div class="w-24 h-24 bg-surface-container dark:bg-white/5 rounded-full flex items-center justify-center mx-auto text-outline opacity-30">
+                    <div id="cart-empty-state" class="empty-state space-y-xl">
+                        <div class="empty-state-icon">
                             <span class="material-symbols-outlined text-5xl">shopping_cart</span>
                         </div>
                         <div class="space-y-md">

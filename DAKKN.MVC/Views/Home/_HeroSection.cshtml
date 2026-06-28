@@ -13,10 +13,10 @@
     var desc = Pick(Model.Hero.DescriptionAr, Model.Hero.DescriptionEn);
     var btnText = Pick(Model.Hero.ButtonTextAr, Model.Hero.ButtonTextEn);
 }
-<section id="hero" class="relative min-h-[90vh] md:min-h-[85vh] flex items-center pt-16 md:pt-[72px] overflow-hidden bg-gradient-to-br from-primary/5 via-transparent to-amber-50/30 dark:from-primary/10 dark:via-transparent dark:to-slate-900/50">
+<section id="hero" class="relative min-h-[90vh] md:min-h-[85vh] flex items-center pt-16 md:pt-[72px] overflow-hidden bg-gradient-to-br from-primary/5 via-transparent to-primary/5 dark:from-primary/10 dark:via-transparent dark:to-primary/5">
     <div class="deco-blob w-[250px] h-[250px] sm:w-[500px] sm:h-[500px] -top-32 -start-32 bg-primary/10 animate-blob-1"></div>
-    <div class="deco-blob w-[200px] h-[200px] sm:w-[400px] sm:h-[400px] -bottom-40 -end-20 bg-amber-400/10 animate-blob-2"></div>
-    <div class="deco-blob w-[150px] h-[150px] sm:w-[300px] sm:h-[300px] top-1/3 end-1/4 bg-cyan-400/10 animate-blob-3"></div>
+    <div class="deco-blob w-[200px] h-[200px] sm:w-[400px] sm:h-[400px] -bottom-40 -end-20 bg-primary/10 animate-blob-2"></div>
+    <div class="deco-blob w-[150px] h-[150px] sm:w-[300px] sm:h-[300px] top-1/3 end-1/4 bg-primary/10 animate-blob-3"></div>
     <div class="deco-ring w-[300px] h-[300px] sm:w-[600px] sm:h-[600px] -top-20 -end-20"></div>
     <div class="deco-ring-solid w-[200px] h-[200px] sm:w-[400px] sm:h-[400px] bottom-10 start-10"></div>
     <div class="deco-shape-diamond hidden sm:block top-[20%] start-[15%]"></div>
@@ -34,7 +34,7 @@
                         @badge
                     </span>
                 }
-                <h1 class="text-[28px] sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black leading-[1.08] tracking-tight mb-6 scroll-animate delay-100">
+                <h1 class="text-[1.75rem] sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black leading-[1.08] tracking-tight mb-4 md:mb-6 scroll-animate delay-100">
                     @if (!string.IsNullOrEmpty(titleA)) { <span class="text-on-surface dark:text-white">@titleA </span> }
                     @if (!string.IsNullOrEmpty(titleB)) { <span class="text-primary">@titleB</span> }
                     @if (!string.IsNullOrEmpty(titleC)) { <span class="text-on-surface dark:text-white">@titleC </span> }
@@ -45,8 +45,8 @@
                     <p class="text-base md:text-lg text-on-surface-variant dark:text-slate-400 leading-relaxed max-w-xl mx-auto lg:mx-0 mb-8 scroll-animate delay-200">@desc</p>
                 }
                 <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 mb-6 max-w-lg mx-auto lg:mx-0 scroll-animate delay-300">
-                    <a asp-action="Register" asp-controller="Auth" class="flex-1 bg-primary hover:bg-primary-container text-on-primary font-bold py-3 sm:py-3.5 px-6 sm:px-8 rounded-xl transition-all shadow-xl hover:shadow-2xl hover:-translate-y-0.5 active:scale-95 text-center text-xs sm:text-sm">@(string.IsNullOrEmpty(btnText) ? Localizer["btn_start_shopping"] : btnText)</a>
-                    <a href="#how-it-works" class="flex-1 bg-white dark:bg-[#1E293B] hover:bg-primary/5 text-on-surface dark:text-white font-bold py-3 sm:py-3.5 px-6 sm:px-8 rounded-xl transition-all border-2 border-outline-variant/30 dark:border-white/10 hover:border-primary/30 hover:-translate-y-0.5 active:scale-95 text-center text-xs sm:text-sm">@Localizer["btn_learn_more"]</a>
+                    <a asp-action="Register" asp-controller="Auth" class="flex-1 bg-primary hover:bg-primary-hover active:bg-primary-active text-on-primary font-bold py-3 sm:py-3.5 px-6 sm:px-8 rounded-xl transition-all shadow-button hover:shadow-card-hover hover:-translate-y-0.5 active:scale-[0.97] text-center text-xs sm:text-sm">@(string.IsNullOrEmpty(btnText) ? Localizer["btn_start_shopping"] : btnText)</a>
+                    <a href="#how-it-works" class="flex-1 bg-white dark:bg-[#1E293B] hover:bg-primary/5 text-on-surface dark:text-white font-bold py-3 sm:py-3.5 px-6 sm:px-8 rounded-xl transition-all border-2 border-outline-variant/30 dark:border-white/10 hover:border-primary/30 hover:-translate-y-0.5 active:scale-[0.97] text-center text-xs sm:text-sm">@Localizer["btn_learn_more"]</a>
                 </div>
                 <!-- Trust badges -->
                 <div class="flex flex-wrap items-center justify-center lg:justify-start gap-x-4 md:gap-x-6 gap-y-2 scroll-animate delay-400">
@@ -72,7 +72,7 @@
                         </div>
                     </div>
                     <!-- Floating rating badge -->
-                    <div class="absolute -bottom-2 -start-2 md:-bottom-5 md:-start-5 glass-panel rounded-xl px-2 py-2 md:px-4 md:py-3 shadow-lg max-w-[160px] md:max-w-none">
+                    <div class="absolute -bottom-2 -start-1 md:-bottom-5 md:-start-5 glass-panel rounded-xl px-1.5 py-1.5 md:px-4 md:py-3 shadow-lg max-w-[130px] md:max-w-none">
                         <div class="flex items-center gap-3">
                             <div class="flex -space-x-2 rtl:space-x-reverse">
                                 <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-cyan-400 border-2 border-white dark:border-[#0F172A] flex items-center justify-center text-white text-xs font-bold">★</div>
@@ -86,7 +86,7 @@
                         </div>
                     </div>
                     <!-- Floating delivery badge -->
-                    <div class="absolute -top-2 -end-2 md:-top-5 md:-end-5 glass-panel rounded-xl px-2 py-2 md:px-4 md:py-3 shadow-lg max-w-[140px] md:max-w-none">
+                    <div class="absolute -top-2 -end-1 md:-top-5 md:-end-5 glass-panel rounded-xl px-1.5 py-1.5 md:px-4 md:py-3 shadow-lg max-w-[120px] md:max-w-none">
                         <div class="flex items-center gap-2">
                             <span class="material-symbols-outlined text-primary text-xl">local_shipping</span>
                             <div class="text-xs">

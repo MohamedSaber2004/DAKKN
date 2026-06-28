@@ -38,7 +38,7 @@
         <div class="flex flex-col">
             <div class="mb-xl pb-xl border-b border-border dark:border-outline/10">
                 <span class="bg-primary/10 text-primary px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-md inline-block">@(isArabic ? product.CategoryArName : product.CategoryName)</span>
-                <h1 class="font-h1 text-h1 font-bold mb-sm">@(isArabic ? product.ArName : product.Name)</h1>
+                <h1 class="customer-page-title mb-sm">@(isArabic ? product.ArName : product.Name)</h1>
                 <div class="flex items-center gap-xl">
                     <span class="text-3xl font-bold text-primary">@product.Price @Localizer["Currency_EGP"]</span>
                     <partial name="_ProductRatingWidget" model="@product.Id" />

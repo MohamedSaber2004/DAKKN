@@ -93,7 +93,7 @@
                class="relative flex items-center gap-2 bg-primary/10 hover:bg-primary text-primary hover:text-on-primary text-[14px] font-bold px-5 py-2.5 rounded-full transition-all duration-200 shadow-sm hover:shadow-lg hover:-translate-y-0.5 active:scale-95"
                title="@Localizer["nav_cart"]">
                 <span class="material-symbols-outlined text-[20px]">shopping_cart</span>
-                <span class="absolute -top-1 -end-1 w-5 h-5 bg-tertiary-container text-on-tertiary-container text-[10px] font-bold rounded-full flex items-center justify-center shadow-sm" id="cart-badge">0</span>
+                <span class="absolute -top-1 -end-1 w-5 h-5 bg-primary text-on-primary text-[10px] font-bold rounded-full flex items-center justify-center shadow-sm" id="cart-badge">0</span>
             </a>
         </div>
 
@@ -105,7 +105,7 @@
         <!-- Cart Button (Mobile) -->
         <a asp-action="Cart" asp-controller="Shop" aria-label="@Localizer["nav_cart"]" class="navbar-icon-btn relative scale-90 md:scale-100 dark:text-slate-300 lg:hidden" title="@Localizer["nav_cart"]">
             <span class="material-symbols-outlined text-[24px]">shopping_cart</span>
-            <span class="absolute -top-0.5 -end-0.5 w-4 h-4 bg-tertiary-container text-on-tertiary-container text-[8px] font-bold rounded-full flex items-center justify-center shadow-sm" id="cart-badge-mobile">0</span>
+            <span class="absolute -top-0.5 -end-0.5 w-4 h-4 bg-primary text-on-primary text-[8px] font-bold rounded-full flex items-center justify-center shadow-sm" id="cart-badge-mobile">0</span>
         </a>
 
         <!-- Language Switcher -->
@@ -151,8 +151,8 @@
         <!-- Decorative Ambient Elements -->
         <div class="absolute inset-0 overflow-hidden pointer-events-none z-0 hidden md:block">
             <div class="deco-blob animate-blob-1 bg-primary/20 w-[450px] h-[450px] -top-24 start-[-6rem]"></div>
-            <div class="deco-blob animate-blob-2 bg-tertiary-container/30 w-[350px] h-[350px] bottom-12 end-12"></div>
-            <div class="deco-blob animate-blob-3 bg-secondary-container/20 w-[400px] h-[400px] top-1/3 start-1/3"></div>
+            <div class="deco-blob animate-blob-2 bg-primary/15 w-[350px] h-[350px] bottom-12 end-12"></div>
+            <div class="deco-blob animate-blob-3 bg-primary/10 w-[400px] h-[400px] top-1/3 start-1/3"></div>
             <div class="deco-ring w-[300px] h-[300px] top-10 end-10 opacity-70"></div>
             <div class="deco-ring-solid w-[500px] h-[500px] -bottom-36 start-[-3rem] opacity-40"></div>
             <div class="deco-shape-diamond top-1/4 start-10" style="animation-delay: 1s;"></div>
@@ -166,23 +166,23 @@
             <!-- Image -->
             <div class="order-1 lg:order-2 lg:col-span-6 relative flex items-center justify-center fade-in-up delay-200 scroll-animate-right" data-parallax="-0.08">
                 <div class="absolute w-[110%] h-[110%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 to-transparent blur-3xl z-0"></div>
-                <div class="glass-panel rounded-2xl p-3 md:p-4 relative z-10 w-full max-w-sm md:max-w-lg aspect-square flex items-center justify-center overflow-hidden group shadow-2xl">
+                <div class="glass-panel rounded-2xl p-3 md:p-4 relative z-10 w-full max-w-xs sm:max-w-sm md:max-w-lg aspect-square flex items-center justify-center overflow-hidden group shadow-2xl">
                     <img alt='@Localizer["hero_image_alt"]' class="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-700 ease-out" src="@(Model.HasCmsData ? ResolveImageUrl(Model.Hero.ImageUrl) : "https://lh3.googleusercontent.com/aida-public/AB6AXuA72PkjHVeCPUlIaHJ3_eGqx62IshGNKsZAFOtRfa4qXiqB34wZxI5n0pDgo8HSGobn8wLB9UH8B7rOFgx0ftpYxUVR1qGU1sd7rA6C2_VP3aAwz5s7_peP44fO51s7n2hY_hMJhSZ5CpWTrmqYh-Pdj0JRr38jLohPnoOObJl3sNfno5qxrwES4-yGrakjXi3fAHd819iPakcoY-dxzBnGcJyo-d0MooPlllmRZCPrT3rq7Enl6Um_MO_W2pYfIMp1t7xZ5BMKLRkR")" onerror="this.onerror=null; this.src='@placeholder'; this.classList.add('opacity-30')"/>
-                    
-                    <div class="absolute top-3 right-3 md:top-6 md:right-6 bg-surface-container-high/90 dark:bg-slate-800/90 backdrop-blur-md px-3 py-1.5 md:px-4 md:py-2 rounded-full border border-outline-variant/30 flex items-center gap-1.5 md:gap-2 shadow-lg">
-                        <span class="material-symbols-outlined text-primary text-base md:text-lg">water_drop</span>
-                        <span class="text-[10px] md:text-xs font-bold text-on-surface dark:text-white">@Localizer["waterproof"]</span>
+
+                    <div class="absolute top-2 right-2 md:top-6 md:right-6 bg-surface-container-high/90 dark:bg-slate-800/90 backdrop-blur-md px-2 py-1 md:px-4 md:py-2 rounded-full border border-outline-variant/30 flex items-center gap-1 md:gap-2 shadow-lg">
+                        <span class="material-symbols-outlined text-primary text-sm md:text-lg">water_drop</span>
+                        <span class="text-[9px] md:text-xs font-bold text-on-surface dark:text-white">@Localizer["waterproof"]</span>
                     </div>
-                    
-                    <div class="absolute bottom-3 left-3 md:bottom-6 md:left-6 bg-surface-container-high/90 dark:bg-slate-800/90 backdrop-blur-md px-3 py-1.5 md:px-4 md:py-2 rounded-full border border-outline-variant/30 flex items-center gap-1.5 md:gap-2 shadow-lg">
-                        <span class="material-symbols-outlined text-tertiary-container text-base md:text-lg">sunny</span>
-                        <span class="text-[10px] md:text-xs font-bold text-on-surface dark:text-white">@Localizer["uv"]</span>
+
+                    <div class="absolute bottom-2 left-2 md:bottom-6 md:left-6 bg-surface-container-high/90 dark:bg-slate-800/90 backdrop-blur-md px-2 py-1 md:px-4 md:py-2 rounded-full border border-outline-variant/30 flex items-center gap-1 md:gap-2 shadow-lg">
+                        <span class="material-symbols-outlined text-primary text-sm md:text-lg">sunny</span>
+                        <span class="text-[9px] md:text-xs font-bold text-on-surface dark:text-white">@Localizer["uv"]</span>
                     </div>
                 </div>
             </div>
 
             <!-- Text -->
-            <div class="order-2 lg:order-1 lg:col-span-6 flex flex-col justify-center gap-4 md:gap-6 fade-in-up scroll-animate visible">
+            <div class="order-2 lg:order-1 lg:col-span-6 flex flex-col justify-center gap-3 md:gap-6 fade-in-up scroll-animate visible">
                 <div class="inline-flex items-center gap-2 px-3 py-1 md:px-4 md:py-1.5 rounded-full bg-surface-container-high dark:bg-[#0d1a2a]/80 border border-outline-variant/30 dark:border-white/5 w-fit shadow-sm scroll-animate delay-100">
                     <span class="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-primary animate-pulse"></span>
                     <span class="text-[10px] md:text-xs font-bold text-on-surface-variant dark:text-slate-300 uppercase tracking-wider">@HeroText(Model.Hero.BadgeAr, Model.Hero.BadgeEn, "hero_badge")</span>
@@ -190,29 +190,27 @@
 
                 @if (Model.HasCmsData)
                 {
-                    <h1 class="text-3xl md:text-5xl lg:text-6xl font-extrabold text-on-surface dark:text-white leading-tight tracking-tight scroll-animate delay-200">
+                    <h1 class="text-[1.75rem] sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-on-surface dark:text-white leading-tight tracking-tight scroll-animate delay-200">
                         <span>@HeroText(Model.Hero.TitleAAr, Model.Hero.TitleAEn, "hero_h1_a") </span>
                         <span class="text-primary">@HeroText(Model.Hero.TitleBAr, Model.Hero.TitleBEn, "hero_h1_b")</span><span>@HeroText(Model.Hero.TitleCAr, Model.Hero.TitleCEn, "hero_h1_c") </span>
-                        <span class="text-tertiary">@HeroText(Model.Hero.TitleDAr, Model.Hero.TitleDEn, "hero_h1_d")</span>.
+                        <span class="text-primary">@HeroText(Model.Hero.TitleDAr, Model.Hero.TitleDEn, "hero_h1_d")</span>.
                     </h1>
                 }
                 else
                 {
-                    <h1 class="text-3xl md:text-5xl lg:text-6xl font-extrabold text-on-surface dark:text-white leading-tight tracking-tight scroll-animate delay-200">
-                        <span>@Localizer["hero_h1_a"]</span> 
-                        <span class="text-primary">@Localizer["hero_h1_b"]</span><span>@Localizer["hero_h1_c"]</span> 
-                        <span class="text-tertiary">@Localizer["hero_h1_d"]</span>.
+                    <h1 class="text-[1.75rem] sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-on-surface dark:text-white leading-tight tracking-tight scroll-animate delay-200">
+                        <span>@Localizer["hero_h1_a"]</span>
+                        <span class="text-primary">@Localizer["hero_h1_b"]</span><span>@Localizer["hero_h1_c"]</span>
+                        <span class="text-primary">@Localizer["hero_h1_d"]</span>.
                     </h1>
                 }
 
                 <p class="text-sm md:text-lg text-on-surface-variant dark:text-slate-400 max-w-xl leading-relaxed scroll-animate delay-300">
                     @HeroText(Model.Hero.DescriptionAr, Model.Hero.DescriptionEn, "hero_p")
                 </p>
-                
-
 
                 <div class="flex flex-col sm:flex-row gap-3 md:gap-4 pt-2 md:pt-4 scroll-animate delay-400">
-                    <a href="#shop" data-frozen-action class="bg-primary hover:bg-primary-container text-on-primary font-semibold text-center px-6 md:px-8 py-3 md:py-4 rounded-xl transition-all shadow-[0_4px_14px_0_rgba(77,46,229,0.4)] hover:shadow-[0_6px_20px_rgba(77,46,229,0.25)] hover:-translate-y-0.5 duration-200 text-sm md:text-base">
+                    <a href="#shop" data-frozen-action class="bg-primary hover:bg-primary-hover active:bg-primary-active text-on-primary font-bold text-center px-6 md:px-8 py-3 md:py-4 rounded-xl transition-all shadow-button hover:shadow-card-hover hover:-translate-y-0.5 active:scale-[0.97] duration-200 text-sm md:text-base">
                         @GetHeroButtonText()
                     </a>
                 </div>
@@ -224,7 +222,7 @@
                         <img alt='@Localizer["user_avatar_alt"]' class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-background dark:border-black" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4J9mlzPKkqHsy5Xpbqb_aeSoq46z6_uxsNrA1nFW-Pfdxmh0h3Rue-7NZ1bPw_nkXvjJoMNwitjW1rNPqqwenUeSn_yfUjMnspzGb76WcXOsevWvqyycqgluwyd8pYZiagwwJ9H6PSef3YhRxV0DSA_KFTrEtOKZQsZ6_YsTmmPFrm596BYhnAeI0vAQOpR7Q_oEWZmBKeBeGP5o1YomNKoU0KCFOMmxKMiGcHLqRCxBXur9Ixg73ivltG6xQ2JIOdOaJL_GkvJ-K"/>
                     </div>
                     <div class="flex flex-col">
-                        <div class="flex text-tertiary">
+                        <div class="flex text-amber-500">
                             <span class="material-symbols-outlined text-xs md:text-sm fill-icon">star</span>
                             <span class="material-symbols-outlined text-xs md:text-sm fill-icon">star</span>
                             <span class="material-symbols-outlined text-xs md:text-sm fill-icon">star</span>
@@ -248,11 +246,11 @@
             <div class="deco-shape-diamond top-1/3 left-8 opacity-40" style="animation-delay: 2s;"></div>
             <div class="deco-shape-square bottom-16 right-12 opacity-40" style="animation-delay: 4s;"></div>
         </div>
-        <div class="max-w-3xl mx-auto text-center mb-16 scroll-animate">
-            <h2 class="text-3xl md:text-4xl font-extrabold text-on-surface dark:text-white mb-4" data-reveal>@Localizer["prod_h2"]</h2>
-            <p class="text-base text-on-surface-variant dark:text-slate-400 leading-relaxed">@Localizer["prod_p"]</p>
+        <div class="max-w-3xl mx-auto text-center mb-10 md:mb-16 scroll-animate">
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-on-surface dark:text-white mb-3" data-reveal>@Localizer["prod_h2"]</h2>
+            <p class="text-sm md:text-base text-on-surface-variant dark:text-slate-400 leading-relaxed">@Localizer["prod_p"]</p>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8" id="featured-products-grid" data-stagger>
+        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8" id="featured-products-grid" data-stagger>
             @if (Model.HasFeaturedProducts)
             {
                 @foreach (var product in Model.FeaturedProducts)
@@ -359,7 +357,7 @@
             </div>
             
             <div class="glass-panel p-8 rounded-2xl flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 shadow-sm scroll-animate delay-200">
-                <div class="w-12 h-12 rounded-xl bg-tertiary-container/20 border border-tertiary/30 flex items-center justify-center text-tertiary mb-2">
+                <div class="w-12 h-12 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary mb-2">
                     <span class="material-symbols-outlined text-2xl">palette</span>
                 </div>
                 <h3 class="text-xl font-bold text-on-surface dark:text-slate-100">@HeroText(Model.About.Feature2TitleAr, Model.About.Feature2TitleEn, "feat2_h")</h3>
@@ -367,7 +365,7 @@
             </div>
             
             <div class="glass-panel p-8 rounded-2xl flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 shadow-sm scroll-animate delay-300">
-                <div class="w-12 h-12 rounded-xl bg-secondary-container/20 border border-secondary/30 flex items-center justify-center text-secondary mb-2">
+                <div class="w-12 h-12 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary mb-2">
                     <span class="material-symbols-outlined text-2xl">shield</span>
                 </div>
                 <h3 class="text-xl font-bold text-on-surface dark:text-white">@HeroText(Model.About.Feature3TitleAr, Model.About.Feature3TitleEn, "feat3_h")</h3>
@@ -387,26 +385,26 @@
             <div class="deco-ring-solid w-[400px] h-[400px] -top-48 left-1/3 opacity-30"></div>
         </div>
 
-        <div class="relative z-10 max-w-3xl mx-auto text-center mb-16 scroll-animate">
-            <h2 class="text-3xl md:text-4xl font-extrabold text-on-surface dark:text-white mb-4" data-reveal>@Localizer["cat_h2"]</h2>
-            <p class="text-base text-on-surface-variant dark:text-slate-400 leading-relaxed">@Localizer["cat_p"]</p>
+        <div class="relative z-10 max-w-3xl mx-auto text-center mb-10 md:mb-16 scroll-animate">
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-on-surface dark:text-white mb-3" data-reveal>@Localizer["cat_h2"]</h2>
+            <p class="text-sm md:text-base text-on-surface-variant dark:text-slate-400 leading-relaxed">@Localizer["cat_p"]</p>
         </div>
         <!-- Category Slider Wrapper -->
         <div class="relative z-10 scroll-animate">
             <div class="overflow-hidden" id="cat-slider-viewport">
-                <div id="cat-slider-track" class="flex gap-6 transition-transform duration-500 ease-out"
+                <div id="cat-slider-track" class="flex gap-4 md:gap-6 transition-transform duration-500 ease-out"
                      style="will-change: transform;">
                     @if (Model.HasCategories)
                     {
                         @foreach (var cat in Model.Categories)
                         {
                             <a href="/shop/products?categoryId=@cat.Id" data-frozen-action
-                               class="group rounded-2xl overflow-hidden relative flex-shrink-0 w-[calc(100%-0px)] sm:w-[calc(50%-12px)] md:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] aspect-square glass-panel shadow-sm no-underline block">
+                               class="group rounded-2xl overflow-hidden relative flex-shrink-0 w-[85vw] sm:w-[calc(50%-12px)] md:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] aspect-square glass-panel shadow-sm no-underline block">
                                 <img src="@ResolveCategoryImage(cat.ImageFullUrl)" alt="@(isAr ? cat.ArName : cat.CategoryName)" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='/images/placeholders/category-placeholder.svg'" />
                                 <div class="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors z-10"></div>
-                                <div class="absolute bottom-0 left-0 right-0 p-6 cat-overlay z-20">
-                                    <h3 class="text-xl font-bold text-white">@(isAr ? cat.ArName : cat.CategoryName)</h3>
-                                    <p class="text-sm text-white/80">@cat.ProductsCount @Localizer["cat_products_count"]</p>
+                                <div class="absolute bottom-0 left-0 right-0 p-4 md:p-6 cat-overlay z-20">
+                                    <h3 class="text-base md:text-xl font-bold text-white">@(isAr ? cat.ArName : cat.CategoryName)</h3>
+                                    <p class="text-xs md:text-sm text-white/80">@cat.ProductsCount @Localizer["cat_products_count"]</p>
                                 </div>
                             </a>
                         }
@@ -458,13 +456,13 @@
             <div class="deco-ring-solid w-[300px] h-[300px] bottom-6 right-8 opacity-30"></div>
         </div>
 
-        <div class="relative z-10 max-w-3xl mx-auto text-center mb-12 scroll-animate">
-            <h2 class="text-3xl md:text-4xl font-extrabold text-on-surface dark:text-white mb-4">@Localizer["all_products_h2"]</h2>
-            <p class="text-base text-on-surface-variant dark:text-slate-400 leading-relaxed">@Localizer["all_products_p"]</p>
+        <div class="relative z-10 max-w-3xl mx-auto text-center mb-10 md:mb-12 scroll-animate">
+            <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-on-surface dark:text-white mb-3">@Localizer["all_products_h2"]</h2>
+            <p class="text-sm md:text-base text-on-surface-variant dark:text-slate-400 leading-relaxed">@Localizer["all_products_p"]</p>
         </div>
 
         <!-- Filter Controls -->
-        <div class="relative z-10 max-w-5xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 bg-surface/60 dark:bg-[#0a1220]/80 backdrop-blur-md border border-primary/15 dark:border-white/5 p-6 rounded-2xl shadow-sm">
+        <div class="relative z-10 max-w-5xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6 mb-8 md:mb-10 bg-surface/60 dark:bg-[#0a1220]/80 backdrop-blur-md border border-primary/15 dark:border-white/5 p-4 md:p-6 rounded-2xl shadow-sm">
             <!-- Category Filter Pills -->
             <div class="flex flex-col gap-2.5">
                 <span class="text-xs font-bold text-primary uppercase tracking-wider">@Localizer["filter_category"]</span>
@@ -580,16 +578,16 @@
     <section id="testimonials" class="relative overflow-hidden py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-surface dark:bg-[#080e1a] border-t border-outline-variant/10">
         <!-- Decorative Ambient Elements -->
         <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
-            <div class="deco-blob animate-blob-3 bg-tertiary-container/15 w-[320px] h-[320px] top-12 left-12 rtl:left-auto rtl:right-12"></div>
+            <div class="deco-blob animate-blob-3 bg-primary/15 w-[320px] h-[320px] top-12 left-12 rtl:left-auto rtl:right-12"></div>
             <div class="deco-blob animate-blob-1 bg-primary/10 w-[300px] h-[300px] bottom-12 right-12 rtl:right-auto rtl:left-12"></div>
             <div class="deco-ring w-[240px] h-[240px] top-10 right-1/3 rtl:right-auto rtl:left-1/3 opacity-40"></div>
             <div class="deco-dots-grid top-6 right-8 rtl:right-auto rtl:left-8 opacity-40"></div>
         </div>
 
-        <div class="relative z-20 max-w-7xl mx-auto">
+        <div class="relative z-20 max-w-7xl mx-auto px-0">
             <!-- Section Header -->
-            <div class="max-w-3xl mx-auto text-center mb-12 lg:mb-14 scroll-animate">
-                <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-on-surface dark:text-white mb-4">
+            <div class="max-w-3xl mx-auto text-center mb-10 md:mb-14 scroll-animate">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-on-surface dark:text-white mb-3">
                     @(Model.HasCmsData && !string.IsNullOrEmpty(Model.Testimonials.Title) ? Model.Testimonials.Title : Localizer["test_h2"].Value)
                 </h2>
                 @{
@@ -678,9 +676,9 @@
             <div class="deco-ring w-[200px] h-[200px] top-8 left-8 opacity-30"></div>
             <div class="deco-dots-grid bottom-12 right-12 opacity-30"></div>
         </div>
-        <div class="relative z-10 max-w-2xl mx-auto bg-surface-container-low/60 dark:bg-[#0a1220]/80 backdrop-blur-md border border-primary/20 dark:border-white/5 p-8 md:p-12 rounded-3xl shadow-2xl shadow-primary/5 scroll-animate-scale">
-            <h2 class="text-3xl font-extrabold text-on-surface dark:text-white mb-3 text-center">@Localizer["form_h2"]</h2>
-            <p class="text-sm text-on-surface-variant dark:text-slate-400 text-center mb-8">@Localizer["form_p"]</p>
+        <div class="relative z-10 max-w-2xl mx-auto bg-surface-container-low/60 dark:bg-[#0a1220]/80 backdrop-blur-md border border-primary/20 dark:border-white/5 p-6 md:p-12 rounded-3xl shadow-2xl shadow-primary/5 scroll-animate-scale">
+            <h2 class="text-2xl md:text-3xl font-extrabold text-on-surface dark:text-white mb-2 md:mb-3 text-center">@Localizer["form_h2"]</h2>
+            <p class="text-sm text-on-surface-variant dark:text-slate-400 text-center mb-6 md:mb-8">@Localizer["form_p"]</p>
             <form data-frozen-action novalidate class="flex flex-col gap-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="flex flex-col gap-2">
@@ -715,7 +713,7 @@
 <!-- Sign-in Modal for Frozen Actions -->
 <div id="signin-modal" class="fixed inset-0 z-[100] flex items-center justify-center hidden" aria-modal="true" role="dialog">
     <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
-    <div class="relative bg-white dark:bg-[#0f1d30] rounded-3xl shadow-2xl border border-primary/10 dark:border-white/5 p-8 md:p-10 max-w-md w-[90%] mx-4 text-center">
+    <div class="relative bg-white dark:bg-[#0f1d30] rounded-3xl shadow-2xl border border-primary/10 dark:border-white/5 p-6 md:p-10 max-w-md w-[92%] sm:w-[90%] mx-4 text-center">
         <button onclick="hideSignInModal()" class="absolute top-4 end-4 w-10 h-10 rounded-full bg-surface-container-high dark:bg-slate-800 hover:bg-primary/10 flex items-center justify-center text-on-surface-variant dark:text-slate-300 hover:text-primary transition-all" aria-label="@Localizer["close_aria"]">
             <span class="material-symbols-outlined text-xl">close</span>
         </button>
@@ -743,8 +741,8 @@
         <div class="absolute inset-0" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 32px 32px;"></div>
     </div>
 
-    <footer class="relative z-10 bg-primary rounded-2xl shadow-2xl p-6 md:px-10 md:py-8 flex flex-col md:flex-row items-center justify-between gap-8 max-w-7xl mx-auto">
-        
+    <footer class="relative z-10 bg-primary rounded-2xl shadow-2xl p-6 md:px-10 md:py-8 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-8 max-w-7xl mx-auto">
+
         <!-- Social Icons (Left on RTL, Right on LTR) -->
         <div class="flex items-center gap-4 order-3 md:order-1">
             <!-- Facebook -->

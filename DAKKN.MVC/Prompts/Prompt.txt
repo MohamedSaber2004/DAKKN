@@ -1,18 +1,29 @@
-I'm working on the DAKKN repo (ASP.NET Core MVC, Clean Architecture). Localization is handled via `IStringLocalizer<Messages>` injected in views (see Views/_ViewImports.cshtml), backed by a custom JsonStringLocalizerFactory (DAKKN.Application/Localization/JsonStringLocalizerFactory.cs) that reads from DAKKN.Application/Localization/Resources/messages.en.json and messages.ar.json.
+Work in the DAKKN ASP.NET Core MVC project. Focus only on the admin area: 
+Views/Shared/_LayoutAdmin.cshtml and every view under Views/Admin/ 
+(Dashboard, AddCategory, AddProduct, AddShippingGovernorate, BrandReviews, 
+Categories, CategoryProducts, Content, Inventory, OrderDetails, Orders, 
+Placeholder, ProductDetails, Settings, Shipping, Support, Users, and partials 
+_UserListPartial, _UserStatsPartial, _UserTablePartial), plus 
+wwwroot/css/admin.css and wwwroot/css/common.css.
 
-Fix all localization issues in the landing page views and its layout, specifically:
-- Views/Shared/_LayoutLanding.cshtml
-- Views/Home/Index.cshtml, About.cshtml, Privacy.cshtml, Terms.cshtml
-- Views/Home/_HeroSection.cshtml, _Navbar.cshtml, _CategoriesSection.cshtml, _FeaturedProductsSection.cshtml, _AllProductsSection.cshtml, _StatsSection.cshtml, _HowItWorks.cshtml, _TestimonialsSection.cshtml, _FaqSection.cshtml, _ContactSection.cshtml, _FooterSection.cshtml, _SignInModal.cshtml
-- Views/Shop/Products.cshtml, ProductDetails.cshtml, Cart.cshtml, Categories.cshtml
+1. Refine the color palette for the admin dashboard: it should read as a serious, 
+   data-dense back-office tool — calmer and more neutral than the customer/landing 
+   experience, while still anchored to the brand teal (--primary-color: #0E908C, 
+   --primary-rgb) for active states, key actions, and highlights. Establish clear, 
+   consistent colors for status badges (e.g. status-shipped and similar classes in 
+   admin.css), charts/stats cards, alerts, and table row states (hover/selected). 
+   Fix any low-contrast or inconsistent color usage currently in admin.css.
+2. Enhance the design: improve the Dashboard's stat cards and charts layout, 
+   standardize the sidebar/nav styling, table density and readability in 
+   Orders/Inventory/Users/Categories, modal and form styling in Settings/Content, 
+   and make sure scrollbar/focus styles (already partially defined in admin.css) 
+   are consistent across all admin pages.
+3. Make all admin views responsive — admin.css currently has almost no media 
+   queries. Add proper breakpoints so the sidebar collapses to a drawer/hamburger 
+   on smaller screens, tables become scrollable or stack on mobile, and 
+   dashboard stat cards/charts reflow into a single column on narrow viewports.
+4. Do not change controller logic, authorization filters, ViewModels, or form 
+   submission targets — only CSS/Tailwind classes and markup needed for visual 
+   consistency and responsiveness.
 
-Tasks:
-1. Find every hardcoded English (or Arabic) string in markup, attributes (placeholder, title, alt, aria-label), and any inline <script> blocks in these files, and replace it with @Localizer["key"].
-2. For every new key you introduce, add it to BOTH Resources/messages.en.json and messages.ar.json with accurate, natural translations (don't leave placeholder text). Keep key naming consistent with existing conventions (e.g. hero_*, nav_*, footer_*).
-3. Reuse existing keys instead of duplicating near-identical strings — search messages.en.json first.
-4. Check that _LayoutLanding.cshtml correctly sets `dir="rtl"`/`dir="ltr"` and `lang` on <html> based on CurrentUICulture, and that any layout-level text (meta tags, structured data, JS that injects text) is also localized.
-5. Verify Views/Shared/Partials/_LanguageToggle.cshtml, _ThemeToggle.cshtml, _Preloader.cshtml used in this layout have no leftover hardcoded text.
-6. Double check JS/CSS in these views isn't injecting English-only strings (e.g. toast/alert messages, validation messages, "Add to cart" type buttons rendered via JS).
-7. After your changes, scan the same files again for any remaining literal text inside HTML tags that should be localized but wasn't caught.
-
-Don't touch Customer or Admin views/layouts in this pass. Show me a summary of every key added/reused at the end.
+Show me a summary of every file changed and why before finalizing.

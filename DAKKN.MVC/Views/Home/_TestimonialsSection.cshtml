@@ -8,13 +8,13 @@
     var title = !string.IsNullOrEmpty(Model.Testimonials?.Title) ? Model.Testimonials.Title : Localizer["test_h2"];
     var desc = !string.IsNullOrEmpty(Model.Testimonials?.Description) ? Model.Testimonials.Description : Localizer["test_p"];
 }
-<section id="testimonials" class="relative py-16 md:py-24 px-4 overflow-hidden bg-surface dark:bg-[#0F172A]">
+<section id="testimonials" class="relative py-12 md:py-24 px-4 overflow-hidden bg-surface dark:bg-[#0F172A]">
     <div class="deco-blob w-[400px] h-[400px] -top-40 -end-40 bg-primary/5 animate-blob-2"></div>
     <div class="max-w-5xl mx-auto relative z-10">
-        <div class="text-center mb-12 scroll-animate">
-            <span class="inline-block text-xs font-bold text-primary bg-primary/10 px-4 py-1.5 rounded-full border border-primary/20 mb-4">@Localizer["test_section_badge"]</span>
-            <h2 class="text-3xl md:text-4xl font-black text-on-surface dark:text-white">@title</h2>
-            <p class="text-on-surface-variant dark:text-slate-400 mt-2">@desc</p>
+        <div class="text-center mb-10 md:mb-12 scroll-animate">
+            <span class="inline-block text-xs font-bold text-primary bg-primary/10 px-4 py-1.5 rounded-full border border-primary/20 mb-3">@Localizer["test_section_badge"]</span>
+            <h2 class="text-2xl md:text-4xl font-black text-on-surface dark:text-white">@title</h2>
+            <p class="text-sm md:text-base text-on-surface-variant dark:text-slate-400 mt-1 md:mt-2">@desc</p>
         </div>
         @if (hasReviews)
         {

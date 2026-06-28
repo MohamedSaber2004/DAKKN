@@ -11,7 +11,7 @@
     <!-- Header -->
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-lg">
         <div>
-            <h1 class="font-h1 text-h1 font-bold text-text-primary dark:text-inverse-on-surface">
+            <h1 class="customer-page-title text-text-primary dark:text-inverse-on-surface">
                 @Localizer["fav_title"]
                 <span class="text-primary bg-primary/10 px-3 py-1 rounded-2xl text-2xl ml-2">@Model.FavoriteProducts.Count</span>
             </h1>
@@ -95,8 +95,8 @@
     else
     {
         <!-- Empty State -->
-        <div class="py-32 text-center space-y-xl bg-surface dark:bg-inverse-surface rounded-[40px] border border-dashed border-border dark:border-outline/20">
-            <div class="w-24 h-24 bg-surface-container dark:bg-white/5 rounded-full flex items-center justify-center mx-auto text-outline opacity-30">
+        <div class="empty-state space-y-xl">
+            <div class="empty-state-icon">
                 <span class="material-symbols-outlined text-5xl">favorite</span>
             </div>
             <div class="space-y-md">

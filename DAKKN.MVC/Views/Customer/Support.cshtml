@@ -9,7 +9,7 @@
 <div class="max-w-6xl mx-auto px-lg py-xl space-y-2xl">
     <!-- Hero Header -->
     <div class="text-center space-y-md">
-        <h1 class="font-h1 text-h1 font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["supp_dashboard_title"]</h1>
+        <h1 class="customer-page-title text-text-primary dark:text-inverse-on-surface">@Localizer["supp_dashboard_title"]</h1>
         <p class="text-text-secondary dark:text-outline-variant max-w-2xl mx-auto">@Localizer["orders_details_subtitle"]</p>
     </div>
 
@@ -53,7 +53,7 @@
                                 <div class="space-y-2">
                                     <div class="flex items-center gap-3">
                                         <span class="text-xs font-bold text-text-secondary uppercase tracking-widest">#@ticket.TicketId</span>
-                                        <span class="px-3 py-1 rounded-full text-[10px] font-bold @statusClass uppercase tracking-widest">
+                                        <span class="status-pill @statusClass">
                                             @Localizer[$"admin_support_{ticket.Status.ToString().ToLower()}"]
                                         </span>
                                     </div>

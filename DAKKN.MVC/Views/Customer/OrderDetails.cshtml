@@ -12,7 +12,7 @@
     <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-md">
         <div>
             <div class="flex flex-wrap items-center gap-sm mb-xs">
-                <h1 class="font-h1 text-h1 font-bold text-text-primary dark:text-inverse-on-surface">@Model.OrderNumber</h1>
+                <h1 class="customer-page-title text-text-primary dark:text-inverse-on-surface">@Model.OrderNumber</h1>
                 @{
                     var statusClass = Model.Status switch
                     {
@@ -24,7 +24,7 @@
                         _ => "bg-surface-container-highest text-text-secondary"
                     };
                 }
-                <span class="@statusClass px-sm py-xs rounded-full text-caption font-bold">@Localizer[$"order_status_{Model.Status.ToString()}"]</span>
+                <span class="status-pill @statusClass">@Localizer[$"order_status_{Model.Status.ToString()}"]</span>
             </div>
             <p class="text-body text-text-secondary dark:text-outline-variant">
                 @Localizer["order_date"]: @Model.CreatedAt.ToLocalTime().ToString("dd MMM yyyy - HH:mm")

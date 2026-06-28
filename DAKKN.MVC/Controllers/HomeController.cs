@@ -36,6 +36,10 @@ namespace DAKKN.MVC.Controllers
         {
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
+                // Route authenticated users to the correct dashboard based on their role
+                if (User.IsInRole("Admin"))
+                    return RedirectToAction("Index", "Admin");
+
                 return RedirectToAction("Index", "Customer");
             }
 

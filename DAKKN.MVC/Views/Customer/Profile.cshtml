@@ -8,13 +8,13 @@
 <div class="max-w-4xl mx-auto px-lg py-xl space-y-lg pb-32">
     <!-- Header -->
     <div class="mb-xl">
-        <h1 class="font-h1 text-h1 font-bold text-text-primary dark:text-white">@Localizer["nav_profile"]</h1>
+        <h1 class="customer-page-title text-text-primary dark:text-white">@Localizer["nav_profile"]</h1>
         <p class="text-text-secondary dark:text-outline-variant mt-2">@Localizer["profile_settings_subtitle"]</p>
     </div>
 
     <!-- Personal Information Section -->
-    <section class="bg-surface dark:bg-[#1E293B] rounded-[32px] p-xl shadow-medium border border-border dark:border-white/5">
-        <div class="flex justify-between items-start mb-xl border-b border-border dark:border-white/10 pb-md">
+    <section class="settings-section">
+        <div class="settings-section-header flex justify-between items-start">
             <div>
                 <h2 class="font-h3 text-h3 text-text-primary dark:text-white">@Localizer["admin_basic_info"]</h2>
                 <p class="text-sm text-text-secondary dark:text-outline-variant mt-1">@Localizer["profile_basic_p"]</p>
@@ -80,8 +80,8 @@
     </section>
 
     <!-- Appearance Section -->
-    <section class="bg-surface dark:bg-[#1E293B] rounded-[32px] p-xl shadow-medium border border-border dark:border-white/5">
-        <div class="mb-xl border-b border-border dark:border-white/10 pb-md">
+    <section class="settings-section">
+        <div class="settings-section-header">
             <h2 class="font-h3 text-h3 text-text-primary dark:text-white">@Localizer["admin_appearance"]</h2>
             <p class="text-sm text-text-secondary dark:text-outline-variant mt-1">@Localizer["admin_appearance_desc"]</p>
         </div>
@@ -115,8 +115,8 @@
     </section>
 
     <!-- Security Section -->
-    <section class="bg-surface dark:bg-[#1E293B] rounded-[32px] p-xl shadow-medium border border-border dark:border-white/5">
-        <div class="mb-xl border-b border-border dark:border-white/10 pb-md">
+    <section class="settings-section">
+        <div class="settings-section-header">
             <h2 class="font-h3 text-h3 text-text-primary dark:text-white">@Localizer["admin_security"]</h2>
             <p class="text-sm text-text-secondary dark:text-outline-variant mt-1">@Localizer["admin_security_desc"]</p>
         </div>
@@ -154,7 +154,7 @@
 <!-- Change Password Modal -->
 <div id="changePasswordModal" class="fixed inset-0 z-50 flex items-center justify-center p-lg hidden">
     <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeChangePasswordModal()"></div>
-    <div class="relative bg-surface dark:bg-[#1E293B] rounded-[32px] shadow-2xl w-full max-w-md border border-border dark:border-white/10 max-h-[90vh] overflow-y-auto">
+    <div class="customer-modal-panel relative bg-surface dark:bg-[#1E293B] rounded-[32px] shadow-2xl w-full max-w-md border border-border dark:border-white/10 max-h-[90vh] overflow-y-auto">
         <div class="p-xl">
             <div class="flex items-center justify-between mb-lg">
                 <h3 class="font-h3 text-h3 font-bold text-text-primary dark:text-white">@Localizer["profile_change_pwd"]</h3>
@@ -221,7 +221,7 @@
 <!-- Delete Account Modal -->
 <div id="deleteAccountModal" class="fixed inset-0 z-50 flex items-center justify-center p-lg hidden">
     <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeDeleteAccountModal()"></div>
-    <div class="relative bg-surface dark:bg-[#1E293B] rounded-[32px] shadow-2xl w-full max-w-md border border-border dark:border-white/10 max-h-[90vh] overflow-y-auto">
+    <div class="customer-modal-panel relative bg-surface dark:bg-[#1E293B] rounded-[32px] shadow-2xl w-full max-w-md border border-border dark:border-white/10 max-h-[90vh] overflow-y-auto">
         <div class="p-xl">
             <div class="flex items-center justify-between mb-lg">
                 <h3 class="font-h3 text-h3 font-bold text-error">@Localizer["profile_delete_acc"]</h3>

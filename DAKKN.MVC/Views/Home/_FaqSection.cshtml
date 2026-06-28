@@ -12,12 +12,12 @@
         new { Q = Localizer["contact_faq6_q"], A = Localizer["contact_faq6_a"] },
     };
 }
-<section id="faq" class="relative py-16 md:py-24 px-4 overflow-hidden bg-surface dark:bg-[#0F172A]" itemscope itemtype="https://schema.org/FAQPage">
+<section id="faq" class="relative py-12 md:py-24 px-4 overflow-hidden bg-surface dark:bg-[#0F172A]" itemscope itemtype="https://schema.org/FAQPage">
     <div class="max-w-3xl mx-auto">
-        <div class="text-center mb-12 scroll-animate">
-            <span class="inline-block text-xs font-bold text-primary bg-primary/10 px-4 py-1.5 rounded-full border border-primary/20 mb-4">@Localizer["f_faqs"]</span>
-            <h2 class="text-3xl md:text-4xl font-black text-on-surface dark:text-white">@Localizer["contact_faq_title"]</h2>
-            <p class="text-on-surface-variant dark:text-slate-400 mt-2">@Localizer["contact_faq_sub"]</p>
+        <div class="text-center mb-8 md:mb-12 scroll-animate">
+            <span class="inline-block text-xs font-bold text-primary bg-primary/10 px-4 py-1.5 rounded-full border border-primary/20 mb-3">@Localizer["f_faqs"]</span>
+            <h2 class="text-2xl md:text-4xl font-black text-on-surface dark:text-white">@Localizer["contact_faq_title"]</h2>
+            <p class="text-sm md:text-base text-on-surface-variant dark:text-slate-400 mt-1 md:mt-2">@Localizer["contact_faq_sub"]</p>
         </div>
         <div class="space-y-3 scroll-animate" id="faq-accordion">
             @for (int i = 0; i < faqs.Length; i++)

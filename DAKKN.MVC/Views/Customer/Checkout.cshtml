@@ -12,7 +12,7 @@
         <a asp-action="Cart" class="w-10 h-10 rounded-full bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 flex items-center justify-center text-text-secondary hover:text-primary transition-all">
             <span class="material-symbols-outlined">@backIcon</span>
         </a>
-        <h1 class="font-h1 text-h1 font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["checkout_h1"]</h1>
+        <h1 class="customer-page-title text-text-primary dark:text-inverse-on-surface">@Localizer["checkout_h1"]</h1>
     </div>
 
     <form asp-action="PlaceOrder" method="post" class="grid grid-cols-1 lg:grid-cols-3 gap-2xl items-start">
@@ -20,8 +20,8 @@
         <input type="hidden" name="ShippingGovernorateId" value="@Model.ShippingGovernorateId" />
 
         <div class="lg:col-span-2 space-y-lg">
-            <section class="bg-surface dark:bg-inverse-surface rounded-[40px] border border-border dark:border-outline/10 p-lg md:p-xl shadow-small space-y-xl">
-                <div class="flex items-center gap-md border-b border-border dark:border-outline/10 pb-md">
+            <section class="section-card p-lg md:p-xl shadow-small space-y-xl">
+                <div class="section-card-header flex items-center gap-md">
                     <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
                         <span class="material-symbols-outlined">local_shipping</span>
                     </div>
@@ -67,8 +67,8 @@
         <div class="space-y-lg">
             @if (Model.ShippingGovernorateId.HasValue)
             {
-                <section class="bg-surface dark:bg-inverse-surface rounded-[40px] border border-border dark:border-outline/10 p-lg md:p-xl shadow-small space-y-lg">
-                    <div class="flex items-center gap-md border-b border-border dark:border-outline/10 pb-md">
+                <section class="section-card p-lg md:p-xl shadow-small space-y-lg">
+                    <div class="section-card-header flex items-center gap-md">
                         <div class="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
                             <span class="material-symbols-outlined">local_shipping</span>
                         </div>
@@ -87,7 +87,7 @@
                 </section>
             }
 
-            <section class="bg-surface dark:bg-inverse-surface rounded-[40px] border border-border dark:border-outline/10 p-lg md:p-xl shadow-small space-y-xl">
+            <section class="section-card p-lg md:p-xl shadow-small space-y-xl">
                 <h2 class="text-2xl font-bold">@Localizer["checkout_summary_h"]</h2>
 
                 <div class="space-y-md divide-y divide-border dark:divide-outline/10">

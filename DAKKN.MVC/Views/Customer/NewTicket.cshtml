@@ -12,12 +12,12 @@
             <span class="material-symbols-outlined text-lg rtl:rotate-180 group-hover:-translate-x-1 transition-transform">arrow_back</span>
             <span class="font-bold">@Localizer["orders_back"]</span>
         </a>
-        <h1 class="font-h1 text-h1 font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["supp_new_ticket"]</h1>
+        <h1 class="customer-page-title text-text-primary dark:text-inverse-on-surface">@Localizer["supp_new_ticket"]</h1>
         <p class="text-text-secondary dark:text-outline-variant">@Localizer["supp_new_ticket_desc"]</p>
     </div>
 
     <!-- Ticket Form (Quiet/Luxurious Style) -->
-    <form asp-action="CreateTicket" method="post" class="bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 rounded-[40px] p-lg md:p-2xl shadow-small space-y-xl">
+    <form asp-action="CreateTicket" method="post" class="section-card p-lg md:p-2xl shadow-small space-y-xl">
         @Html.AntiForgeryToken()
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-xl">

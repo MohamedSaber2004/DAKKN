@@ -1,0 +1,225 @@
+/* ── Customer Dashboard Styles ───────────────────────────
+   Loaded after landing.css in _LayoutCustomer.cshtml
+   Token values match tailwind.config.js exactly
+   Dark mode via .dark class strategy
+   ──────────────────────────────────────────────────────── */
+
+/* ── Status Pills ──────────────────────────── */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 12px;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+
+/* ── Settings / Section Card (matches: bg-surface dark:bg-[#1E293B] rounded-[32px] p-xl shadow-medium border border-border dark:border-white/5) ─── */
+.settings-section {
+  background: #ffffff;
+  border: 1px solid #e8edf0;
+  border-radius: 32px;
+  padding: 2.5rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+.dark .settings-section {
+  background: #1e293b;
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.settings-section-header {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e8edf0;
+}
+.dark .settings-section-header {
+  border-bottom-color: rgba(255, 255, 255, 0.10);
+}
+
+/* ── Section Card (rounded-[40px] variant — no padding/shadow; add your own) ─── */
+.section-card {
+  background: #ffffff;
+  border: 1px solid #e8edf0;
+  border-radius: 40px;
+}
+.dark .section-card {
+  background: #2c3131;
+  border-color: rgba(109, 121, 121, 0.10);
+}
+
+.section-card-header {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e8edf0;
+}
+.dark .section-card-header {
+  border-bottom-color: rgba(109, 121, 121, 0.10);
+}
+
+/* ── Empty State (matches: text-center py-32 space-y-xl bg-surface dark:bg-inverse-surface rounded-[40px] border border-dashed border-border dark:border-outline/20) ─── */
+.empty-state {
+  text-align: center;
+  padding: 8rem 1.5rem;
+  border-radius: 40px;
+  border: 2px dashed #e8edf0;
+  background: #ffffff;
+}
+.dark .empty-state {
+  border-color: rgba(109, 121, 121, 0.20);
+  background: #2c3131;
+}
+
+.empty-state-icon {
+  width: 96px;
+  height: 96px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  background: #eaefee;
+  color: #6d7979;
+  opacity: 0.3;
+}
+.dark .empty-state-icon {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(109, 121, 121, 0.30);
+}
+
+/* ── Toast Animations ──────────────────────── */
+@keyframes toastSlideIn {
+  from { opacity: 0; transform: translateX(100%); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes toastSlideOut {
+  from { opacity: 1; transform: translateX(0); }
+  to { opacity: 0; transform: translateX(100%); }
+}
+
+.toast-enter {
+  animation: toastSlideIn 0.3s ease-out forwards;
+}
+.toast-exit {
+  animation: toastSlideOut 0.3s ease-in forwards;
+}
+
+/* ── Skeleton Loading ──────────────────────── */
+@keyframes skeletonPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+  background-size: 200% 100%;
+  animation: skeletonPulse 1.5s ease-in-out infinite;
+  border-radius: 8px;
+}
+.dark .skeleton {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.06) 25%, rgba(255, 255, 255, 0.10) 50%, rgba(255, 255, 255, 0.06) 75%);
+  background-size: 200% 100%;
+}
+
+/* ── Custom Scrollbar ──────────────────────── */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* ── No scrollbar utility ──────────────────── */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ── Modal panel animation (uses keyframes from landing.css) ─── */
+.customer-modal-panel {
+  animation: modalSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ── RTL-friendly arrow icon ───────────────── */
+[dir="rtl"] .rtl-arrow {
+  transform: rotate(180deg);
+}
+
+/* ── Page header consistency ───────────────── */
+.customer-page-header {
+  margin-bottom: 2.5rem;
+}
+
+/* ── Responsive page title (replaces font-h1 text-h1 font-bold) ─── */
+.customer-page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+@media (min-width: 768px) {
+  .customer-page-title {
+    font-size: 2.5rem;
+  }
+}
+
+/* ── Responsive tweaks ─────────────────────── */
+@media (max-width: 767px) {
+  .settings-section {
+    padding: 1.25rem;
+  }
+  .customer-page-header {
+    margin-bottom: 1rem;
+  }
+
+  .mobile-sidebar-open #customer-sidebar {
+    display: flex !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 260px;
+    z-index: 100;
+  }
+
+  [dir="rtl"] .mobile-sidebar-open #customer-sidebar {
+    left: auto;
+    right: 0;
+  }
+
+  .sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 90;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .mobile-sidebar-open .sidebar-overlay {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+@media (max-width: 374px) {
+  .status-pill {
+    font-size: 9px;
+    padding: 2px 8px;
+  }
+}
