@@ -58,39 +58,72 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
     <style>
+        /* ── Customer Sidebar Transitions ─────────────────────────── */
         .customer-sidebar {
-            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             overflow: hidden;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        /* Desktop collapsed (≥ 1280px) */
         .sidebar-is-collapsed .customer-sidebar {
             width: 80px !important;
         }
-
         .sidebar-is-collapsed .sidebar-text,
         .sidebar-is-collapsed .brand-info {
-            opacity: 0;
-            pointer-events: none;
-            width: 0;
-            overflow: hidden;
-            display: none;
+            opacity: 0; pointer-events: none;
+            width: 0; overflow: hidden;
+            display: none !important;
         }
-
-        .sidebar-is-collapsed .logo-img {
-            height: 40px !important;
-        }
-
         .sidebar-is-collapsed .nav-item {
             justify-content: center;
-            padding-left: 0;
-            padding-right: 0;
-            margin-left: 8px;
-            margin-right: 8px;
+            padding-left: 0 !important; padding-right: 0 !important;
+            margin-left: 8px; margin-right: 8px;
+        }
+        .sidebar-is-collapsed .logout-btn {
+            justify-content: center;
+            padding-left: 0 !important; padding-right: 0 !important;
         }
 
-        .nav-item {
-            transition: all 0.2s ease;
+        /* Tablet (768–1279px): icon-only by default via CSS, no JS class needed */
+        @@media (min-width: 768px) and (max-width: 1279px) {
+            .customer-sidebar {
+                width: 80px !important;
+            }
+            .customer-sidebar .sidebar-text { display: none !important; }
+            .customer-sidebar .nav-item {
+                justify-content: center !important;
+                padding-left: 0 !important; padding-right: 0 !important;
+                margin-left: 8px !important; margin-right: 8px !important;
+            }
+            .customer-sidebar .logout-btn {
+                justify-content: center !important;
+                padding-left: 0 !important; padding-right: 0 !important;
+            }
+            /* Tablet expanded: user clicked hamburger */
+            .tablet-sidebar-expanded .customer-sidebar {
+                width: 256px !important;
+                position: fixed !important;
+                top: 0; bottom: 0; left: 0;
+                z-index: 200 !important;
+                box-shadow: 4px 0 32px rgba(0,0,0,0.18) !important;
+            }
+            [dir="rtl"].tablet-sidebar-expanded .customer-sidebar {
+                left: auto !important; right: 0;
+            }
+            .tablet-sidebar-expanded .customer-sidebar .sidebar-text { display: inline !important; }
+            .tablet-sidebar-expanded .customer-sidebar .nav-item {
+                justify-content: flex-start !important;
+                padding-left: 16px !important; padding-right: 16px !important;
+                margin-left: 0 !important; margin-right: 0 !important;
+            }
+            .tablet-sidebar-expanded .customer-sidebar .logout-btn {
+                justify-content: flex-start !important;
+                padding-left: 16px !important; padding-right: 16px !important;
+            }
         }
+
+        .nav-item { transition: all 0.2s ease; }
     </style>
 
     <script>
@@ -126,8 +159,9 @@
             localStorage.setItem('dakkn_lang', culture);
 
             // Initialize Sidebar State
+            // Only collapse via JS on desktop; tablet uses CSS media query for icon-only mode
             var isCollapsed = localStorage.getItem('dakkn_customer_sidebar_collapsed') === 'true';
-            if (isCollapsed || window.innerWidth < 1280) {
+            if (isCollapsed && window.innerWidth >= 1280) {
                 document.documentElement.classList.add('sidebar-is-collapsed');
             }
         })();
@@ -139,30 +173,7 @@
             }
         });
 
-        // ── Silent session refresh on page load ─────
-        // Only runs if the page loaded despite expired cookie (e.g., non-protected pages)
-        (function() {
-            var rt = localStorage.getItem('dakkn_refresh_token');
-            if (!rt) return;
-            fetch('/auth/refresh-token?token=' + encodeURIComponent(rt), { method: 'POST' })
-                .then(function(r) {
-                    if (r.ok) return r.json();
-                    if (r.status === 401 || r.status === 400) throw new Error('Invalid');
-                    return null;
-                })
-                .then(function(data) {
-                    if (data && data.accessToken) {
-                        localStorage.setItem('dakkn_access_token', data.accessToken);
-                        localStorage.setItem('dakkn_refresh_token', data.refreshToken);
-                    }
-                })
-                .catch(function(e) {
-                    if (e.message === 'Invalid') {
-                        localStorage.removeItem('dakkn_access_token');
-                        localStorage.removeItem('dakkn_refresh_token');
-                    }
-                });
-        })();
+        // Uses cookie-based auth; no JWT silent refresh needed here.
 
         // Failsafe: Ensure preloader is hidden
         setTimeout(function() {
@@ -184,6 +195,9 @@
 
     <!-- Sidebar Overlay for Mobile -->
     <div id="sidebar-overlay" class="sidebar-overlay md:hidden" onclick="toggleCustomerSidebar()"></div>
+
+    <!-- Tablet Sidebar Overlay (shown when sidebar expanded on tablet) -->
+    <div id="tablet-sidebar-overlay" class="hidden md:block xl:hidden fixed inset-0 z-[199] bg-slate-900/40 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300" onclick="collapseCustomerSidebarTablet()"></div>
 
     <!-- Sidebar -->
     <aside id="customer-sidebar" class="hidden md:flex flex-col customer-sidebar h-screen w-64 shadow-medium z-40 relative flex-shrink-0 transition-all duration-300 bg-surface dark:bg-[#1E293B] border-r border-border dark:border-white/5">
@@ -228,8 +242,8 @@
         <div class="p-md border-t border-border dark:border-white/5">
             <form id="logout-form" asp-controller="Auth" asp-action="Logout" method="post">
                 <input type="hidden" name="refreshToken" id="logout-refresh-token" />
-                <button type="button" onclick="submitLogout()" class="w-full flex items-center gap-md text-text-secondary dark:text-outline-variant hover:text-error dark:hover:text-error-light hover:bg-error/5 rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["f_logout"]">
-                    <span class="material-symbols-outlined">logout</span>
+                <button type="button" onclick="submitLogout()" class="logout-btn w-full flex items-center gap-md text-text-secondary dark:text-outline-variant hover:text-error dark:hover:text-error-light hover:bg-error/5 rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["f_logout"]">
+                    <span class="material-symbols-outlined flex-shrink-0">logout</span>
                     <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["f_logout"]</span>
                 </button>
             </form>
@@ -296,30 +310,18 @@
             <span class="material-symbols-outlined">shopping_bag</span>
             <span>@Localizer["nav_shop"]</span>
         </a>
-        <a asp-controller="Customer" asp-action="Favorites" class="mob-nav-item @(currentAction == "Favorites" ? "active" : "")">
-            <span class="material-symbols-outlined">favorite</span>
-            <span>@Localizer["nav_favorites"]</span>
-        </a>
-        <a asp-controller="Customer" asp-action="CustomOrder" class="mob-nav-item @(currentAction == "CustomOrder" ? "active" : "")">
-            <span class="material-symbols-outlined">brush</span>
-            <span>@Localizer["mob_nav_custom"]</span>
-        </a>
         <a asp-controller="Customer" asp-action="Orders" class="mob-nav-item @(currentAction == "Orders" ? "active" : "")">
             <span class="material-symbols-outlined">receipt_long</span>
             <span>@Localizer["admin_orders"]</span>
-        </a>
-        <a asp-controller="Customer" asp-action="Support" class="mob-nav-item @(currentAction == "Support" ? "active" : "")">
-            <span class="material-symbols-outlined">support_agent</span>
-            <span>@Localizer["nav_support"]</span>
-        </a>
-        <a asp-controller="Customer" asp-action="BrandReviews" class="mob-nav-item @(currentAction == "BrandReviews" ? "active" : "")">
-            <span class="material-symbols-outlined">rate_review</span>
-            <span>@Localizer["reviews_my_reviews"]</span>
         </a>
         <a asp-controller="Customer" asp-action="Profile" class="mob-nav-item @(currentAction == "Profile" ? "active" : "")">
             <span class="material-symbols-outlined">person</span>
             <span>@Localizer["nav_profile"]</span>
         </a>
+        <button type="button" onclick="submitLogout()" class="mob-nav-item mob-nav-logout">
+            <span class="material-symbols-outlined">logout</span>
+            <span>@Localizer["f_logout"]</span>
+        </button>
     </nav>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -329,34 +331,61 @@
     <script>
         function toggleCustomerSidebar() {
             if (window.innerWidth < 768) {
+                // Mobile: toggle slide-over drawer
                 document.documentElement.classList.toggle('mobile-sidebar-open');
+            } else if (window.innerWidth < 1280) {
+                // Tablet: toggle full expanded overlay sidebar
+                const isExpanded = document.documentElement.classList.toggle('tablet-sidebar-expanded');
+                updateSidebarIcon(!isExpanded);
+                setTabletOverlay(isExpanded);
             } else {
+                // Desktop: toggle icon-only collapse
                 const isCollapsed = document.documentElement.classList.toggle('sidebar-is-collapsed');
                 localStorage.setItem('dakkn_customer_sidebar_collapsed', isCollapsed);
                 updateSidebarIcon(isCollapsed);
             }
         }
 
+        function collapseCustomerSidebarTablet() {
+            document.documentElement.classList.remove('tablet-sidebar-expanded');
+            updateSidebarIcon(true);
+            setTabletOverlay(false);
+        }
+
+        function setTabletOverlay(show) {
+            const overlay = document.getElementById('tablet-sidebar-overlay');
+            if (!overlay) return;
+            overlay.style.opacity = show ? '1' : '0';
+            overlay.style.pointerEvents = show ? 'auto' : 'none';
+        }
+
         function updateSidebarIcon(isCollapsed) {
             const icon = document.getElementById('sidebar-toggle-icon');
-            if (icon) {
-                icon.textContent = isCollapsed ? 'menu' : 'menu_open';
-            }
+            if (icon) icon.textContent = isCollapsed ? 'menu' : 'menu_open';
         }
 
         function submitLogout() {
             const form = document.getElementById('logout-form');
             const tokenInput = document.getElementById('logout-refresh-token');
-            const refreshToken = localStorage.getItem('dakkn_refresh_token');
-            
-            if (tokenInput) tokenInput.value = refreshToken || '';
+            if (tokenInput) tokenInput.value = localStorage.getItem('dakkn_refresh_token') || '';
             form.submit();
         }
 
-        (function() {
-            const isCollapsed = document.documentElement.classList.contains('sidebar-is-collapsed');
-            updateSidebarIcon(isCollapsed);
-        })();
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set correct icon on load
+            if (window.innerWidth >= 1280) {
+                const savedCollapsed = localStorage.getItem('dakkn_customer_sidebar_collapsed') === 'true';
+                if (savedCollapsed) {
+                    document.documentElement.classList.add('sidebar-is-collapsed');
+                    updateSidebarIcon(true);
+                } else {
+                    updateSidebarIcon(false);
+                }
+            } else {
+                // Tablet/mobile: icon-only by default
+                updateSidebarIcon(true);
+            }
+        });
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

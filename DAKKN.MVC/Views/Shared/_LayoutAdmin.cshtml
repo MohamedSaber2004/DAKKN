@@ -257,10 +257,10 @@
             <span class="material-symbols-outlined @(currentAction == "Inventory" ? "filled-icon" : "")">inventory_2</span>
             <span>@Localizer["admin_inventory"]</span>
         </a>
-        <a asp-controller="Admin" asp-action="Users" class="admin-bnav-item @(currentAction == "Users" ? "admin-bnav-active" : "")" title="@Localizer["admin_users"]">
-            <span class="material-symbols-outlined @(currentAction == "Users" ? "filled-icon" : "")">group</span>
-            <span>@Localizer["admin_users"]</span>
-        </a>
+        <button type="button" onclick="submitLogout()" class="admin-bnav-item admin-bnav-logout" title="@Localizer["auth.logout"]">
+            <span class="material-symbols-outlined">logout</span>
+            <span>@Localizer["auth.logout"]</span>
+        </button>
     </nav>
     <!-- Tablet Sidebar Overlay (visible only on tablet when sidebar is expanded) -->
     <div id="tablet-sidebar-overlay" class="hidden md:block xl:hidden fixed inset-0 z-[199] bg-slate-900/40 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300" onclick="collapseSidebarTablet()"></div>

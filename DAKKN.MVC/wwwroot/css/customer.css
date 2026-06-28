@@ -184,19 +184,55 @@
     margin-bottom: 1rem;
   }
 
-  .mobile-sidebar-open #customer-sidebar {
+  /*
+   * Mobile sidebar: always fixed, always display:flex.
+   * Closed = off-screen via transform + visibility:hidden (no overflow trigger).
+   * Open   = transform(0) + visibility:visible (smooth slide animation).
+   */
+  #customer-sidebar {
     display: flex !important;
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    width: 260px;
-    z-index: 100;
+    position: fixed !important;
+    top: 0; bottom: 0; left: 0;
+    height: 100vh !important;
+    width: 280px !important;
+    z-index: 200 !important;
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0s linear 0.3s;
+    box-shadow: 4px 0 32px rgba(0,0,0,0.18);
+  }
+  [dir="rtl"] #customer-sidebar {
+    left: auto !important;
+    right: 0 !important;
+    transform: translateX(100%);
   }
 
-  [dir="rtl"] .mobile-sidebar-open #customer-sidebar {
-    left: auto;
-    right: 0;
+  /* When mobile sidebar is open: slide in + make visible immediately */
+  .mobile-sidebar-open #customer-sidebar {
+    transform: translateX(0) !important;
+    visibility: visible;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0s linear 0s;
+  }
+
+  /* Show all sidebar text labels in the mobile drawer */
+  .mobile-sidebar-open .customer-sidebar .sidebar-text {
+    display: inline !important;
+    opacity: 1 !important;
+    width: auto !important;
+  }
+  .mobile-sidebar-open .customer-sidebar .nav-item {
+    justify-content: flex-start !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  .mobile-sidebar-open .customer-sidebar .logout-btn {
+    justify-content: flex-start !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
   }
 
   .sidebar-overlay {
@@ -205,7 +241,7 @@
     background: rgba(15, 23, 42, 0.6);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
-    z-index: 90;
+    z-index: 190;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -222,4 +258,44 @@
     font-size: 9px;
     padding: 2px 8px;
   }
+}
+
+/* ── Mobile Bottom Nav: Logout button ──────── */
+.mob-nav-logout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 6px 8px;
+  border-radius: 10px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-decoration: none;
+  flex: 1;
+  min-width: 0;
+  color: #ef4444;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.mob-nav-logout .material-symbols-outlined {
+  font-size: 22px !important;
+  color: #ef4444 !important;
+  transition: color 0.2s ease;
+}
+.mob-nav-logout > span:last-child {
+  font-size: 10px;
+  font-weight: 600;
+  color: #ef4444;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.dark .mob-nav-logout .material-symbols-outlined {
+  color: #fca5a5 !important;
+}
+.dark .mob-nav-logout > span:last-child {
+  color: #fca5a5;
+}
+.mob-nav-logout:hover {
+  background: rgba(239, 68, 68, 0.08);
 }
