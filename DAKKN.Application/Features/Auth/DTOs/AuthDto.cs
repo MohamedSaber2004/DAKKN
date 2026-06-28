@@ -10,5 +10,6 @@
 
     public record RefreshTokenResponseDto(
         string AccessToken,
-        string RefreshToken);
+        string RefreshToken,
+        Guid UserId);
 }

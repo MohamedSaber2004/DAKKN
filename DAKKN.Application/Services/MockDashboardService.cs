@@ -26,18 +26,11 @@ namespace DAKKN.Application.Services
                 Recommendations = new List<ProductDto>
                 {
                     new ProductDto { Id = Guid.NewGuid(), Name = "Cyberpunk Ramen", Price = 85, ImageUrl = imageUrl, CategoryName = "Gaming" },
-                    new ProductDto { Id = Guid.NewGuid(), Name = "Neon Skull", Price = 80, ImageUrl = imageUrl, CategoryName = "Anime" }
-                },
-                ProgrammingStickers = new List<ProductDto>
-                {
+                    new ProductDto { Id = Guid.NewGuid(), Name = "Neon Skull", Price = 80, ImageUrl = imageUrl, CategoryName = "Anime" },
                     new ProductDto { Id = Guid.NewGuid(), Name = "Clean Code", Price = 60, ImageUrl = imageUrl, CategoryName = "Tech" },
                     new ProductDto { Id = Guid.NewGuid(), Name = "Git Master", Price = 60, ImageUrl = imageUrl, CategoryName = "Tech" },
-                    new ProductDto { Id = Guid.NewGuid(), Name = "Docker Whale", Price = 70, ImageUrl = imageUrl, CategoryName = "Tech" }
-                },
-                MemeStickers = new List<ProductDto>
-                {
-                    new ProductDto { Id = Guid.NewGuid(), Name = "Doge Much Wow", Price = 50, ImageUrl = imageUrl, CategoryName = "Memes" },
-                    new ProductDto { Id = Guid.NewGuid(), Name = "This is Fine", Price = 55, ImageUrl = imageUrl, CategoryName = "Memes" }
+                    new ProductDto { Id = Guid.NewGuid(), Name = "Docker Whale", Price = 70, ImageUrl = imageUrl, CategoryName = "Tech" },
+                    new ProductDto { Id = Guid.NewGuid(), Name = "Doge Much Wow", Price = 50, ImageUrl = imageUrl, CategoryName = "Memes" }
                 }
             };
 

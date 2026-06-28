@@ -6,7 +6,7 @@ namespace DAKKN.Application.DTOs
     {
         public OrderDto? LastOrder { get; set; }
         public List<ProductDto> Recommendations { get; set; } = new();
-        public List<ProductDto> ProgrammingStickers { get; set; } = new();
-        public List<ProductDto> MemeStickers { get; set; } = new();
+        public int TotalOrders { get; set; }
+        public int TotalFavorites { get; set; }
     }
 }

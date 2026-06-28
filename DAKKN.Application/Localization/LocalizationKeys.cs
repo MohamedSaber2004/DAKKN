@@ -354,6 +354,16 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString Unhidden = new("reviews.unhidden");
         }
 
+        public static class ProductRatings
+        {
+            public static readonly KeyString ProductNotFound = new("product_ratings.product_not_found");
+            public static readonly KeyString RatingSubmitted = new("product_ratings.rating_submitted");
+            public static readonly KeyString RatingUpdated = new("product_ratings.rating_updated");
+            public static readonly KeyString RateThisProduct = new("product_ratings.rate_this_product");
+            public static readonly KeyString RatingsCount = new("product_ratings.ratings_count");
+            public static readonly KeyString AverageStars = new("product_ratings.average_stars");
+        }
+
         public static class BrandReviews
         {
             public static readonly KeyString NotFound = new("brand_reviews.not_found");

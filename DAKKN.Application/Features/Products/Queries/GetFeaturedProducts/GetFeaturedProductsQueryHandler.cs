@@ -106,7 +106,8 @@ namespace DAKKN.Application.Features.Products.Queries.GetFeaturedProducts
                 var sevenDaysAgo = DateTime.UtcNow.AddDays(-7);
                 products = await baseQuery
                     .Where(p => p.CreatedAt >= sevenDaysAgo)
-                    .OrderByDescending(p => p.CreatedAt)
+                    .OrderByDescending(p => p.AverageRating)
+                    .ThenByDescending(p => p.CreatedAt)
                     .Take(8)
                     .Select(p => new ProductDto
                     {
@@ -138,7 +139,8 @@ namespace DAKKN.Application.Features.Products.Queries.GetFeaturedProducts
                 if (products.Count == 0)
                 {
                     products = await baseQuery
-                        .OrderByDescending(p => p.CreatedAt)
+                        .OrderByDescending(p => p.AverageRating)
+                        .ThenByDescending(p => p.CreatedAt)
                         .Take(8)
                         .Select(p => new ProductDto
                         {

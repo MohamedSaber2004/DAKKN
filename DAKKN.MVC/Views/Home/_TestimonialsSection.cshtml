@@ -18,13 +18,13 @@
         </div>
         @if (hasReviews)
         {
-            <div class="relative scroll-animate" role="region" aria-label="Customer testimonials" tabindex="0" id="testimonials-region" onkeydown="handleTestimonialKeydown(event)">
+            <div class="relative scroll-animate" role="region" aria-label="@Localizer["aria_testimonials"]" tabindex="0" id="testimonials-region" onkeydown="handleTestimonialKeydown(event)">
                 <div id="testimonials-track" class="overflow-hidden">
                     <div id="testimonials-slider" class="flex transition-transform duration-500 ease-out will-change-transform">
                         @for (int i = 0; i < Model.Testimonials.Reviews.Count; i++)
                         {
                             var r = Model.Testimonials.Reviews[i];
-                            <div class="min-w-full md:min-w-[50%] lg:min-w-[33.333%] px-3" role="group" aria-roledescription="slide" aria-label="Testimonial @(i+1) of @Model.Testimonials.Reviews.Count">
+                            <div class="min-w-full md:min-w-[50%] lg:min-w-[33.333%] px-3" role="group" aria-roledescription="slide" aria-label="@string.Format(Localizer["aria_testimonial_of"].Value, i+1, Model.Testimonials.Reviews.Count)">
                                 <div class="bg-surface-container-high dark:bg-[#1E293B] rounded-2xl p-6 md:p-8 h-full border border-outline-variant/20 dark:border-white/5 shadow-lg hover:shadow-xl transition-shadow">
                                     <div class="flex items-center gap-1 mb-4">
                                         @for (int s = 0; s < 5; s++)
@@ -60,10 +60,10 @@
                 @if (Model.Testimonials.Reviews.Count > 1)
                 {
                     <div class="flex justify-center gap-3 mt-8">
-                        <button onclick="prevTestimonial()" class="w-10 h-10 rounded-full bg-surface-container-high dark:bg-slate-800 hover:bg-primary/10 flex items-center justify-center transition-all border border-outline-variant/20 dark:border-white/10" aria-label="Previous testimonial">
+                        <button onclick="prevTestimonial()" class="w-10 h-10 rounded-full bg-surface-container-high dark:bg-slate-800 hover:bg-primary/10 flex items-center justify-center transition-all border border-outline-variant/20 dark:border-white/10" aria-label="@Localizer["aria_prev_testimonial"]">
                             <span class="material-symbols-outlined text-lg">@(isAr ? "chevron_right" : "chevron_left")</span>
                         </button>
-                        <button onclick="nextTestimonial()" class="w-10 h-10 rounded-full bg-surface-container-high dark:bg-slate-800 hover:bg-primary/10 flex items-center justify-center transition-all border border-outline-variant/20 dark:border-white/10" aria-label="Next testimonial">
+                        <button onclick="nextTestimonial()" class="w-10 h-10 rounded-full bg-surface-container-high dark:bg-slate-800 hover:bg-primary/10 flex items-center justify-center transition-all border border-outline-variant/20 dark:border-white/10" aria-label="@Localizer["aria_next_testimonial"]">
                             <span class="material-symbols-outlined text-lg">@(isAr ? "chevron_left" : "chevron_right")</span>
                         </button>
                     </div>

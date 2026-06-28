@@ -18,6 +18,7 @@ using DAKKN.Application.Features.ShippingGovernorates.Commands.UpdateShippingGov
 using DAKKN.Application.Features.ShippingGovernorates.Queries.GetShippingGovernorates;
 using DAKKN.Application.Features.Dashboard.Queries.GetDashboardAnalytics;
 using DAKKN.Application.Features.Dashboard.Queries.GetDashboardInventoryStats;
+using DAKKN.Application.Features.Dashboard.Queries.GetRecentProductRatings;
 using DAKKN.Application.Features.Orders.Queries.GetOrders;
 using DAKKN.Application.Features.Orders.Queries.GetOrderDetails;
 using DAKKN.Application.Features.Orders.Queries.GetRecentOrders;
@@ -111,6 +112,12 @@ namespace DAKKN.MVC.Controllers
 
             ViewData["Analytics7d"] = analytics7d;
             ViewData["Analytics30d"] = analytics30d;
+
+            var pendingReviews = await _mediator.Send(new GetAdminBrandReviewsQuery(StatusFilter: "pending", null, null, null));
+            ViewData["PendingReviewCount"] = pendingReviews.Count;
+
+            var recentRatings = await _mediator.Send(new GetRecentProductRatingsQuery(Count: 5));
+            ViewData["RecentProductRatings"] = recentRatings;
 
             return View(viewModel);
         }

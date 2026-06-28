@@ -22,6 +22,7 @@ using DAKKN.Application.Features.Users.Queries.GetUserSettings;
 using DAKKN.Application.Features.Users.Commands.UpdateUserSettings;
 using DAKKN.Application.Features.Cart.Queries.GetCart;
 using DAKKN.Application.Features.Products.Queries.GetProducts;
+using DAKKN.Application.Features.Products.Queries.GetMostOrderedProducts;
 using DAKKN.Application.Features.Products.Queries.GetProductById;
 using DAKKN.Application.Features.Categories.Queries.GetCategories;
 using DAKKN.Application.Features.Favorites.Queries.GetFavorites;
@@ -29,6 +30,7 @@ using DAKKN.Application.Features.Favorites.Commands.ToggleFavorite;
 using DAKKN.Application.Features.Favorites.Commands.RemoveFavorite;
 using DAKKN.Application.Features.ShippingGovernorates.Queries.GetActiveShippingGovernorates;
 using DAKKN.MVC.ViewModels.Landing;
+using DAKKN.Application.Features.BrandReviews.DTOs;
 using DAKKN.Application.Features.BrandReviews.Queries.GetCustomerBrandReviews;
 using DAKKN.Application.Features.BrandReviews.Commands.DeleteBrandReview;
 using System.Security.Claims;
@@ -43,13 +45,24 @@ namespace DAKKN.MVC.Controllers
         {
             ViewData["Title"] = localizer["Dashboard_Welcome"];
 
-            var products = await mediator.Send(new GetProductsQuery(null, null, 1, 10));
+            var products = await mediator.Send(new GetMostOrderedProductsQuery(8));
             var dashboard = new DashboardDto
             {
-                Recommendations = products.Items.Take(4).ToList(),
-                ProgrammingStickers = new List<ProductDto>(),
-                MemeStickers = new List<ProductDto>()
+                Recommendations = products
             };
+
+            var userId = GetUserId();
+            if (userId != Guid.Empty)
+            {
+                var reviews = await mediator.Send(new GetCustomerBrandReviewsQuery(userId));
+                ViewData["RecentReviews"] = reviews.OrderByDescending(r => r.CreatedAt).Take(3).ToList();
+
+                var orders = await mediator.Send(new GetCustomerOrdersQuery());
+                dashboard.TotalOrders = orders.Count;
+
+                var favorites = await mediator.Send(new GetFavoritesQuery());
+                dashboard.TotalFavorites = favorites.Count;
+            }
 
             return View(new CustomerDashboardViewModel { Dashboard = dashboard });
         }
@@ -412,6 +425,25 @@ namespace DAKKN.MVC.Controllers
             });
         }
 
+        [HttpPost("profile/update")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.FirstName) && string.IsNullOrWhiteSpace(request.LastName))
+                return Json(new { success = false, message = localizer[LocalizationKeys.ValidationMessages.Required.Value] });
+
+            var fullName = $"{request.FirstName?.Trim() ?? ""} {request.LastName?.Trim() ?? ""}".Trim();
+
+            var result = await mediator.Send(new UpdateUserSettingsCommand(fullName, null, null, null, null, null));
+
+            return Json(new
+            {
+                success = true,
+                message = localizer[LocalizationKeys.ProfileImageMessages.UploadSuccess.Value].ToString(),
+                fullName = result.FullName
+            });
+        }
+
         [HttpPost("profile/change-password")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
@@ -543,4 +575,5 @@ namespace DAKKN.MVC.Controllers
     public record ChangePasswordRequest(string CurrentPassword, string NewPassword, string ConfirmPassword);
     public record DeleteAccountRequest(string CurrentPassword, string ConfirmationText);
     public record CancelOrderRequest(string? Reason);
+    public record UpdateProfileRequest(string? FirstName, string? LastName);
 }

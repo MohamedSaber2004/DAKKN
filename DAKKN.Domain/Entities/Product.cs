@@ -22,6 +22,8 @@ namespace DAKKN.Domain.Entities
         public Guid CategoryId { get; set; }
         public virtual Category Category { get; set; } = null!;
 
+        public virtual ICollection<ProductRating> Ratings { get; set; } = new List<ProductRating>();
+
         public int QuantityInStock { get; set; } = 0;
         public int DangerQuantity { get; set; } = 0;
         public DateTime? LastStockUpdateDate { get; set; }

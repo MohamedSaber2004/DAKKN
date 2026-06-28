@@ -82,6 +82,7 @@
                                 }
                                 <form method="post" asp-action="ToggleDisplayBrandReview" asp-route-id="@review.Id" class="inline">
                                     @Html.AntiForgeryToken()
+                                    <input type="hidden" name="returnUrl" value="/admin/brand-reviews" />
                                     <button type="submit" class="p-1 text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all" title="@Localizer["brand_reviews_undisplay"]">
                                         <span class="material-symbols-outlined text-lg">remove_circle</span>
                                     </button>
@@ -229,12 +230,11 @@
                                     }
                                     @if (review.IsDisplayed || review.IsApproved)
                                     {
-                                        <form method="post" asp-action="ToggleDisplayBrandReview" asp-route-id="@review.Id" class="inline">
-                                            @Html.AntiForgeryToken()
-                                            <button type="submit" class="p-2 @(review.IsDisplayed ? "text-primary" : "text-admin-secondary") hover:bg-admin-page rounded-lg transition-all" title="@(review.IsDisplayed ? Localizer["brand_reviews_undisplay"] : Localizer["brand_reviews_display"])">
-                                                <span class="material-symbols-outlined text-lg">@(review.IsDisplayed ? "visibility" : "visibility_off")</span>
-                                            </button>
-                                        </form>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" class="sr-only peer brand-review-display" data-review-id="@review.Id" @(review.IsDisplayed ? "checked" : "") onchange="toggleBrandReviewDisplay('@review.Id', this.checked)">
+                                            <div class="w-10 h-5 bg-outline/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:ltr:left-[2px] after:rtl:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
+                                            <span class="ltr:ml-2 rtl:mr-2 text-xs font-medium @(review.IsDisplayed ? "text-primary" : "text-outline")">@(review.IsDisplayed ? Localizer["admin_displayed"] : Localizer["admin_hidden"])</span>
+                                        </label>
                                     }
                                     <form method="post" asp-action="DeleteBrandReview" asp-route-id="@review.Id" class="inline" id="deleteForm-@review.Id">
                                         @Html.AntiForgeryToken()
@@ -294,7 +294,60 @@
     </div>
 </div>
 
+<div id="toastBrandReviews" class="fixed bottom-8 ltr:right-8 rtl:left-8 z-[200] flex flex-col gap-3"></div>
+
 <script>
+    var csrfToken = document.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
+
+    function showToast(message, type) {
+        var toast = document.createElement('div');
+        toast.className = 'px-4 py-3 rounded-xl text-sm font-bold shadow-lg transition-all duration-300 ' +
+            (type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white');
+        toast.textContent = message;
+        var container = document.getElementById('toastBrandReviews');
+        container.appendChild(toast);
+        setTimeout(function() { toast.style.opacity = '0'; setTimeout(function() { toast.remove(); }, 300); }, 3000);
+    }
+
+    function toggleBrandReviewDisplay(reviewId, isDisplayed) {
+        var formData = new URLSearchParams();
+        formData.append('returnUrl', '/admin/brand-reviews');
+
+        fetch('/admin/brand-reviews/toggle-display/' + reviewId, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'RequestVerificationToken': csrfToken
+            },
+            body: formData.toString(),
+            redirect: 'manual'
+        })
+        .then(function(response) {
+            if (response.ok || response.type === 'opaqueredirect') {
+                var checkboxes = document.querySelectorAll('input.brand-review-display[data-review-id="' + reviewId + '"]');
+                checkboxes.forEach(function(cb) {
+                    cb.checked = isDisplayed;
+                    var label = cb.closest('label');
+                    if (label) {
+                        var span = label.querySelector('span:last-child');
+                        if (span) {
+                            span.textContent = isDisplayed ? '@Localizer["admin_displayed"]' : '@Localizer["admin_hidden"]';
+                            span.className = 'ltr:ml-2 rtl:mr-2 text-xs font-medium ' + (isDisplayed ? 'text-primary' : 'text-outline');
+                        }
+                    }
+                });
+                showToast(isDisplayed ? '@Localizer["admin_review_displayed"]' : '@Localizer["admin_review_hidden"]', 'success');
+            } else {
+                throw new Error('Request failed');
+            }
+        })
+        .catch(function() {
+            var checkboxes = document.querySelectorAll('input.brand-review-display[data-review-id="' + reviewId + '"]');
+            checkboxes.forEach(function(cb) { cb.checked = !isDisplayed; });
+            showToast('@Localizer["admin_save_error"]', 'error');
+        });
+    }
+
     var pendingDeleteFormId = null;
 
     function confirmDelete(formId) {

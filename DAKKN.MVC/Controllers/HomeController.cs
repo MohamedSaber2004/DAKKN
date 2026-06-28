@@ -1,5 +1,6 @@
 using DAKKN.Application.Features.Categories.Queries.GetCategories;
 using DAKKN.Application.Features.CMS.Queries.GetLandingPageSettings;
+using DAKKN.Application.Features.Orders.Queries.GetDashboardStats;
 using DAKKN.Application.Features.Products.Queries.GetFeaturedProducts;
 using DAKKN.Application.Features.Products.Queries.GetProducts;
 using DAKKN.Application.Features.BrandReviews.DTOs;
@@ -62,6 +63,8 @@ namespace DAKKN.MVC.Controllers
 
             var baseUrl = $"{Request.Scheme}://{Request.Host}";
 
+            var stats = await _mediator.Send(new GetDashboardStatsQuery());
+
             var viewModel = new LandingPageViewModel
             {
                 FeaturedProducts = featuredProducts,
@@ -75,6 +78,10 @@ namespace DAKKN.MVC.Controllers
                 VisibleSections = visibleSections,
                 OrderedSectionIds = orderedSectionIds,
                 BaseUrl = baseUrl,
+                TotalProducts = stats.TotalProducts,
+                TotalCustomers = stats.TotalUsers,
+                TotalCategories = categories.Count,
+                TotalOrders = stats.OrdersToday + stats.PendingOrders + stats.ConfirmedOrders + stats.ProcessingOrders + stats.ShippedOrders + stats.DeliveredOrders + stats.CancelledOrders,
             };
 
             return View(viewModel);

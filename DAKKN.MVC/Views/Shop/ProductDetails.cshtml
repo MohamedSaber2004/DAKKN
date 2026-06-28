@@ -44,11 +44,7 @@
                     <h1 class="text-3xl md:text-4xl font-extrabold text-on-surface dark:text-white mb-3">@(isArabic ? product.ArName : product.Name)</h1>
                     <div class="flex items-center gap-4">
                         <span class="text-3xl font-bold text-primary">@product.Price.ToString("N0") @Localizer["Currency_EGP"]</span>
-                        <div class="flex items-center gap-1 text-yellow-500">
-                            <span class="material-symbols-outlined text-lg filled-icon">star</span>
-                            <span class="font-bold">@product.AverageRating.ToString("F1")</span>
-                            <span class="text-on-surface-variant dark:text-slate-400 text-sm font-medium ml-1">(@product.ReviewCount @Localizer["Product_Reviews"])</span>
-                        </div>
+                        <partial name="_ProductRatingWidget" model="@product.Id" />
                     </div>
                     <p class="text-on-surface-variant dark:text-slate-400 mt-6 leading-relaxed">
                         @(isArabic ? product.ArDescription : product.Description)

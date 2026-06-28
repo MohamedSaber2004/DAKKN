@@ -66,6 +66,12 @@ namespace DAKKN.Appearence.Routes
             public const string Governorates = Base + "/shipping/governorates";
         }
 
+        public static class ProductRatings
+        {
+            public const string GetSummary = Base + "/products/{productId}/rating";
+            public const string Rate = Base + "/products/{productId}/rating";
+        }
+
         public static class BrandReviews
         {
             public const string My = Base + "/brand-reviews/my";

@@ -43,30 +43,144 @@ section {
 
 /* ── Glass panel ────────────────────────────────────── */
 .glass-panel {
-    background: rgba(255, 255, 255, 0.45);
+    background: linear-gradient(135deg, rgba(255,255,255,0.55), rgba(255,255,255,0.30));
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(var(--primary-rgb), 0.10);
+    border: 1px solid rgba(var(--primary-rgb), 0.12);
+    box-shadow: 0 4px 6px rgba(var(--primary-rgb), 0.03);
 }
 
 .dark .glass-panel {
-    background: rgba(15, 23, 42, 0.35);
-    border-color: rgba(255, 255, 255, 0.08);
+    background: linear-gradient(135deg, rgba(15,23,42,0.40), rgba(12,20,35,0.30));
+    border-color: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.20);
+}
+
+/* ── Section background depth / gradients ─────────── */
+.section-gradient-dark {
+    background: linear-gradient(180deg, #080e1a 0%, #0a1520 50%, #080e1a 100%);
+}
+.section-gradient-surface {
+    background: linear-gradient(180deg, #f0f5f3 0%, #f6faf9 50%, #f0f5f3 100%);
+}
+.section-gradient-surface-alt {
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafb 50%, #ffffff 100%);
 }
 
 /* ── Hero gradient glow ─────────────────────────────── */
 .hero-glow {
-    background-image: radial-gradient(ellipse 80% 60% at 70% 30%, rgba(var(--primary-rgb), 0.10) 0%, transparent 70%);
+    background-image: 
+        radial-gradient(ellipse 80% 60% at 70% 30%, rgba(var(--primary-rgb), 0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 30% 80%, rgba(var(--primary-rgb), 0.05) 0%, transparent 60%);
 }
 [dir="rtl"] .hero-glow {
-    background-image: radial-gradient(ellipse 80% 60% at 30% 30%, rgba(var(--primary-rgb), 0.10) 0%, transparent 70%);
+    background-image: 
+        radial-gradient(ellipse 80% 60% at 30% 30%, rgba(var(--primary-rgb), 0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 70% 80%, rgba(var(--primary-rgb), 0.05) 0%, transparent 60%);
 }
 
 .dark .hero-glow {
-    background-image: radial-gradient(ellipse 80% 60% at 70% 30%, rgba(var(--primary-rgb), 0.08) 0%, transparent 70%);
+    background-image: 
+        radial-gradient(ellipse 80% 60% at 70% 30%, rgba(var(--primary-rgb), 0.10) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 30% 80%, rgba(0,180,216,0.06) 0%, transparent 60%);
 }
 .dark[dir="rtl"] .hero-glow {
-    background-image: radial-gradient(ellipse 80% 60% at 30% 30%, rgba(var(--primary-rgb), 0.08) 0%, transparent 70%);
+    background-image: 
+        radial-gradient(ellipse 80% 60% at 30% 30%, rgba(var(--primary-rgb), 0.10) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 40% at 70% 80%, rgba(0,180,216,0.06) 0%, transparent 60%);
+}
+
+/* ── Stats section gradient ─────────────────────────── */
+#stats {
+    background: linear-gradient(180deg, #f0f5f3 0%, #f6faf9 100%) !important;
+}
+.dark #stats {
+    background: linear-gradient(180deg, #0c1522 0%, #0a1520 100%) !important;
+}
+
+/* ── Section divider gradient ──────────────────────── */
+.section-divider {
+    position: relative;
+}
+.section-divider::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(var(--primary-rgb), 0.15), transparent);
+}
+.dark .section-divider::before {
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+}
+
+/* ── Navbar enhancements ──────────────────────────── */
+.navbar-animate {
+    background: rgba(255, 255, 255, 0.70);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(var(--primary-rgb), 0.08);
+    transition: background 0.3s, box-shadow 0.3s, backdrop-filter 0.3s;
+}
+.dark .navbar-animate {
+    background: rgba(10, 16, 32, 0.75);
+    border-bottom-color: rgba(255, 255, 255, 0.04);
+}
+.navbar-animate.navbar-scrolled {
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 4px 20px rgba(var(--primary-rgb), 0.06);
+}
+.dark .navbar-animate.navbar-scrolled {
+    background: rgba(8, 14, 26, 0.92);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    border-bottom-color: rgba(var(--primary-rgb), 0.10);
+}
+
+/* ── Vitality Keyframes ──────────────────────────── */
+@keyframes floatUpDown {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+}
+@keyframes floatRotate {
+    0%, 100% { transform: rotate(0deg) translateY(0); }
+    50% { transform: rotate(8deg) translateY(-8px); }
+}
+@keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 0 8px rgba(var(--primary-rgb), 0.15); }
+    50% { box-shadow: 0 0 24px rgba(var(--primary-rgb), 0.30); }
+}
+@keyframes waveDots {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-32px); }
+}
+@keyframes breathe {
+    0%, 100% { transform: scale(1); opacity: 0.12; }
+    50% { transform: scale(1.06); opacity: 0.20; }
+}
+@keyframes shimmerMove {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+}
+@keyframes cardLift {
+    0% { transform: translateY(0) scale(1); box-shadow: 0 4px 16px rgba(var(--primary-rgb), 0.08); }
+    100% { transform: translateY(-8px) scale(1.02); box-shadow: 0 20px 40px rgba(var(--primary-rgb), 0.18); }
+}
+
+.float-element {
+    animation: floatUpDown 4s ease-in-out infinite;
+}
+.float-element-slow {
+    animation: floatUpDown 6s ease-in-out infinite;
+}
+.float-element-spin {
+    animation: floatRotate 7s ease-in-out infinite;
+}
+.pulse-glow {
+    animation: pulseGlow 3s ease-in-out infinite;
+}
+.breathe-element {
+    animation: breathe 5s ease-in-out infinite;
 }
 
 /* ── Scroll Animations ───────────────────────────────── */
@@ -135,11 +249,40 @@ section {
 
 /* ── Product card hover ring ────────────────────────── */
 .product-card {
-    transition: box-shadow 0.25s, transform 0.25s;
+    transition: box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    perspective: 800px;
 }
 .product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 32px rgba(var(--primary-rgb), 0.15);
+    transform: translateY(-7px) scale(1.02);
+    box-shadow: 0 20px 48px rgba(var(--primary-rgb), 0.20);
+}
+.product-card[data-tilt] {
+    will-change: transform;
+}
+
+/* ── Hover lift for glass panels ──────────────────── */
+.glass-panel.hover-lift {
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.glass-panel.hover-lift:hover {
+    transform: translateY(-5px) scale(1.01);
+    box-shadow: 0 16px 40px rgba(var(--primary-rgb), 0.12);
+}
+
+/* ── Nav link hover bounce ────────────────────────── */
+.nav-link-premium {
+    transition: transform 0.2s, color 0.2s, background 0.2s;
+}
+.nav-link-premium:hover {
+    transform: translateY(-1px);
+}
+
+/* ── Button micro-interactions ────────────────────── */
+.btn-micro {
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn-micro:active {
+    transform: scale(0.96);
 }
 
 /* ── Category card overlay ──────────────────────────── */
@@ -335,6 +478,29 @@ section {
     to {
         transform: rotate(360deg);
     }
+}
+
+/* ── Reveal Animations ─────────────────────────── */
+@keyframes revealUp {
+    0% { opacity: 0; transform: translateY(30px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+.reveal {
+    opacity: 0;
+}
+.reveal.visible {
+    animation: revealUp 0.6s ease-out forwards;
+}
+
+/* ── Shimmer effect for badges ──────────────────── */
+@keyframes shimmer {
+    0% { background-position: 200% center; }
+    100% { background-position: -200% center; }
+}
+.shimmer-badge {
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: shimmer 3s ease-in-out infinite;
 }
 
 /* Large Soft Floating Blobs */
@@ -548,6 +714,78 @@ section {
     transform: scale(1.25) translateY(-1px);
 }
 
+/* ── Section-specific background gradients ─────────── */
+#shop {
+    background: linear-gradient(180deg, #ffffff 0%, #f6faf9 50%, #ffffff 100%) !important;
+}
+.dark #shop {
+    background: linear-gradient(180deg, #080e1a 0%, #0c1522 50%, #080e1a 100%) !important;
+}
+
+#categories {
+    background: linear-gradient(180deg, #f0f5f3 0%, #f6faf9 50%, #f0f5f3 100%) !important;
+}
+.dark #categories {
+    background: linear-gradient(180deg, #0a1520 0%, #080e1a 50%, #0a1520 100%) !important;
+}
+
+#all-products {
+    background: linear-gradient(180deg, #f8fafb 0%, #f0f5f3 50%, #f8fafb 100%) !important;
+}
+.dark #all-products {
+    background: linear-gradient(180deg, #080e1a 0%, #0c1522 50%, #080e1a 100%) !important;
+}
+
+#testimonials {
+    background: linear-gradient(180deg, #ffffff 0%, #f6faf9 50%, #ffffff 100%) !important;
+}
+.dark #testimonials {
+    background: linear-gradient(180deg, #0a1520 0%, #080e1a 50%, #0a1520 100%) !important;
+}
+
+#about {
+    background: linear-gradient(180deg, #f0f5f3 0%, #eaf0ee 50%, #f0f5f3 100%) !important;
+}
+.dark #about {
+    background: linear-gradient(180deg, #0c1522 0%, #0a1520 50%, #0c1522 100%) !important;
+}
+
+#contact {
+    background: linear-gradient(180deg, #f6faf9 0%, #f0f5f3 50%, #f6faf9 100%) !important;
+}
+.dark #contact {
+    background: linear-gradient(180deg, #080e1a 0%, #0a1520 50%, #080e1a 100%) !important;
+}
+
+/* ── Card enhancements in dark mode ─────────────────── */
+.dark .product-card {
+    background: linear-gradient(145deg, rgba(15,23,42,0.50), rgba(12,20,35,0.35));
+    border-color: rgba(255,255,255,0.04);
+}
+.dark .product-card:hover {
+    border-color: rgba(var(--primary-rgb), 0.20);
+    box-shadow: 0 20px 48px rgba(0,0,0,0.40), 0 0 0 1px rgba(var(--primary-rgb), 0.08);
+}
+
+/* ── Nav links active state ───────────────────────── */
+.nav-link-premium.active {
+    color: var(--primary-color) !important;
+    background: rgba(var(--primary-rgb), 0.08);
+    border-radius: 8px;
+}
+
+/* ── Theme toggle button glow ─────────────────────── */
+.dark .theme-toggle-btn {
+    background: rgba(255,255,255,0.06);
+    border-color: rgba(255,255,255,0.08);
+}
+.theme-toggle-btn {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.theme-toggle-btn:hover {
+    transform: scale(1.08);
+}
+
 /* ── Mobile Bottom Navigation Bar ───────────────────── */
 @keyframes slideUpNav {
     from {
@@ -647,6 +885,13 @@ section {
     main {
         padding-bottom: 72px;
     }
+}
+
+/* ── Contact form dark mode card ───────────────────── */
+.dark #contact .bg-surface-container-low\/60 {
+    background: linear-gradient(145deg, rgba(10,16,32,0.70), rgba(12,22,38,0.50)) !important;
+    border-color: rgba(var(--primary-rgb), 0.12) !important;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.30), 0 0 0 1px rgba(var(--primary-rgb), 0.06) !important;
 }
 
 /* ── Sign-in Modal ───────────────────────────────── */

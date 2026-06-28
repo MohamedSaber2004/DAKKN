@@ -56,6 +56,8 @@ namespace DAKKN.MVC.ViewModels.Admin
         public string ButtonTextEn { get; set; } = string.Empty;
 
         public string ImageUrl { get; set; } = "https://lh3.googleusercontent.com/...";
+
+        public int TrustedCountOverride { get; set; }
     }
 
     public class AboutSettingsViewModel

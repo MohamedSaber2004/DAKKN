@@ -715,6 +715,57 @@ namespace DAKKN.Persistence.Migrations
                     b.ToTable("Products", "dbo");
                 });
 
+            modelBuilder.Entity("DAKKN.Domain.Entities.ProductRating", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<Guid>("ProductId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Stars")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("ProductId", "UserId")
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
+
+                    b.ToTable("ProductRatings", "dbo");
+                });
+
             modelBuilder.Entity("DAKKN.Domain.Entities.ShippingGovernorate", b =>
                 {
                     b.Property<Guid>("Id")
@@ -1202,6 +1253,25 @@ namespace DAKKN.Persistence.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("DAKKN.Domain.Entities.ProductRating", b =>
+                {
+                    b.HasOne("DAKKN.Domain.Entities.Product", "Product")
+                        .WithMany("Ratings")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("DAKKN.Domain.Entities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("DAKKN.Domain.Entities.UserFavorite", b =>
                 {
                     b.HasOne("DAKKN.Domain.Entities.Product", "Product")
@@ -1311,6 +1381,11 @@ namespace DAKKN.Persistence.Migrations
                     b.Navigation("Items");
 
                     b.Navigation("StatusHistories");
+                });
+
+            modelBuilder.Entity("DAKKN.Domain.Entities.Product", b =>
+                {
+                    b.Navigation("Ratings");
                 });
 #pragma warning restore 612, 618
         }

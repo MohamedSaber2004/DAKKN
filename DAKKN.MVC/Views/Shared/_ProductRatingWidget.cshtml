@@ -1,0 +1,92 @@
+@using DAKKN.Application.Localization
+@inject IStringLocalizer<Messages> Localizer
+@model Guid
+
+<div id="product-rating-widget-@Model" class="product-rating-widget" data-product-id="@Model">
+    <div class="flex items-center gap-2">
+        <div class="flex items-center gap-0.5" id="rating-stars-@Model">
+            <span class="material-symbols-outlined text-yellow-500">star</span>
+            <span class="material-symbols-outlined text-yellow-500">star</span>
+            <span class="material-symbols-outlined text-yellow-500">star</span>
+            <span class="material-symbols-outlined text-yellow-500">star</span>
+            <span class="material-symbols-outlined text-yellow-500">star</span>
+        </div>
+        <span class="font-bold" id="rating-average-@Model">-</span>
+        <span class="text-text-secondary dark:text-outline-variant text-sm font-medium" id="rating-count-@Model">(0)</span>
+    </div>
+</div>
+
+<script>
+    (function() {
+        var productId = '@Model';
+        var starsContainer = document.getElementById('rating-stars-' + productId);
+        var avgEl = document.getElementById('rating-average-' + productId);
+        var countEl = document.getElementById('rating-count-' + productId);
+        var currentUserStars = null;
+
+        function renderStars(average, total, userStars) {
+            var filled = Math.round(average);
+            var html = '';
+            for (var i = 1; i <= 5; i++) {
+                var isFilled = i <= filled;
+                var isUserStar = userStars !== null && userStars !== undefined && i <= userStars;
+                html += '<span class="material-symbols-outlined cursor-pointer transition-all hover:scale-125 rating-star ' +
+                    (isUserStar ? 'text-yellow-500 filled-icon' : (isFilled ? 'text-yellow-500 filled-icon' : 'text-gray-300 dark:text-gray-600')) +
+                    '" data-star="' + i + '" onclick="rateProduct(\'' + productId + '\', ' + i + ')">star</span>';
+            }
+            starsContainer.innerHTML = html;
+            avgEl.textContent = average > 0 ? average.toFixed(1) : '-';
+            countEl.textContent = '(' + total + ')';
+            currentUserStars = userStars;
+        }
+
+        function fetchRating() {
+            fetch('/api/v1/products/' + productId + '/rating', { credentials: 'include' })
+                .then(function(r) { return r.json(); })
+                .then(function(resp) {
+                    if (resp && resp.data) {
+                        renderStars(resp.data.averageStars || 0, resp.data.totalRatings || 0, resp.data.currentUserStars);
+                    }
+                })
+                .catch(function(e) { console.error('Rating fetch failed:', e); });
+        }
+
+        fetchRating();
+    })();
+
+    function rateProduct(productId, stars) {
+        var token = document.querySelector('input[name="__RequestVerificationToken"]');
+        var headers = { 'Content-Type': 'application/json' };
+        if (token) headers['RequestVerificationToken'] = token.value;
+
+        fetch('/api/v1/products/' + productId + '/rating', {
+            method: 'POST',
+            headers: headers,
+            credentials: 'include',
+            body: JSON.stringify({ stars: stars })
+        })
+        .then(function(r) { return r.json(); })
+        .then(function(resp) {
+            if (resp && resp.data) {
+                var avgEl = document.getElementById('rating-average-' + productId);
+                var countEl = document.getElementById('rating-count-' + productId);
+                var starsContainer = document.getElementById('rating-stars-' + productId);
+                var data = resp.data;
+                var filled = Math.round(data.averageStars || 0);
+                var userStars = data.currentUserStars;
+                var html = '';
+                for (var i = 1; i <= 5; i++) {
+                    var isFilled = i <= filled;
+                    var isUserStar = userStars !== null && userStars !== undefined && i <= userStars;
+                    html += '<span class="material-symbols-outlined cursor-pointer transition-all hover:scale-125 rating-star ' +
+                        (isUserStar ? 'text-yellow-500 filled-icon' : (isFilled ? 'text-yellow-500 filled-icon' : 'text-gray-300 dark:text-gray-600')) +
+                        '" data-star="' + i + '" onclick="rateProduct(\'' + productId + '\', ' + i + ')">star</span>';
+                }
+                starsContainer.innerHTML = html;
+                avgEl.textContent = data.averageStars > 0 ? data.averageStars.toFixed(1) : '-';
+                countEl.textContent = '(' + (data.totalRatings || 0) + ')';
+            }
+        })
+        .catch(function(e) { console.error('Rating post failed:', e); });
+    }
+</script>

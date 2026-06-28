@@ -1,1 +1,58 @@
-﻿67A58A3F-AC7B-4EB9-A64E-1A836B363DD8	Pixel Art Sticker Collection	Retro pixel art stickers with classic video game characters and 8-bit inspired designs.	4.99	4.7	55	400	[]	["2\u0022","3\u0022","4\u0022"]	061496B1-DA2A-4DB2-8C27-B2B77E0317E7	2026-06-22 16:17:33.6427466	2026-06-22 16:30:30.0352709	NULL	00000000-0000-0000-0000-000000000000	3cac1f24-29ab-4133-aa0c-df8a4836d011	NULL	0	1	ملصقات فن بكسل قديمة بشخصيات ألعاب فيديو كلاسيكية وتصاميم مستوحاة من 8 بت.	مجموعة ملصقات فن البكسل	0	2026-06-22 16:30:29.9550198	5	0x0000000000001FEE
+﻿﻿[18:10:37 ERR] Failed executing DbCommand (208ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+﻿SELECT TOP(1) [u].[Id], [u].[CreatedAt], [u].[CreatedBy], [u].[DeletedAt], [u].[DeletedBy], [u].[IsActive], [u].[IsDarkMode], [u].[IsDeleted], [u].[Language], [u].[LayoutMode], [u].[PrimaryColor], [u].[Theme], [u].[UpdatedAt], [u].[UpdatedBy], [u].[UserId]
+﻿FROM [dbo].[UserSettings] AS [u]
+﻿WHERE [u].[UserId] = @__userId_0
+﻿[18:10:37 ERR] An exception occurred while iterating over the results of a query for context type 'DAKKN.Persistence.DAKKNDbContext'.
+﻿Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'PrimaryColor'.
+﻿   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+﻿   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+﻿--- End of stack trace from previous location ---
+﻿   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+﻿   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+﻿--- End of stack trace from previous location ---
+﻿   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+﻿ClientConnectionId:6a6a279e-3662-4629-8fe6-78b5ae37be8d
+﻿Error Number:207,State:1,Class:16
+﻿Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'PrimaryColor'.
+﻿   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+﻿   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+﻿--- End of stack trace from previous location ---
+﻿   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+﻿   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+﻿--- End of stack trace from previous location ---
+﻿   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+﻿ClientConnectionId:6a6a279e-3662-4629-8fe6-78b5ae37be8d
+﻿Error Number:207,State:1,Class:16
+﻿[18:10:38 ERR] Dakkn Request: Unhandled Exception for Request GetUserSettingsQuery
+﻿Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'PrimaryColor'.
+﻿   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+﻿   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+﻿--- End of stack trace from previous location ---
+﻿   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+﻿   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+﻿--- End of stack trace from previous location ---
+﻿   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+﻿   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Query.ShapedQueryCompilingExpressionVisitor.SingleOrDefaultAsync[TSource](IAsyncEnumerable`1 asyncEnumerable, CancellationToken cancellationToken)
+﻿   at DAKKN.Infrastructure.Repositories.Implementations.Base.GenericRepository`2.GetFirstAsync(Expression`1 predicate, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Infrastructure\Repositories\Implementations\Base\GenericRepository.cs:line 77
+﻿   at DAKKN.Application.Features.Users.Queries.GetUserSettings.GetUserSettingsQueryHandler.Handle(GetUserSettingsQuery request, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Features\Users\Queries\GetUserSettings\GetUserSettingsQueryHandler.cs:line 38
+﻿   at DAKKN.Application.Common.Behaviours.LoggingBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\LoggingBehaviour.cs:line 39
+﻿   at DAKKN.Application.Common.Behaviours.PerformanceBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\PerformanceBehaviour.cs:line 23
+﻿   at DAKKN.Application.Common.Behaviours.ValidationBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\ValidationBehaviour.cs:line 28
+﻿   at DAKKN.Application.Common.Behaviours.UnhandledExceptionBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\UnhandledExceptionBehaviour.cs:line 20
+﻿ClientConnectionId:6a6a279e-3662-4629-8fe6-78b5ae37be8d
+﻿Error Number:207,State:1,Class:16
+﻿[18:10:38 INF] Request finished HTTP/2 GET https://localhost:44308/.well-known/appspecific/com.chrome.devtools.json - 404 null null 979.5019ms
+﻿[18:10:38 INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:44308/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404

@@ -88,6 +88,11 @@ namespace DAKKN.Persistence.Configuration
 
             builder.Ignore(x => x.IsInStock);
             builder.Ignore(x => x.StockStatus);
+
+            builder.HasMany(x => x.Ratings)
+                .WithOne(x => x.Product)
+                .HasForeignKey(x => x.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

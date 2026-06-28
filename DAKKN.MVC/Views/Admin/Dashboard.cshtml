@@ -11,6 +11,7 @@
     var recentOrders = ViewData["RecentOrders"] as List<RecentOrderWidgetViewModel> ?? new();
     var analytics7d = ViewData["Analytics7d"] as DAKKN.Application.DTOs.DashboardAnalyticsDto;
     var analytics30d = ViewData["Analytics30d"] as DAKKN.Application.DTOs.DashboardAnalyticsDto;
+    var recentRatings = ViewData["RecentProductRatings"] as List<DAKKN.Application.Features.Dashboard.Queries.GetRecentProductRatings.RecentProductRatingDto> ?? new();
 }
 
 <div class="space-y-8 pb-12">
@@ -63,7 +64,7 @@
     </div>
 
     <!-- Stock Warning Widgets -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <a asp-action="Inventory" asp-route-stockFilter="lowStock" class="premium-card p-6 flex items-center gap-4 hover:shadow-lg transition-all group">
             <div class="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:bg-amber-500 group-hover:text-white transition-all">
                 <span class="material-symbols-outlined text-2xl">warning</span>
@@ -82,6 +83,59 @@
                 <h3 class="text-xl font-black text-admin-primary group-hover:text-red-500 transition-colors">@ViewData["OutOfStockCount"] @Localizer["admin_products"]</h3>
             </div>
         </a>
+        <a asp-action="BrandReviews" asp-route-statusFilter="pending" class="premium-card p-6 flex items-center gap-4 hover:shadow-lg transition-all group">
+            <div class="w-14 h-14 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-500 group-hover:bg-purple-500 group-hover:text-white transition-all">
+                <span class="material-symbols-outlined text-2xl">rate_review</span>
+            </div>
+            <div>
+                <p class="text-sm font-semibold text-admin-secondary">@Localizer["brand_reviews_filter_pending"]</p>
+                <h3 class="text-xl font-black text-admin-primary group-hover:text-purple-500 transition-colors">@(ViewData["PendingReviewCount"] ?? 0) @Localizer["brand_reviews_title"]</h3>
+            </div>
+        </a>
+    </div>
+
+    <!-- Recent Product Ratings -->
+    <div class="premium-card p-6">
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-3">
+                <span class="material-symbols-outlined text-primary">star</span>
+                <h3 class="text-lg font-bold text-admin-primary">@Localizer["admin_recent_ratings"]</h3>
+            </div>
+            <a asp-action="Inventory" class="text-xs font-bold text-primary hover:underline flex items-center gap-1">
+                @Localizer["admin_view_all"] <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </a>
+        </div>
+        <div class="space-y-3">
+            @if (recentRatings.Count > 0)
+            {
+                @foreach (var rating in recentRatings)
+                {
+                    <div class="flex items-center gap-4 p-3 rounded-xl hover:bg-admin-page/50 transition-colors">
+                        <div class="w-10 h-10 rounded-xl overflow-hidden bg-surface-container flex-shrink-0">
+                            <img src="@(rating.ProductImageFullUrl ?? (string.IsNullOrEmpty(rating.ProductImageUrl) ? "https://ui-avatars.com/api/?name=P&background=6366f1&color=fff&size=40" : rating.ProductImageUrl))" class="w-full h-full object-cover" alt="@rating.ProductName" loading="lazy">
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-bold text-admin-primary truncate">@rating.ProductName</p>
+                            <p class="text-xs text-admin-secondary truncate">@rating.CustomerName</p>
+                        </div>
+                        <div class="flex gap-0.5 items-center">
+                            @for (int s = 0; s < 5; s++)
+                            {
+                                <span class="material-symbols-outlined text-sm @(s < rating.Stars ? "text-yellow-500 fill-icon" : "text-outline/20")">star</span>
+                            }
+                        </div>
+                        <span class="text-[10px] text-admin-secondary font-medium whitespace-nowrap">@rating.CreatedAt.ToString("MMM dd")</span>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="text-center py-8 text-admin-secondary">
+                    <span class="material-symbols-outlined text-4xl mb-2">star_border</span>
+                    <p class="text-sm font-bold">@Localizer["admin_no_ratings_yet"]</p>
+                </div>
+            }
+        </div>
     </div>
 
     <!-- Order Status Summary -->

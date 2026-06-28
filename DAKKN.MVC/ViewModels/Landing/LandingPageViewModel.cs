@@ -24,5 +24,7 @@ namespace DAKKN.MVC.ViewModels.Landing
         public int TotalCategories { get; set; }
         public int TotalCustomers { get; set; }
         public int TotalOrders { get; set; }
+
+        public int EffectiveTrustedCount => Hero.TrustedCountOverride > 0 ? Hero.TrustedCountOverride : TotalCustomers;
     }
 }

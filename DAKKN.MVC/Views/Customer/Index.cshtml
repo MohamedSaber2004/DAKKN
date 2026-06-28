@@ -22,6 +22,28 @@
         </div>
     </div>
 
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-xl">
+        <div class="bg-surface dark:bg-[#1E293B] rounded-[28px] border border-border dark:border-white/5 p-xl shadow-medium flex items-center gap-lg">
+            <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary dark:text-primary-light flex-shrink-0">
+                <span class="material-symbols-outlined text-3xl">shopping_bag</span>
+            </div>
+            <div>
+                <p class="text-xs font-bold uppercase tracking-widest text-text-secondary dark:text-outline-variant">@Localizer["dashboard_orders_count"]</p>
+                <h3 class="text-3xl font-black text-text-primary dark:text-white">@dashboard.TotalOrders</h3>
+            </div>
+        </div>
+        <div class="bg-surface dark:bg-[#1E293B] rounded-[28px] border border-border dark:border-white/5 p-xl shadow-medium flex items-center gap-lg">
+            <div class="w-14 h-14 rounded-2xl bg-error/10 flex items-center justify-center text-error flex-shrink-0">
+                <span class="material-symbols-outlined text-3xl">favorite</span>
+            </div>
+            <div>
+                <p class="text-xs font-bold uppercase tracking-widest text-text-secondary dark:text-outline-variant">@Localizer["dashboard_fav_count"]</p>
+                <h3 class="text-3xl font-black text-text-primary dark:text-white">@dashboard.TotalFavorites</h3>
+            </div>
+        </div>
+    </div>
+
     <!-- Custom Order CTA Card -->
     <section class="bg-gradient-to-br from-primary to-primary-light rounded-[40px] p-0.5 shadow-large">
         <div class="bg-surface dark:bg-[#1E293B] rounded-[39px] p-xl flex flex-col md:flex-row items-center gap-xl relative overflow-hidden">
@@ -40,7 +62,6 @@
             </div>
 
             <div class="w-full md:w-80 h-64 bg-surface-container-low dark:bg-black/20 rounded-3xl flex items-center justify-center relative overflow-hidden group border border-border dark:border-white/5">
-                
                 <div class="absolute inset-0 flex items-center justify-center">
                     <div class="w-48 h-48 border-2 border-dashed border-primary/30 rounded-full animate-spin-slow"></div>
                 </div>
@@ -78,110 +99,107 @@
                 </div>
             </div>
 
-            <!-- Progress Indicator -->
             <div class="mt-xl h-2 bg-surface-container-highest dark:bg-black/40 rounded-full relative overflow-hidden">
                 <div class="absolute inset-y-0 left-0 bg-primary rounded-full transition-all duration-1000 shadow-[0_0_10px_rgba(14,144,140,0.5)]" style="width: 75%"></div>
             </div>
         </section>
     }
 
-    <!-- Recommendations Slider -->
-    <section class="space-y-xl">
-        <div class="flex justify-between items-end mb-lg">
-            <h2 class="font-h2 text-h2 font-bold text-text-primary dark:text-white">@Localizer["Dashboard_Suggested"]</h2>
-            <a asp-action="Products" class="text-primary dark:text-primary-light font-bold hover:underline flex items-center gap-1">
-                @Localizer["admin_view_all"] <span class="material-symbols-outlined text-sm">arrow_forward</span>
-            </a>
-        </div>
-        
-        <div class="relative group">
-            <button onclick="scrollSlider('recs-slider', -1)" class="slider-arrow absolute ltr:-left-6 rtl:-right-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-surface dark:bg-[#1E293B] shadow-large flex items-center justify-center text-primary dark:text-primary-light z-20 border border-border dark:border-white/5 hover:scale-110 transition-transform">
-                <span class="material-symbols-outlined">chevron_left</span>
-            </button>
-            <button onclick="scrollSlider('recs-slider', 1)" class="slider-arrow absolute ltr:-right-6 rtl:-left-6 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-surface dark:bg-[#1E293B] shadow-large flex items-center justify-center text-primary dark:text-primary-light z-20 border border-border dark:border-white/5 hover:scale-110 transition-transform">
-                <span class="material-symbols-outlined">chevron_right</span>
-            </button>
-
-            <div id="recs-slider" class="flex gap-lg overflow-x-auto pb-6 no-scrollbar snap-x scroll-smooth">
+    <!-- Suggest for You -->
+    @if (dashboard.Recommendations.Count > 0)
+    {
+        <section class="space-y-xl">
+            <div class="flex justify-between items-end mb-lg">
+                <div>
+                    <h2 class="font-h2 text-h2 font-bold text-text-primary dark:text-white">@Localizer["Dashboard_Suggested"]</h2>
+                    <p class="text-sm text-text-secondary dark:text-outline-variant mt-1">@Localizer["Dashboard_Suggested_Sub"]</p>
+                </div>
+                <a asp-action="Products" class="text-primary dark:text-primary-light font-bold hover:underline flex items-center gap-1 text-sm">
+                    @Localizer["admin_view_all"] <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                </a>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-xl">
                 @foreach (var prod in dashboard.Recommendations)
                 {
-                    <div class="min-w-[280px] md:min-w-[320px] snap-start group/card bg-surface dark:bg-[#1E293B] rounded-[32px] border border-border dark:border-white/5 overflow-hidden shadow-medium hover:shadow-large transition-all duration-500">
+                    <div class="group bg-surface dark:bg-[#1E293B] rounded-[32px] border border-border dark:border-white/5 overflow-hidden shadow-medium hover:shadow-xl transition-all duration-500 hover:-translate-y-1">
                         <a asp-action="ProductDetails" asp-route-id="@prod.Id" class="block">
                             <div class="aspect-square relative overflow-hidden bg-surface-container dark:bg-black/20">
-                                <img src="@prod.ImageUrl" class="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-700">
-                                <div class="absolute bottom-4 left-4 right-4 bg-surface/90 dark:bg-black/60 backdrop-blur-md p-4 rounded-2xl translate-y-4 opacity-0 group-hover/card:translate-y-0 group-hover/card:opacity-100 transition-all border border-white/10">
-                                    <div class="flex justify-between items-center">
-                                        <h4 class="font-bold text-sm text-text-primary dark:text-white truncate pr-2">@prod.Name</h4>
-                                        <span class="font-bold text-primary dark:text-primary-light">@prod.Price @Localizer["Currency_EGP"]</span>
-                                    </div>
-                                </div>
+                                <img src="@prod.ImageUrl" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                             </div>
                         </a>
+                        <div class="p-lg space-y-md">
+                            <div class="min-w-0">
+                                <a asp-action="ProductDetails" asp-route-id="@prod.Id" class="no-underline">
+                                    <h4 class="font-bold text-text-primary dark:text-white truncate group-hover:text-primary dark:group-hover:text-primary-light transition-colors">@prod.Name</h4>
+                                </a>
+                                <p class="text-xs text-text-secondary dark:text-outline-variant">@(string.IsNullOrEmpty(prod.CategoryName) ? "" : prod.CategoryName)</p>
+                            </div>
+
+                            @if (prod.AverageRating > 0)
+                            {
+                                <div class="flex items-center gap-2">
+                                    <div class="flex gap-0.5">
+                                        @for (int s = 0; s < 5; s++)
+                                        {
+                                            <span class="material-symbols-outlined text-sm @(s < (int)prod.AverageRating ? "text-amber-400 fill-icon" : "text-border dark:text-outline-variant")">star</span>
+                                        }
+                                    </div>
+                                    <span class="text-xs font-medium text-text-secondary dark:text-outline-variant">@prod.AverageRating.ToString("0.0") (@prod.ReviewCount)</span>
+                                </div>
+                            }
+
+                            <div class="flex items-center justify-between pt-sm border-t border-border dark:border-white/5">
+                                <span class="text-xl font-bold text-primary dark:text-primary-light">@prod.Price.ToString("N0") @Localizer["Currency_EGP"]</span>
+                                <a asp-action="ProductDetails" asp-route-id="@prod.Id" class="w-10 h-10 rounded-xl bg-primary/10 text-primary dark:text-primary-light flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all">
+                                    <span class="material-symbols-outlined text-lg">visibility</span>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 }
             </div>
-        </div>
-    </section>
+        </section>
+    }
 
-    <!-- Programming Stickers Grid -->
-    <section class="space-y-xl">
-        <h2 class="font-h2 text-h2 font-bold mb-lg text-text-primary dark:text-white">@Localizer["Dashboard_Programming"]</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-xl">
-            @foreach (var prod in dashboard.ProgrammingStickers)
-            {
-                <div class="product-card group bg-surface dark:bg-[#1E293B] rounded-[32px] border border-border dark:border-white/5 p-lg shadow-small hover:shadow-medium transition-all">
-                    <div class="flex gap-lg items-center">
-                        <div class="w-24 h-24 rounded-2xl overflow-hidden bg-surface-container dark:bg-black/20 flex-shrink-0 border border-border dark:border-white/5">
-                            <img src="@prod.ImageUrl" class="w-full h-full object-cover group-hover:scale-110 transition-transform">
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <h4 class="font-bold text-lg truncate text-text-primary dark:text-white group-hover:text-primary transition-colors">@prod.Name</h4>
-                            <p class="text-primary dark:text-primary-light font-bold">@prod.Price @Localizer["Currency_EGP"]</p>
-                            <a asp-action="ProductDetails" asp-route-id="@prod.Id" class="text-xs text-text-secondary dark:text-outline-variant mt-2 inline-block hover:text-primary dark:hover:text-primary-light font-bold">@Localizer["admin_view_all"]</a>
-                        </div>
-                        <button class="w-12 h-12 rounded-2xl bg-primary/10 text-primary dark:text-primary-light flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all border border-primary/10">
-                            <span class="material-symbols-outlined">add</span>
-                        </button>
-                    </div>
+    <!-- My Recent Reviews -->
+    @if (ViewData["RecentReviews"] is List<DAKKN.Application.Features.BrandReviews.DTOs.BrandReviewDto> recentReviews && recentReviews.Count > 0)
+    {
+        <section class="space-y-xl">
+            <div class="flex justify-between items-end mb-lg">
+                <div>
+                    <h2 class="font-h2 text-h2 font-bold text-text-primary dark:text-white">@Localizer["brand_reviews_my_reviews"]</h2>
+                    <p class="text-sm text-text-secondary dark:text-outline-variant mt-1">@Localizer["brand_reviews_recent"]</p>
                 </div>
-            }
-        </div>
-    </section>
+                <a asp-action="BrandReviews" class="text-primary dark:text-primary-light font-bold hover:underline flex items-center gap-1 text-sm">
+                    @Localizer["admin_view_all"] <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                </a>
+            </div>
 
-    <!-- Meme Stickers Grid -->
-    <section class="space-y-xl">
-        <h2 class="font-h2 text-h2 font-bold mb-lg text-text-primary dark:text-white">@Localizer["Dashboard_Memes"]</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-xl">
-            @foreach (var prod in dashboard.MemeStickers)
-            {
-                <div class="product-card group bg-surface dark:bg-[#1E293B] rounded-[32px] border border-border dark:border-white/5 overflow-hidden shadow-small hover:shadow-medium transition-all">
-                    <div class="aspect-square relative overflow-hidden bg-surface-container dark:bg-black/20">
-                        <img src="@prod.ImageUrl" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
-                    </div>
-                    <div class="p-lg">
-                        <h4 class="font-bold truncate text-text-primary dark:text-white">@prod.Name</h4>
-                        <div class="flex justify-between items-center mt-md">
-                            <span class="font-bold text-primary dark:text-primary-light">@prod.Price @Localizer["Currency_EGP"]</span>
-                            <a asp-action="ProductDetails" asp-route-id="@prod.Id" class="w-10 h-10 rounded-full border border-border dark:border-white/10 flex items-center justify-center text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:border-primary transition-all">
-                                <span class="material-symbols-outlined text-sm">visibility</span>
-                            </a>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-xl">
+                @foreach (var review in recentReviews)
+                {
+                    <div class="bg-surface dark:bg-[#1E293B] rounded-[32px] border border-border dark:border-white/5 p-xl shadow-medium hover:shadow-lg transition-all">
+                        <div class="flex items-center gap-1 mb-md">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <span class="material-symbols-outlined text-lg @(i <= review.Rating ? "text-amber-400 fill-icon" : "text-border dark:text-outline-variant")">star</span>
+                            }
+                            <span class="text-xs font-medium text-text-secondary dark:text-outline-variant ltr:ml-auto rtl:mr-auto">@review.CreatedAt.ToString("MMM dd, yyyy")</span>
+                        </div>
+
+                        <h4 class="font-bold text-text-primary dark:text-white mb-sm">@review.ReviewTitle</h4>
+                        <p class="text-sm text-text-secondary dark:text-outline-variant line-clamp-3 leading-relaxed">
+                            @(review.ReviewText.Length > 120 ? review.ReviewText[..120] + "..." : review.ReviewText)
+                        </p>
+
+                        <div class="mt-lg pt-md border-t border-border dark:border-white/5 text-right">
+                            <a asp-action="BrandReviews" class="text-xs font-bold text-primary dark:text-primary-light hover:underline">@Localizer["brand_reviews_view"]</a>
                         </div>
                     </div>
-                </div>
-            }
-        </div>
-    </section>
+                }
+            </div>
+        </section>
+    }
 </div>
-
-@section Scripts {
-    <script>
-        function scrollSlider(id, direction) {
-            const slider = document.getElementById(id);
-            const scrollAmount = slider.clientWidth * 0.8;
-            slider.scrollBy({
-                left: direction * scrollAmount,
-                behavior: 'smooth'
-            });
-        }
-    </script>
-}

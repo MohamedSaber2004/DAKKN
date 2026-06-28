@@ -47,7 +47,7 @@ namespace DAKKN.Application.Features.Auth.Comands.RefreshToken
             await _unitOfWork.GetRepository<UserRefreshToken>().AddAsync(newTokenEntity);
             await _unitOfWork.SaveChangesAsync();
 
-            return new RefreshTokenResponseDto(newAccessToken, newRefreshToken);
+            return new RefreshTokenResponseDto(newAccessToken, newRefreshToken, user.Id);
         }
     }
 }

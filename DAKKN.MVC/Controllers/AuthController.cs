@@ -230,6 +230,13 @@ namespace DAKKN.MVC.Controllers
             try
             {
                 var result = await _mediator.Send(new RefreshTokenCommand(token));
+
+                var user = await _userManager.FindByIdAsync(result.UserId.ToString());
+                if (user != null)
+                {
+                    await _signInManager.SignInAsync(user, isPersistent: true);
+                }
+
                 return Ok(result);
             }
             catch (ValidationException ex)
