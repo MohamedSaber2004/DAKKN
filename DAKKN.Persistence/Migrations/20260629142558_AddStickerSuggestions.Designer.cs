@@ -4,6 +4,7 @@ using DAKKN.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAKKN.Persistence.Migrations
 {
     [DbContext(typeof(DAKKNDbContext))]
-    partial class DAKKNDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260629142558_AddStickerSuggestions")]
+    partial class AddStickerSuggestions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -890,8 +893,6 @@ namespace DAKKN.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ConvertedProductId");
-
                     b.HasIndex("UserId");
 
                     b.ToTable("StickerSuggestions", "dbo");
@@ -1347,18 +1348,11 @@ namespace DAKKN.Persistence.Migrations
 
             modelBuilder.Entity("DAKKN.Domain.Entities.StickerSuggestion", b =>
                 {
-                    b.HasOne("DAKKN.Domain.Entities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ConvertedProductId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("DAKKN.Domain.Entities.ApplicationUser", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Product");
 
                     b.Navigation("User");
                 });

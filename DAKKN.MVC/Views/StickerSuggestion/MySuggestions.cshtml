@@ -1,0 +1,92 @@
+@model DAKKN.Application.Common.Models.PagginatedResult<DAKKN.Application.Features.StickerSuggestions.DTOs.StickerSuggestionDto>
+@{
+    Layout = "_LayoutCustomer";
+    ViewData["Title"] = Localizer["sticker_suggestion_my_title"];
+}
+
+<div class="max-w-4xl mx-auto px-4 py-6 md:py-8">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 md:mb-8 gap-4">
+        <div>
+            <h1 class="text-xl md:text-2xl font-bold">@Localizer["sticker_suggestion_my_heading"]</h1>
+            <p class="text-gray-500 dark:text-gray-400">@Localizer["sticker_suggestion_my_subtitle"]</p>
+        </div>
+        <a asp-action="Submit" class="self-start sm:self-auto bg-primary-600 hover:bg-primary-700 text-white font-medium py-2.5 px-5 rounded-lg transition duration-200 text-center">
+            @Localizer["sticker_suggestion_my_new"]
+        </a>
+    </div>
+
+    @if (TempData["Success"] is not null)
+    {
+        <div class="bg-green-100 dark:bg-green-900/30 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-300 px-4 py-3 rounded-lg mb-6">
+            @TempData["Success"]
+        </div>
+    }
+
+    @if (!Model.Items.Any())
+    {
+        <div class="text-center py-12 md:py-16">
+            <span class="material-symbols-outlined text-5xl text-gray-300 mb-4">lightbulb</span>
+            <h2 class="text-lg md:text-xl font-semibold text-gray-500">@Localizer["sticker_suggestion_my_empty"]</h2>
+            <p class="text-gray-400 mt-1">@Localizer["sticker_suggestion_my_empty_sub"]</p>
+            <a asp-action="Submit" class="inline-block mt-4 bg-primary-600 hover:bg-primary-700 text-white font-medium py-2.5 px-5 rounded-lg transition">
+                @Localizer["sticker_suggestion_my_empty_btn"]
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="grid gap-4">
+            @foreach (var item in Model.Items)
+            {
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 md:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="flex-1 min-w-0">
+                        <h3 class="font-semibold truncate">@item.Title</h3>
+                        <p class="text-sm text-gray-500 mt-1">@item.CreatedAt.ToString("MMM dd, yyyy")</p>
+                        @if (item.ConvertedProductId.HasValue)
+                        {
+                            <a asp-controller="Customer" asp-action="ProductDetails" asp-route-id="@item.ConvertedProductId" class="inline-flex items-center gap-1 text-sm text-green-600 dark:text-green-400 hover:underline mt-1">
+                                <span class="material-symbols-outlined text-base">open_in_new</span>
+                                @item.ConvertedProductName ?? @Localizer["sticker_suggestion_details_view_product"]
+                            </a>
+                        }
+                    </div>
+                    <div class="flex items-center gap-3 self-end sm:self-auto">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap
+                            @(item.Status switch
+                            {
+                                "Pending" => "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300",
+                                "UnderReview" => "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+                                "Approved" => "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+                                "Rejected" => "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
+                                _ => "bg-gray-100 text-gray-700"
+                            })">
+                            @Localizer[$"suggestion_status_{item.Status.ToLower()}"]
+                        </span>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="text-primary-600 hover:text-primary-700 font-medium text-sm whitespace-nowrap">
+                            @Localizer["admin_sticker_suggestions_details"]
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @if (Model.TotalPages > 1)
+        {
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
+                @if (Model.HasPreviousPage)
+                {
+                    <a asp-action="MySuggestions" asp-route-pageNumber="@(Model.PageNumber - 1)" class="w-full sm:w-auto text-center px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                        @Localizer["common_previous"]
+                    </a>
+                }
+                <span class="text-sm text-gray-500">@Localizer["common_page_of", Model.PageNumber, Model.TotalPages]</span>
+                @if (Model.HasNextPage)
+                {
+                    <a asp-action="MySuggestions" asp-route-pageNumber="@(Model.PageNumber + 1)" class="w-full sm:w-auto text-center px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                        @Localizer["common_next"]
+                    </a>
+                }
+            </div>
+        }
+    }
+</div>

@@ -72,6 +72,14 @@ namespace DAKKN.Appearence.Routes
             public const string Rate = Base + "/products/{productId}/rating";
         }
 
+        public static class StickerSuggestions
+        {
+            public const string Base    = "api/v{version:apiVersion}/sticker-suggestions";
+            public const string My      = Base + "/my";
+            public const string ById    = Base + "/{id:guid}";
+            public const string Status  = Base + "/{id:guid}/status";
+        }
+
         public static class BrandReviews
         {
             public const string My = Base + "/brand-reviews/my";

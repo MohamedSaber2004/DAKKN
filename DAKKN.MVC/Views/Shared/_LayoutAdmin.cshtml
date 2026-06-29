@@ -35,9 +35,15 @@
     <meta name="robots" content="noindex, nofollow" />
     <title>@ViewData["Title"]</title>
 
-    <!-- Fonts -->
+    <!-- Resource Hints -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com" />
+
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 
@@ -53,6 +59,10 @@
 
     <style>
         body { font-family: 'Inter', 'Cairo', sans-serif; transition: background-color 0.3s ease; }
+
+        /* Page fade-in transition */
+        #admin-canvas { animation: pageFadeIn 0.25s ease-out; }
+        @@keyframes pageFadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Collapsible Sidebar Styles */
         .admin-sidebar {
@@ -257,6 +267,10 @@
             <span class="material-symbols-outlined @(currentAction == "Inventory" ? "filled-icon" : "")">inventory_2</span>
             <span>@Localizer["admin_inventory"]</span>
         </a>
+        <a asp-controller="AdminStickerSuggestion" asp-action="Index" class="admin-bnav-item" title="@Localizer["admin_sticker_suggestions"]">
+            <span class="material-symbols-outlined">lightbulb</span>
+            <span>@Localizer["admin_sticker_suggestions"]</span>
+        </a>
         <button type="button" onclick="submitLogout()" class="admin-bnav-item admin-bnav-logout" title="@Localizer["auth.logout"]">
             <span class="material-symbols-outlined">logout</span>
             <span>@Localizer["auth.logout"]</span>
@@ -305,8 +319,10 @@
                 <span class="material-symbols-outlined @(currentAction == "BrandReviews" ? "filled-icon" : "") flex-shrink-0">rate_review</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["brand_reviews_admin_title"]</span>
             </a>
-
-
+            <a asp-controller="AdminStickerSuggestion" asp-action="Index" class="nav-item flex items-center gap-md @(currentAction == "Index" && ViewContext.RouteData.Values["controller"]?.ToString() == "AdminStickerSuggestion" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_sticker_suggestions"]">
+                <span class="material-symbols-outlined @(currentAction == "Index" && ViewContext.RouteData.Values["controller"]?.ToString() == "AdminStickerSuggestion" ? "filled-icon" : "") flex-shrink-0">lightbulb</span>
+                <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_sticker_suggestions"]</span>
+            </a>
             <a asp-controller="Admin" asp-action="Settings" class="nav-item flex items-center gap-md @(currentAction == "Settings" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl mt-auto transition-all duration-200" title="@Localizer["admin_settings"]">
                 <span class="material-symbols-outlined @(currentAction == "Settings" ? "filled-icon" : "") flex-shrink-0">settings</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_settings"]</span>
@@ -372,8 +388,8 @@
         </div>
     </main>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/js/landing.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js" defer></script>
+    <script src="~/js/landing.js" asp-append-version="true" defer></script>
 
     <script>
         // Sidebar Toggle Logic
@@ -459,6 +475,20 @@
                 updateSidebarIcon(true);
             }
         });
+
+        // Hover-based link prefetching for instant page transitions
+        let prefetchTimer;
+        document.addEventListener('mouseover', function(e) {
+            const link = e.target.closest('a[href]');
+            if (!link || !link.href.startsWith(location.origin) || link.href === location.href) return;
+            clearTimeout(prefetchTimer);
+            prefetchTimer = setTimeout(function() {
+                const l = document.createElement('link');
+                l.rel = 'prefetch';
+                l.href = link.href;
+                document.head.appendChild(l);
+            }, 80);
+        }, { passive: true });
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

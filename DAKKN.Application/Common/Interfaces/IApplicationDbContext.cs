@@ -19,6 +19,7 @@ namespace DAKKN.Application.Common.Interfaces
         DbSet<OrderItem> OrderItems { get; }
         DbSet<OrderStatusHistory> OrderStatusHistories { get; }
         DbSet<UserFavorite> UserFavorites { get; }
+        DbSet<StickerSuggestion> StickerSuggestions { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

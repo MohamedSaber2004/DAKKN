@@ -28,6 +28,7 @@ namespace DAKKN.Persistence
         public DbSet<OrderItem> OrderItems => Set<OrderItem>();
         public DbSet<OrderStatusHistory> OrderStatusHistories => Set<OrderStatusHistory>();
         public DbSet<BrandReview> BrandReviews => Set<BrandReview>();
+        public DbSet<StickerSuggestion> StickerSuggestions => Set<StickerSuggestion>();
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {

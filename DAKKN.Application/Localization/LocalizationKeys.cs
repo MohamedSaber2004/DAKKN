@@ -430,6 +430,84 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString Deleted = new("order.deleted");
         }
 
+        public static class SuggestionMessages
+        {
+            public static readonly KeyString Submitted = new("suggestion.submitted");
+            public static readonly KeyString NotFound = new("suggestion.not_found");
+            public static readonly KeyString Unauthorized = new("suggestion.unauthorized");
+            public static readonly KeyString StatusUpdated = new("suggestion.status_updated");
+            public static readonly KeyString InvalidStatusTransition = new("suggestion.invalid_status_transition");
+            public static readonly KeyString TitleRequired = new("suggestion.title_required");
+            public static readonly KeyString DescriptionRequired = new("suggestion.description_required");
+        }
+
+        public static class CommonKeys
+        {
+            public static readonly KeyString Previous = new("common_previous");
+            public static readonly KeyString Next = new("common_next");
+            public static readonly KeyString PageOf = new("common_page_of");
+        }
+
+        public static class SuggestionStatusKeys
+        {
+            public static readonly KeyString Pending = new("suggestion_status_pending");
+            public static readonly KeyString UnderReview = new("suggestion_status_underreview");
+            public static readonly KeyString Approved = new("suggestion_status_approved");
+            public static readonly KeyString Rejected = new("suggestion_status_rejected");
+        }
+
+        public static class StickerSuggestionKeys
+        {
+            public static readonly KeyString AdminSuggestions = new("admin_sticker_suggestions");
+            public static readonly KeyString AdminSizes = new("admin_sticker_sizes");
+            public static readonly KeyString AdminSubtitle = new("admin_sticker_suggestions_subtitle");
+            public static readonly KeyString FilterStatus = new("admin_sticker_suggestions_filter_status");
+            public static readonly KeyString FilterAll = new("admin_sticker_suggestions_filter_all");
+            public static readonly KeyString Empty = new("admin_sticker_suggestions_empty");
+            public static readonly KeyString User = new("admin_sticker_suggestions_user");
+            public static readonly KeyString ThTitle = new("admin_sticker_suggestions_th_title");
+            public static readonly KeyString ThStatus = new("admin_sticker_suggestions_th_status");
+            public static readonly KeyString ThDate = new("admin_sticker_suggestions_th_date");
+            public static readonly KeyString ThActions = new("admin_sticker_suggestions_th_actions");
+            public static readonly KeyString Details = new("admin_sticker_suggestions_details");
+            public static readonly KeyString DetailsTitle = new("admin_sticker_suggestion_details_title");
+            public static readonly KeyString Back = new("admin_sticker_suggestion_back");
+            public static readonly KeyString Image = new("admin_sticker_suggestion_image");
+            public static readonly KeyString AdminNote = new("admin_sticker_suggestion_admin_note");
+            public static readonly KeyString SubmittedBy = new("admin_sticker_suggestion_submitted_by");
+            public static readonly KeyString UpdateStatus = new("admin_sticker_suggestion_update_status");
+            public static readonly KeyString NewStatus = new("admin_sticker_suggestion_new_status");
+            public static readonly KeyString ConvertedProduct = new("admin_sticker_suggestion_converted_product");
+            public static readonly KeyString NotePh = new("admin_sticker_suggestion_note_ph");
+            public static readonly KeyString ProductPh = new("admin_sticker_suggestion_product_ph");
+            public static readonly KeyString UpdateBtn = new("admin_sticker_suggestion_update_btn");
+
+            public static readonly KeyString SubmitTitle = new("sticker_suggestion_submit_title");
+            public static readonly KeyString SubmitHeading = new("sticker_suggestion_submit_heading");
+            public static readonly KeyString SubmitSubtitle = new("sticker_suggestion_submit_subtitle");
+            public static readonly KeyString FormTitle = new("sticker_suggestion_form_title");
+            public static readonly KeyString FormTitlePh = new("sticker_suggestion_form_title_ph");
+            public static readonly KeyString FormDesc = new("sticker_suggestion_form_desc");
+            public static readonly KeyString FormDescPh = new("sticker_suggestion_form_desc_ph");
+            public static readonly KeyString FormTags = new("sticker_suggestion_form_tags");
+            public static readonly KeyString FormTagsPh = new("sticker_suggestion_form_tags_ph");
+            public static readonly KeyString FormTagsHint = new("sticker_suggestion_form_tags_hint");
+            public static readonly KeyString FormImage = new("sticker_suggestion_form_image");
+            public static readonly KeyString FormSubmit = new("sticker_suggestion_form_submit");
+            public static readonly KeyString MyTitle = new("sticker_suggestion_my_title");
+            public static readonly KeyString MyHeading = new("sticker_suggestion_my_heading");
+            public static readonly KeyString MySubtitle = new("sticker_suggestion_my_subtitle");
+            public static readonly KeyString MyNew = new("sticker_suggestion_my_new");
+            public static readonly KeyString MyEmpty = new("sticker_suggestion_my_empty");
+            public static readonly KeyString MyEmptySub = new("sticker_suggestion_my_empty_sub");
+            public static readonly KeyString MyEmptyBtn = new("sticker_suggestion_my_empty_btn");
+            public static readonly KeyString CustomerDetailsTitle = new("sticker_suggestion_details_title");
+            public static readonly KeyString CustomerDetailsBack = new("sticker_suggestion_details_back");
+            public static readonly KeyString DetailsConverted = new("sticker_suggestion_details_converted");
+            public static readonly KeyString DetailsViewProduct = new("sticker_suggestion_details_view_product");
+            public static readonly KeyString SubmittedOn = new("sticker_suggestion_details_submitted_on");
+        }
+
         public static class AdminShipping
         {
             public static readonly KeyString Title = new("admin_shipping.title");

@@ -40,9 +40,15 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>@ViewData["Title"]</title>
 
-    <!-- Fonts -->
+    <!-- Resource Hints -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    <link rel="dns-prefetch" href="https://cdn.tailwindcss.com" />
+
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Cairo:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
 
@@ -58,6 +64,10 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
     <style>
+        /* Page fade-in transition */
+        main { animation: pageFadeIn 0.25s ease-out; }
+        @@keyframes pageFadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
         /* ── Customer Sidebar Transitions ─────────────────────────── */
         .customer-sidebar {
             overflow: hidden;
@@ -217,9 +227,9 @@
                 <span class="material-symbols-outlined @(currentAction == "Favorites" ? "filled-icon" : "")">favorite</span>
                 <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["nav_favorites"]</span>
             </a>
-            <a asp-controller="Customer" asp-action="CustomOrder" class="nav-item flex items-center gap-md @(currentAction == "CustomOrder" ? "bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["nav_custom_order"]">
-                <span class="material-symbols-outlined @(currentAction == "CustomOrder" ? "filled-icon" : "")">brush</span>
-                <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["nav_custom_order"]</span>
+            <a asp-controller="StickerSuggestion" asp-action="Submit" class="nav-item flex items-center gap-md @(currentAction == "Submit" || currentAction == "MySuggestions" || currentAction == "Details" ? "bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["nav_sticker_suggestion"]">
+                <span class="material-symbols-outlined @(currentAction == "Submit" || currentAction == "MySuggestions" || currentAction == "Details" ? "filled-icon" : "")">lightbulb</span>
+                <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["nav_sticker_suggestion"]</span>
             </a>
             <a asp-controller="Customer" asp-action="Orders" class="nav-item flex items-center gap-md @(currentAction == "Orders" ? "bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["admin_orders"]">
                 <span class="material-symbols-outlined @(currentAction == "Orders" ? "filled-icon" : "")">receipt_long</span>
@@ -324,9 +334,9 @@
         </button>
     </nav>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/landing.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js" defer></script>
+    <script src="~/js/site.js" asp-append-version="true" defer></script>
+    <script src="~/js/landing.js" asp-append-version="true" defer></script>
 
     <script>
         function toggleCustomerSidebar() {
@@ -386,6 +396,20 @@
                 updateSidebarIcon(true);
             }
         });
+
+        // Hover-based link prefetching for instant page transitions
+        let prefetchTimer;
+        document.addEventListener('mouseover', function(e) {
+            const link = e.target.closest('a[href]');
+            if (!link || !link.href.startsWith(location.origin) || link.href === location.href) return;
+            clearTimeout(prefetchTimer);
+            prefetchTimer = setTimeout(function() {
+                const l = document.createElement('link');
+                l.rel = 'prefetch';
+                l.href = link.href;
+                document.head.appendChild(l);
+            }, 80);
+        }, { passive: true });
     </script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

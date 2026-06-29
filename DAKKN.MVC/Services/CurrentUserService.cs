@@ -1,4 +1,5 @@
 using DAKKN.Application.Common.Interfaces;
+using DAKKN.Domain.Enums;
 using System.Security.Claims;
 
 namespace DAKKN.Appearence.Services
@@ -40,5 +41,21 @@ namespace DAKKN.Appearence.Services
         public bool IsAuthenticated => _httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
 
         public string? IpAddress => _httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString();
+
+        public UserType UserType
+        {
+            get
+            {
+                var user = _httpContextAccessor.HttpContext?.User;
+                if (user == null || !IsAuthenticated)
+                    return UserType.User;
+
+                var roleClaim = user.FindFirst(ClaimTypes.Role)?.Value;
+                if (Enum.TryParse<UserType>(roleClaim, true, out var userType))
+                    return userType;
+
+                return UserType.User;
+            }
+        }
     }
 }

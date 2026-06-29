@@ -1,0 +1,83 @@
+@model DAKKN.Application.Features.StickerSuggestions.DTOs.StickerSuggestionDto
+@{
+    Layout = "_LayoutCustomer";
+    ViewData["Title"] = Localizer["sticker_suggestion_details_title"];
+}
+
+<div class="max-w-3xl mx-auto px-4 py-6 md:py-8">
+    <a asp-action="MySuggestions" class="inline-flex items-center gap-1 text-sm text-gray-500 hover:text-gray-700 mb-6">
+        <span class="material-symbols-outlined text-lg">arrow_back</span>
+        @Localizer["sticker_suggestion_details_back"]
+    </a>
+
+    <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 md:p-6">
+        <div class="flex flex-wrap items-start justify-between mb-4 gap-2">
+            <h1 class="text-xl md:text-2xl font-bold break-words flex-1 min-w-0">@Model.Title</h1>
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium flex-shrink-0
+                @(Model.Status switch
+                {
+                    "Pending" => "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300",
+                    "UnderReview" => "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+                    "Approved" => "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+                    "Rejected" => "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
+                    _ => "bg-gray-100 text-gray-700"
+                })">
+                @Localizer[$"suggestion_status_{Model.Status.ToLower()}"]
+            </span>
+        </div>
+
+        <p class="text-gray-600 dark:text-gray-300 whitespace-pre-wrap break-words">@Model.Description</p>
+
+        @if (!string.IsNullOrEmpty(Model.Tags))
+        {
+            <div class="mt-4 flex flex-wrap gap-2">
+                @foreach (var tag in Model.Tags.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                {
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-50 text-primary-700 dark:bg-primary-900/30 dark:text-primary-300">@tag</span>
+                }
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.ReferenceImagePath))
+        {
+            <div class="mt-6">
+                <h3 class="text-sm font-medium mb-2">@Localizer["admin_sticker_suggestion_image"]</h3>
+                <img src="/suggestions/@Model.ReferenceImagePath" alt="Reference" class="max-w-full h-auto rounded-lg border border-gray-300" />
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.AdminNote))
+        {
+            <div class="mt-6 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600">
+                <h3 class="text-sm font-medium mb-1">@Localizer["admin_sticker_suggestion_admin_note"]</h3>
+                <p class="text-gray-600 dark:text-gray-300">@Model.AdminNote</p>
+            </div>
+        }
+
+        @if (Model.ConvertedProductId.HasValue)
+        {
+            <div class="mt-6 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                <h3 class="text-sm font-medium text-green-700 dark:text-green-300 mb-2">@Localizer["sticker_suggestion_details_converted"]</h3>
+                <a asp-controller="Customer" asp-action="ProductDetails" asp-route-id="@Model.ConvertedProductId" class="flex items-center gap-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-green-200 dark:border-green-700 hover:shadow-sm transition">
+                    @if (!string.IsNullOrEmpty(Model.ConvertedProductImageUrl))
+                    {
+                        <img src="@Model.ConvertedProductImageUrl" alt="@Model.ConvertedProductName" class="w-16 h-16 object-cover rounded-md flex-shrink-0" />
+                    }
+                    else
+                    {
+                        <div class="w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-md flex items-center justify-center flex-shrink-0">
+                            <span class="material-symbols-outlined text-gray-400">inventory_2</span>
+                        </div>
+                    }
+                    <div class="flex-1 min-w-0">
+                        <p class="font-semibold text-gray-900 dark:text-white truncate">@(Model.ConvertedProductName ?? "Product")</p>
+                        <p class="text-xs text-green-600 dark:text-green-400 mt-0.5">@Localizer["sticker_suggestion_details_view_product"]</p>
+                    </div>
+                    <span class="material-symbols-outlined text-gray-400 flex-shrink-0">chevron_right</span>
+                </a>
+            </div>
+        }
+
+        <p class="text-xs text-gray-400 mt-6">@Localizer["sticker_suggestion_details_submitted_on", Model.CreatedAt.ToString("MMM dd, yyyy 'at' HH:mm")]</p>
+    </div>
+</div>

@@ -26,6 +26,7 @@ using DAKKN.Application.Features.Products.Queries.GetMostOrderedProducts;
 using DAKKN.Application.Features.Products.Queries.GetProductById;
 using DAKKN.Application.Features.Categories.Queries.GetCategories;
 using DAKKN.Application.Features.Favorites.Queries.GetFavorites;
+using DAKKN.Application.Features.StickerSuggestions.Queries.GetMySuggestions;
 using DAKKN.Application.Features.Favorites.Commands.ToggleFavorite;
 using DAKKN.Application.Features.Favorites.Commands.RemoveFavorite;
 using DAKKN.Application.Features.ShippingGovernorates.Queries.GetActiveShippingGovernorates;
@@ -59,9 +60,21 @@ namespace DAKKN.MVC.Controllers
 
                 var orders = await mediator.Send(new GetCustomerOrdersQuery());
                 dashboard.TotalOrders = orders.Count;
+                dashboard.LastOrder = orders.Select(o => new OrderDto
+                {
+                    Id = o.Id,
+                    OrderNumber = o.OrderNumber,
+                    Status = o.Status.ToString(),
+                    ItemCount = o.ItemCount,
+                    OrderDate = o.CreatedAt,
+                    TotalAmount = o.TotalAmount
+                }).FirstOrDefault();
 
                 var favorites = await mediator.Send(new GetFavoritesQuery());
                 dashboard.TotalFavorites = favorites.Count;
+
+                var suggestions = await mediator.Send(new GetMySuggestionsQuery(1, 2));
+                dashboard.Suggestions = suggestions.Items.ToList();
             }
 
             return View(new CustomerDashboardViewModel { Dashboard = dashboard });

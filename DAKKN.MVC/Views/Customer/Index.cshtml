@@ -30,7 +30,14 @@
             </div>
             <div>
                 <p class="text-xs font-bold uppercase tracking-widest text-text-secondary dark:text-outline-variant">@Localizer["dashboard_orders_count"]</p>
-                <h3 class="text-3xl font-black text-text-primary dark:text-white">@dashboard.TotalOrders</h3>
+                @if (dashboard.TotalOrders > 0)
+                {
+                    <h3 class="text-3xl font-black text-text-primary dark:text-white">@dashboard.TotalOrders</h3>
+                }
+                else
+                {
+                    <p class="text-sm text-text-secondary dark:text-outline-variant">@Localizer["orders_empty_h"]</p>
+                }
             </div>
         </div>
         <div class="bg-surface dark:bg-[#1E293B] rounded-[28px] border border-border dark:border-white/5 p-xl shadow-medium flex items-center gap-lg">
@@ -39,7 +46,14 @@
             </div>
             <div>
                 <p class="text-xs font-bold uppercase tracking-widest text-text-secondary dark:text-outline-variant">@Localizer["dashboard_fav_count"]</p>
-                <h3 class="text-3xl font-black text-text-primary dark:text-white">@dashboard.TotalFavorites</h3>
+                @if (dashboard.TotalFavorites > 0)
+                {
+                    <h3 class="text-3xl font-black text-text-primary dark:text-white">@dashboard.TotalFavorites</h3>
+                }
+                else
+                {
+                    <p class="text-sm text-text-secondary dark:text-outline-variant">@Localizer["fav_empty_h"]</p>
+                }
             </div>
         </div>
     </div>
@@ -55,7 +69,7 @@
                 <h2 class="text-3xl md:text-4xl font-bold text-text-primary dark:text-white">@Localizer["custom_upload_h"]?</h2>
                 <p class="text-text-secondary dark:text-outline-variant text-lg max-w-2xl">@Localizer["custom_upload_p"]</p>
                 <div class="pt-md">
-                    <a asp-action="CustomOrder" class="inline-flex items-center gap-2 bg-primary text-on-primary px-xl py-4 rounded-2xl font-bold text-lg hover:shadow-large hover:-translate-y-1 transition-all">
+                    <a asp-controller="StickerSuggestion" asp-action="Submit" class="inline-flex items-center gap-2 bg-primary text-on-primary px-xl py-4 rounded-2xl font-bold text-lg hover:shadow-large hover:-translate-y-1 transition-all">
                         @Localizer["custom_submit"] <span class="material-symbols-outlined">arrow_forward</span>
                     </a>
                 </div>
@@ -104,21 +118,36 @@
             </div>
         </section>
     }
-
-    <!-- Suggest for You -->
-    @if (dashboard.Recommendations.Count > 0)
+    else
     {
-        <section class="space-y-xl">
-            <div class="flex justify-between items-end mb-lg">
-                <div>
-                    <h2 class="font-h2 text-h2 font-bold text-text-primary dark:text-white">@Localizer["Dashboard_Suggested"]</h2>
-                    <p class="text-sm text-text-secondary dark:text-outline-variant mt-1">@Localizer["Dashboard_Suggested_Sub"]</p>
+        <section class="bg-surface dark:bg-[#1E293B] rounded-[40px] border border-border dark:border-white/5 p-xl shadow-medium">
+            <div class="flex flex-col items-center justify-center py-8 text-center">
+                <div class="w-20 h-20 rounded-full bg-primary/5 flex items-center justify-center text-primary dark:text-primary-light mb-4">
+                    <span class="material-symbols-outlined text-4xl">local_shipping</span>
                 </div>
-                <a asp-action="Products" class="text-primary dark:text-primary-light font-bold hover:underline flex items-center gap-1 text-sm">
-                    @Localizer["admin_view_all"] <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                <h3 class="text-lg font-bold text-text-primary dark:text-white">@Localizer["dashboard_no_last_order"]</h3>
+                <p class="text-sm text-text-secondary dark:text-outline-variant mt-1">@Localizer["dashboard_no_last_order_sub"]</p>
+                <a asp-action="Products" class="mt-4 bg-primary text-on-primary px-xl py-3 rounded-full font-bold text-sm hover:shadow-lg transition-all">
+                    @Localizer["Dashboard_BrowseNew"]
                 </a>
             </div>
-            
+        </section>
+    }
+
+    <!-- Suggest for You -->
+    <section class="space-y-xl">
+        <div class="flex justify-between items-end mb-lg">
+            <div>
+                <h2 class="font-h2 text-h2 font-bold text-text-primary dark:text-white">@Localizer["Dashboard_Suggested"]</h2>
+                <p class="text-sm text-text-secondary dark:text-outline-variant mt-1">@Localizer["Dashboard_Suggested_Sub"]</p>
+            </div>
+            <a asp-action="Products" class="text-primary dark:text-primary-light font-bold hover:underline flex items-center gap-1 text-sm">
+                @Localizer["admin_view_all"] <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </a>
+        </div>
+
+        @if (dashboard.Recommendations.Count > 0)
+        {
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-xl">
                 @foreach (var prod in dashboard.Recommendations)
                 {
@@ -160,23 +189,101 @@
                     </div>
                 }
             </div>
-        </section>
-    }
-
-    <!-- My Recent Reviews -->
-    @if (ViewData["RecentReviews"] is List<DAKKN.Application.Features.BrandReviews.DTOs.BrandReviewDto> recentReviews && recentReviews.Count > 0)
-    {
-        <section class="space-y-xl">
-            <div class="flex justify-between items-end mb-lg">
-                <div>
-                    <h2 class="font-h2 text-h2 font-bold text-text-primary dark:text-white">@Localizer["brand_reviews_my_reviews"]</h2>
-                    <p class="text-sm text-text-secondary dark:text-outline-variant mt-1">@Localizer["brand_reviews_recent"]</p>
+        }
+        else
+        {
+            <div class="flex flex-col items-center justify-center py-12 text-center bg-surface dark:bg-[#1E293B] rounded-[32px] border border-border dark:border-white/5">
+                <div class="w-20 h-20 rounded-full bg-primary/5 flex items-center justify-center text-primary dark:text-primary-light mb-4">
+                    <span class="material-symbols-outlined text-4xl">recommend</span>
                 </div>
-                <a asp-action="BrandReviews" class="text-primary dark:text-primary-light font-bold hover:underline flex items-center gap-1 text-sm">
-                    @Localizer["admin_view_all"] <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                <h3 class="text-lg font-bold text-text-primary dark:text-white">@Localizer["dashboard_no_recommendations"]</h3>
+                <p class="text-sm text-text-secondary dark:text-outline-variant mt-1">@Localizer["dashboard_no_recommendations_sub"]</p>
+            </div>
+        }
+    </section>
+
+    <!-- My Sticker Suggestions -->
+    <section class="space-y-xl">
+        <div class="flex justify-between items-end mb-lg">
+            <div>
+                <h2 class="font-h2 text-h2 font-bold text-text-primary dark:text-white">@Localizer["Dashboard_Suggestions"]</h2>
+                <p class="text-sm text-text-secondary dark:text-outline-variant mt-1">@Localizer["Dashboard_Suggestions_Sub"]</p>
+            </div>
+            <a asp-controller="StickerSuggestion" asp-action="MySuggestions" class="text-primary dark:text-primary-light font-bold hover:underline flex items-center gap-1 text-sm">
+                @Localizer["admin_view_all"] <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </a>
+        </div>
+
+        @if (dashboard.Suggestions.Count > 0)
+        {
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-xl">
+                @foreach (var suggestion in dashboard.Suggestions)
+                {
+                    <div class="bg-surface dark:bg-[#1E293B] rounded-[28px] border border-border dark:border-white/5 p-xl shadow-medium hover:shadow-lg transition-all flex flex-col">
+                        <div class="flex items-start justify-between gap-3 mb-md">
+                            <h4 class="font-bold text-text-primary dark:text-white truncate flex-1">@suggestion.Title</h4>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap flex-shrink-0
+                                @(suggestion.Status switch
+                                {
+                                    "Pending" => "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300",
+                                    "UnderReview" => "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+                                    "Approved" => "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300",
+                                    "Rejected" => "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300",
+                                    _ => "bg-gray-100 text-gray-700"
+                                })">
+                                @Localizer[$"suggestion_status_{suggestion.Status.ToLower()}"]
+                            </span>
+                        </div>
+                        <p class="text-sm text-text-secondary dark:text-outline-variant line-clamp-2 leading-relaxed">@suggestion.Description</p>
+                        <div class="mt-auto pt-md flex items-center justify-between">
+                            <span class="text-xs text-text-secondary dark:text-outline-variant">@suggestion.CreatedAt.ToString("MMM dd, yyyy")</span>
+                            @if (suggestion.ConvertedProductId.HasValue)
+                            {
+                                <a asp-controller="Customer" asp-action="ProductDetails" asp-route-id="@suggestion.ConvertedProductId" class="text-xs font-bold text-green-600 dark:text-green-400 hover:underline flex items-center gap-1">
+                                    @Localizer["sticker_suggestion_details_view_product"]
+                                    <span class="material-symbols-outlined text-xs">open_in_new</span>
+                                </a>
+                            }
+                            else
+                            {
+                                <a asp-controller="StickerSuggestion" asp-action="Details" asp-route-id="@suggestion.Id" class="text-xs font-bold text-primary dark:text-primary-light hover:underline">
+                                    @Localizer["admin_sticker_suggestions_details"]
+                                </a>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="flex flex-col items-center justify-center py-12 text-center bg-surface dark:bg-[#1E293B] rounded-[32px] border border-border dark:border-white/5">
+                <div class="w-20 h-20 rounded-full bg-primary/5 flex items-center justify-center text-primary dark:text-primary-light mb-4">
+                    <span class="material-symbols-outlined text-4xl">lightbulb</span>
+                </div>
+                <h3 class="text-lg font-bold text-text-primary dark:text-white">@Localizer["sticker_suggestion_my_empty"]</h3>
+                <p class="text-sm text-text-secondary dark:text-outline-variant mt-1">@Localizer["sticker_suggestion_my_empty_sub"]</p>
+                <a asp-controller="StickerSuggestion" asp-action="Submit" class="mt-4 bg-primary text-on-primary px-xl py-3 rounded-full font-bold text-sm hover:shadow-lg transition-all">
+                    @Localizer["sticker_suggestion_my_empty_btn"]
                 </a>
             </div>
+        }
+    </section>
 
+    <!-- My Recent Reviews -->
+    <section class="space-y-xl">
+        <div class="flex justify-between items-end mb-lg">
+            <div>
+                <h2 class="font-h2 text-h2 font-bold text-text-primary dark:text-white">@Localizer["brand_reviews_my_reviews"]</h2>
+                <p class="text-sm text-text-secondary dark:text-outline-variant mt-1">@Localizer["brand_reviews_recent"]</p>
+            </div>
+            <a asp-action="BrandReviews" class="text-primary dark:text-primary-light font-bold hover:underline flex items-center gap-1 text-sm">
+                @Localizer["admin_view_all"] <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </a>
+        </div>
+
+        @if (ViewData["RecentReviews"] is List<DAKKN.Application.Features.BrandReviews.DTOs.BrandReviewDto> recentReviews && recentReviews.Count > 0)
+        {
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-xl">
                 @foreach (var review in recentReviews)
                 {
@@ -200,6 +307,16 @@
                     </div>
                 }
             </div>
-        </section>
-    }
+        }
+        else
+        {
+            <div class="flex flex-col items-center justify-center py-12 text-center bg-surface dark:bg-[#1E293B] rounded-[32px] border border-border dark:border-white/5">
+                <div class="w-20 h-20 rounded-full bg-primary/5 flex items-center justify-center text-primary dark:text-primary-light mb-4">
+                    <span class="material-symbols-outlined text-4xl">rate_review</span>
+                </div>
+                <h3 class="text-lg font-bold text-text-primary dark:text-white">@Localizer["brand_reviews_no_reviews"]</h3>
+                <p class="text-sm text-text-secondary dark:text-outline-variant mt-1">@Localizer["brand_reviews_no_reviews_desc"]</p>
+            </div>
+        }
+    </section>
 </div>
