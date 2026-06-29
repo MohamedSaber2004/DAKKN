@@ -227,11 +227,17 @@
         </div>
     </div>
 
+    <!-- Back to Top -->
+    <button id="back-to-top" class="opacity-0 pointer-events-none" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="@Localizer["back_to_top"]">
+        <span class="material-symbols-outlined text-lg">arrow_upward</span>
+    </button>
+
     @* jQuery is required for validation scripts *@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
     @* Custom Landing Script for i18n & transitions *@
     <script src="~/js/landing.js" asp-append-version="true"></script>
+    <script src="~/js/site-animations.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

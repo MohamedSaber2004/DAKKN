@@ -625,6 +625,7 @@ body {
 .text-admin-muted { color: var(--admin-text-muted); }
 .bg-admin-page { background-color: var(--admin-page-bg); }
 .bg-admin-card { background-color: var(--admin-card-bg); }
+.bg-admin-input { background-color: var(--admin-input-bg); }
 .border-admin-border { border-color: var(--admin-border); }
 
 /* ── 11. Responsive Media Queries ────────────────────────────────────────── */

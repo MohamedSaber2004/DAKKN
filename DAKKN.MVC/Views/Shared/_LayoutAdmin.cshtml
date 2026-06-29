@@ -378,9 +378,6 @@
                 <div class="flex items-center gap-sm">
                     @await Html.PartialAsync("Partials/_LanguageToggle")
                     @await Html.PartialAsync("Partials/_ThemeToggle")
-                    <button class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary dark:text-outline-variant dark:hover:text-primary-light transition-colors hover:bg-primary/5 dark:hover:bg-white/5 relative">
-                        <span class="material-symbols-outlined">notifications</span>
-                    </button>
                 </div>
                 <div class="w-10 h-10 rounded-full bg-primary-container overflow-hidden cursor-pointer shadow-small border border-border dark:border-white/10">
                     <img alt='@Localizer["admin_avatar_alt"]' class="w-full h-full object-cover" src="https://ui-avatars.com/api/?name=@(fullName)&background=69d2cf&color=005957">
@@ -396,8 +393,14 @@
         </div>
     </main>
 
+    <!-- Back to Top -->
+    <button id="back-to-top" class="opacity-0 pointer-events-none" aria-label="@Localizer["back_to_top"]">
+        <span class="material-symbols-outlined text-lg">arrow_upward</span>
+    </button>
+
     <script src="~/lib/jquery/dist/jquery.min.js" defer></script>
     <script src="~/js/landing.js" asp-append-version="true" defer></script>
+    <script src="~/js/site-animations.js" asp-append-version="true" defer></script>
 
     <script>
         // Sidebar Toggle Logic

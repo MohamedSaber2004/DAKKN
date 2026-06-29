@@ -7,11 +7,11 @@
     var isArabic = CultureInfo.CurrentUICulture.Name.StartsWith("ar");
 }
 
-<div class="flex flex-col lg:flex-row gap-lg h-full">
+<div class="flex flex-col lg:flex-row gap-4 lg:gap-lg">
     <!-- Sub-sidebar: Content Modules -->
-    <aside class="w-full lg:w-72 flex-shrink-0">
-        <div class="bg-surface dark:bg-inverse-surface rounded-[24px] shadow-small p-md border border-border dark:border-outline/10 sticky top-0">
-            <h3 class="font-h3 text-h3 font-bold mb-md px-2 text-text-primary dark:text-inverse-on-surface">@Localizer["admin_content_mgmt"]</h3>
+    <aside class="w-full lg:w-64 xl:w-72 flex-shrink-0">
+        <div class="bg-admin-card border border-admin-border rounded-2xl shadow-small p-4 lg:sticky lg:top-0">
+            <h3 class="text-lg font-black text-admin-primary mb-4 px-2">@Localizer["admin_content_mgmt"]</h3>
             <nav class="flex flex-col gap-xs">
                 <button onclick="switchTab('section-order')" id="tab-section-order" class="content-tab-btn active flex items-center gap-md p-3 rounded-xl transition-all duration-200 text-left rtl:text-right w-full">
                     <span class="material-symbols-outlined">reorder</span>
@@ -40,18 +40,18 @@
     <!-- Main Editor Area -->
     <div class="flex-1 min-w-0">
         <!-- Toast Container -->
-        <div id="toastCms" class="fixed bottom-8 ltr:right-8 rtl:left-8 z-[200] flex flex-col gap-3"></div>
-        <!-- Global Save All Button -->
-        <button onclick="saveAllChanges()" class="fixed bottom-8 right-8 z-50 bg-primary text-on-primary px-2xl py-lg rounded-full font-bold shadow-xl hover:scale-105 transition-all flex items-center gap-md">
-            <span class="material-symbols-outlined">save</span>
-            @Localizer["admin_save_all_changes"]
-        </button>
+        <div id="toastCms" class="fixed bottom-24 lg:bottom-16 ltr:right-4 lg:ltr:right-8 rtl:left-4 lg:rtl:left-8 z-[200] flex flex-col gap-3 max-w-[calc(100vw-2rem)] lg:max-w-md"></div>
+    <!-- Global Save All Button -->
+    <button onclick="saveAllChanges()" id="cms-global-save" class="fixed bottom-20 lg:bottom-8 ltr:right-4 lg:ltr:right-8 rtl:left-4 lg:rtl:left-8 z-50 bg-primary text-on-primary w-14 h-14 lg:w-auto lg:h-auto lg:px-2xl lg:py-lg rounded-2xl lg:rounded-full font-bold shadow-xl hover:scale-105 transition-all flex items-center justify-center lg:gap-md" title="@Localizer["admin_save_all_changes"]">
+        <span class="material-symbols-outlined">save</span>
+        <span class="hidden lg:inline">@Localizer["admin_save_all_changes"]</span>
+    </button>
         <!-- Section: Order Management -->
-        <div id="panel-section-order" class="content-panel bg-surface dark:bg-inverse-surface rounded-[32px] shadow-medium border border-border dark:border-outline/10 p-xl transition-all duration-300">
+        <div id="panel-section-order" class="content-panel bg-surface dark:bg-[#1E293B] rounded-[32px] shadow-medium border border-admin-border dark:border-white/5 p-xl transition-all duration-300">
             <div class="flex justify-between items-center mb-xl">
                 <div>
-                    <h2 class="font-h2 text-h2 font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["admin_section_order"]</h2>
-                    <p class="text-text-secondary dark:text-outline-variant mt-xs">@Localizer["admin_section_order_desc"]</p>
+                    <h2 class="font-h2 text-h2 font-bold text-admin-primary dark:text-white">@Localizer["admin_section_order"]</h2>
+                    <p class="text-admin-secondary dark:text-admin-muted-variant mt-xs">@Localizer["admin_section_order_desc"]</p>
                 </div>
                 <button onclick="saveLayout()" class="bg-primary text-on-primary px-xl py-md rounded-full font-bold shadow-medium hover:scale-105 transition-all">
                     @Localizer["admin_save_layout"]
@@ -61,19 +61,19 @@
             <div id="sortable-sections" class="flex flex-col gap-md">
                 @foreach (var item in Model.SectionOrder.Sections.OrderBy(s => s.DisplayOrder))
                 {
-                    <div class="section-card group bg-surface-container dark:bg-surface-container-high p-lg rounded-2xl border border-border dark:border-outline/10 flex items-center gap-lg hover:border-primary/50 transition-all cursor-grab active:cursor-grabbing" data-id="@item.Id">
-                        <span class="material-symbols-outlined drag_indicator text-outline group-hover:text-primary transition-colors">drag_indicator</span>
+                    <div class="section-card group p-lg rounded-2xl border border-admin-border dark:border-white/5 flex items-center gap-lg hover:border-primary/50 transition-all cursor-grab active:cursor-grabbing" style="background-color:var(--admin-page-bg)" data-id="@item.Id">
+                        <span class="material-symbols-outlined drag_indicator text-admin-muted group-hover:text-primary transition-colors">drag_indicator</span>
                         <div class="flex-1">
-                            <h4 class="font-h3 text-h3 font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["section_" + item.Id.Replace("-", "_")]</h4>
-                            <span class="text-xs uppercase tracking-wider text-outline font-bold">@item.Id</span>
+                            <h4 class="font-h3 text-h3 font-bold text-admin-primary dark:text-white">@Localizer["section_" + item.Id.Replace("-", "_")]</h4>
+                            <span class="text-xs uppercase tracking-wider text-admin-muted font-bold">@item.Id</span>
                         </div>
                         <div class="flex items-center gap-xl">
                             <label class="relative inline-flex items-center cursor-pointer">
                                 <input type="checkbox" class="sr-only peer" @(item.IsVisible ? "checked" : "")>
                                 <div class="w-11 h-6 bg-outline/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:ltr:left-[2px] after:rtl:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
-                                <span class="ltr:ml-3 rtl:mr-3 text-sm font-medium text-text-secondary dark:text-outline-variant">@Localizer["admin_visibility_toggle"]</span>
+                                <span class="ltr:ml-3 rtl:mr-3 text-sm font-medium text-admin-secondary dark:text-admin-muted-variant">@Localizer["admin_visibility_toggle"]</span>
                             </label>
-                            <button onclick="goToEditor('@item.Id')" class="w-10 h-10 rounded-full flex items-center justify-center bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 text-primary hover:bg-primary hover:text-on-primary transition-all" title="@Localizer["admin_edit"]">
+                            <button onclick="goToEditor('@item.Id')" class="w-10 h-10 rounded-full flex items-center justify-center bg-surface dark:bg-[#1E293B] border border-admin-border dark:border-white/5 text-primary hover:bg-primary hover:text-on-primary transition-all" title="@Localizer["admin_edit"]">
                                 <span class="material-symbols-outlined">edit</span>
                             </button>
                         </div>
@@ -83,11 +83,11 @@
         </div>
 
         <!-- Section: Hero Settings -->
-        <div id="panel-hero-banner" class="content-panel hidden bg-surface dark:bg-inverse-surface rounded-[32px] shadow-medium border border-border dark:border-outline/10 p-xl">
+        <div id="panel-hero-banner" class="content-panel hidden bg-surface dark:bg-[#1E293B] rounded-[32px] shadow-medium border border-admin-border dark:border-white/5 p-xl">
             <h2 class="font-h2 text-h2 font-bold mb-xl">@Localizer["admin_hero_settings"]</h2>
 
             <!-- Language Tabs -->
-            <div class="flex gap-sm mb-xl border-b border-border dark:border-outline/10 pb-sm">
+            <div class="flex gap-sm mb-xl border-b border-admin-border dark:border-white/5 pb-sm">
                 <button onclick="switchHeroLang('ar')" id="hero-lang-ar" class="hero-lang-tab active px-lg py-md rounded-xl font-bold text-sm transition-all">@Localizer["admin_hero_lang_ar"]</button>
                 <button onclick="switchHeroLang('en')" id="hero-lang-en" class="hero-lang-tab px-lg py-md rounded-xl font-bold text-sm transition-all">@Localizer["admin_hero_lang_en"]</button>
             </div>
@@ -98,60 +98,60 @@
                     <!-- Arabic Fields -->
                     <div id="hero-fields-ar" class="hero-lang-fields">
                         <div class="flex flex-col gap-xs">
-                            <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_badge"] <span class="text-xs text-outline">@Localizer["admin_lang_ar_marker"]</span></label>
-                            <input id="hero-badge-ar" type="text" value="@Model.Hero.BadgeAr" placeholder="@Localizer["admin_content_ph_badge_ar"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md focus:ring-primary focus:border-primary transition-all">
+                            <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_hero_badge"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_ar_marker"]</span></label>
+                            <input id="hero-badge-ar" type="text" value="@Model.Hero.BadgeAr" placeholder="@Localizer["admin_content_ph_badge_ar"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md focus:ring-primary focus:border-primary transition-all">
                         </div>
                         <div class="flex flex-col gap-xs">
-                            <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_title_segments"] <span class="text-xs text-outline">@Localizer["admin_lang_ar_marker"]</span></label>
+                            <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_hero_title_segments"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_ar_marker"]</span></label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm">
-                                <input id="hero-title-a-ar" type="text" value="@Model.Hero.TitleAAr" placeholder="@Localizer["admin_content_ph_hero_title_a_ar"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
-                                <input id="hero-title-b-ar" type="text" value="@Model.Hero.TitleBAr" placeholder="@Localizer["admin_content_ph_hero_title_b_ar"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md text-primary font-bold">
-                                <input id="hero-title-c-ar" type="text" value="@Model.Hero.TitleCAr" placeholder="@Localizer["admin_content_ph_hero_title_c_ar"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
-                                <input id="hero-title-d-ar" type="text" value="@Model.Hero.TitleDAr" placeholder="@Localizer["admin_content_ph_hero_title_d_ar"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md text-secondary font-bold">
+                                <input id="hero-title-a-ar" type="text" value="@Model.Hero.TitleAAr" placeholder="@Localizer["admin_content_ph_hero_title_a_ar"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">
+                                <input id="hero-title-b-ar" type="text" value="@Model.Hero.TitleBAr" placeholder="@Localizer["admin_content_ph_hero_title_b_ar"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md text-primary font-bold">
+                                <input id="hero-title-c-ar" type="text" value="@Model.Hero.TitleCAr" placeholder="@Localizer["admin_content_ph_hero_title_c_ar"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">
+                                <input id="hero-title-d-ar" type="text" value="@Model.Hero.TitleDAr" placeholder="@Localizer["admin_content_ph_hero_title_d_ar"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md text-secondary font-bold">
                             </div>
                         </div>
                         <div class="flex flex-col gap-xs">
-                            <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_desc"] <span class="text-xs text-outline">@Localizer["admin_lang_ar_marker"]</span></label>
-                            <textarea id="hero-desc-ar" rows="4" placeholder="@Localizer["admin_content_ph_hero_desc_ar"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.Hero.DescriptionAr</textarea>
+                            <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_hero_desc"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_ar_marker"]</span></label>
+                            <textarea id="hero-desc-ar" rows="4" placeholder="@Localizer["admin_content_ph_hero_desc_ar"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">@Model.Hero.DescriptionAr</textarea>
                         </div>
                         @* <div class="flex flex-col gap-xs">
-                            <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_btn_text"] <span class="text-xs text-outline">@Localizer["admin_lang_ar_marker"]</span></label>
-                             <input id="hero-btn-text-ar" type="text" value="@Model.Hero.ButtonTextAr" placeholder="@Localizer["admin_hero_btn_text"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                            <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_hero_btn_text"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_ar_marker"]</span></label>
+                             <input id="hero-btn-text-ar" type="text" value="@Model.Hero.ButtonTextAr" placeholder="@Localizer["admin_hero_btn_text"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">
                         </div> *@
                     </div>
 
                     <!-- English Fields -->
                     <div id="hero-fields-en" class="hero-lang-fields hidden">
                         <div class="flex flex-col gap-xs">
-                            <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_badge"] <span class="text-xs text-outline">@Localizer["admin_lang_en_marker"]</span></label>
-                            <input id="hero-badge-en" type="text" value="@Model.Hero.BadgeEn" placeholder="@Localizer["admin_content_ph_badge_en"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md focus:ring-primary focus:border-primary transition-all">
+                            <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_hero_badge"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_en_marker"]</span></label>
+                            <input id="hero-badge-en" type="text" value="@Model.Hero.BadgeEn" placeholder="@Localizer["admin_content_ph_badge_en"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md focus:ring-primary focus:border-primary transition-all">
                         </div>
                         <div class="flex flex-col gap-xs">
-                            <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_title_segments"] <span class="text-xs text-outline">@Localizer["admin_lang_en_marker"]</span></label>
+                            <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_hero_title_segments"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_en_marker"]</span></label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm">
-                                <input id="hero-title-a-en" type="text" value="@Model.Hero.TitleAEn" placeholder="@Localizer["admin_content_ph_hero_title_a_en"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
-                                <input id="hero-title-b-en" type="text" value="@Model.Hero.TitleBEn" placeholder="@Localizer["admin_content_ph_hero_title_b_en"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md text-primary font-bold">
-                                <input id="hero-title-c-en" type="text" value="@Model.Hero.TitleCEn" placeholder="@Localizer["admin_content_ph_hero_title_c_en"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
-                                <input id="hero-title-d-en" type="text" value="@Model.Hero.TitleDEn" placeholder="@Localizer["admin_content_ph_hero_title_d_en"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md text-secondary font-bold">
+                                <input id="hero-title-a-en" type="text" value="@Model.Hero.TitleAEn" placeholder="@Localizer["admin_content_ph_hero_title_a_en"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">
+                                <input id="hero-title-b-en" type="text" value="@Model.Hero.TitleBEn" placeholder="@Localizer["admin_content_ph_hero_title_b_en"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md text-primary font-bold">
+                                <input id="hero-title-c-en" type="text" value="@Model.Hero.TitleCEn" placeholder="@Localizer["admin_content_ph_hero_title_c_en"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">
+                                <input id="hero-title-d-en" type="text" value="@Model.Hero.TitleDEn" placeholder="@Localizer["admin_content_ph_hero_title_d_en"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md text-secondary font-bold">
                             </div>
                         </div>
                         <div class="flex flex-col gap-xs">
-                            <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_desc"] <span class="text-xs text-outline">@Localizer["admin_lang_en_marker"]</span></label>
-                            <textarea id="hero-desc-en" rows="4" placeholder="@Localizer["admin_hero_desc_ph"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.Hero.DescriptionEn</textarea>
+                            <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_hero_desc"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_en_marker"]</span></label>
+                            <textarea id="hero-desc-en" rows="4" placeholder="@Localizer["admin_hero_desc_ph"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">@Model.Hero.DescriptionEn</textarea>
                         </div>
                         @* <div class="flex flex-col gap-xs">
-                            <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_btn_text"] <span class="text-xs text-outline">@Localizer["admin_lang_en_marker"]</span></label>
-                            <input id="hero-btn-text-en" type="text" value="@Model.Hero.ButtonTextEn" placeholder="@Localizer["btn_shop"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                            <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_hero_btn_text"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_en_marker"]</span></label>
+                            <input id="hero-btn-text-en" type="text" value="@Model.Hero.ButtonTextEn" placeholder="@Localizer["btn_shop"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">
                         </div> *@
                     </div>
                 </div>
 
                 <!-- Image Upload (Shared) -->
                 <div class="flex flex-col gap-lg">
-                    <div class="aspect-video rounded-3xl bg-surface-container dark:bg-surface-container-high border-2 border-dashed border-border dark:border-outline/20 flex flex-col items-center justify-center p-xl relative group overflow-hidden">
+                    <div class="aspect-video rounded-3xl bg-admin-input dark:bg-[#1E293B] border-2 border-dashed border-admin-border dark:border-white/10 flex flex-col items-center justify-center p-xl relative group overflow-hidden">
                         <img id="hero-image-preview" src="@Model.Hero.ImageUrl" class="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-10 transition-opacity">
-                        <span class="material-symbols-outlined text-4xl text-outline mb-sm">image</span>
-                        <span class="font-bold text-text-secondary">@Localizer["admin_hero_image_update"]</span>
+                        <span class="material-symbols-outlined text-4xl text-admin-muted mb-sm">image</span>
+                        <span class="font-bold text-admin-secondary">@Localizer["admin_hero_image_update"]</span>
                         <input id="hero-image-input" type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer">
                     </div>
                     <input id="hero-image-url-input" type="hidden" value="@Model.Hero.ImageUrl">
@@ -160,19 +160,19 @@
             </div>
 
             <!-- Trusted Count Override -->
-            <div class="flex flex-col gap-xs mt-lg pt-lg border-t border-border dark:border-outline/10">
-                <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_hero_trusted_count"]</label>
-                <p class="text-xs text-outline px-1">@Localizer["admin_hero_trusted_count_hint"]</p>
-                <input id="hero-trusted-count" type="number" min="0" value="@Model.Hero.TrustedCountOverride" placeholder="@Localizer["admin_hero_trusted_count_ph"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md focus:ring-primary focus:border-primary transition-all max-w-xs">
+            <div class="flex flex-col gap-xs mt-lg pt-lg border-t border-admin-border dark:border-white/5">
+                <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_hero_trusted_count"]</label>
+                <p class="text-xs text-admin-muted px-1">@Localizer["admin_hero_trusted_count_hint"]</p>
+                <input id="hero-trusted-count" type="number" min="0" value="@Model.Hero.TrustedCountOverride" placeholder="@Localizer["admin_hero_trusted_count_ph"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md focus:ring-primary focus:border-primary transition-all max-w-xs">
             </div>
         </div>
 
         <!-- Section: About Us -->
-        <div id="panel-about-us" class="content-panel hidden bg-surface dark:bg-inverse-surface rounded-[32px] shadow-medium border border-border dark:border-outline/10 p-xl">
+        <div id="panel-about-us" class="content-panel hidden bg-surface dark:bg-[#1E293B] rounded-[32px] shadow-medium border border-admin-border dark:border-white/5 p-xl">
             <h2 class="font-h2 text-h2 font-bold mb-xl">@Localizer["section_about"]</h2>
 
             <!-- Language Tabs -->
-            <div class="flex gap-sm mb-xl border-b border-border dark:border-outline/10 pb-sm">
+            <div class="flex gap-sm mb-xl border-b border-admin-border dark:border-white/5 pb-sm">
                 <button onclick="switchAboutLang('ar')" id="about-lang-ar" class="about-lang-tab active px-lg py-md rounded-xl font-bold text-sm transition-all">@Localizer["admin_hero_lang_ar"]</button>
                 <button onclick="switchAboutLang('en')" id="about-lang-en" class="about-lang-tab px-lg py-md rounded-xl font-bold text-sm transition-all">@Localizer["admin_hero_lang_en"]</button>
             </div>
@@ -182,38 +182,38 @@
                 <div id="about-fields-ar" class="about-lang-fields">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-2">
                         <div class="flex flex-col gap-xs">
-                            <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_about_title"] <span class="text-xs text-outline">@Localizer["admin_lang_ar_marker"]</span></label>
-                            <input id="about-title-ar" type="text" value="@Model.About.TitleAr" placeholder="@Localizer["admin_content_ph_about_title_ar"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                            <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_about_title"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_ar_marker"]</span></label>
+                            <input id="about-title-ar" type="text" value="@Model.About.TitleAr" placeholder="@Localizer["admin_content_ph_about_title_ar"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">
                         </div>
                         <div class="flex flex-col gap-xs">
-                            <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_about_desc"] <span class="text-xs text-outline">@Localizer["admin_lang_ar_marker"]</span></label>
-                            <textarea id="about-desc-ar" rows="2" placeholder="@Localizer["admin_content_ph_about_desc_ar"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.About.DescriptionAr</textarea>
+                            <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_about_desc"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_ar_marker"]</span></label>
+                            <textarea id="about-desc-ar" rows="2" placeholder="@Localizer["admin_content_ph_about_desc_ar"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">@Model.About.DescriptionAr</textarea>
                         </div>
                     </div>
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
-                        <div class="bg-surface-container dark:bg-surface-container-high p-lg rounded-2xl border border-border">
+                        <div class="p-lg rounded-2xl border border-admin-border dark:border-white/5" style="background-color:var(--admin-page-bg)">
                             <div class="flex items-center gap-md mb-md">
                                 <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">1</span>
-                                <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 1) <span class="text-xs text-outline">@Localizer["admin_lang_ar_marker"]</span></h4>
+                                <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 1) <span class="text-xs text-admin-muted">@Localizer["admin_lang_ar_marker"]</span></h4>
                             </div>
-                            <input id="about-feat1-title-ar" type="text" value="@Model.About.Feature1TitleAr" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-border rounded-lg p-md mb-sm">
-                            <textarea id="about-feat1-desc-ar" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-border rounded-lg p-md text-sm">@Model.About.Feature1DescAr</textarea>
+                            <input id="about-feat1-title-ar" type="text" value="@Model.About.Feature1TitleAr" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-admin-border rounded-lg p-md mb-sm">
+                            <textarea id="about-feat1-desc-ar" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-admin-border rounded-lg p-md text-sm">@Model.About.Feature1DescAr</textarea>
                         </div>
-                        <div class="bg-surface-container dark:bg-surface-container-high p-lg rounded-2xl border border-border">
+                        <div class="p-lg rounded-2xl border border-admin-border dark:border-white/5" style="background-color:var(--admin-page-bg)">
                             <div class="flex items-center gap-md mb-md">
                                 <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">2</span>
-                                <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 2) <span class="text-xs text-outline">@Localizer["admin_lang_ar_marker"]</span></h4>
+                                <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 2) <span class="text-xs text-admin-muted">@Localizer["admin_lang_ar_marker"]</span></h4>
                             </div>
-                            <input id="about-feat2-title-ar" type="text" value="@Model.About.Feature2TitleAr" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-border rounded-lg p-md mb-sm">
-                            <textarea id="about-feat2-desc-ar" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-border rounded-lg p-md text-sm">@Model.About.Feature2DescAr</textarea>
+                            <input id="about-feat2-title-ar" type="text" value="@Model.About.Feature2TitleAr" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-admin-border rounded-lg p-md mb-sm">
+                            <textarea id="about-feat2-desc-ar" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-admin-border rounded-lg p-md text-sm">@Model.About.Feature2DescAr</textarea>
                         </div>
-                        <div class="bg-surface-container dark:bg-surface-container-high p-lg rounded-2xl border border-border">
+                        <div class="p-lg rounded-2xl border border-admin-border dark:border-white/5" style="background-color:var(--admin-page-bg)">
                             <div class="flex items-center gap-md mb-md">
                                 <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">3</span>
-                                <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 3) <span class="text-xs text-outline">@Localizer["admin_lang_ar_marker"]</span></h4>
+                                <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 3) <span class="text-xs text-admin-muted">@Localizer["admin_lang_ar_marker"]</span></h4>
                             </div>
-                            <input id="about-feat3-title-ar" type="text" value="@Model.About.Feature3TitleAr" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-border rounded-lg p-md mb-sm">
-                            <textarea id="about-feat3-desc-ar" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-border rounded-lg p-md text-sm">@Model.About.Feature3DescAr</textarea>
+                            <input id="about-feat3-title-ar" type="text" value="@Model.About.Feature3TitleAr" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-admin-border rounded-lg p-md mb-sm">
+                            <textarea id="about-feat3-desc-ar" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-admin-border rounded-lg p-md text-sm">@Model.About.Feature3DescAr</textarea>
                         </div>
                     </div>
                 </div>
@@ -222,38 +222,38 @@
                 <div id="about-fields-en" class="about-lang-fields hidden">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-2">
                         <div class="flex flex-col gap-xs">
-                            <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_about_title"] <span class="text-xs text-outline">@Localizer["admin_lang_en_marker"]</span></label>
-                            <input id="about-title-en" type="text" value="@Model.About.TitleEn" placeholder="@Localizer["admin_about_title_ph"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                            <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_about_title"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_en_marker"]</span></label>
+                            <input id="about-title-en" type="text" value="@Model.About.TitleEn" placeholder="@Localizer["admin_about_title_ph"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">
                         </div>
                         <div class="flex flex-col gap-xs">
-                            <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_about_desc"] <span class="text-xs text-outline">@Localizer["admin_lang_en_marker"]</span></label>
-                            <textarea id="about-desc-en" rows="2" placeholder="@Localizer["admin_about_desc_ph"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.About.DescriptionEn</textarea>
+                            <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_about_desc"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_en_marker"]</span></label>
+                            <textarea id="about-desc-en" rows="2" placeholder="@Localizer["admin_about_desc_ph"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">@Model.About.DescriptionEn</textarea>
                         </div>
                     </div>
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
-                        <div class="bg-surface-container dark:bg-surface-container-high p-lg rounded-2xl border border-border">
+                        <div class="p-lg rounded-2xl border border-admin-border dark:border-white/5" style="background-color:var(--admin-page-bg)">
                             <div class="flex items-center gap-md mb-md">
                                 <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">1</span>
-                                <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 1) <span class="text-xs text-outline">@Localizer["admin_lang_en_marker"]</span></h4>
+                                <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 1) <span class="text-xs text-admin-muted">@Localizer["admin_lang_en_marker"]</span></h4>
                             </div>
-                            <input id="about-feat1-title-en" type="text" value="@Model.About.Feature1TitleEn" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-border rounded-lg p-md mb-sm">
-                            <textarea id="about-feat1-desc-en" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-border rounded-lg p-md text-sm">@Model.About.Feature1DescEn</textarea>
+                            <input id="about-feat1-title-en" type="text" value="@Model.About.Feature1TitleEn" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-admin-border rounded-lg p-md mb-sm">
+                            <textarea id="about-feat1-desc-en" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-admin-border rounded-lg p-md text-sm">@Model.About.Feature1DescEn</textarea>
                         </div>
-                        <div class="bg-surface-container dark:bg-surface-container-high p-lg rounded-2xl border border-border">
+                        <div class="p-lg rounded-2xl border border-admin-border dark:border-white/5" style="background-color:var(--admin-page-bg)">
                             <div class="flex items-center gap-md mb-md">
                                 <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">2</span>
-                                <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 2) <span class="text-xs text-outline">@Localizer["admin_lang_en_marker"]</span></h4>
+                                <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 2) <span class="text-xs text-admin-muted">@Localizer["admin_lang_en_marker"]</span></h4>
                             </div>
-                            <input id="about-feat2-title-en" type="text" value="@Model.About.Feature2TitleEn" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-border rounded-lg p-md mb-sm">
-                            <textarea id="about-feat2-desc-en" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-border rounded-lg p-md text-sm">@Model.About.Feature2DescEn</textarea>
+                            <input id="about-feat2-title-en" type="text" value="@Model.About.Feature2TitleEn" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-admin-border rounded-lg p-md mb-sm">
+                            <textarea id="about-feat2-desc-en" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-admin-border rounded-lg p-md text-sm">@Model.About.Feature2DescEn</textarea>
                         </div>
-                        <div class="bg-surface-container dark:bg-surface-container-high p-lg rounded-2xl border border-border">
+                        <div class="p-lg rounded-2xl border border-admin-border dark:border-white/5" style="background-color:var(--admin-page-bg)">
                             <div class="flex items-center gap-md mb-md">
                                 <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">3</span>
-                                <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 3) <span class="text-xs text-outline">@Localizer["admin_lang_en_marker"]</span></h4>
+                                <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 3) <span class="text-xs text-admin-muted">@Localizer["admin_lang_en_marker"]</span></h4>
                             </div>
-                            <input id="about-feat3-title-en" type="text" value="@Model.About.Feature3TitleEn" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-border rounded-lg p-md mb-sm">
-                            <textarea id="about-feat3-desc-en" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-border rounded-lg p-md text-sm">@Model.About.Feature3DescEn</textarea>
+                            <input id="about-feat3-title-en" type="text" value="@Model.About.Feature3TitleEn" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-admin-border rounded-lg p-md mb-sm">
+                            <textarea id="about-feat3-desc-en" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-admin-border rounded-lg p-md text-sm">@Model.About.Feature3DescEn</textarea>
                         </div>
                     </div>
                 </div>
@@ -263,29 +263,29 @@
         </div>
 
         <!-- Section: Customer Stories (Testimonials) -->
-        <div id="panel-customer-stories" class="content-panel hidden bg-surface dark:bg-inverse-surface rounded-[32px] shadow-medium border border-border dark:border-outline/10 p-xl">
+        <div id="panel-customer-stories" class="content-panel hidden bg-surface dark:bg-[#1E293B] rounded-[32px] shadow-medium border border-admin-border dark:border-white/5 p-xl">
             <div class="flex justify-between items-center mb-xl">
                 <div>
                     <h2 class="font-h2 text-h2 font-bold">@Localizer["section_testimonials"]</h2>
-                    <p class="text-text-secondary">@Localizer["admin_testimonials_desc"]</p>
+                    <p class="text-admin-secondary">@Localizer["admin_testimonials_desc"]</p>
                 </div>
                 <button onclick="saveTestimonialsSection()" class="bg-primary text-on-primary px-xl py-md rounded-full font-bold">@Localizer["admin_save_changes"]</button>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-xl">
                 <div class="flex flex-col gap-xs">
-                    <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_testi_title"]</label>
-                    <input id="testi-title" type="text" value="@Model.Testimonials.Title" placeholder="@Localizer["admin_content_ph_testi_title"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                    <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_testi_title"]</label>
+                    <input id="testi-title" type="text" value="@Model.Testimonials.Title" placeholder="@Localizer["admin_content_ph_testi_title"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">
                 </div>
                 <div class="flex flex-col gap-xs">
-                    <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_testi_desc"]</label>
-                    <textarea id="testi-desc" rows="2" placeholder="@Localizer["admin_content_ph_testi_desc"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.Testimonials.Description</textarea>
+                    <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_testi_desc"]</label>
+                    <textarea id="testi-desc" rows="2" placeholder="@Localizer["admin_content_ph_testi_desc"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">@Model.Testimonials.Description</textarea>
                 </div>
             </div>
 
             <!-- Dynamic Brand Reviews from Database -->
             <div class="flex items-center justify-between mb-md">
-                <h3 class="font-bold text-text-primary">@Localizer["brand_reviews_admin_title"]</h3>
+                <h3 class="font-bold text-admin-primary">@Localizer["brand_reviews_admin_title"]</h3>
                 <a href="/admin/brand-reviews" class="text-sm font-bold text-primary hover:underline flex items-center gap-1">
                     <span class="material-symbols-outlined text-lg">open_in_new</span>
                     @Localizer["admin_manage_reviews"]
@@ -294,28 +294,28 @@
 
             @if (Model.BrandReviews.Count == 0)
             {
-                <div class="text-center py-lg px-lg text-outline bg-surface-container/50 rounded-2xl border border-border/50">
+                <div class="text-center py-lg px-lg text-admin-muted bg-surface-container/50 rounded-2xl border border-admin-border/50">
                     <span class="material-symbols-outlined text-4xl block mb-2">rate_review</span>
                     <p class="text-sm">@Localizer["admin_testimonials_empty"]</p>
                 </div>
             }
             else
             {
-                <div class="overflow-x-auto rounded-2xl border border-border/50">
+                <div class="overflow-x-auto rounded-2xl border border-admin-border/50">
                     <table class="w-full text-left rtl:text-right">
-                        <thead class="bg-surface-container">
+                        <thead style="background-color:var(--admin-page-bg)">
                             <tr>
-                                <th class="py-md px-lg font-bold text-outline uppercase text-xs">@Localizer["admin_th_customer"]</th>
-                                <th class="py-md px-lg font-bold text-outline uppercase text-xs">@Localizer["admin_th_quote"]</th>
-                                <th class="py-md px-lg font-bold text-outline uppercase text-xs">@Localizer["admin_th_rating"]</th>
-                                <th class="py-md px-lg font-bold text-outline uppercase text-xs">@Localizer["admin_th_status"]</th>
-                                <th class="py-md px-lg font-bold text-outline uppercase text-xs">@Localizer["admin_th_display"]</th>
+                                <th class="py-md px-lg font-bold text-admin-muted uppercase text-xs">@Localizer["admin_th_customer"]</th>
+                                <th class="py-md px-lg font-bold text-admin-muted uppercase text-xs">@Localizer["admin_th_quote"]</th>
+                                <th class="py-md px-lg font-bold text-admin-muted uppercase text-xs">@Localizer["admin_th_rating"]</th>
+                                <th class="py-md px-lg font-bold text-admin-muted uppercase text-xs">@Localizer["admin_th_status"]</th>
+                                <th class="py-md px-lg font-bold text-admin-muted uppercase text-xs">@Localizer["admin_th_display"]</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var review in Model.BrandReviews)
                             {
-                                <tr class="border-b border-border/50 hover:bg-surface-container/50 transition-colors">
+                                <tr class="border-b border-admin-border/50 hover:bg-surface-container/50 transition-colors">
                                     <td class="py-md px-lg">
                                         <div class="flex items-center gap-3">
                                             <div class="w-9 h-9 rounded-full overflow-hidden flex-shrink-0 bg-gradient-to-br from-primary/20 to-primary/5">
@@ -329,19 +329,19 @@
                                                 }
                                             </div>
                                             <div>
-                                                <p class="text-sm font-bold text-text-primary">@review.CustomerName</p>
-                                                <p class="text-xs text-outline">@review.CustomerEmail</p>
+                                                <p class="text-sm font-bold text-admin-primary">@review.CustomerName</p>
+                                                <p class="text-xs text-admin-muted">@review.CustomerEmail</p>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="py-md px-lg max-w-xs">
-                                        <p class="text-sm text-text-secondary line-clamp-2">&ldquo;@review.ReviewText&rdquo;</p>
+                                        <p class="text-sm text-admin-secondary line-clamp-2">&ldquo;@review.ReviewText&rdquo;</p>
                                     </td>
                                     <td class="py-md px-lg">
                                         <div class="flex gap-0.5" aria-label="@string.Format(Localizer["admin_review_rating_aria"].Value, review.Rating)">
                                             @for (int j = 0; j < 5; j++)
                                             {
-                                                <span class="material-symbols-outlined text-sm @(j < review.Rating ? "text-yellow-500 fill-icon" : "text-outline/20")">star</span>
+                                                <span class="material-symbols-outlined text-sm @(j < review.Rating ? "text-yellow-500 fill-icon" : "text-admin-muted/20")">star</span>
                                             }
                                         </div>
                                     </td>
@@ -352,14 +352,14 @@
                                         }
                                         else
                                         {
-                                            <span class="inline-flex items-center gap-1 text-xs font-bold text-outline bg-outline/10 px-2.5 py-1 rounded-full">@Localizer["admin_pending"]</span>
+                                            <span class="inline-flex items-center gap-1 text-xs font-bold text-admin-muted bg-outline/10 px-2.5 py-1 rounded-full">@Localizer["admin_pending"]</span>
                                         }
                                     </td>
                                     <td class="py-md px-lg">
                                         <label class="relative inline-flex items-center cursor-pointer">
                                             <input type="checkbox" class="sr-only peer brand-review-display" data-review-id="@review.Id" @(review.IsDisplayed ? "checked" : "") onchange="toggleBrandReviewDisplay('@review.Id', this.checked)">
                                             <div class="w-10 h-5 bg-outline/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:ltr:left-[2px] after:rtl:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-primary"></div>
-                                            <span class="ltr:ml-2 rtl:mr-2 text-xs font-medium @(review.IsDisplayed ? "text-primary" : "text-outline")">@(review.IsDisplayed ? Localizer["admin_displayed"] : Localizer["admin_hidden"])</span>
+                                            <span class="ltr:ml-2 rtl:mr-2 text-xs font-medium @(review.IsDisplayed ? "text-primary" : "text-admin-muted")">@(review.IsDisplayed ? Localizer["admin_displayed"] : Localizer["admin_hidden"])</span>
                                         </label>
                                     </td>
                                 </tr>
@@ -369,34 +369,34 @@
                 </div>
             }
 
-            <p class="text-xs text-outline mt-md flex items-center gap-1">
+            <p class="text-xs text-admin-muted mt-md flex items-center gap-1">
                 <span class="material-symbols-outlined text-sm">info</span>
                 @Localizer["admin_testimonials_dynamic_hint"]
             </p>
         </div>
 
         <!-- Section: Contact Info -->
-        <div id="panel-contact-info" class="content-panel hidden bg-surface dark:bg-inverse-surface rounded-[32px] shadow-medium border border-border dark:border-outline/10 p-xl">
+        <div id="panel-contact-info" class="content-panel hidden bg-surface dark:bg-[#1E293B] rounded-[32px] shadow-medium border border-admin-border dark:border-white/5 p-xl">
             <h2 class="font-h2 text-h2 font-bold mb-xl">@Localizer["section_contact"]</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
                 <div class="space-y-lg">
                     <div class="flex flex-col gap-xs">
-                        <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_contact_email"]</label>
-                        <input id="contact-email" type="email" value="@Model.Contact.Email" placeholder="@Localizer["admin_content_ph_contact_email"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                        <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_contact_email"]</label>
+                        <input id="contact-email" type="email" value="@Model.Contact.Email" placeholder="@Localizer["admin_content_ph_contact_email"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">
                     </div>
                     <div class="flex flex-col gap-xs">
-                        <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_contact_phone"]</label>
-                        <input id="contact-phone" type="text" value="@Model.Contact.Phone" placeholder="@Localizer["admin_content_ph_contact_phone"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">
+                        <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_contact_phone"]</label>
+                        <input id="contact-phone" type="text" value="@Model.Contact.Phone" placeholder="@Localizer["admin_content_ph_contact_phone"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">
                     </div>
                     <div class="flex flex-col gap-xs">
-                        <label class="font-bold text-sm text-outline px-1 uppercase">@Localizer["admin_contact_address"]</label>
-                        <textarea id="contact-address" rows="3" placeholder="@Localizer["admin_content_ph_contact_address"]" class="bg-surface-container dark:bg-surface-container-high border-border rounded-xl p-md">@Model.Contact.Address</textarea>
+                        <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_contact_address"]</label>
+                        <textarea id="contact-address" rows="3" placeholder="@Localizer["admin_content_ph_contact_address"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">@Model.Contact.Address</textarea>
                     </div>
                 </div>
                 <div class="bg-primary/5 rounded-3xl p-xl flex flex-col items-center justify-center text-center border border-primary/10">
                     <span class="material-symbols-outlined text-6xl text-primary mb-md">location_on</span>
                     <h3 class="font-bold text-xl mb-sm">@Localizer["admin_map_integration_h"]</h3>
-                    <p class="text-text-secondary text-sm">@Localizer["admin_map_integration_p"]</p>
+                    <p class="text-admin-secondary text-sm">@Localizer["admin_map_integration_p"]</p>
                 </div>
             </div>
             <button onclick="saveContactSection()" class="mt-xl bg-primary text-on-primary px-xl py-md rounded-full font-bold">@Localizer["admin_save_changes"]</button>
@@ -407,24 +407,31 @@
 
 <style>
     .content-tab-btn {
-        color: var(--md-sys-color-text-secondary);
+        color: var(--admin-text-secondary, #475569);
+    }
+    .dark .content-tab-btn {
+        color: #94a3b8;
     }
     .content-tab-btn:hover {
-        background-color: var(--md-sys-color-surface-container-high);
-        color: var(--md-sys-color-primary);
+        background-color: rgba(var(--primary-rgb, 14, 144, 140), 0.08);
+        color: var(--primary-color, #0E908C);
+    }
+    .dark .content-tab-btn:hover {
+        background-color: rgba(255, 255, 255, 0.06);
+        color: #ffffff;
     }
     .content-tab-btn.active {
-        background-color: var(--md-sys-color-primary-container);
-        color: var(--md-sys-color-on-primary-container);
+        background: var(--primary-color, #0E908C) !important;
+        color: #ffffff !important;
         font-weight: 700;
     }
-    
+
     .sortable-ghost {
         opacity: 0.4;
-        border: 2px dashed var(--md-sys-color-primary) !important;
-        background-color: var(--md-sys-color-primary-container) !important;
+        border: 2px dashed var(--primary-color, #0E908C) !important;
+        background-color: rgba(var(--primary-rgb, 14, 144, 140), 0.1) !important;
     }
-    
+
     .sortable-drag {
         cursor: grabbing !important;
     }
@@ -434,17 +441,52 @@
     }
 
     .hero-lang-tab, .about-lang-tab {
-        color: var(--md-sys-color-text-secondary);
+        color: var(--admin-text-secondary, #475569);
         border: 1px solid transparent;
     }
+    .dark .hero-lang-tab, .dark .about-lang-tab {
+        color: #94a3b8;
+    }
     .hero-lang-tab:hover, .about-lang-tab:hover {
-        background-color: var(--md-sys-color-surface-container-high);
-        color: var(--md-sys-color-primary);
+        background-color: rgba(var(--primary-rgb, 14, 144, 140), 0.08);
+        color: var(--primary-color, #0E908C);
+    }
+    .dark .hero-lang-tab:hover, .dark .about-lang-tab:hover {
+        background-color: rgba(255, 255, 255, 0.06);
+        color: #ffffff;
     }
     .hero-lang-tab.active, .about-lang-tab.active {
-        background-color: var(--md-sys-color-primary-container);
-        color: var(--md-sys-color-on-primary-container);
-        border-color: var(--md-sys-color-primary);
+        background-color: var(--primary-color, #0E908C) !important;
+        color: #ffffff !important;
+        border-color: var(--primary-color, #0E908C) !important;
+    }
+
+    /* Content panel transitions */
+    .content-panel {
+        transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .content-panel.hidden {
+        display: none;
+    }
+
+    /* Mobile: reduce panel padding */
+    @@media (max-width: 767px) {
+        .content-panel {
+            padding: 1rem !important;
+            border-radius: 1.25rem !important;
+        }
+        .content-panel h2 {
+            font-size: 1.25rem !important;
+        }
+        .content-panel h3 {
+            font-size: 1rem !important;
+        }
+        .content-panel input,
+        .content-panel textarea,
+        .content-panel select {
+            font-size: 16px !important; /* Prevent iOS zoom */
+            padding: 0.625rem 0.875rem !important;
+        }
     }
 </style>
 
@@ -615,7 +657,7 @@
                     label.className = 'ltr:ml-2 rtl:mr-2 text-xs font-medium text-primary';
                 } else {
                     label.textContent = '@Localizer["admin_hidden"]';
-                    label.className = 'ltr:ml-2 rtl:mr-2 text-xs font-medium text-outline';
+                    label.className = 'ltr:ml-2 rtl:mr-2 text-xs font-medium text-admin-muted';
                 }
                 showToast(isDisplayed ? '@Localizer["admin_review_displayed"]' : '@Localizer["admin_review_hidden"]', 'success');
             })

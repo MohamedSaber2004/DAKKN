@@ -17,6 +17,8 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString UnknownException = new("exception.unknown");
         }
 
+        public static readonly KeyString BackToTop = new("back_to_top");
+
         public static class UploadFileMessages
         {
             public static readonly KeyString Requried = new("uploadfile.required");

@@ -275,58 +275,65 @@
 </div>
 
 @section Scripts {
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"
+            onerror="document.getElementById('salesChart')?.classList.add('hidden');
+                     document.getElementById('chart-empty-state')?.classList.remove('hidden');
+                     document.getElementById('chart-empty-state') && (document.getElementById('chart-empty-state').querySelector('p').textContent = 'Chart library failed to load.')"></script>
     <script>
-        try {
-            @{
-                var camelCase = new System.Text.Json.JsonSerializerOptions { PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase };
+        @{
+            var camelCase = new System.Text.Json.JsonSerializerOptions { PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase };
+        }
+        const analytics7d = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(analytics7d?.DailyData ?? new List<DAKKN.Application.DTOs.DailyAnalytics>(), camelCase));
+        const analytics30d = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(analytics30d?.DailyData ?? new List<DAKKN.Application.DTOs.DailyAnalytics>(), camelCase));
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof Chart === 'undefined') return;
+            const canvas = document.getElementById('salesChart');
+            if (!canvas || canvas.classList.contains('hidden')) return;
+            const ctx = canvas.getContext('2d');
+            if (!ctx) return;
+            const isDark = document.documentElement.classList.contains('dark');
+            const periodSelect = document.querySelector('.chart-period-select');
+
+            const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
+            const textColor = isDark ? '#7d93ae' : '#94a3b8';
+            const primaryColor = '#0e908c';
+            const secondaryColor = '#00b4d8';
+
+            function buildChartData(days) {
+                const data = days === 30 ? analytics30d : analytics7d;
+                const items = data || [];
+                return {
+                    labels: items.map(function(d) { return d.label || ''; }),
+                    datasets: [
+                        {
+                            label: '@Localizer["admin_stat_revenue"]',
+                            data: items.map(function(d) { return d.revenue ?? 0; }),
+                            borderColor: primaryColor,
+                            backgroundColor: 'rgba(14, 144, 140, 0.06)',
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 3,
+                            pointRadius: 4,
+                            pointBackgroundColor: primaryColor
+                        },
+                        {
+                            label: '@Localizer["admin_stat_orders"]',
+                            data: items.map(function(d) { return d.ordersCount ?? 0; }),
+                            borderColor: secondaryColor,
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointRadius: 0,
+                            tension: 0.4,
+                            fill: false
+                        }
+                    ]
+                };
             }
-            const analytics7d = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(analytics7d?.DailyData ?? new List<DAKKN.Application.DTOs.DailyAnalytics>(), camelCase));
-            const analytics30d = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(analytics30d?.DailyData ?? new List<DAKKN.Application.DTOs.DailyAnalytics>(), camelCase));
 
-            document.addEventListener('DOMContentLoaded', () => {
-                const canvas = document.getElementById('salesChart');
-                if (!canvas) return;
-                const ctx = canvas.getContext('2d');
-                const isDark = document.documentElement.classList.contains('dark');
-                const periodSelect = document.querySelector('.chart-period-select');
-                
-                const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
-                const textColor = isDark ? '#7d93ae' : '#94a3b8';
-                const primaryColor = '#0e908c';
-                const secondaryColor = '#00b4d8';
-
-                function buildChartData(days) {
-                    const data = days === 30 ? analytics30d : analytics7d;
-                    return {
-                        labels: (data || []).map(d => d.label || ''),
-                        datasets: [
-                            {
-                                label: '@Localizer["admin_stat_revenue"]',
-                                data: (data || []).map(d => d.revenue ?? 0),
-                                borderColor: primaryColor,
-                                backgroundColor: primaryColor + '10',
-                                fill: true,
-                                tension: 0.4,
-                                borderWidth: 3,
-                                pointRadius: 4,
-                                pointBackgroundColor: primaryColor
-                            },
-                            {
-                                label: '@Localizer["admin_stat_orders"]',
-                                data: (data || []).map(d => d.ordersCount ?? 0),
-                                borderColor: secondaryColor,
-                                borderWidth: 2,
-                                borderDash: [5, 5],
-                                pointRadius: 0,
-                                tension: 0.4,
-                                fill: false
-                            }
-                        ]
-                    };
-                }
-
-                const chart = new Chart(ctx, {
+            var chart;
+            try {
+                chart = new Chart(ctx, {
                     type: 'line',
                     data: buildChartData(7),
                     options: {
@@ -352,27 +359,36 @@
                             },
                             y: {
                                 grid: { color: gridColor },
-                                ticks: { 
-                                    color: textColor, 
+                                ticks: {
+                                    color: textColor,
                                     font: { size: 11, weight: '600' },
-                                    callback: value => value >= 1000 ? (value/1000) + 'k' : value
+                                    callback: function(value) { return value >= 1000 ? (value/1000) + 'k' : value; }
                                 },
                                 border: { display: false }
                             }
                         }
                     }
                 });
+            } catch (e) {
+                console.error('Chart init error:', e);
+                canvas.classList.add('hidden');
+                var emptyState = document.getElementById('chart-empty-state');
+                if (emptyState) {
+                    emptyState.classList.remove('hidden');
+                    emptyState.classList.add('flex');
+                }
+                return;
+            }
 
-                if (periodSelect) {
-                    periodSelect.addEventListener('change', (e) => {
-                        const days = parseInt(e.target.value, 10);
+            if (periodSelect) {
+                periodSelect.addEventListener('change', function(e) {
+                    var days = parseInt(e.target.value, 10);
+                    if (chart) {
                         chart.data = buildChartData(days);
                         chart.update();
-                    });
-                }
-            });
-        } catch (e) {
-            console.error('Chart init error:', e);
-        }
+                    }
+                });
+            }
+        });
     </script>
 }
