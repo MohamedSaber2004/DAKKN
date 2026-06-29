@@ -6,7 +6,7 @@
 }
 
 <div class="max-w-3xl mx-auto pb-12">
-    <form asp-action="@(Model.IsEdit ? "EditCategory" : "CreateCategory")" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" class="space-y-8">
+    <form asp-action="@(Model.IsEdit ? "EditCategory" : "CreateCategory")" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data" class="space-y-8 has-sticky-bar">
         @Html.AntiForgeryToken()
         <input type="hidden" asp-for="Id" />
 
@@ -19,7 +19,7 @@
                     @(Model.IsEdit ? Localizer["admin_categories_edit_subtitle"] : Localizer["admin_categories_new_subtitle"])
                 </p>
             </div>
-            <div class="flex gap-3 w-full md:w-auto">
+            <div class="desktop-header-buttons flex gap-3 w-full md:w-auto hide-buttons-mobile">
                 <a asp-action="Categories" class="flex-1 md:flex-none px-6 py-2.5 bg-admin-page border border-admin-border text-admin-secondary rounded-xl text-center text-sm font-bold hover:bg-surface-container transition-all">
                     @Localizer["admin_cancel"]
                 </a>
@@ -27,6 +27,16 @@
                     @(Model.IsEdit ? Localizer["admin_product_update_btn"] : Localizer["admin_product_save"])
                 </button>
             </div>
+        </div>
+
+        <!-- Mobile Sticky Save Bar -->
+        <div class="mobile-form-sticky-bar">
+            <a asp-action="Categories" class="btn-sticky btn-sticky-cancel">
+                @Localizer["admin_cancel"]
+            </a>
+            <button type="submit" class="btn-sticky btn-sticky-save">
+                @(Model.IsEdit ? Localizer["admin_product_update_btn"] : Localizer["admin_product_save"])
+            </button>
         </div>
 
         <div class="premium-card p-8 space-y-6">
