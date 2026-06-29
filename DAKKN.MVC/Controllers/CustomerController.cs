@@ -163,7 +163,7 @@ namespace DAKKN.MVC.Controllers
             }
             catch (NotFoundException)
             {
-                return Json(new { success = false, message = localizer["fav_not_found"] });
+                return Json(new { success = false, message = localizer[LocalizationKeys.Favorites.NotFound.Value] });
             }
             catch (Exception ex)
             {
@@ -261,7 +261,7 @@ namespace DAKKN.MVC.Controllers
             }
             catch (UnAuthorizedException)
             {
-                return Json(new { success = false, message = localizer["auth.access_denied.message"].Value });
+                return Json(new { success = false, message = localizer[LocalizationKeys.AuthMessages.AccessDeniedMessage.Value].Value });
             }
         }
 
@@ -272,7 +272,7 @@ namespace DAKKN.MVC.Controllers
             try
             {
                 await mediator.Send(new DeleteOrderCommand(id));
-                TempData["SuccessMessage"] = localizer["order_deleted"].Value;
+                TempData["SuccessMessage"] = localizer[LocalizationKeys.OrderMessages.Deleted.Value].Value;
             }
             catch (NotFoundException)
             {
@@ -343,7 +343,7 @@ namespace DAKKN.MVC.Controllers
                     request.Notes);
 
                 var result = await mediator.Send(command);
-                TempData["SuccessMessage"] = localizer["order.created"].Value;
+                TempData["SuccessMessage"] = localizer[LocalizationKeys.OrderMessages.Created.Value].Value;
                 return RedirectToAction(nameof(OrderConfirmation), new { orderId = result.OrderId });
             }
             catch (BadRequestException ex)
@@ -572,7 +572,7 @@ namespace DAKKN.MVC.Controllers
         {
             var userId = GetUserId();
             await mediator.Send(new DeleteBrandReviewCommand(id, userId));
-            TempData["SuccessMessage"] = localizer["brand_reviews.deleted"];
+            TempData["SuccessMessage"] = localizer[LocalizationKeys.BrandReviews.Deleted.Value].Value;
             return RedirectToAction("BrandReviews");
         }
 

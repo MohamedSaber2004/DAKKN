@@ -60,6 +60,7 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString PhoneNumberFoundBefore = new("auth.phone_number_found_before");
             public static readonly KeyString InvalidPhoneNumber = new("alert.phone_invalid");
             public static readonly KeyString InvalidOtp = new("alert.invalid_otp");
+            public static readonly KeyString AccessDeniedMessage = new("auth.access_denied.message");
         }
 
         public static class ValidationMessages
@@ -419,6 +420,11 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString AltProductImage = new("alt_product_image");
             public static readonly KeyString AltCategory = new("alt_category");
             public static readonly KeyString Loading = new("loading");
+        }
+
+        public static class Favorites
+        {
+            public static readonly KeyString NotFound = new("fav_not_found");
         }
 
         public static class OrderMessages
