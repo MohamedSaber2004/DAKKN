@@ -24,7 +24,7 @@ namespace DAKKN.Application.Features.Support.Commands.ArchiveTicket
             ticket.MarkAsDeleted(_currentUserService.UserId.ToString());
 
             var activity = SupportActivity.Create(request.TicketId, _currentUserService.UserId,
-                _currentUserService.UserId.ToString(), "Archived", "Ticket archived");
+                _currentUserService.UserName, "Archived", "Ticket archived");
             var activityRepo = _unitOfWork.GetRepository<SupportActivity>();
             await activityRepo.AddAsync(activity);
 

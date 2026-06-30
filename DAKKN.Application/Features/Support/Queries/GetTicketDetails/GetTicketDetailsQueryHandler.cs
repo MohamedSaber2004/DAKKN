@@ -27,7 +27,6 @@ namespace DAKKN.Application.Features.Support.Queries.GetTicketDetails
                 .Include(t => t.Replies).ThenInclude(r => r.Attachments)
                 .Include(t => t.Attachments)
                 .Include(t => t.Activities)
-                .Include(t => t.InternalNotes)
                 .AsQueryable();
 
             if (!request.IsAdmin)
@@ -75,7 +74,8 @@ namespace DAKKN.Application.Features.Support.Queries.GetTicketDetails
                         OriginalFileName = a.OriginalFileName,
                         ContentType = a.ContentType,
                         FileSize = a.FileSize,
-                        FilePath = a.FilePath
+                        FilePath = a.FilePath,
+                        Url = $"/files/{System.IO.Path.GetFileName(a.FilePath)}"
                     }).ToList()
                 }).ToList(),
                 Attachments = ticket.Attachments.Where(a => a.ReplyId == null).Select(a => new SupportAttachmentDto
@@ -85,7 +85,8 @@ namespace DAKKN.Application.Features.Support.Queries.GetTicketDetails
                     OriginalFileName = a.OriginalFileName,
                     ContentType = a.ContentType,
                     FileSize = a.FileSize,
-                    FilePath = a.FilePath
+                    FilePath = a.FilePath,
+                    Url = $"/files/{System.IO.Path.GetFileName(a.FilePath)}"
                 }).ToList(),
                 Activities = ticket.Activities.OrderByDescending(a => a.CreatedAt).Select(a => new SupportActivityDto
                 {
@@ -97,13 +98,7 @@ namespace DAKKN.Application.Features.Support.Queries.GetTicketDetails
                     NewValue = a.NewValue,
                     CreatedAt = a.CreatedAt
                 }).ToList(),
-                InternalNotes = ticket.InternalNotes.OrderByDescending(n => n.CreatedAt).Select(n => new SupportInternalNoteDto
-                {
-                    Id = n.Id,
-                    UserName = n.UserName,
-                    Note = n.Note,
-                    CreatedAt = n.CreatedAt
-                }).ToList()
+                InternalNotes = new List<SupportInternalNoteDto>()
             };
         }
     }

@@ -32,8 +32,8 @@ namespace DAKKN.Domain.Entities
         public ICollection<SupportInternalNote> InternalNotes { get; set; } = new List<SupportInternalNote>();
 
         public static SupportTicket Create(Guid customerId, string customerName, string customerEmail,
-            string subject, string message, Guid categoryId, string? customerPhone = null,
-            string? source = null, string? orderNumber = null)
+            string subject, string message, Guid categoryId, SupportTicketPriority priority = SupportTicketPriority.Medium,
+            string? customerPhone = null, string? source = null, string? orderNumber = null)
         {
             return new SupportTicket
             {
@@ -46,7 +46,7 @@ namespace DAKKN.Domain.Entities
                 Subject = subject,
                 Message = message,
                 CategoryId = categoryId,
-                Priority = SupportTicketPriority.Medium,
+                Priority = priority,
                 Status = SupportTicketStatus.Open,
                 Source = source,
                 OrderNumber = orderNumber,

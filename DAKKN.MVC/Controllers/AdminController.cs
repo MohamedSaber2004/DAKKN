@@ -617,8 +617,8 @@ namespace DAKKN.MVC.Controllers
             TempData["SuccessMessage"] = string.Format(
                 _localizer[LocalizationKeys.Inventory.GlobalDangerApplied.Value].ToString(), updatedCount);
 
-            // If language changed, redirect through SetLanguage to update cookie
-            if (currentSettings.Language != model.Language)
+            // If language changed via form, redirect through SetLanguage to update cookie
+            if (model.Language != null && currentSettings.Language != model.Language)
             {
                 return RedirectToAction("SetLanguage", "Translation", new { 
                     culture = model.Language, 

@@ -31,7 +31,7 @@ namespace DAKKN.Application.Features.Support.Commands.ReplyTicket
             var reply = SupportReply.Create(
                 request.TicketId,
                 _currentUserService.UserId,
-                _currentUserService.UserId.ToString(),
+                _currentUserService.UserName,
                 request.Message,
                 request.IsStaffReply);
 
@@ -63,7 +63,7 @@ namespace DAKKN.Application.Features.Support.Commands.ReplyTicket
             ticket.UpdateStatus(status);
 
             var activity = SupportActivity.Create(request.TicketId, _currentUserService.UserId,
-                _currentUserService.UserId.ToString(), "Replied", "New reply added");
+                _currentUserService.UserName, "Replied", "New reply added");
             var activityRepo = _unitOfWork.GetRepository<SupportActivity>();
             await activityRepo.AddAsync(activity);
 

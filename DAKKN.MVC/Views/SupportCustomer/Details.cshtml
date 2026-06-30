@@ -94,7 +94,7 @@
             {
                 <span class="flex items-center gap-1">
                     <span class="material-symbols-outlined text-base">check_circle</span>
-                    @Localizer["supp_ticket_closed"]: @Model.ClosedAt.Value.ToLocalTime().ToString("MMM dd, yyyy - HH:mm")
+                    @Localizer["supp_ticket_closed"]@Localizer["supp_colon"] @Model.ClosedAt.Value.ToLocalTime().ToString("MMM dd, yyyy - HH:mm")
                 </span>
             }
         </div>
@@ -202,13 +202,14 @@
                                 <label class="flex items-center gap-2 cursor-pointer text-text-secondary dark:text-outline-variant hover:text-primary transition-colors px-4 py-2.5 rounded-2xl bg-surface-container dark:bg-white/5">
                                     <span class="material-symbols-outlined">attach_file</span>
                                     <span class="text-sm font-bold">@Localizer["supp_attachments"]</span>
-                                    <input type="file" name="attachments" multiple class="hidden" accept=".png,.jpg,.jpeg,.gif,.pdf,.doc,.docx,.zip" />
+                                    <input type="file" name="attachments" multiple class="hidden" accept=".png,.jpg,.jpeg,.gif,.pdf,.doc,.docx,.zip" onchange="previewReplyFiles(this)" />
                                 </label>
                                 <button type="submit" class="bg-text-primary dark:bg-inverse-on-surface text-background dark:text-on-background px-8 py-3.5 rounded-2xl font-bold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-large flex items-center gap-2">
                                     <span class="material-symbols-outlined">send</span>
                                     @Localizer["supp_send_reply"]
                                 </button>
                             </div>
+                            <div id="file-preview" class="hidden grid grid-cols-2 md:grid-cols-4 gap-3"></div>
                         </div>
                     </form>
                 </section>
@@ -315,7 +316,7 @@
                         <span class="status-pill @statusClass text-xs">@Localizer[$"admin_support_{Model.Status.ToLower()}"]</span>
                     </div>
                     <div class="flex justify-between">
-                        <span class="text-text-secondary dark:text-outline-variant">@Localizer["supp_reply_placeholder"]</span>
+                        <span class="text-text-secondary dark:text-outline-variant">@Localizer["supp_replies"]</span>
                         <span class="font-bold text-text-primary dark:text-inverse-on-surface">@Model.Replies.Count</span>
                     </div>
                     @if (!string.IsNullOrEmpty(Model.AssignedToName))
@@ -340,17 +341,39 @@
 
 @section Scripts {
     <script>
-        document.querySelectorAll('input[name="attachments"]').forEach(function(input) {
-            input.addEventListener('change', function() {
-                var parent = this.closest('label');
-                var textSpan = parent ? parent.querySelector('span:last-child') : null;
-                if (this.files.length > 0) {
-                    if (textSpan) textSpan.textContent = this.files.length + ' @Localizer["supp_attachments"]';
-                } else {
-                    if (textSpan) textSpan.textContent = '@Localizer["supp_attachments"]';
-                }
-            });
-        });
+        function previewReplyFiles(input) {
+            var preview = document.getElementById('file-preview');
+            var label = input.closest('label');
+            var textSpan = label ? label.querySelector('span:last-child') : null;
+            preview.innerHTML = '';
+            if (input.files.length > 0) {
+                preview.classList.remove('hidden');
+                if (textSpan) textSpan.textContent = input.files.length + ' @Localizer["supp_attachments"]';
+                Array.from(input.files).forEach(function(file) {
+                    var div = document.createElement('div');
+                    div.className = 'relative bg-surface-container dark:bg-white/5 rounded-2xl p-3 text-center';
+                    if (file.type.startsWith('image/')) {
+                        var img = document.createElement('img');
+                        img.className = 'w-full h-20 object-cover rounded-xl mb-1';
+                        img.src = URL.createObjectURL(file);
+                        div.appendChild(img);
+                    } else {
+                        var icon = document.createElement('span');
+                        icon.className = 'material-symbols-outlined text-3xl text-text-secondary block mb-1';
+                        icon.textContent = 'description';
+                        div.appendChild(icon);
+                    }
+                    var name = document.createElement('p');
+                    name.className = 'text-xs truncate text-text-secondary';
+                    name.textContent = file.name;
+                    div.appendChild(name);
+                    preview.appendChild(div);
+                });
+            } else {
+                preview.classList.add('hidden');
+                if (textSpan) textSpan.textContent = '@Localizer["supp_attachments"]';
+            }
+        }
     </script>
 }
 

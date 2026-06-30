@@ -11,11 +11,11 @@ public class AdminSettingsViewModel
     [Display(Name = "auth.login.email")]
     public string Email { get; set; } = string.Empty;
 
-    public string Language { get; set; } = "ar";
-    public string Theme { get; set; } = "light";
-    public string PrimaryColor { get; set; } = "#3B82F6";
-    public bool IsDarkMode { get; set; }
-    public string LayoutMode { get; set; } = "default";
+    public string? Language { get; set; }
+    public string? Theme { get; set; }
+    public string? PrimaryColor { get; set; }
+    public bool? IsDarkMode { get; set; }
+    public string? LayoutMode { get; set; }
 
     // Profile picture – filename only (e.g. "320260618123000001.png")
     public string? ProfilePictureUrl { get; set; }

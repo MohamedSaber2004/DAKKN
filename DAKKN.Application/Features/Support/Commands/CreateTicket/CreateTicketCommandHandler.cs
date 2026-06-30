@@ -2,6 +2,7 @@ using DAKKN.Application.Common.Interfaces;
 using DAKKN.Application.Features.Support.DTOs;
 using DAKKN.Application.Localization;
 using DAKKN.Domain.Entities;
+using DAKKN.Domain.Enums;
 using DAKKN.Domain.Repositories.Interfaces.Base;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -36,6 +37,15 @@ namespace DAKKN.Application.Features.Support.Commands.CreateTicket
             var customerName = user?.FullName ?? _currentUserService.UserId.ToString();
             var customerEmail = user?.Email ?? string.Empty;
 
+            var priority = request.Priority?.ToLowerInvariant() switch
+            {
+                "low" => SupportTicketPriority.Low,
+                "medium" => SupportTicketPriority.Medium,
+                "high" => SupportTicketPriority.High,
+                "urgent" => SupportTicketPriority.Urgent,
+                _ => SupportTicketPriority.Medium
+            };
+
             var ticket = SupportTicket.Create(
                 _currentUserService.UserId,
                 customerName,
@@ -43,6 +53,7 @@ namespace DAKKN.Application.Features.Support.Commands.CreateTicket
                 request.Subject,
                 request.Message,
                 request.CategoryId,
+                priority,
                 request.PhoneNumber,
                 request.Source,
                 request.OrderNumber);
@@ -67,7 +78,7 @@ namespace DAKKN.Application.Features.Support.Commands.CreateTicket
             }
 
             var activity = SupportActivity.Create(ticket.Id, _currentUserService.UserId,
-                _currentUserService.UserId.ToString(), "Created", "Ticket created");
+                _currentUserService.UserName, "Created", "Ticket created");
             var activityRepo = _unitOfWork.GetRepository<SupportActivity>();
             await activityRepo.AddAsync(activity);
 

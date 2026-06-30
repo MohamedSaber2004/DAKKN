@@ -68,7 +68,8 @@ namespace DAKKN.Application.Features.Support.Queries.GetAdminTicketDetails
                         OriginalFileName = a.OriginalFileName,
                         ContentType = a.ContentType,
                         FileSize = a.FileSize,
-                        FilePath = a.FilePath
+                        FilePath = a.FilePath,
+                        Url = $"/files/{System.IO.Path.GetFileName(a.FilePath)}"
                     }).ToList()
                 }).ToList(),
                 Attachments = ticket.Attachments.Where(a => a.ReplyId == null).Select(a => new SupportAttachmentDto
@@ -78,7 +79,8 @@ namespace DAKKN.Application.Features.Support.Queries.GetAdminTicketDetails
                     OriginalFileName = a.OriginalFileName,
                     ContentType = a.ContentType,
                     FileSize = a.FileSize,
-                    FilePath = a.FilePath
+                    FilePath = a.FilePath,
+                    Url = $"/files/{System.IO.Path.GetFileName(a.FilePath)}"
                 }).ToList(),
                 Activities = ticket.Activities.OrderByDescending(a => a.CreatedAt).Select(a => new SupportActivityDto
                 {
@@ -92,7 +94,6 @@ namespace DAKKN.Application.Features.Support.Queries.GetAdminTicketDetails
                 }).ToList(),
                 InternalNotes = ticket.InternalNotes.OrderByDescending(n => n.CreatedAt).Select(n => new SupportInternalNoteDto
                 {
-                    Id = n.Id,
                     UserName = n.UserName,
                     Note = n.Note,
                     CreatedAt = n.CreatedAt

@@ -20,14 +20,24 @@ namespace DAKKN.Application.Features.Favorites.Commands.ToggleFavorite
         public async Task<bool> Handle(ToggleFavoriteCommand request, CancellationToken cancellationToken)
         {
             var repo = _unitOfWork.GetRepository<UserFavorite>();
-            var existing = await repo.GetAllAsync(null)
-                .FirstOrDefaultAsync(f => f.UserId == _currentUserService.UserId && f.ProductId == request.ProductId, cancellationToken);
+            var existing = await repo.GetAllAsync(f => f.UserId == _currentUserService.UserId && f.ProductId == request.ProductId)
+                .FirstOrDefaultAsync(cancellationToken);
 
             if (existing != null)
             {
-                repo.Delete(existing);
-                await _unitOfWork.SaveChangesAsync();
-                return false;
+                if (!existing.IsDeleted)
+                {
+                    repo.Delete(existing);
+                    await _unitOfWork.SaveChangesAsync();
+                    return false;
+                }
+                else
+                {
+                    existing.MarkAsRestored();
+                    repo.Update(existing);
+                    await _unitOfWork.SaveChangesAsync();
+                    return true;
+                }
             }
 
             var favorite = new UserFavorite

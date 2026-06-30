@@ -21,8 +21,8 @@ namespace DAKKN.Application.Features.Favorites.Commands.RemoveFavorite
         public async Task Handle(RemoveFavoriteCommand request, CancellationToken cancellationToken)
         {
             var repo = _unitOfWork.GetRepository<UserFavorite>();
-            var favorite = await repo.GetAllAsync(null)
-                .FirstOrDefaultAsync(f => f.UserId == _currentUserService.UserId && f.ProductId == request.ProductId, cancellationToken);
+            var favorite = await repo.GetAllAsync(f => f.UserId == _currentUserService.UserId && f.ProductId == request.ProductId && !f.IsDeleted)
+                .FirstOrDefaultAsync(cancellationToken);
 
             if (favorite == null)
                 throw new NotFoundException(nameof(UserFavorite), request.ProductId);

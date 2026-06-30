@@ -30,7 +30,7 @@ namespace DAKKN.Application.Features.Support.Commands.UpdateTicketPriority
             ticket.MarkAsUpdated(_currentUserService.UserId.ToString());
 
             var activity = SupportActivity.Create(request.TicketId, _currentUserService.UserId,
-                _currentUserService.UserId.ToString(), "PriorityChanged",
+                _currentUserService.UserName, "PriorityChanged",
                 "Priority changed", oldPriority, newPriority.ToString());
             var activityRepo = _unitOfWork.GetRepository<SupportActivity>();
             await activityRepo.AddAsync(activity);

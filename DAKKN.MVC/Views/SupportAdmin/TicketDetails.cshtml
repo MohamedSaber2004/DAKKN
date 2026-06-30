@@ -5,7 +5,7 @@
 @inject IStringLocalizer<Messages> Localizer
 @{
     Layout = "_LayoutAdmin";
-    ViewData["Title"] = Localizer["supp_ticket_details"] + " #" + Model.Id;
+    ViewData["Title"] = $"{Localizer["supp_ticket_details"]} # {Model.TicketNumber}";
     var culture = System.Globalization.CultureInfo.CurrentCulture.Name;
     var isArabic = culture.StartsWith("ar");
 }
@@ -14,35 +14,32 @@
 <div class="mb-lg flex flex-col lg:flex-row justify-between items-start lg:items-center gap-md">
     <div>
         <div class="flex flex-wrap items-center gap-sm mb-xs">
-            <span class="text-caption text-admin-secondary dark:text-slate-400 dark:text-slate-400">@Localizer["supp_ticket_no"]</span>
-            <h2 class="text-h2 text-admin-primary dark:text-white">#@Model.Id</h2>
+            <span class="text-caption text-admin-secondary dark:text-slate-400">@Localizer["supp_ticket_no"]</span>
+            <h2 class="text-h2 text-admin-primary dark:text-white">#@Model.TicketNumber</h2>
             @{
                 var statusClass = Model.Status switch
                 {
-                    "open" => "bg-primary/10 text-primary",
-                    "pending" => "bg-amber-500/10 text-amber-500",
-                    "waiting_customer" => "bg-purple-500/10 text-purple-500",
-                    "closed" => "bg-green-500/10 text-green-500",
+                    "Open" => "bg-primary/10 text-primary",
+                    "InProgress" => "bg-amber-500/10 text-amber-500",
+                    "WaitingCustomer" => "bg-purple-500/10 text-purple-500",
+                    "Resolved" => "bg-green-500/10 text-green-500",
+                    "Closed" => "bg-slate-500/10 text-slate-500",
                     _ => "bg-admin-card text-admin-secondary dark:text-slate-400"
                 };
                 var priorityClass = Model.Priority switch
                 {
-                    "urgent" => "bg-error-container/20 text-error",
-                    "high" => "bg-tertiary-container/20 text-tertiary",
-                    "medium" => "bg-secondary-container/20 text-secondary",
+                    "Urgent" => "bg-error-container/20 text-error",
+                    "High" => "bg-tertiary-container/20 text-tertiary",
+                    "Medium" => "bg-secondary-container/20 text-secondary",
                     _ => "bg-admin-card text-admin-secondary dark:text-slate-400"
                 };
             }
             <span class="@statusClass px-sm py-xs rounded-full text-caption font-bold">@Localizer[$"supp_status_{Model.Status?.ToLower()}"]</span>
             <span class="@priorityClass px-sm py-xs rounded-full text-caption font-bold">@Localizer[$"supp_priority_{Model.Priority?.ToLower()}"]</span>
         </div>
-        <p class="text-body text-admin-secondary dark:text-slate-400 dark:text-slate-400">@Model.Subject</p>
+        <p class="text-body text-admin-secondary dark:text-slate-400">@Model.Subject</p>
     </div>
     <div class="flex flex-wrap items-center gap-2">
-        <button type="button" onclick="assignTicket()" class="bg-primary text-on-primary px-4 py-2 rounded-full text-body font-bold hover:brightness-110 transition-all flex items-center gap-1">
-            <span class="material-symbols-outlined text-sm">assignment</span>
-            @Localizer["supp_assign"]
-        </button>
         <div class="relative">
             <button type="button" onclick="this.nextElementSibling.classList.toggle('hidden')" class="bg-admin-card dark:bg-[#1E293B] border border-admin-border dark:border-white/10 px-4 py-2 rounded-full text-body font-bold text-admin-secondary dark:text-slate-400 hover:text-primary transition-all flex items-center gap-1">
                 <span class="material-symbols-outlined text-sm">more_vert</span>
@@ -125,10 +122,11 @@
                     @Html.AntiForgeryToken()
                     <label class="w-12 h-12 flex items-center justify-center text-text-secondary hover:text-primary dark:text-outline dark:hover:text-primary-light hover:bg-surface-container-low dark:hover:bg-surface-container-high rounded-xl transition-all cursor-pointer">
                         <span class="material-symbols-outlined">attach_file</span>
-                        <input type="file" name="attachments" multiple class="hidden" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.zip">
+                        <input type="file" name="attachments" multiple class="hidden" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.zip" onchange="previewReplyFiles(this)">
                     </label>
                     <div class="flex-1 relative">
-                        <textarea name="body" class="w-full bg-surface-container-low dark:bg-surface-container-high border border-border dark:border-outline/20 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl py-3 px-4 font-body text-body text-on-surface dark:text-inverse-on-surface resize-none h-[52px] outline-none transition-all" placeholder="@Localizer["form_msg_ph"]" required></textarea>
+                        <textarea name="Message" class="w-full bg-surface-container-low dark:bg-surface-container-high border border-border dark:border-outline/20 focus:border-primary focus:ring-1 focus:ring-primary rounded-xl py-3 px-4 font-body text-body text-on-surface dark:text-inverse-on-surface resize-none h-[52px] outline-none transition-all" placeholder="@Localizer["supp_reply_placeholder"]" required></textarea>
+                        <div id="file-preview" class="hidden mt-2 grid grid-cols-3 gap-2"></div>
                     </div>
                     <button type="submit" class="px-xl h-[52px] bg-primary text-on-primary rounded-xl font-body-lg text-body-lg shadow-sm hover:brightness-110 active:scale-95 transition-all flex items-center gap-sm">
                         @Localizer["btn_send"]
@@ -153,16 +151,16 @@
                 </div>
                 <div>
                     <h4 class="text-body-lg font-bold text-admin-primary dark:text-white">@Model.CustomerName</h4>
-                    <p class="text-caption text-admin-secondary dark:text-slate-400 dark:text-slate-400">@Model.CustomerEmail</p>
+                    <p class="text-caption text-admin-secondary dark:text-slate-400">@Model.CustomerEmail</p>
                 </div>
             </div>
             <div class="space-y-sm">
                 <div>
-                    <p class="text-caption text-admin-secondary dark:text-slate-400 dark:text-slate-400">@Localizer["supp_phone"]</p>
+                    <p class="text-caption text-admin-secondary dark:text-slate-400">@Localizer["supp_phone"]</p>
                     <p class="text-body font-bold dark:text-white" dir="ltr">@Model.CustomerPhone</p>
                 </div>
                 <div>
-                    <p class="text-caption text-admin-secondary dark:text-slate-400 dark:text-slate-400">@Localizer["supp_total_tickets"]</p>
+                    <p class="text-caption text-admin-secondary dark:text-slate-400">@Localizer["supp_total_tickets"]</p>
                     <p class="text-body font-bold dark:text-white">—</p>
                 </div>
             </div>
@@ -176,19 +174,19 @@
             </h3>
             <div class="space-y-sm">
                 <div>
-                    <p class="text-caption text-admin-secondary dark:text-slate-400 dark:text-slate-400">@Localizer["supp_category"]</p>
+                    <p class="text-caption text-admin-secondary dark:text-slate-400">@Localizer["supp_category"]</p>
                     <p class="text-body font-bold dark:text-white">@(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") && !string.IsNullOrEmpty(Model.CategoryArName) ? Model.CategoryArName : Model.CategoryName)</p>
                 </div>
                 <div>
-                    <p class="text-caption text-admin-secondary dark:text-slate-400 dark:text-slate-400">@Localizer["supp_assigned_to"]</p>
+                    <p class="text-caption text-admin-secondary dark:text-slate-400">@Localizer["supp_assigned_to"]</p>
                     <p class="text-body font-bold dark:text-white">@Model.AssignedToName</p>
                 </div>
                 <div>
-                    <p class="text-caption text-admin-secondary dark:text-slate-400 dark:text-slate-400">@Localizer["supp_created_date"]</p>
+                    <p class="text-caption text-admin-secondary dark:text-slate-400">@Localizer["supp_created_date"]</p>
                     <p class="text-body font-bold dark:text-white">@Model.CreatedAt.ToLocalTime().ToString("MMM dd, yyyy HH:mm")</p>
                 </div>
                 <div>
-                    <p class="text-caption text-admin-secondary dark:text-slate-400 dark:text-slate-400">@Localizer["supp_last_updated"]</p>
+                    <p class="text-caption text-admin-secondary dark:text-slate-400">@Localizer["supp_last_updated"]</p>
                     <p class="text-body font-bold dark:text-white">@(Model.UpdatedAt?.ToLocalTime().ToString("MMM dd, yyyy HH:mm") ?? "—")</p>
                 </div>
             </div>
@@ -242,7 +240,7 @@
                         <div class="relative ltr:pl-8 rtl:pr-8">
                             <div class="absolute ltr:left-0 rtl:right-0 top-1 w-4 h-4 rounded-full bg-primary border-4 border-admin-card dark:border-[#1E293B]"></div>
                             <p class="text-body font-bold text-admin-primary dark:text-white text-sm">@log.Action</p>
-                            <p class="text-caption text-admin-secondary dark:text-slate-400 dark:text-slate-400">
+                            <p class="text-caption text-admin-secondary dark:text-slate-400">
                                 @log.CreatedAt.ToLocalTime().ToString("MMM dd, HH:mm")
                                 @if (!string.IsNullOrEmpty(log.UserName))
                                 {
@@ -263,24 +261,33 @@
 
 @section Scripts {
     <script>
-        function assignTicket() {
-            var staffName = prompt('@Localizer["supp_assign_prompt"]');
-            if (staffName && staffName.trim()) {
-                var form = document.createElement('form');
-                form.method = 'post';
-                form.action = '@Url.Action("Assign", new { id = Model.Id })';
-                var token = document.createElement('input');
-                token.type = 'hidden';
-                token.name = '__RequestVerificationToken';
-                token.value = document.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
-                form.appendChild(token);
-                var input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = 'staffName';
-                input.value = staffName.trim();
-                form.appendChild(input);
-                document.body.appendChild(form);
-                form.submit();
+        function previewReplyFiles(input) {
+            var preview = document.getElementById('file-preview');
+            preview.innerHTML = '';
+            if (input.files.length > 0) {
+                preview.classList.remove('hidden');
+                Array.from(input.files).forEach(function(file) {
+                    var div = document.createElement('div');
+                    div.className = 'relative bg-surface-container-low dark:bg-surface-container-high rounded-lg p-2 text-center';
+                    if (file.type.startsWith('image/')) {
+                        var img = document.createElement('img');
+                        img.className = 'w-full h-16 object-cover rounded';
+                        img.src = URL.createObjectURL(file);
+                        div.appendChild(img);
+                    } else {
+                        var icon = document.createElement('span');
+                        icon.className = 'material-symbols-outlined text-2xl text-text-secondary block';
+                        icon.textContent = 'description';
+                        div.appendChild(icon);
+                    }
+                    var name = document.createElement('p');
+                    name.className = 'text-[10px] truncate mt-1 text-text-secondary';
+                    name.textContent = file.name;
+                    div.appendChild(name);
+                    preview.appendChild(div);
+                });
+            } else {
+                preview.classList.add('hidden');
             }
         }
     </script>

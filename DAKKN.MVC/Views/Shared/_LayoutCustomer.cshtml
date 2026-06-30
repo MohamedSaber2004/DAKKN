@@ -12,7 +12,16 @@
     var primaryColor = "#0E908C";
     var primaryRgb = "14, 144, 140";
     var profilePictureUrl = string.Empty;
-    if (User.Identity?.IsAuthenticated == true)
+
+    // Separate customer cookies — never shared with admin
+    var themeCookie = Context.Request.Cookies["dakkn_customer_theme"];
+    var langCookie = Context.Request.Cookies["dakkn_customer_lang"];
+    if (!string.IsNullOrEmpty(themeCookie))
+    {
+        isDarkMode = themeCookie == "dark";
+        themeName = themeCookie;
+    }
+    else if (User.Identity?.IsAuthenticated == true)
     {
         try 
         {
@@ -137,26 +146,36 @@
     </style>
 
     <script>
+        // Customer-specific cookie prefix — never shared with admin
+        window.dakknCookiePrefix = 'dakkn_customer_';
+
         (function() {
-            // Server-side preference takes priority for authenticated users
+            function getCookieValue(name) {
+                var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+                return match ? decodeURIComponent(match[2]) : null;
+            }
+            // Priority: Use customer-specific localStorage, fall back to server value
+            var savedTheme = localStorage.getItem('dakkn_customer_theme');
             @if (User.Identity?.IsAuthenticated == true)
             {
                 <text>
             var serverIsDark = @(isDarkMode.ToString().ToLower());
-            if (serverIsDark) {
+            var serverTheme = serverIsDark ? 'dark' : 'light';
+            var effectiveTheme = savedTheme || serverTheme || 'light';
+            localStorage.setItem('dakkn_customer_theme', effectiveTheme);
+            if (effectiveTheme === 'dark') {
                 document.documentElement.classList.add('dark');
-                localStorage.setItem('dakkn_theme', 'dark');
             } else {
                 document.documentElement.classList.remove('dark');
-                localStorage.setItem('dakkn_theme', 'light');
             }
                 </text>
             }
             else
             {
                 <text>
-            var savedTheme = localStorage.getItem('dakkn_theme');
-            if (savedTheme === 'dark') {
+            var effectiveTheme = savedTheme || 'light';
+            localStorage.setItem('dakkn_customer_theme', effectiveTheme);
+            if (effectiveTheme === 'dark') {
                 document.documentElement.classList.add('dark');
             } else {
                 document.documentElement.classList.remove('dark');
@@ -164,9 +183,13 @@
                 </text>
             }
 
-            // Sync language with localStorage
+            // Customer language — redirect to sync if cookie differs from current
+            var customerLang = getCookieValue('dakkn_customer_lang');
             var culture = "@culture";
-            localStorage.setItem('dakkn_lang', culture);
+            localStorage.setItem('dakkn_customer_lang', customerLang || culture);
+            if (customerLang && customerLang !== culture) {
+                window.location.href = '/Translation/SetLanguage?culture=' + customerLang + '&returnUrl=' + encodeURIComponent(window.location.pathname + window.location.search);
+            }
 
             // Initialize Sidebar State
             // Only collapse via JS on desktop; tablet uses CSS media query for icon-only mode

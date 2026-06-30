@@ -42,6 +42,21 @@ namespace DAKKN.Appearence.Services
 
         public string? IpAddress => _httpContextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString();
 
+        public string UserName
+        {
+            get
+            {
+                var user = _httpContextAccessor.HttpContext?.User;
+                if (user == null || user.Identity?.IsAuthenticated != true)
+                    return "System";
+
+                return user.FindFirst("FullName")?.Value
+                    ?? user.FindFirst(ClaimTypes.Name)?.Value
+                    ?? user.FindFirst("name")?.Value
+                    ?? "Unknown";
+            }
+        }
+
         public UserType UserType
         {
             get

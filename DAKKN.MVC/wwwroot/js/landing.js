@@ -11,10 +11,12 @@ function applyTheme(theme) {
 function toggleDarkMode() {
     const isDark = document.documentElement.classList.toggle('dark');
     const theme = isDark ? 'dark' : 'light';
-    localStorage.setItem('dakkn_theme', theme);
+    const prefix = window.dakknCookiePrefix || '';
+    localStorage.setItem(prefix + 'dakkn_theme', theme);
+    setCookie(prefix + 'dakkn_theme', theme, 365);
     // Dispatch a storage event manually for the current tab
     window.dispatchEvent(new StorageEvent('storage', {
-        key: 'dakkn_theme',
+        key: prefix + 'dakkn_theme',
         newValue: theme
     }));
 
@@ -61,9 +63,11 @@ function getCurrentLang() {
 function toggleLang() {
     const current = getCurrentLang();
     const target = current.startsWith('en') ? 'ar' : 'en';
+    const prefix = window.dakknCookiePrefix || '';
     
-    // Persist language choice in localStorage (for guest/landing only — never touches DB)
-    localStorage.setItem('dakkn_lang', target);
+    // Persist language choice in role-specific cookie (admin vs customer)
+    localStorage.setItem(prefix + 'dakkn_lang', target);
+    setCookie(prefix + 'dakkn_lang', target, 365);
     setCookie(".AspNetCore.Culture", `c=${target}|uic=${target}`, 365);
     
     // Reload to let server-side @Localizer take over for all static text

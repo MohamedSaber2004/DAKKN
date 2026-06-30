@@ -55,9 +55,6 @@
                 <a asp-action="ProductDetails" asp-route-id="@product.Id" class="block">
                     <div class="aspect-square relative overflow-hidden bg-white/5">
                         <img src="@product.ImageUrl" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="@(isArabic ? product.ArName : product.Name)">
-                        <button type="button" onclick="toggleFavorite('@product.Id', this)" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/90 backdrop-blur-md shadow-medium flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 @(isFav ? "text-error opacity-100" : "text-text-secondary hover:text-error")">
-                            <span class="material-symbols-outlined text-xl @(isFav ? "filled-icon" : "")">favorite</span>
-                        </button>
                     </div>
                 </a>
                 <div class="p-lg">

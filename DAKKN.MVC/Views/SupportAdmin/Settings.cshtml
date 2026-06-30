@@ -1,7 +1,7 @@
 @using DAKKN.Application.Features.Support.DTOs
 @using DAKKN.Application.Common.Models
 @using DAKKN.Application.Localization
-@model SupportSettingsDto
+@model DAKKN.Application.Features.Support.Commands.UpdateSettings.UpdateSettingsCommand
 @inject IStringLocalizer<Messages> Localizer
 @{
     Layout = "_LayoutAdmin";
@@ -13,9 +13,11 @@
 <div class="mb-lg flex flex-col md:flex-row justify-between items-start md:items-end gap-md">
     <div>
         <h2 class="font-h2 text-h2 text-admin-primary dark:text-white mb-sm">@Localizer["supp_settings"]</h2>
-        <p class="font-body text-body text-admin-secondary dark:text-slate-400 dark:text-slate-400">@Localizer["supp_settings_desc"]</p>
+        <p class="font-body text-body text-admin-secondary dark:text-slate-400">@Localizer["supp_settings_desc"]</p>
     </div>
 </div>
+
+@await Html.PartialAsync("Partials/_AuthAlert")
 
 <div class="max-w-3xl">
     <form asp-action="Settings" method="post" class="space-y-6">
@@ -60,7 +62,7 @@
             </h3>
 
             <div>
-                <label class="block text-sm font-bold text-admin-primary dark:text-white mb-1.5">@Localizer["supp_max_attachment_size"] (MB)</label>
+                <label class="block text-sm font-bold text-admin-primary dark:text-white mb-1.5">@Localizer["supp_max_attachment_size"] (@Localizer["supp_mb"])</label>
                 <input type="number" name="maxAttachmentSize" value="@Model.MaxAttachmentSize" min="1" max="50" class="w-full bg-admin-input dark:bg-[#1E293B] border border-admin-border dark:border-white/10 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-primary text-admin-primary dark:text-white">
             </div>
 

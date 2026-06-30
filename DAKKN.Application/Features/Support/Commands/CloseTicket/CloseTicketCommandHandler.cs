@@ -30,7 +30,7 @@ namespace DAKKN.Application.Features.Support.Commands.CloseTicket
             ticket.MarkAsUpdated(_currentUserService.UserId.ToString());
 
             var activity = SupportActivity.Create(request.TicketId, _currentUserService.UserId,
-                _currentUserService.UserId.ToString(), "Closed", "Ticket closed");
+                _currentUserService.UserName, "Closed", "Ticket closed");
             var activityRepo = _unitOfWork.GetRepository<SupportActivity>();
             await activityRepo.AddAsync(activity);
 

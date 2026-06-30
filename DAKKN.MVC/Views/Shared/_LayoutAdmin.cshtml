@@ -6,6 +6,7 @@
     var culture = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("en") ? "en" : "ar";
     var dir = culture == "ar" ? "rtl" : "ltr";
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
     var fullName = User.FindFirstValue("FullName");
     if (string.IsNullOrWhiteSpace(fullName))
     {
@@ -16,7 +17,16 @@
     var themeName = "light";
     var primaryColor = "#0E908C";
     var primaryRgb = "14, 144, 140";
-    if (User.Identity?.IsAuthenticated == true)
+
+    // Separate admin cookies — never shared with customer
+    var themeCookie = Context.Request.Cookies["dakkn_admin_theme"];
+    var langCookie = Context.Request.Cookies["dakkn_admin_lang"];
+    if (!string.IsNullOrEmpty(themeCookie))
+    {
+        isDarkMode = themeCookie == "dark";
+        themeName = themeCookie;
+    }
+    else if (User.Identity?.IsAuthenticated == true)
     {
         try 
         {
@@ -183,34 +193,51 @@
             background: #1E293B;
             border-top-color: rgba(255,255,255,.06);
         }
+
+        /* Collapsed sub-menu behavior */
+        .sidebar-is-collapsed .sub-menu {
+            display: none !important;
+        }
+        @@media (min-width: 768px) and (max-width: 1279px) {
+            .admin-sidebar:not(.tablet-sidebar-expanded) .sub-menu {
+                display: none !important;
+            }
+        }
     </style>
 
     <script>
+        // Admin-specific cookie prefix — never shared with customer
+        window.dakknCookiePrefix = 'dakkn_admin_';
+
         // High-priority theme application to prevent light-mode flash
         (function() {
-            // Server-side values
+            // Priority: Use admin-specific localStorage, fall back to server value
+            const savedTheme = localStorage.getItem('dakkn_admin_theme');
             const serverTheme = "@themeName";
             const serverIsDark = @(isDarkMode.ToString().ToLower());
             
-            // Priority: Use server-side value if available to ensure synchronization
-            if (serverTheme) {
-                localStorage.setItem('dakkn_theme', serverTheme);
-                if (serverIsDark) {
-                    document.documentElement.classList.add('dark');
-                } else {
-                    document.documentElement.classList.remove('dark');
-                }
+            const effectiveTheme = savedTheme || serverTheme || 'light';
+            const effectiveIsDark = effectiveTheme === 'dark';
+            
+            localStorage.setItem('dakkn_admin_theme', effectiveTheme);
+            if (effectiveIsDark) {
+                document.documentElement.classList.add('dark');
             } else {
-                // Fallback to localStorage for guest or if server fails
-                const savedTheme = localStorage.getItem('dakkn_theme');
-                if (savedTheme === 'dark') {
-                    document.documentElement.classList.add('dark');
-                }
+                document.documentElement.classList.remove('dark');
             }
 
-            // Sync language with localStorage
+            // Admin language — read cookie, save to localStorage
+            function getCookieValue(name) {
+                var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+                return match ? decodeURIComponent(match[2]) : null;
+            }
+            var adminLang = getCookieValue('dakkn_admin_lang');
             const culture = "@culture";
-            localStorage.setItem('dakkn_lang', culture);
+            localStorage.setItem('dakkn_admin_lang', adminLang || culture);
+            // If admin lang cookie exists and differs from server culture, reload
+            if (adminLang && adminLang !== culture) {
+                window.location.href = '/Translation/SetLanguage?culture=' + adminLang + '&returnUrl=' + encodeURIComponent(window.location.pathname + window.location.search);
+            }
 
             // Initialize Sidebar State
             // Only apply JS-collapsed class on desktop (tablet uses CSS media query for icon-only mode)
@@ -252,27 +279,27 @@
 
     <!-- Mobile Bottom Nav (visible only on < 768px) -->
     <nav id="admin-bottom-nav" class="items-center justify-around px-2 py-2 gap-1">
-        <a asp-controller="Admin" asp-action="Index" class="admin-bnav-item @(currentAction == "Index" ? "admin-bnav-active" : "")" title="@Localizer["admin_overview"]">
-            <span class="material-symbols-outlined @(currentAction == "Index" ? "filled-icon" : "")">dashboard</span>
+        <a asp-controller="Admin" asp-action="Dashboard" class="admin-bnav-item @(currentAction == "Dashboard" && currentController == "Admin" ? "admin-bnav-active" : "")" title="@Localizer["admin_overview"]">
+            <span class="material-symbols-outlined @(currentAction == "Dashboard" && currentController == "Admin" ? "filled-icon" : "")">dashboard</span>
             <span>@Localizer["admin_overview"]</span>
         </a>
-        <a asp-controller="Admin" asp-action="Orders" class="admin-bnav-item @(currentAction == "Orders" ? "admin-bnav-active" : "")" title="@Localizer["admin_orders"]">
-            <span class="material-symbols-outlined @(currentAction == "Orders" ? "filled-icon" : "")">shopping_cart</span>
+        <a asp-controller="Admin" asp-action="Orders" class="admin-bnav-item @(currentAction == "Orders" && currentController == "Admin" ? "admin-bnav-active" : "")" title="@Localizer["admin_orders"]">
+            <span class="material-symbols-outlined @(currentAction == "Orders" && currentController == "Admin" ? "filled-icon" : "")">shopping_cart</span>
             <span>@Localizer["admin_orders"]</span>
         </a>
         <a asp-controller="Admin" asp-action="AddProduct" class="admin-bnav-fab" title="@Localizer["admin_add_product"]">
             <span class="material-symbols-outlined">add</span>
         </a>
-        <a asp-controller="Admin" asp-action="Inventory" class="admin-bnav-item @(currentAction == "Inventory" ? "admin-bnav-active" : "")" title="@Localizer["admin_inventory"]">
-            <span class="material-symbols-outlined @(currentAction == "Inventory" ? "filled-icon" : "")">inventory_2</span>
+        <a asp-controller="Admin" asp-action="Inventory" class="admin-bnav-item @(currentAction == "Inventory" && currentController == "Admin" ? "admin-bnav-active" : "")" title="@Localizer["admin_inventory"]">
+            <span class="material-symbols-outlined @(currentAction == "Inventory" && currentController == "Admin" ? "filled-icon" : "")">inventory_2</span>
             <span>@Localizer["admin_inventory"]</span>
         </a>
         <a asp-controller="AdminStickerSuggestion" asp-action="Index" class="admin-bnav-item" title="@Localizer["admin_sticker_suggestions"]">
             <span class="material-symbols-outlined">lightbulb</span>
             <span>@Localizer["admin_sticker_suggestions"]</span>
         </a>
-        <a asp-controller="Admin" asp-action="Shipping" class="admin-bnav-item @(currentAction == "Shipping" ? "admin-bnav-active" : "")" title="@Localizer["admin_shipping.title"]">
-            <span class="material-symbols-outlined @(currentAction == "Shipping" ? "filled-icon" : "")">map</span>
+        <a asp-controller="Admin" asp-action="Shipping" class="admin-bnav-item @(currentAction == "Shipping" && currentController == "Admin" ? "admin-bnav-active" : "")" title="@Localizer["admin_shipping.title"]">
+            <span class="material-symbols-outlined @(currentAction == "Shipping" && currentController == "Admin" ? "filled-icon" : "")">map</span>
             <span>@Localizer["admin_shipping.title"]</span>
         </a>
         <button type="button" onclick="submitLogout()" class="admin-bnav-item admin-bnav-logout" title="@Localizer["auth.logout"]">
@@ -291,75 +318,68 @@
             <span class="font-bold text-lg text-admin-primary tracking-wide sidebar-text">DAKKN</span>
         </div>
         <nav class="flex-1 overflow-y-auto custom-scrollbar py-md px-sm flex flex-col gap-sm">
-            <a asp-controller="Admin" asp-action="Index" class="nav-item flex items-center gap-md @(currentAction == "Index" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-xl px-4 py-3 transition-all duration-200" title="@Localizer["admin_overview"]">
-                <span class="material-symbols-outlined @(currentAction == "Index" ? "filled-icon" : "") flex-shrink-0">dashboard</span>
+            <a asp-controller="Admin" asp-action="Dashboard" class="nav-item flex items-center gap-md @(currentAction == "Dashboard" && currentController == "Admin" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-xl px-4 py-3 transition-all duration-200" title="@Localizer["admin_overview"]">
+                <span class="material-symbols-outlined @(currentAction == "Dashboard" && currentController == "Admin" ? "filled-icon" : "") flex-shrink-0">dashboard</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_overview"]</span>
             </a>
-            <a asp-controller="Admin" asp-action="Users" class="nav-item flex items-center gap-md @(currentAction == "Users" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_users"]">
-                <span class="material-symbols-outlined @(currentAction == "Users" ? "filled-icon" : "") flex-shrink-0">group</span>
+            <a asp-controller="Admin" asp-action="Users" class="nav-item flex items-center gap-md @(currentAction == "Users" && currentController == "Admin" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_users"]">
+                <span class="material-symbols-outlined @(currentAction == "Users" && currentController == "Admin" ? "filled-icon" : "") flex-shrink-0">group</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_users"]</span>
             </a>
-            <a asp-controller="Admin" asp-action="Orders" class="nav-item flex items-center gap-md @(currentAction == "Orders" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_orders"]">
-                <span class="material-symbols-outlined @(currentAction == "Orders" ? "filled-icon" : "") flex-shrink-0">shopping_cart</span>
+            <a asp-controller="Admin" asp-action="Orders" class="nav-item flex items-center gap-md @(currentAction == "Orders" && currentController == "Admin" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_orders"]">
+                <span class="material-symbols-outlined @(currentAction == "Orders" && currentController == "Admin" ? "filled-icon" : "") flex-shrink-0">shopping_cart</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_orders"]</span>
             </a>
-            <a asp-controller="Admin" asp-action="Inventory" class="nav-item flex items-center gap-md @(currentAction == "Inventory" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_inventory"]">
-                <span class="material-symbols-outlined @(currentAction == "Inventory" ? "filled-icon" : "") flex-shrink-0">inventory_2</span>
+            <a asp-controller="Admin" asp-action="Inventory" class="nav-item flex items-center gap-md @(currentAction == "Inventory" && currentController == "Admin" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_inventory"]">
+                <span class="material-symbols-outlined @(currentAction == "Inventory" && currentController == "Admin" ? "filled-icon" : "") flex-shrink-0">inventory_2</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_inventory"]</span>
             </a>
-            <a asp-controller="Admin" asp-action="Categories" class="nav-item flex items-center gap-md @(currentAction == "Categories" || currentAction == "CreateCategory" || currentAction == "EditCategory" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_categories"]">
-                <span class="material-symbols-outlined @(currentAction == "Categories" || currentAction == "CreateCategory" || currentAction == "EditCategory" ? "filled-icon" : "") flex-shrink-0">category</span>
+            <a asp-controller="Admin" asp-action="Categories" class="nav-item flex items-center gap-md @((currentAction == "Categories" || currentAction == "CreateCategory" || currentAction == "EditCategory") && currentController == "Admin" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_categories"]">
+                <span class="material-symbols-outlined @((currentAction == "Categories" || currentAction == "CreateCategory" || currentAction == "EditCategory") && currentController == "Admin" ? "filled-icon" : "") flex-shrink-0">category</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_categories"]</span>
             </a>
             <div class="nav-section">
-                <div class="nav-item flex items-center gap-md px-4 py-3 rounded-xl cursor-pointer @(currentAction == "Dashboard" || currentAction == "Tickets" || currentAction == "TicketDetails" || currentAction == "Categories" || currentAction == "FAQs" || currentAction == "Settings" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") transition-all duration-200" title="@Localizer["admin_support"]">
-                    <a asp-controller="SupportAdmin" asp-action="Dashboard" class="flex items-center gap-md flex-1 min-w-0">
-                        <span class="material-symbols-outlined flex-shrink-0">support_agent</span>
-                        <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_support"]</span>
-                    </a>
-                    <span class="material-symbols-outlined flex-shrink-0 text-sm transition-transform cursor-pointer" onclick="this.closest('.nav-section').querySelector('.sub-menu').classList.toggle('hidden')">expand_more</span>
-                </div>
-                <div class="sub-menu pl-lg space-y-1 @(currentAction == "Dashboard" || currentAction == "Tickets" || currentAction == "TicketDetails" || currentAction == "Categories" || currentAction == "FAQs" || currentAction == "Settings" ? "" : "hidden")">
-                    <a asp-controller="SupportAdmin" asp-action="Dashboard" class="nav-item flex items-center gap-md @(currentAction == "Dashboard" ? "active bg-primary/10 text-primary dark:text-primary-light" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-2 rounded-xl transition-all duration-200 sidebar-text">
-                        <span class="material-symbols-outlined text-sm flex-shrink-0">dashboard</span>
-                        <span class="font-caption text-caption">@Localizer["supp_dashboard"]</span>
-                    </a>
-                    <a asp-controller="SupportAdmin" asp-action="Tickets" class="nav-item flex items-center gap-md @(currentAction == "Tickets" || currentAction == "TicketDetails" ? "active bg-primary/10 text-primary dark:text-primary-light" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-2 rounded-xl transition-all duration-200 sidebar-text">
+                <a asp-controller="SupportAdmin" asp-action="Dashboard" class="nav-item flex items-center gap-md px-4 py-3 rounded-xl @(currentController == "SupportAdmin" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") transition-all duration-200" title="@Localizer["admin_support"]">
+                    <span class="material-symbols-outlined flex-shrink-0">support_agent</span>
+                    <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_support"]</span>
+                </a>
+                <div class="sub-menu ps-lg space-y-1 @(currentController == "SupportAdmin" ? "" : "hidden")">
+                    <a asp-controller="SupportAdmin" asp-action="Tickets" class="nav-item flex items-center gap-md @(currentController == "SupportAdmin" && (currentAction == "Tickets" || currentAction == "TicketDetails") ? "active bg-primary/10 text-primary dark:text-primary-light" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-2 rounded-xl transition-all duration-200">
                         <span class="material-symbols-outlined text-sm flex-shrink-0">confirmation_number</span>
-                        <span class="font-caption text-caption">@Localizer["admin_support_tickets"]</span>
+                        <span class="font-caption text-caption sidebar-text">@Localizer["admin_support_tickets"]</span>
                     </a>
-                    <a asp-controller="SupportAdmin" asp-action="Categories" class="nav-item flex items-center gap-md @(currentAction == "Categories" ? "active bg-primary/10 text-primary dark:text-primary-light" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-2 rounded-xl transition-all duration-200 sidebar-text">
+                    <a asp-controller="SupportAdmin" asp-action="Categories" class="nav-item flex items-center gap-md @(currentController == "SupportAdmin" && currentAction == "Categories" ? "active bg-primary/10 text-primary dark:text-primary-light" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-2 rounded-xl transition-all duration-200">
                         <span class="material-symbols-outlined text-sm flex-shrink-0">category</span>
-                        <span class="font-caption text-caption">@Localizer["admin_support_categories"]</span>
+                        <span class="font-caption text-caption sidebar-text">@Localizer["admin_support_categories"]</span>
                     </a>
-                    <a asp-controller="SupportAdmin" asp-action="FAQs" class="nav-item flex items-center gap-md @(currentAction == "FAQs" ? "active bg-primary/10 text-primary dark:text-primary-light" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-2 rounded-xl transition-all duration-200 sidebar-text">
+                    <a asp-controller="SupportAdmin" asp-action="FAQs" class="nav-item flex items-center gap-md @(currentController == "SupportAdmin" && currentAction == "FAQs" ? "active bg-primary/10 text-primary dark:text-primary-light" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-2 rounded-xl transition-all duration-200">
                         <span class="material-symbols-outlined text-sm flex-shrink-0">quiz</span>
-                        <span class="font-caption text-caption">@Localizer["admin_support_faq"]</span>
+                        <span class="font-caption text-caption sidebar-text">@Localizer["admin_support_faq"]</span>
                     </a>
-                    <a asp-controller="SupportAdmin" asp-action="Settings" class="nav-item flex items-center gap-md @(currentAction == "Settings" ? "active bg-primary/10 text-primary dark:text-primary-light" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-2 rounded-xl transition-all duration-200 sidebar-text">
+                    <a asp-controller="SupportAdmin" asp-action="Settings" class="nav-item flex items-center gap-md @(currentController == "SupportAdmin" && currentAction == "Settings" ? "active bg-primary/10 text-primary dark:text-primary-light" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-2 rounded-xl transition-all duration-200">
                         <span class="material-symbols-outlined text-sm flex-shrink-0">settings</span>
-                        <span class="font-caption text-caption">@Localizer["admin_settings"]</span>
+                        <span class="font-caption text-caption sidebar-text">@Localizer["admin_settings"]</span>
                     </a>
                 </div>
             </div>
-            <a asp-controller="Admin" asp-action="Shipping" class="nav-item flex items-center gap-md @(currentAction == "Shipping" || currentAction == "CreateShipping" || currentAction == "EditShipping" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_shipping.title"]">
-                <span class="material-symbols-outlined @(currentAction == "Shipping" || currentAction == "CreateShipping" || currentAction == "EditShipping" ? "filled-icon" : "") flex-shrink-0">map</span>
+            <a asp-controller="Admin" asp-action="Shipping" class="nav-item flex items-center gap-md @((currentAction == "Shipping" || currentAction == "CreateShipping" || currentAction == "EditShipping") && currentController == "Admin" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_shipping.title"]">
+                <span class="material-symbols-outlined @((currentAction == "Shipping" || currentAction == "CreateShipping" || currentAction == "EditShipping") && currentController == "Admin" ? "filled-icon" : "") flex-shrink-0">map</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_shipping.title"]</span>
             </a>
-            <a asp-controller="Admin" asp-action="Content" class="nav-item flex items-center gap-md @(currentAction == "Content" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_content_mgmt"]">
-                <span class="material-symbols-outlined @(currentAction == "Content" ? "filled-icon" : "") flex-shrink-0">edit_note</span>
+            <a asp-controller="Admin" asp-action="Content" class="nav-item flex items-center gap-md @(currentAction == "Content" && currentController == "Admin" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_content_mgmt"]">
+                <span class="material-symbols-outlined @(currentAction == "Content" && currentController == "Admin" ? "filled-icon" : "") flex-shrink-0">edit_note</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_content_mgmt"]</span>
             </a>
-            <a asp-controller="Admin" asp-action="BrandReviews" class="nav-item flex items-center gap-md @(currentAction == "BrandReviews" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["brand_reviews_admin_title"]">
-                <span class="material-symbols-outlined @(currentAction == "BrandReviews" ? "filled-icon" : "") flex-shrink-0">rate_review</span>
+            <a asp-controller="Admin" asp-action="BrandReviews" class="nav-item flex items-center gap-md @(currentAction == "BrandReviews" && currentController == "Admin" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["brand_reviews_admin_title"]">
+                <span class="material-symbols-outlined @(currentAction == "BrandReviews" && currentController == "Admin" ? "filled-icon" : "") flex-shrink-0">rate_review</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["brand_reviews_admin_title"]</span>
             </a>
             <a asp-controller="AdminStickerSuggestion" asp-action="Index" class="nav-item flex items-center gap-md @(currentAction == "Index" && ViewContext.RouteData.Values["controller"]?.ToString() == "AdminStickerSuggestion" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_sticker_suggestions"]">
                 <span class="material-symbols-outlined @(currentAction == "Index" && ViewContext.RouteData.Values["controller"]?.ToString() == "AdminStickerSuggestion" ? "filled-icon" : "") flex-shrink-0">lightbulb</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_sticker_suggestions"]</span>
             </a>
-            <a asp-controller="Admin" asp-action="Settings" class="nav-item flex items-center gap-md @(currentAction == "Settings" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl mt-auto transition-all duration-200" title="@Localizer["admin_settings"]">
-                <span class="material-symbols-outlined @(currentAction == "Settings" ? "filled-icon" : "") flex-shrink-0">settings</span>
+            <a asp-controller="Admin" asp-action="Settings" class="nav-item flex items-center gap-md @(currentAction == "Settings" && currentController == "Admin" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl mt-auto transition-all duration-200" title="@Localizer["admin_settings"]">
+                <span class="material-symbols-outlined @(currentAction == "Settings" && currentController == "Admin" ? "filled-icon" : "") flex-shrink-0">settings</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_settings"]</span>
             </a>
 

@@ -374,7 +374,6 @@ namespace DAKKN.MVC
             localizationOptions.RequestCultureProviders.Add(new QueryStringRequestCultureProvider());
             localizationOptions.RequestCultureProviders.Add(new DAKKN.MVC.Localization.UserPreferenceRequestCultureProvider());
             localizationOptions.RequestCultureProviders.Add(new CookieRequestCultureProvider());
-            localizationOptions.RequestCultureProviders.Add(new AcceptLanguageHeaderRequestCultureProvider());
 
             app.UseRouting();
 

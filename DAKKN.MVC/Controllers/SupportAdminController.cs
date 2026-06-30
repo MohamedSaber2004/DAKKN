@@ -60,6 +60,12 @@ namespace DAKKN.MVC.Controllers
             int pageNumber = 1, int pageSize = 10)
         {
             ViewData["Title"] = _localizer[LocalizationKeys.Support.Dashboard.Value];
+            var categories = await _mediator.Send(new GetCategoriesQuery());
+            ViewBag.Categories = categories.Select(c => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            }).ToList();
             var query = new GetAdminTicketsQuery
             {
                 PageNumber = pageNumber,
@@ -241,8 +247,7 @@ namespace DAKKN.MVC.Controllers
         [HttpGet("support/categories/create")]
         public IActionResult CreateCategory()
         {
-            ViewData["Title"] = _localizer[LocalizationKeys.Support.Dashboard.Value];
-            return View();
+            return RedirectToAction(nameof(Categories));
         }
 
         [HttpPost("support/categories/create")]
@@ -250,53 +255,28 @@ namespace DAKKN.MVC.Controllers
         public async Task<IActionResult> CreateCategory(CreateCategoryCommand command)
         {
             if (!ModelState.IsValid)
-                return View(command);
+            {
+                TempData["ErrorMessage"] = _localizer[LocalizationKeys.ExceptionMessages.InvalidModelState.Value].Value;
+                return RedirectToAction(nameof(Categories));
+            }
 
             try
             {
                 await _mediator.Send(command);
                 TempData["SuccessMessage"] = _localizer[LocalizationKeys.Support.Dashboard.Value].Value;
-                return RedirectToAction(nameof(Categories));
             }
-            catch (ValidationException ex)
+            catch (Exception ex) when (ex is ValidationException or BadRequestException)
             {
-                foreach (var kvp in ex.Errors)
-                {
-                    foreach (var error in kvp.Value)
-                    {
-                        ModelState.AddModelError(kvp.Key, error);
-                    }
-                }
-            }
-            catch (BadRequestException ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
+                TempData["ErrorMessage"] = ex.Message;
             }
 
-            return View(command);
+            return RedirectToAction(nameof(Categories));
         }
 
         [HttpGet("support/categories/edit/{id:guid}")]
-        public async Task<IActionResult> EditCategory(Guid id)
+        public IActionResult EditCategory(Guid id)
         {
-            ViewData["Title"] = _localizer[LocalizationKeys.Support.Dashboard.Value];
-            var categories = await _mediator.Send(new GetCategoriesQuery(IncludeInactive: true));
-            var category = categories.FirstOrDefault(c => c.Id == id);
-            if (category == null)
-                return NotFound();
-
-            var command = new UpdateCategoryCommand
-            {
-                Id = category.Id,
-                Name = category.Name,
-                ArName = category.ArName,
-                Description = category.Description,
-                Icon = category.Icon,
-                DisplayOrder = category.DisplayOrder,
-                IsActive = category.IsActive
-            };
-
-            return View(command);
+            return RedirectToAction(nameof(Categories));
         }
 
         [HttpPost("support/categories/edit/{id:guid}")]
@@ -306,30 +286,22 @@ namespace DAKKN.MVC.Controllers
             command.Id = id;
 
             if (!ModelState.IsValid)
-                return View(command);
+            {
+                TempData["ErrorMessage"] = _localizer[LocalizationKeys.ExceptionMessages.InvalidModelState.Value].Value;
+                return RedirectToAction(nameof(Categories));
+            }
 
             try
             {
                 await _mediator.Send(command);
                 TempData["SuccessMessage"] = _localizer[LocalizationKeys.Support.Dashboard.Value].Value;
-                return RedirectToAction(nameof(Categories));
             }
-            catch (ValidationException ex)
+            catch (Exception ex) when (ex is ValidationException or BadRequestException)
             {
-                foreach (var kvp in ex.Errors)
-                {
-                    foreach (var error in kvp.Value)
-                    {
-                        ModelState.AddModelError(kvp.Key, error);
-                    }
-                }
-            }
-            catch (BadRequestException ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
+                TempData["ErrorMessage"] = ex.Message;
             }
 
-            return View(command);
+            return RedirectToAction(nameof(Categories));
         }
 
         [HttpPost("support/categories/delete/{id:guid}")]
@@ -354,6 +326,12 @@ namespace DAKKN.MVC.Controllers
         {
             ViewData["Title"] = _localizer[LocalizationKeys.Support.Dashboard.Value];
             var faqs = await _mediator.Send(new GetFAQsQuery(categoryId, OnlyPublished: false));
+            var faqCategories = await _mediator.Send(new GetFAQCategoriesQuery());
+            ViewBag.Categories = faqCategories.Select(c => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            }).ToList();
             return View(faqs);
         }
 
@@ -361,7 +339,12 @@ namespace DAKKN.MVC.Controllers
         public async Task<IActionResult> CreateFAQ()
         {
             ViewData["Title"] = _localizer[LocalizationKeys.Support.Dashboard.Value];
-            ViewData["Categories"] = await _mediator.Send(new GetFAQCategoriesQuery());
+            var faqCategories = await _mediator.Send(new GetFAQCategoriesQuery());
+            ViewBag.Categories = faqCategories.Select(c => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            }).ToList();
             return View();
         }
 
@@ -371,7 +354,12 @@ namespace DAKKN.MVC.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewData["Categories"] = await _mediator.Send(new GetFAQCategoriesQuery());
+                var catgories = await _mediator.Send(new GetFAQCategoriesQuery());
+                ViewBag.Categories = catgories.Select(c => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                }).ToList();
                 return View(command);
             }
 
@@ -396,7 +384,12 @@ namespace DAKKN.MVC.Controllers
                 ModelState.AddModelError(string.Empty, ex.Message);
             }
 
-            ViewData["Categories"] = await _mediator.Send(new GetFAQCategoriesQuery());
+            var createCat = await _mediator.Send(new GetFAQCategoriesQuery());
+            ViewBag.Categories = createCat.Select(c => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            }).ToList();
             return View(command);
         }
 
@@ -421,7 +414,12 @@ namespace DAKKN.MVC.Controllers
                 IsPublished = faq.IsPublished
             };
 
-            ViewData["Categories"] = await _mediator.Send(new GetFAQCategoriesQuery());
+            var editCategories = await _mediator.Send(new GetFAQCategoriesQuery());
+            ViewBag.Categories = editCategories.Select(c => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            }).ToList();
             return View(command);
         }
 
@@ -433,7 +431,12 @@ namespace DAKKN.MVC.Controllers
 
             if (!ModelState.IsValid)
             {
-                ViewData["Categories"] = await _mediator.Send(new GetFAQCategoriesQuery());
+                var editCat = await _mediator.Send(new GetFAQCategoriesQuery());
+                ViewBag.Categories = editCat.Select(c => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Name
+                }).ToList();
                 return View(command);
             }
 
@@ -458,7 +461,12 @@ namespace DAKKN.MVC.Controllers
                 ModelState.AddModelError(string.Empty, ex.Message);
             }
 
-            ViewData["Categories"] = await _mediator.Send(new GetFAQCategoriesQuery());
+            var editCat2 = await _mediator.Send(new GetFAQCategoriesQuery());
+            ViewBag.Categories = editCat2.Select(c => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
+            {
+                Value = c.Id.ToString(),
+                Text = c.Name
+            }).ToList();
             return View(command);
         }
 

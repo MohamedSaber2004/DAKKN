@@ -26,7 +26,7 @@ namespace DAKKN.Application.Features.Support.Commands.EscalateTicket
             ticket.MarkAsUpdated(_currentUserService.UserId.ToString());
 
             var activity = SupportActivity.Create(request.TicketId, _currentUserService.UserId,
-                _currentUserService.UserId.ToString(), "Escalated", request.Reason);
+                _currentUserService.UserName, "Escalated", request.Reason);
             var activityRepo = _unitOfWork.GetRepository<SupportActivity>();
             await activityRepo.AddAsync(activity);
 

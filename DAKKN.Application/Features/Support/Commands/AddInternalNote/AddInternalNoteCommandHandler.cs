@@ -22,7 +22,7 @@ namespace DAKKN.Application.Features.Support.Commands.AddInternalNote
             var note = SupportInternalNote.Create(
                 request.TicketId,
                 _currentUserService.UserId,
-                _currentUserService.UserId.ToString(),
+                _currentUserService.UserName,
                 request.Note);
 
             var repo = _unitOfWork.GetRepository<SupportInternalNote>();
@@ -31,7 +31,6 @@ namespace DAKKN.Application.Features.Support.Commands.AddInternalNote
 
             return new SupportInternalNoteDto
             {
-                Id = note.Id,
                 UserName = note.UserName,
                 Note = note.Note,
                 CreatedAt = note.CreatedAt

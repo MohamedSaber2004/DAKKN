@@ -21,8 +21,7 @@ namespace DAKKN.Application.Features.Favorites.Queries.GetFavorites
         public async Task<List<ProductDto>> Handle(GetFavoritesQuery request, CancellationToken cancellationToken)
         {
             var repo = _unitOfWork.GetRepository<UserFavorite>();
-            var favorites = await repo.GetAllAsync(null).AsNoTracking()
-                .Where(f => f.UserId == _currentUserService.UserId)
+            var favorites = await repo.GetAllAsync(f => f.UserId == _currentUserService.UserId && !f.IsDeleted && !f.Product.IsDeleted).AsNoTracking()
                 .Include(f => f.Product)
                     .ThenInclude(p => p.Category)
                 .OrderByDescending(f => f.CreatedAt)

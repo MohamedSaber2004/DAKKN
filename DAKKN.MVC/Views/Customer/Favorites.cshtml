@@ -30,10 +30,6 @@
                 <div class="product-card group bg-surface dark:bg-inverse-surface rounded-[32px] border border-border dark:border-outline/10 overflow-hidden shadow-small hover:shadow-large transition-all duration-500 hover:-translate-y-2" data-id="@product.Id">
                     <div class="aspect-square relative overflow-hidden bg-white/5">
                         <img src="@product.ImageUrl" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-
-                        <button onclick="removeFavorite('@product.Id', this)" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-error/10 backdrop-blur-md shadow-medium flex items-center justify-center text-error hover:bg-error hover:text-white transition-all opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0" title="@Localizer["fav_remove"]">
-                            <span class="material-symbols-outlined text-xl filled-icon">favorite</span>
-                        </button>
                     </div>
 
                     <div class="p-lg">
@@ -83,9 +79,9 @@
                                     @Localizer["inventory_out_of_stock"]
                                 </button>
                             }
-                            <a asp-action="ProductDetails" asp-route-id="@product.Id" class="w-12 h-12 rounded-2xl border border-border dark:border-outline/20 flex items-center justify-center text-text-secondary hover:text-primary hover:bg-primary/5 transition-all">
-                                <span class="material-symbols-outlined">visibility</span>
-                            </a>
+                            <button onclick="removeFavorite('@product.Id', this)" class="w-12 h-12 rounded-2xl border border-border dark:border-outline/20 flex items-center justify-center text-error hover:bg-error hover:text-white hover:border-error transition-all" title="@Localizer["fav_remove"]">
+                                <span class="material-symbols-outlined text-lg filled-icon">favorite</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -114,8 +110,6 @@
     <script>
         function removeFavorite(productId, btn) {
             var card = btn.closest('.product-card');
-            card.style.opacity = '0';
-            card.style.transform = 'scale(0.9)';
 
             var token = document.querySelector('input[name="__RequestVerificationToken"]');
             var headers = { 'Content-Type': 'application/json' };
@@ -128,18 +122,20 @@
             })
             .then(function(r) { return r.json(); })
             .then(function(data) {
-                setTimeout(function() {
-                    card.remove();
-                    var grid = document.getElementById('fav-grid');
-                    if (grid && grid.children.length === 0) {
-                        location.reload();
-                    }
-                }, 300);
+                if (data.success) {
+                    card.style.opacity = '0';
+                    card.style.transform = 'scale(0.9)';
+                    setTimeout(function() {
+                        card.remove();
+                        var grid = document.getElementById('fav-grid');
+                        if (grid && grid.children.length === 0) {
+                            location.reload();
+                        }
+                    }, 300);
+                }
             })
             .catch(function(e) {
                 console.error('Remove favorite failed:', e);
-                card.style.opacity = '1';
-                card.style.transform = '';
             });
         }
     </script>

@@ -29,7 +29,7 @@ namespace DAKKN.Application.Features.Support.Commands.AssignTicket
             ticket.MarkAsUpdated(_currentUserService.UserId.ToString());
 
             var activity = SupportActivity.Create(request.TicketId, _currentUserService.UserId,
-                _currentUserService.UserId.ToString(), "Assigned",
+                _currentUserService.UserName, "Assigned",
                 $"Assigned to {request.AdminName}", oldAssignee, request.AdminName);
             var activityRepo = _unitOfWork.GetRepository<SupportActivity>();
             await activityRepo.AddAsync(activity);

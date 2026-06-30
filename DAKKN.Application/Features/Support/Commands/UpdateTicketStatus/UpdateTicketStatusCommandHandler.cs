@@ -30,7 +30,7 @@ namespace DAKKN.Application.Features.Support.Commands.UpdateTicketStatus
             ticket.MarkAsUpdated(_currentUserService.UserId.ToString());
 
             var activity = SupportActivity.Create(request.TicketId, _currentUserService.UserId,
-                _currentUserService.UserId.ToString(), "StatusChanged",
+                _currentUserService.UserName, "StatusChanged",
                 "Status changed", oldStatus, newStatus.ToString());
             var activityRepo = _unitOfWork.GetRepository<SupportActivity>();
             await activityRepo.AddAsync(activity);

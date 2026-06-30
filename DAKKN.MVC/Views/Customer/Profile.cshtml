@@ -79,41 +79,6 @@
         </form>
     </section>
 
-    <!-- Appearance Section -->
-    <section class="settings-section">
-        <div class="settings-section-header">
-            <h2 class="font-h3 text-h3 text-text-primary dark:text-white">@Localizer["admin_appearance"]</h2>
-            <p class="text-sm text-text-secondary dark:text-outline-variant mt-1">@Localizer["admin_appearance_desc"]</p>
-        </div>
-
-        <div class="space-y-xl">
-            <!-- Theme Selection -->
-            <div class="space-y-md">
-                <h4 class="font-bold text-text-primary dark:text-white">@Localizer["admin_theme_select"]</h4>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-lg">
-                    <button onclick="setThemeAndSync('light')" class="flex items-center justify-between p-lg rounded-2xl border-2 transition-all group bg-white dark:bg-black/20 border-border dark:border-white/10 hover:border-primary/50 text-text-primary dark:text-white" id="customer-theme-light">
-                        <div class="flex items-center gap-md">
-                            <span class="material-symbols-outlined text-yellow-500 group-[.active]:filled-icon">light_mode</span>
-                            <span class="font-bold">@Localizer["admin_theme_light"]</span>
-                        </div>
-                        <div class="w-6 h-6 rounded-full border-2 border-border dark:border-white/20 group-[.active]:border-primary group-[.active]:bg-primary flex items-center justify-center">
-                            <span class="material-symbols-outlined text-white text-xs opacity-0 group-[.active]:opacity-100">check</span>
-                        </div>
-                    </button>
-                    <button onclick="setThemeAndSync('dark')" class="flex items-center justify-between p-lg rounded-2xl border-2 transition-all group bg-surface-container dark:bg-black/20 border-border dark:border-white/10 hover:border-primary/50 text-text-primary dark:text-white" id="customer-theme-dark">
-                        <div class="flex items-center gap-md">
-                            <span class="material-symbols-outlined text-primary-light group-[.active]:filled-icon">dark_mode</span>
-                            <span class="font-bold">@Localizer["admin_theme_dark"]</span>
-                        </div>
-                        <div class="w-6 h-6 rounded-full border-2 border-border dark:border-white/20 group-[.active]:border-primary group-[.active]:bg-primary flex items-center justify-center">
-                            <span class="material-symbols-outlined text-white text-xs opacity-0 group-[.active]:opacity-100">check</span>
-                        </div>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Security Section -->
     <section class="settings-section">
         <div class="settings-section-header">
@@ -604,29 +569,7 @@
 
         if (removeBtn) removeBtn.addEventListener('click', removeImage);
 
-        function setThemeAndSync(theme) {
-            const isDark = theme === 'dark';
-            if (isDark) document.documentElement.classList.add('dark');
-            else document.documentElement.classList.remove('dark');
-            localStorage.setItem('dakkn_theme', theme);
-            updateThemeUI(theme);
-            if (typeof syncSettingsToDatabase === 'function') {
-                const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value || window.csrfToken;
-                syncSettingsToDatabase({ theme: theme, isDarkMode: isDark }, token);
-            }
-        }
 
-        function updateThemeUI(theme) {
-            document.querySelectorAll('[id^="customer-theme-"]').forEach(btn => btn.classList.remove('active', 'border-primary'));
-            const activeBtn = document.getElementById('customer-theme-' + theme);
-            if (activeBtn) activeBtn.classList.add('active', 'border-primary');
-        }
-
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const currentTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-            updateThemeUI(currentTheme);
-        });
     </script>
     <style>
         .animate-slide-up {

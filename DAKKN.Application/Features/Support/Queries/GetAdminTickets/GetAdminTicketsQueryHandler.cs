@@ -69,6 +69,8 @@ namespace DAKKN.Application.Features.Support.Queries.GetAdminTickets
                 CategoryArName = t.Category.ArName,
                 Priority = t.Priority.ToString(),
                 Status = t.Status.ToString(),
+                CustomerName = t.CustomerName ?? "",
+                CustomerEmail = t.CustomerEmail ?? "",
                 AssignedToName = t.AssignedToName ?? "",
                 CreatedAt = t.CreatedAt,
                 UpdatedAt = t.UpdatedAt,

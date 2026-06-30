@@ -26,7 +26,7 @@ namespace DAKKN.Application.Features.Support.Commands.ReopenTicket
             ticket.MarkAsUpdated(_currentUserService.UserId.ToString());
 
             var activity = SupportActivity.Create(request.TicketId, _currentUserService.UserId,
-                _currentUserService.UserId.ToString(), "Reopened", "Ticket reopened");
+                _currentUserService.UserName, "Reopened", "Ticket reopened");
             var activityRepo = _unitOfWork.GetRepository<SupportActivity>();
             await activityRepo.AddAsync(activity);
 
