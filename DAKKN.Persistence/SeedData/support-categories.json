@@ -1,0 +1,58 @@
+[
+  {
+    "name": "Technical Issue",
+    "arName": "مشكلة تقنية",
+    "description": "Issues related to website functionality, errors, or bugs",
+    "icon": "build",
+    "displayOrder": 1
+  },
+  {
+    "name": "Billing",
+    "arName": "الفواتير",
+    "description": "Questions about invoices, payments, or receipts",
+    "icon": "receipt_long",
+    "displayOrder": 2
+  },
+  {
+    "name": "Shipping",
+    "arName": "الشحن",
+    "description": "Inquiries about delivery status, tracking, or shipping options",
+    "icon": "local_shipping",
+    "displayOrder": 3
+  },
+  {
+    "name": "Order Modification",
+    "arName": "تعديل الطلب",
+    "description": "Request to change, cancel, or update an existing order",
+    "icon": "edit_note",
+    "displayOrder": 4
+  },
+  {
+    "name": "Product Inquiry",
+    "arName": "الاستفسار عن المنتجات",
+    "description": "Questions about product details, materials, or customization",
+    "icon": "inventory_2",
+    "displayOrder": 5
+  },
+  {
+    "name": "Custom Orders",
+    "arName": "الطلبات المخصصة",
+    "description": "Requests for custom designs, bulk orders, or special projects",
+    "icon": "handyman",
+    "displayOrder": 6
+  },
+  {
+    "name": "Returns & Refunds",
+    "arName": "الإرجاع والاسترداد",
+    "description": "Requests to return items or get a refund",
+    "icon": "assignment_return",
+    "displayOrder": 7
+  },
+  {
+    "name": "Account Support",
+    "arName": "دعم الحساب",
+    "description": "Help with login, account settings, or profile issues",
+    "icon": "account_circle",
+    "displayOrder": 8
+  }
+]

@@ -1,0 +1,375 @@
+﻿@using DAKKN.Application.Features.Support.DTOs
+@using DAKKN.Application.Localization
+@model SupportTicketDetailsDto
+@inject IStringLocalizer<Messages> Localizer
+@{
+    Layout = "_LayoutCustomer";
+    ViewData["Title"] = Model.Subject;
+    var isOpen = Model.Status is "Open" or "InProgress" or "WaitingCustomer";
+    var isAr = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar");
+
+    var statusClass = Model.Status switch
+    {
+        "Open" => "bg-primary/10 text-primary",
+        "InProgress" => "bg-secondary/10 text-secondary",
+        "Resolved" => "bg-success/10 text-success",
+        "Closed" => "bg-outline/10 text-outline",
+        "WaitingCustomer" => "bg-tertiary/10 text-tertiary",
+        _ => "bg-surface-container text-text-secondary dark:text-outline-variant"
+    };
+
+    var priorityClass = Model.Priority switch
+    {
+        "Urgent" => "bg-error/10 text-error",
+        "High" => "bg-warning/10 text-warning",
+        "Medium" => "bg-primary/10 text-primary",
+        "Low" => "bg-surface-container text-text-secondary dark:text-outline-variant",
+        _ => "bg-surface-container text-text-secondary dark:text-outline-variant"
+    };
+}
+
+<div class="max-w-6xl mx-auto px-lg py-xl space-y-xl">
+    <!-- Back Link -->
+    <a asp-action="Index" class="inline-flex items-center gap-2 text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-inverse-on-surface transition-colors group">
+        <span class="material-symbols-outlined text-lg rtl:rotate-180 group-hover:-translate-x-1 transition-transform">arrow_back</span>
+        <span class="font-bold">@Localizer["orders_back"]</span>
+    </a>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="bg-success/10 border border-success/20 text-success p-lg rounded-2xl flex items-center gap-4 animate-in fade-in slide-in-from-top-4">
+            <span class="material-symbols-outlined">check_circle</span>
+            <p class="font-bold">@TempData["SuccessMessage"]</p>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="bg-error/10 border border-error/20 text-error p-lg rounded-2xl flex items-center gap-4 animate-in fade-in slide-in-from-top-4">
+            <span class="material-symbols-outlined">error</span>
+            <p class="font-bold">@TempData["ErrorMessage"]</p>
+        </div>
+    }
+
+    <!-- Ticket Header -->
+    <div class="bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 p-lg md:p-xl rounded-[32px] shadow-small space-y-lg">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-lg">
+            <div class="space-y-2">
+                <div class="flex items-center gap-3 flex-wrap">
+                    <span class="text-sm font-bold text-text-secondary dark:text-outline-variant uppercase tracking-widest">@Localizer["supp_ticket_number"]: #@Model.TicketNumber</span>
+                    <span class="status-pill @statusClass">@Localizer[$"admin_support_{Model.Status.ToLower()}"]</span>
+                    <span class="status-pill @priorityClass">@Localizer[$"admin_support_priority_{Model.Priority.ToLower()}"]</span>
+                </div>
+                <h1 class="customer-page-title text-text-primary dark:text-inverse-on-surface">@Model.Subject</h1>
+            </div>
+            @if (isOpen)
+            {
+                <form asp-action="Close" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('@Localizer["supp_confirm_close"]')">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="bg-error/10 text-error border border-error/20 px-lg py-3 rounded-2xl font-bold hover:bg-error hover:text-on-primary transition-all flex items-center gap-2">
+                        <span class="material-symbols-outlined">lock</span>
+                        @Localizer["supp_close_ticket"]
+                    </button>
+                </form>
+            }
+        </div>
+
+        <div class="flex flex-wrap gap-x-8 gap-y-2 text-sm text-text-secondary dark:text-outline-variant">
+            <span class="flex items-center gap-1">
+                <span class="material-symbols-outlined text-base">category</span>
+                @(isAr ? Model.CategoryArName : Model.CategoryName)
+            </span>
+            <span class="flex items-center gap-1">
+                <span class="material-symbols-outlined text-base">schedule</span>
+                @Model.CreatedAt.ToLocalTime().ToString("MMM dd, yyyy - HH:mm")
+            </span>
+            @if (!string.IsNullOrEmpty(Model.OrderNumber))
+            {
+                <span class="flex items-center gap-1">
+                    <span class="material-symbols-outlined text-base">receipt</span>
+                    @Model.OrderNumber
+                </span>
+            }
+            @if (Model.ClosedAt.HasValue)
+            {
+                <span class="flex items-center gap-1">
+                    <span class="material-symbols-outlined text-base">check_circle</span>
+                    @Localizer["supp_ticket_closed"]: @Model.ClosedAt.Value.ToLocalTime().ToString("MMM dd, yyyy - HH:mm")
+                </span>
+            }
+        </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-xl">
+        <!-- Left: Conversation -->
+        <div class="lg:col-span-2 space-y-lg">
+            <section class="bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 rounded-[32px] shadow-small overflow-hidden">
+                <div class="p-lg border-b border-border dark:border-outline/10">
+                    <h3 class="font-bold flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary">forum</span>
+                        @Localizer["supp_conversation"]
+                    </h3>
+                </div>
+
+                <div class="divide-y divide-border dark:divide-outline/10">
+                    <!-- Original Customer Message -->
+                    <div class="p-lg space-y-md">
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm flex-shrink-0">
+                                @Model.CustomerName.Substring(0, 1).ToUpper()
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-3 mb-2">
+                                    <span class="font-bold text-text-primary dark:text-inverse-on-surface">@Model.CustomerName</span>
+                                    <span class="text-xs text-text-secondary dark:text-outline-variant">@Model.CreatedAt.ToLocalTime().ToString("MMM dd, yyyy - HH:mm")</span>
+                                    <span class="text-[10px] uppercase tracking-widest font-bold bg-surface-container dark:bg-white/5 px-2 py-0.5 rounded-full text-text-secondary dark:text-outline-variant">@Localizer["supp_message"]</span>
+                                </div>
+                                <p class="text-text-primary dark:text-inverse-on-surface whitespace-pre-wrap">@Model.Message</p>
+
+                                @if (Model.Attachments.Any())
+                                {
+                                    <div class="flex flex-wrap gap-3 mt-4">
+                                        @foreach (var att in Model.Attachments)
+                                        {
+                                            <a href="@att.Url" target="_blank" class="flex items-center gap-2 bg-surface-container dark:bg-white/5 px-4 py-2.5 rounded-2xl hover:bg-primary/10 hover:text-primary transition-all group">
+                                                <span class="material-symbols-outlined text-lg">attach_file</span>
+                                                <span class="text-sm font-bold truncate max-w-[200px]">@att.OriginalFileName</span>
+                                                <span class="text-[10px] text-text-secondary dark:text-outline-variant">@(att.FileSize > 1024 ? $"{att.FileSize / 1024.0:F1}" : $"{att.FileSize}") @(att.FileSize > 1024 ? Localizer["supp_kb"].Value : Localizer["supp_bytes"].Value)</span>
+                                            </a>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Replies -->
+                    @foreach (var reply in Model.Replies.OrderBy(r => r.CreatedAt))
+                    {
+                        var avatarLetter = reply.UserName.Length > 0 ? reply.UserName.Substring(0, 1).ToUpper() : "?";
+
+                        <div class="p-lg space-y-md @(reply.IsStaffReply ? "bg-primary/[0.02] dark:bg-primary/[0.03]" : "")">
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-full @(reply.IsStaffReply ? "bg-secondary/10 text-secondary" : "bg-surface-container dark:bg-white/10 text-text-secondary dark:text-outline-variant") flex items-center justify-center font-bold text-sm flex-shrink-0">
+                                    @avatarLetter
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-3 mb-2">
+                                        <span class="font-bold text-text-primary dark:text-inverse-on-surface">@reply.UserName</span>
+                                        <span class="text-xs text-text-secondary dark:text-outline-variant">@reply.CreatedAt.ToLocalTime().ToString("MMM dd, yyyy - HH:mm")</span>
+                                        @if (reply.IsStaffReply)
+                                        {
+                                            <span class="text-[10px] uppercase tracking-widest font-bold bg-secondary/10 text-secondary px-2 py-0.5 rounded-full">@Localizer["admin_support"]</span>
+                                        }
+                                    </div>
+                                    <p class="text-text-primary dark:text-inverse-on-surface whitespace-pre-wrap">@reply.Message</p>
+
+                                    @if (reply.Attachments.Any())
+                                    {
+                                        <div class="flex flex-wrap gap-3 mt-4">
+                                            @foreach (var att in reply.Attachments)
+                                            {
+                                                <a href="@att.Url" target="_blank" class="flex items-center gap-2 bg-surface-container dark:bg-white/5 px-4 py-2.5 rounded-2xl hover:bg-primary/10 hover:text-primary transition-all group">
+                                                    <span class="material-symbols-outlined text-lg">attach_file</span>
+                                                    <span class="text-sm font-bold truncate max-w-[200px]">@att.OriginalFileName</span>
+                                                <span class="text-[10px] text-text-secondary dark:text-outline-variant">@(att.FileSize > 1024 ? $"{att.FileSize / 1024.0:F1}" : $"{att.FileSize}") @(att.FileSize > 1024 ? Localizer["supp_kb"].Value : Localizer["supp_bytes"].Value)</span>
+                                                </a>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </section>
+
+            <!-- Reply Form -->
+            @if (isOpen)
+            {
+                <section class="bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 rounded-[32px] shadow-small p-lg">
+                    <h3 class="font-bold flex items-center gap-2 mb-lg">
+                        <span class="material-symbols-outlined text-primary">reply</span>
+                        @Localizer["supp_send_reply"]
+                    </h3>
+                    <form asp-action="Reply" asp-route-id="@Model.Id" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+                        <div class="space-y-lg">
+                            <textarea name="message" rows="4" class="w-full bg-surface-container dark:bg-white/5 border border-border dark:border-outline/20 rounded-3xl py-4 px-lg focus:ring-2 focus:ring-primary outline-none font-medium resize-none dark:text-inverse-on-surface dark:placeholder:text-outline-variant" placeholder="@Localizer["supp_reply_placeholder"]" required></textarea>
+
+                            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-lg">
+                                <label class="flex items-center gap-2 cursor-pointer text-text-secondary dark:text-outline-variant hover:text-primary transition-colors px-4 py-2.5 rounded-2xl bg-surface-container dark:bg-white/5">
+                                    <span class="material-symbols-outlined">attach_file</span>
+                                    <span class="text-sm font-bold">@Localizer["supp_attachments"]</span>
+                                    <input type="file" name="attachments" multiple class="hidden" accept=".png,.jpg,.jpeg,.gif,.pdf,.doc,.docx,.zip" />
+                                </label>
+                                <button type="submit" class="bg-text-primary dark:bg-inverse-on-surface text-background dark:text-on-background px-8 py-3.5 rounded-2xl font-bold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-large flex items-center gap-2">
+                                    <span class="material-symbols-outlined">send</span>
+                                    @Localizer["supp_send_reply"]
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </section>
+            }
+        </div>
+
+        <!-- Right: Sidebar -->
+        <div class="space-y-lg">
+            <!-- Customer Info -->
+            <section class="bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 p-lg rounded-[32px] shadow-small">
+                <h3 class="font-bold flex items-center gap-2 mb-lg">
+                    <span class="material-symbols-outlined text-primary">person</span>
+                    @Localizer["supp_customer_info"]
+                </h3>
+                <div class="space-y-md">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-lg flex-shrink-0">
+                            @Model.CustomerName.Substring(0, 1).ToUpper()
+                        </div>
+                        <div>
+                            <p class="font-bold text-text-primary dark:text-inverse-on-surface">@Model.CustomerName</p>
+                            <p class="text-xs text-text-secondary dark:text-outline-variant">@Model.CustomerEmail</p>
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.CustomerPhone))
+                    {
+                        <div class="flex items-center gap-3 text-sm">
+                            <span class="material-symbols-outlined text-base text-text-secondary dark:text-outline-variant">phone</span>
+                            <span class="font-medium" dir="ltr">@Model.CustomerPhone</span>
+                        </div>
+                    }
+                    @if (!string.IsNullOrEmpty(Model.OrderNumber))
+                    {
+                        <div class="flex items-center gap-3 text-sm">
+                            <span class="material-symbols-outlined text-base text-text-secondary dark:text-outline-variant">receipt</span>
+                            <span class="font-medium">@Model.OrderNumber</span>
+                        </div>
+                    }
+                </div>
+            </section>
+
+            <!-- Activity Timeline -->
+            <section class="bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 p-lg rounded-[32px] shadow-small">
+                <h3 class="font-bold flex items-center gap-2 mb-lg">
+                    <span class="material-symbols-outlined text-primary">history</span>
+                    @Localizer["supp_activity_timeline"]
+                </h3>
+                <div class="space-y-md relative ltr:before:left-[11px] rtl:before:right-[11px] before:content-[''] before:absolute before:top-2 before:bottom-2 before:w-px before:bg-border dark:before:bg-outline/10">
+                    @if (Model.Activities.Any())
+                    {
+                        @foreach (var activity in Model.Activities.OrderByDescending(a => a.CreatedAt))
+                        {
+                            <div class="relative ltr:pl-8 rtl:pr-8">
+                                <div class="absolute ltr:left-0 rtl:right-0 top-1 w-[22px] h-[22px] rounded-full bg-primary border-4 border-surface dark:border-inverse-surface flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[10px] text-on-primary">@GetActivityIcon(activity.Action)</span>
+                                </div>
+                                <p class="text-sm font-bold text-text-primary dark:text-inverse-on-surface">@activity.Action</p>
+                                <p class="text-xs text-text-secondary dark:text-outline-variant">
+                                    @activity.CreatedAt.ToLocalTime().ToString("MMM dd, yyyy - HH:mm")
+                                </p>
+                                @if (!string.IsNullOrEmpty(activity.Details))
+                                {
+                                    <p class="text-xs text-text-secondary dark:text-outline-variant mt-0.5">@activity.Details</p>
+                                }
+                                @if (!string.IsNullOrEmpty(activity.OldValue) && !string.IsNullOrEmpty(activity.NewValue))
+                                {
+                                    <p class="text-xs text-text-secondary dark:text-outline-variant mt-0.5">
+                                        <span class="line-through">@activity.OldValue</span>
+                                        <span class="material-symbols-outlined text-[10px] mx-1 rtl:rotate-180">arrow_forward</span>
+                                        <span>@activity.NewValue</span>
+                                    </p>
+                                }
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-sm text-text-secondary dark:text-outline-variant ltr:pl-8 rtl:pr-8">@Localizer["order_history_empty"]</p>
+                    }
+                </div>
+            </section>
+
+            <!-- Ticket Info -->
+            <section class="bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 p-lg rounded-[32px] shadow-small">
+                <h3 class="font-bold flex items-center gap-2 mb-lg">
+                    <span class="material-symbols-outlined text-primary">confirmation_number</span>
+                    @Localizer["supp_ticket_number"]
+                </h3>
+                <div class="space-y-3 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-text-secondary dark:text-outline-variant">@Localizer["supp_ticket_number"]</span>
+                        <span class="font-bold text-text-primary dark:text-inverse-on-surface">#@Model.TicketNumber</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-text-secondary dark:text-outline-variant">@Localizer["supp_category"]</span>
+                        <span class="font-bold text-text-primary dark:text-inverse-on-surface">@(isAr ? Model.CategoryArName : Model.CategoryName)</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-text-secondary dark:text-outline-variant">@Localizer["supp_priority"]</span>
+                        <span class="status-pill @priorityClass text-xs">@Localizer[$"admin_support_priority_{Model.Priority.ToLower()}"]</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-text-secondary dark:text-outline-variant">@Localizer["supp_status_timeline"]</span>
+                        <span class="status-pill @statusClass text-xs">@Localizer[$"admin_support_{Model.Status.ToLower()}"]</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-text-secondary dark:text-outline-variant">@Localizer["supp_reply_placeholder"]</span>
+                        <span class="font-bold text-text-primary dark:text-inverse-on-surface">@Model.Replies.Count</span>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.AssignedToName))
+                    {
+                        <div class="flex justify-between">
+                            <span class="text-text-secondary dark:text-outline-variant">@Localizer["supp_assign_ticket"]</span>
+                            <span class="font-bold text-text-primary dark:text-inverse-on-surface">@Model.AssignedToName</span>
+                        </div>
+                    }
+                    @if (Model.FirstResponseAt.HasValue)
+                    {
+                        <div class="flex justify-between">
+                            <span class="text-text-secondary dark:text-outline-variant">@Localizer["supp_avg_response_time"]</span>
+                            <span class="font-bold text-text-primary dark:text-inverse-on-surface">@Model.FirstResponseAt.Value.ToLocalTime().ToString("MMM dd, yyyy - HH:mm")</span>
+                        </div>
+                    }
+                </div>
+            </section>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('input[name="attachments"]').forEach(function(input) {
+            input.addEventListener('change', function() {
+                var parent = this.closest('label');
+                var textSpan = parent ? parent.querySelector('span:last-child') : null;
+                if (this.files.length > 0) {
+                    if (textSpan) textSpan.textContent = this.files.length + ' @Localizer["supp_attachments"]';
+                } else {
+                    if (textSpan) textSpan.textContent = '@Localizer["supp_attachments"]';
+                }
+            });
+        });
+    </script>
+}
+
+@functions {
+    string GetActivityIcon(string action)
+    {
+        return action?.ToLower() switch
+        {
+            string a when a.Contains("create") => "add_circle",
+            string a when a.Contains("reply") => "reply",
+            string a when a.Contains("close") => "lock",
+            string a when a.Contains("reopen") => "lock_open",
+            string a when a.Contains("assign") => "person_add",
+            string a when a.Contains("priority") => "flag",
+            string a when a.Contains("status") => "sync",
+            string a when a.Contains("escalate") => "warning",
+            string a when a.Contains("archive") => "archive",
+            string a when a.Contains("note") => "note_add",
+            _ => "circle"
+        };
+    }
+}

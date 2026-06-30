@@ -209,6 +209,7 @@ namespace DAKKN.MVC
                     var context = services.GetRequiredService<DAKKNDbContext>();
                     await DAKKNDbContextSeed.SeedGovernoratesAsync(context);
                     await DAKKNDbContextSeed.SeedCategoriesAndProductsAsync(context);
+                    await DAKKNDbContextSeed.SeedSupportDataAsync(context);
                 }
                 catch (Exception ex)
                 {

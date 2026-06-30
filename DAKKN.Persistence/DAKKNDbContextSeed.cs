@@ -117,6 +117,38 @@ namespace DAKKN.Persistence
             }
         }
 
+        public static async Task SeedSupportDataAsync(DAKKNDbContext context)
+        {
+            if (!context.SupportCategories.Any())
+            {
+                var basePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "DAKKN.Persistence", "SeedData");
+                var json = await File.ReadAllTextAsync(Path.Combine(basePath, "support-categories.json"));
+                var items = JsonSerializer.Deserialize<List<SupportCategorySeed>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                if (items != null)
+                {
+                    foreach (var item in items)
+                        context.SupportCategories.Add(new Domain.Entities.SupportCategory
+                        {
+                            Name = item.Name,
+                            ArName = item.ArName,
+                            Description = item.Description,
+                            Icon = item.Icon,
+                            DisplayOrder = item.DisplayOrder
+                        });
+                    await context.SaveChangesAsync();
+                }
+            }
+        }
+
+        private class SupportCategorySeed
+        {
+            public string Name { get; set; } = string.Empty;
+            public string ArName { get; set; } = string.Empty;
+            public string? Description { get; set; }
+            public string? Icon { get; set; }
+            public int DisplayOrder { get; set; }
+        }
+
         private class GovernorateSeed
         {
             public string Name { get; set; } = string.Empty;

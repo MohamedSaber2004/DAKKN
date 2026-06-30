@@ -93,5 +93,36 @@ namespace DAKKN.Appearence.Routes
             public const string ToggleDisplay = Base + "/brand-reviews/{id}/toggle-display";
             public const string UpdateDisplayOrder = Base + "/brand-reviews/{id}/display-order";
         }
+
+        public static class Support
+        {
+            public const string Base = ApiRoutes.Base + "/support";
+            public const string CreateTicket = Base + "/tickets";
+            public const string MyTickets = Base + "/tickets/my";
+            public const string TicketDetails = Base + "/tickets/{ticketId:guid}";
+            public const string Reply = Base + "/tickets/{ticketId:guid}/reply";
+            public const string Close = Base + "/tickets/{ticketId:guid}/close";
+            public const string Reopen = Base + "/tickets/{ticketId:guid}/reopen";
+            public const string UploadAttachment = Base + "/tickets/{ticketId:guid}/attachments";
+            public const string DeleteAttachment = Base + "/attachments/{attachmentId:guid}";
+            public const string AdminTickets = Base + "/admin/tickets";
+            public const string AdminTicketDetails = Base + "/admin/tickets/{ticketId:guid}";
+            public const string Assign = Base + "/admin/tickets/{ticketId:guid}/assign";
+            public const string UpdateStatus = Base + "/admin/tickets/{ticketId:guid}/status";
+            public const string UpdatePriority = Base + "/admin/tickets/{ticketId:guid}/priority";
+            public const string AddNote = Base + "/admin/tickets/{ticketId:guid}/notes";
+            public const string Escalate = Base + "/admin/tickets/{ticketId:guid}/escalate";
+            public const string Archive = Base + "/admin/tickets/{ticketId:guid}/archive";
+            public const string Dashboard = Base + "/admin/dashboard";
+            public const string Categories = Base + "/admin/categories";
+            public const string CategoryById = Base + "/admin/categories/{id:guid}";
+            public const string FAQs = Base + "/admin/faqs";
+            public const string FAQById = Base + "/admin/faqs/{id:guid}";
+            public const string FAQCategories = Base + "/admin/faq-categories";
+            public const string FAQCategoryById = Base + "/admin/faq-categories/{id:guid}";
+            public const string Settings = Base + "/admin/settings";
+            public const string PublicFAQs = Base + "/faqs";
+            public const string PublicCategories = Base + "/categories";
+        }
     }
 }

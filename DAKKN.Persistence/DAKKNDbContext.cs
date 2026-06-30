@@ -29,6 +29,15 @@ namespace DAKKN.Persistence
         public DbSet<OrderStatusHistory> OrderStatusHistories => Set<OrderStatusHistory>();
         public DbSet<BrandReview> BrandReviews => Set<BrandReview>();
         public DbSet<StickerSuggestion> StickerSuggestions => Set<StickerSuggestion>();
+        public DbSet<SupportTicket> SupportTickets => Set<SupportTicket>();
+        public DbSet<SupportReply> SupportReplies => Set<SupportReply>();
+        public DbSet<SupportAttachment> SupportAttachments => Set<SupportAttachment>();
+        public DbSet<SupportCategory> SupportCategories => Set<SupportCategory>();
+        public DbSet<SupportFAQ> SupportFAQs => Set<SupportFAQ>();
+        public DbSet<SupportFAQCategory> SupportFAQCategories => Set<SupportFAQCategory>();
+        public DbSet<SupportActivity> SupportActivities => Set<SupportActivity>();
+        public DbSet<SupportInternalNote> SupportInternalNotes => Set<SupportInternalNote>();
+        public DbSet<SupportSettings> SupportSettings => Set<SupportSettings>();
 
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {

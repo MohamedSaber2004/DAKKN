@@ -19,6 +19,7 @@ namespace DAKKN.Application.Common.Services
         public static string? Invoices => Options?.Invoices;
         public static string? Reviews => Options?.Reviews;
         public static string? Suggestions => Options?.Suggestions;
+        public static string? Support => Options?.Support;
 
         public static string? GetPath(int place)
         {
@@ -31,6 +32,7 @@ namespace DAKKN.Application.Common.Services
                 4 => Invoices,
                 5 => Reviews,
                 6 => Suggestions,
+                7 => Support,
                 _ => string.Empty
             };
         }
@@ -45,6 +47,7 @@ namespace DAKKN.Application.Common.Services
             yield return Options.Invoices;
             yield return Options.Reviews;
             yield return Options.Suggestions;
+            yield return Options.Support;
         }
     }
 }

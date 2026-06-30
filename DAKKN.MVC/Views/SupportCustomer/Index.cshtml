@@ -1,0 +1,168 @@
+﻿@using DAKKN.Application.Features.Support.DTOs
+@using DAKKN.Application.Common.Models
+@using DAKKN.Application.Localization
+@model PagginatedResult<SupportTicketDto>
+@inject IStringLocalizer<Messages> Localizer
+@{
+    Layout = "_LayoutCustomer";
+    ViewData["Title"] = Localizer["supp_dashboard_title"];
+    var statuses = new[] { "", "Open", "InProgress", "Resolved", "Closed" };
+    var currentStatus = Context.Request.Query["status"].FirstOrDefault();
+    var currentSearch = Context.Request.Query["search"].FirstOrDefault();
+    var isAr = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar");
+}
+
+<div class="max-w-6xl mx-auto px-lg py-xl space-y-2xl">
+    <!-- Hero Header -->
+    <div class="text-center space-y-md">
+        <h1 class="customer-page-title text-text-primary dark:text-inverse-on-surface">@Localizer["supp_dashboard_title"]</h1>
+        <p class="text-text-secondary dark:text-outline-variant max-w-2xl mx-auto">@Localizer["orders_details_subtitle"]</p>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="bg-success/10 border border-success/20 text-success p-lg rounded-2xl flex items-center gap-4 animate-in fade-in slide-in-from-top-4">
+            <span class="material-symbols-outlined">check_circle</span>
+            <p class="font-bold">@TempData["SuccessMessage"]</p>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="bg-error/10 border border-error/20 text-error p-lg rounded-2xl flex items-center gap-4 animate-in fade-in slide-in-from-top-4">
+            <span class="material-symbols-outlined">error</span>
+            <p class="font-bold">@TempData["ErrorMessage"]</p>
+        </div>
+    }
+
+    <!-- Filters & Search -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-lg">
+        <div class="flex items-center gap-3 flex-wrap">
+            <a asp-action="Index" class="px-lg py-2.5 rounded-2xl font-bold text-sm transition-all @(string.IsNullOrEmpty(currentStatus) ? "bg-primary text-on-primary shadow-lg" : "bg-surface-container dark:bg-white/5 text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-inverse-on-surface")">
+                @Localizer["admin_support_all"]
+            </a>
+            @foreach (var s in statuses.Skip(1))
+            {
+                <a asp-action="Index" asp-route-status="@s" asp-route-search="@currentSearch" class="px-lg py-2.5 rounded-2xl font-bold text-sm transition-all @(currentStatus == s ? "bg-primary text-on-primary shadow-lg" : "bg-surface-container dark:bg-white/5 text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-inverse-on-surface")">
+                    @Localizer[$"admin_support_{s.ToLower()}"]
+                </a>
+            }
+        </div>
+        <a asp-action="NewTicket" class="bg-text-primary dark:bg-inverse-on-surface text-background dark:text-on-background px-xl py-3 rounded-2xl font-bold hover:shadow-large hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center gap-2 flex-shrink-0">
+            <span class="material-symbols-outlined">add</span>
+            @Localizer["supp_new_ticket"]
+        </a>
+    </div>
+
+    <!-- Search -->
+    <form method="get" class="relative max-w-md">
+        <input type="hidden" name="status" value="@currentStatus" />
+        <input name="search" value="@currentSearch" class="w-full bg-surface-container dark:bg-white/5 border border-border dark:border-outline/20 rounded-2xl py-3.5 px-lg ltr:pl-12 rtl:pr-12 font-medium focus:ring-2 focus:ring-primary outline-none transition-all text-text-primary dark:text-inverse-on-surface placeholder:text-text-secondary dark:placeholder:text-outline-variant" placeholder="@Localizer["supp_search_tickets"]" />
+        <button type="submit" class="absolute ltr:left-4 rtl:right-4 top-1/2 -translate-y-1/2 text-text-secondary dark:text-outline-variant">
+            <span class="material-symbols-outlined">search</span>
+        </button>
+    </form>
+
+    <!-- Ticket List -->
+    <div class="space-y-md">
+        @if (Model.Items.Any())
+        {
+            @foreach (var ticket in Model.Items)
+            {
+                var statusClass = ticket.Status switch
+                {
+                    "Open" => "bg-primary/10 text-primary",
+                    "InProgress" => "bg-secondary/10 text-secondary",
+                    "Resolved" => "bg-success/10 text-success",
+                    "Closed" => "bg-outline/10 text-outline",
+                    "WaitingCustomer" => "bg-tertiary/10 text-tertiary",
+                    _ => "bg-surface-container text-text-secondary"
+                };
+
+                var priorityClass = ticket.Priority switch
+                {
+                    "Urgent" => "bg-error/10 text-error",
+                    "High" => "bg-warning/10 text-warning",
+                    "Medium" => "bg-primary/10 text-primary",
+                    "Low" => "bg-surface-container text-text-secondary",
+                    _ => "bg-surface-container text-text-secondary"
+                };
+
+                <a asp-action="Details" asp-route-id="@ticket.Id" class="block bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 p-lg md:p-xl rounded-[32px] shadow-small hover:shadow-large transition-all duration-500 group">
+                    <div class="flex flex-col md:flex-row justify-between gap-lg">
+                        <div class="space-y-3 flex-1 min-w-0">
+                            <div class="flex items-center gap-3 flex-wrap">
+                                <span class="text-xs font-bold text-text-secondary dark:text-outline-variant uppercase tracking-widest">#@ticket.TicketNumber</span>
+                                <span class="status-pill @statusClass">@Localizer[$"admin_support_{ticket.Status.ToLower()}"]</span>
+                                <span class="status-pill @priorityClass">@Localizer[$"admin_support_priority_{ticket.Priority.ToLower()}"]</span>
+                            </div>
+                            <h3 class="font-bold text-lg group-hover:text-primary transition-colors truncate">@ticket.Subject</h3>
+                            <div class="flex items-center gap-4 text-sm text-text-secondary dark:text-outline-variant">
+                                <span class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-base">schedule</span>
+                                    @ticket.CreatedAt.ToLocalTime().ToString("MMM dd, yyyy")
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-base">forum</span>
+                                    @ticket.ReplyCount
+                                </span>
+                                <span class="flex items-center gap-1">
+                                    <span class="material-symbols-outlined text-base">category</span>
+                                    @(isAr ? ticket.CategoryArName : ticket.CategoryName)
+                                </span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3 flex-shrink-0">
+                            <span class="text-primary font-bold flex items-center gap-1 text-sm">
+                                @Localizer["supp_view_details"]
+                                <span class="material-symbols-outlined rtl:rotate-180 text-lg">arrow_right_alt</span>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+            }
+
+            <!-- Pagination -->
+            @if (Model.TotalPages > 1)
+            {
+                <div class="flex items-center justify-center gap-2 pt-lg">
+                    @if (Model.HasPreviousPage)
+                    {
+                        <a asp-action="Index" asp-route-pageNumber="@(Model.PageNumber - 1)" asp-route-status="@currentStatus" asp-route-search="@currentSearch" class="w-10 h-10 rounded-xl bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 flex items-center justify-center text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-inverse-on-surface hover:border-primary/30 transition-all">
+                            <span class="material-symbols-outlined rtl:rotate-180">chevron_left</span>
+                        </a>
+                    }
+
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <a asp-action="Index" asp-route-pageNumber="@i" asp-route-status="@currentStatus" asp-route-search="@currentSearch" class="w-10 h-10 rounded-xl font-bold text-sm flex items-center justify-center transition-all @(i == Model.PageNumber ? "bg-primary text-on-primary shadow-lg" : "bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-inverse-on-surface hover:border-primary/30")">
+                            @i
+                        </a>
+                    }
+
+                    @if (Model.HasNextPage)
+                    {
+                        <a asp-action="Index" asp-route-pageNumber="@(Model.PageNumber + 1)" asp-route-status="@currentStatus" asp-route-search="@currentSearch" class="w-10 h-10 rounded-xl bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 flex items-center justify-center text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-inverse-on-surface hover:border-primary/30 transition-all">
+                            <span class="material-symbols-outlined rtl:rotate-180">chevron_right</span>
+                        </a>
+                    }
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty-state space-y-xl">
+                <div class="empty-state-icon">
+                    <span class="material-symbols-outlined text-4xl">support_agent</span>
+                </div>
+                <div class="space-y-md">
+                    <h3 class="font-bold text-xl text-text-primary dark:text-inverse-on-surface">@Localizer["supp_no_tickets"]</h3>
+                    <p class="text-text-secondary dark:text-outline-variant max-w-sm mx-auto">@Localizer["supp_no_tickets_desc"]</p>
+                </div>
+                <a asp-action="NewTicket" class="inline-flex items-center gap-2 bg-text-primary dark:bg-inverse-on-surface text-background dark:text-on-background px-xl py-3.5 rounded-2xl font-bold hover:scale-105 active:scale-95 transition-all">
+                    @Localizer["supp_create_first_ticket"]
+                </a>
+            </div>
+        }
+    </div>
+</div>

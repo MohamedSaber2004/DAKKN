@@ -1,0 +1,193 @@
+@using DAKKN.Application.Features.Support.DTOs
+@using DAKKN.Application.Common.Models
+@using DAKKN.Application.Localization
+@model PagginatedResult<SupportTicketDto>
+@inject IStringLocalizer<Messages> Localizer
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = Localizer["admin_support_tickets"];
+    var culture = System.Globalization.CultureInfo.CurrentCulture.Name;
+    var isAr = culture.StartsWith("ar");
+    var priorityFilter = Context.Request.Query["priority"].FirstOrDefault();
+    var statusFilter = Context.Request.Query["status"].FirstOrDefault();
+    var categoryFilter = Context.Request.Query["category"].FirstOrDefault();
+    var dateFrom = Context.Request.Query["dateFrom"].FirstOrDefault();
+    var dateTo = Context.Request.Query["dateTo"].FirstOrDefault();
+    var searchTerm = Context.Request.Query["searchTerm"].FirstOrDefault();
+}
+
+<div class="mb-lg flex flex-col md:flex-row justify-between items-start md:items-end gap-md">
+    <div>
+        <h2 class="font-h2 text-h2 text-admin-primary dark:text-white mb-sm">@Localizer["admin_support_tickets"]</h2>
+        <p class="font-body text-body text-admin-secondary dark:text-slate-400 dark:text-slate-400">@Localizer["supp_manage_tickets_desc"]</p>
+    </div>
+</div>
+
+<div class="premium-card overflow-hidden">
+    <!-- Filters -->
+    <div class="p-lg border-b border-admin-border dark:border-white/5 bg-admin-page/50 dark:bg-[#1E293B]">
+        <form method="get" class="flex flex-col lg:flex-row gap-3 flex-wrap">
+            <div class="relative flex-1 min-w-[200px]">
+                <input type="text" name="searchTerm" value="@searchTerm" placeholder="@Localizer["supp_search_tickets_ph"]" class="w-full bg-admin-input dark:bg-[#1E293B] border border-admin-border dark:border-white/10 rounded-full py-2 ltr:pl-10 ltr:pr-4 rtl:pr-10 rtl:pl-4 font-body text-body text-admin-primary dark:text-white focus:ring-2 focus:ring-primary outline-none transition-all">
+                <span class="material-symbols-outlined absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 text-admin-secondary dark:text-slate-400 dark:text-slate-400">search</span>
+            </div>
+            <div class="relative">
+                <select name="status" dir="@(isAr ? "rtl" : "ltr")" class="bg-admin-input dark:bg-[#1E293B] border border-admin-border dark:border-white/10 rounded-full py-2 ltr:pl-4 ltr:pr-10 rtl:pr-4 rtl:pl-10 font-body text-body text-admin-primary dark:text-white focus:ring-2 focus:ring-primary outline-none appearance-none cursor-pointer min-w-[140px]">
+                    <option value="" class="dark:bg-[#1E293B] dark:text-white">@Localizer["supp_all_statuses"]</option>
+                    <option value="open" class="dark:bg-[#1E293B] dark:text-white" selected="@(statusFilter == "open")">@Localizer["supp_open"]</option>
+                    <option value="pending" class="dark:bg-[#1E293B] dark:text-white" selected="@(statusFilter == "pending")">@Localizer["supp_pending"]</option>
+                    <option value="waiting_customer" class="dark:bg-[#1E293B] dark:text-white" selected="@(statusFilter == "waiting_customer")">@Localizer["supp_waiting_customer"]</option>
+                    <option value="closed" class="dark:bg-[#1E293B] dark:text-white" selected="@(statusFilter == "closed")">@Localizer["supp_closed"]</option>
+                </select>
+                <span class="material-symbols-outlined absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 text-admin-secondary dark:text-slate-400 pointer-events-none">arrow_drop_down</span>
+            </div>
+            <div class="relative">
+                <select name="priority" dir="@(isAr ? "rtl" : "ltr")" class="bg-admin-input dark:bg-[#1E293B] border border-admin-border dark:border-white/10 rounded-full py-2 ltr:pl-4 ltr:pr-10 rtl:pr-4 rtl:pl-10 font-body text-body text-admin-primary dark:text-white focus:ring-2 focus:ring-primary outline-none appearance-none cursor-pointer min-w-[140px]">
+                    <option value="" class="dark:bg-[#1E293B] dark:text-white">@Localizer["supp_all_priorities"]</option>
+                    <option value="urgent" class="dark:bg-[#1E293B] dark:text-white" selected="@(priorityFilter == "urgent")">@Localizer["supp_priority_urgent"]</option>
+                    <option value="high" class="dark:bg-[#1E293B] dark:text-white" selected="@(priorityFilter == "high")">@Localizer["supp_priority_high"]</option>
+                    <option value="medium" class="dark:bg-[#1E293B] dark:text-white" selected="@(priorityFilter == "medium")">@Localizer["supp_priority_medium"]</option>
+                    <option value="low" class="dark:bg-[#1E293B] dark:text-white" selected="@(priorityFilter == "low")">@Localizer["supp_priority_low"]</option>
+                </select>
+                <span class="material-symbols-outlined absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 text-admin-secondary dark:text-slate-400 pointer-events-none">arrow_drop_down</span>
+            </div>
+            <div class="relative">
+                <select name="category" dir="@(isAr ? "rtl" : "ltr")" class="bg-admin-input dark:bg-[#1E293B] border border-admin-border dark:border-white/10 rounded-full py-2 ltr:pl-4 ltr:pr-10 rtl:pr-4 rtl:pl-10 font-body text-body text-admin-primary dark:text-white focus:ring-2 focus:ring-primary outline-none appearance-none cursor-pointer min-w-[140px]">
+                    <option value="" class="dark:bg-[#1E293B] dark:text-white">@Localizer["supp_all_categories"]</option>
+                    @if (ViewBag.Categories != null)
+                    {
+                        foreach (var cat in ViewBag.Categories as IEnumerable<SelectListItem> ?? Enumerable.Empty<SelectListItem>())
+                        {
+                            <option value="@cat.Value" class="dark:bg-[#1E293B] dark:text-white" selected="@(categoryFilter == cat.Value)">@cat.Text</option>
+                        }
+                    }
+                </select>
+                <span class="material-symbols-outlined absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 text-admin-secondary dark:text-slate-400 pointer-events-none">arrow_drop_down</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <input type="date" name="dateFrom" value="@dateFrom" class="bg-admin-input dark:bg-[#1E293B] border border-admin-border dark:border-white/10 rounded-full py-2 px-4 font-body text-body text-admin-primary dark:text-white focus:ring-2 focus:ring-primary outline-none">
+                <span class="text-admin-secondary dark:text-slate-400">-</span>
+                <input type="date" name="dateTo" value="@dateTo" class="bg-admin-input dark:bg-[#1E293B] border border-admin-border dark:border-white/10 rounded-full py-2 px-4 font-body text-body text-admin-primary dark:text-white focus:ring-2 focus:ring-primary outline-none">
+            </div>
+            <button type="submit" class="bg-primary text-on-primary px-5 py-2 rounded-full text-body font-bold hover:brightness-110 transition-all">@Localizer["admin_search"]</button>
+            <a asp-action="Tickets" class="bg-admin-card dark:bg-[#1E293B] border border-admin-border dark:border-white/10 px-4 py-2 rounded-full text-body font-bold text-admin-secondary dark:text-slate-400 hover:text-primary transition-all flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">refresh</span>
+                @Localizer["admin_reset_filter"]
+            </a>
+        </form>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-x-auto custom-scrollbar">
+        <table class="w-full text-start border-collapse">
+            <thead class="bg-admin-page dark:bg-white/5 text-admin-secondary dark:text-slate-400 dark:text-slate-400 font-body border-b border-admin-border dark:border-white/5">
+                <tr>
+                    <th class="p-md text-left rtl:text-right font-bold">@Localizer["supp_ticket_id"]</th>
+                    <th class="p-md text-left rtl:text-right font-bold">@Localizer["supp_customer"]</th>
+                    <th class="p-md text-left rtl:text-right font-bold">@Localizer["supp_subject"]</th>
+                    <th class="p-md text-left rtl:text-right font-bold">@Localizer["supp_category"]</th>
+                    <th class="p-md text-left rtl:text-right font-bold">@Localizer["supp_priority"]</th>
+                    <th class="p-md text-left rtl:text-right font-bold">@Localizer["supp_status"]</th>
+                    <th class="p-md text-left rtl:text-right font-bold">@Localizer["supp_assigned_to"]</th>
+                    <th class="p-md text-left rtl:text-right font-bold">@Localizer["supp_created_date"]</th>
+                    <th class="p-md text-center font-bold">@Localizer["admin_order_actions"]</th>
+                </tr>
+            </thead>
+            <tbody class="text-body text-admin-primary dark:text-white divide-y divide-border dark:divide-white/5">
+                @foreach (var ticket in Model.Items)
+                {
+                    var priorityClass = ticket.Priority switch
+                    {
+                        "urgent" => "bg-error-container/20 text-error",
+                        "high" => "bg-tertiary-container/20 text-tertiary",
+                        "medium" => "bg-secondary-container/20 text-secondary",
+                        _ => "bg-admin-card text-admin-secondary dark:text-slate-400"
+                    };
+                    var statusClass = ticket.Status switch
+                    {
+                        "open" => "bg-primary/10 text-primary",
+                        "pending" => "bg-amber-500/10 text-amber-500",
+                        "waiting_customer" => "bg-purple-500/10 text-purple-500",
+                        "closed" => "bg-green-500/10 text-green-500",
+                        _ => "bg-admin-card text-admin-secondary dark:text-slate-400"
+                    };
+
+                    <tr class="hover:bg-admin-card dark:hover:bg-white/[0.04] transition-colors group">
+                        <td class="p-md font-bold text-primary dark:text-primary-light">#@ticket.Id</td>
+                        <td class="p-md">
+                            <div class="flex items-center gap-2">
+                                <div class="w-7 h-7 rounded-full bg-primary-container flex items-center justify-center text-[10px] text-primary font-bold">
+                                    <span class="text-xs">U</span>
+                                </div>
+                                <span class="dark:text-white">@Localizer["supp_customer"]</span>
+                            </div>
+                        </td>
+                        <td class="p-md max-w-[200px] truncate font-medium dark:text-white">@ticket.Subject</td>
+                        <td class="p-md text-admin-secondary dark:text-slate-400 dark:text-slate-400">@(System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar") && !string.IsNullOrEmpty(ticket.CategoryArName) ? ticket.CategoryArName : ticket.CategoryName)</td>
+                        <td class="p-md">
+                            <span class="px-3 py-1 @priorityClass rounded-full text-caption font-bold">@Localizer[$"supp_priority_{ticket.Priority?.ToLower()}"]</span>
+                        </td>
+                        <td class="p-md">
+                            <span class="px-3 py-1 @statusClass rounded-full text-caption font-bold">@Localizer[$"supp_status_{ticket.Status?.ToLower()}"]</span>
+                        </td>
+                        <td class="p-md text-admin-secondary dark:text-slate-400 dark:text-slate-400">@ticket.AssignedToName</td>
+                        <td class="p-md text-admin-secondary dark:text-slate-400 dark:text-slate-400">@ticket.CreatedAt.ToLocalTime().ToString("MMM dd, yyyy HH:mm")</td>
+                        <td class="p-md text-center">
+                            <div class="flex items-center justify-center gap-1">
+                                <a asp-action="TicketDetails" asp-route-id="@ticket.Id" class="inline-flex items-center justify-center w-9 h-9 rounded-full text-admin-secondary dark:text-slate-400 hover:text-primary hover:bg-primary-container/20 dark:hover:bg-primary/20 transition-all" title="@Localizer["supp_view_details"]">
+                                    <span class="material-symbols-outlined text-lg">visibility</span>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (Model.Items.Count == 0)
+    {
+        <div class="p-lg text-center">
+            <p class="text-body text-admin-secondary dark:text-slate-400 dark:text-slate-400">@Localizer["supp_no_tickets_found"]</p>
+        </div>
+    }
+
+    <!-- Pagination -->
+    @if (Model.TotalPages > 1)
+    {
+        <div class="p-lg border-t border-admin-border dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p class="text-caption text-admin-secondary dark:text-slate-400 dark:text-slate-400">
+                @Localizer["supp_showing"] @Model.PageNumber @Localizer["supp_of"] @Model.TotalPages (@Model.TotalCount @Localizer["supp_total_tickets"])
+            </p>
+            <div class="flex items-center gap-1">
+                @if (Model.HasPreviousPage)
+                {
+                    <a asp-action="Tickets" asp-route-page="@(Model.PageNumber - 1)" asp-route-search="@searchTerm" asp-route-status="@statusFilter" asp-route-priority="@priorityFilter" asp-route-category="@categoryFilter" asp-route-dateFrom="@dateFrom" asp-route-dateTo="@dateTo" class="w-9 h-9 rounded-lg border border-admin-border dark:border-white/10 flex items-center justify-center text-admin-secondary dark:text-slate-400 hover:text-primary dark:hover:text-white hover:border-primary transition-all">
+                        <span class="material-symbols-outlined text-sm">@(isAr ? "chevron_right" : "chevron_left")</span>
+                    </a>
+                }
+                @{
+                    var startPage = Math.Max(1, Model.PageNumber - 2);
+                    var endPage = Math.Min(Model.TotalPages, startPage + 4);
+                    if (endPage - startPage < 4) { startPage = Math.Max(1, endPage - 4); }
+                }
+                @for (var p = startPage; p <= endPage; p++)
+                {
+                    <a asp-action="Tickets" asp-route-page="@p" asp-route-search="@searchTerm" asp-route-status="@statusFilter" asp-route-priority="@priorityFilter" asp-route-category="@categoryFilter" asp-route-dateFrom="@dateFrom" asp-route-dateTo="@dateTo" class="w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold transition-all @(p == Model.PageNumber ? "bg-primary text-on-primary" : "border border-admin-border dark:border-white/10 text-admin-secondary dark:text-slate-400 hover:text-primary dark:hover:text-white hover:border-primary")">@p</a>
+                }
+                @if (Model.HasNextPage)
+                {
+                    <a asp-action="Tickets" asp-route-page="@(Model.PageNumber + 1)" asp-route-search="@searchTerm" asp-route-status="@statusFilter" asp-route-priority="@priorityFilter" asp-route-category="@categoryFilter" asp-route-dateFrom="@dateFrom" asp-route-dateTo="@dateTo" class="w-9 h-9 rounded-lg border border-admin-border dark:border-white/10 flex items-center justify-center text-admin-secondary dark:text-slate-400 hover:text-primary dark:hover:text-white hover:border-primary transition-all">
+                        <span class="material-symbols-outlined text-sm">@(isAr ? "chevron_left" : "chevron_right")</span>
+                    </a>
+                }
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <style>
+        .filled-icon { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+    </style>
+}

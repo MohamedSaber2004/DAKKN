@@ -523,41 +523,6 @@ namespace DAKKN.MVC.Controllers
             }
         }
 
-        [HttpGet("support")]
-        public IActionResult Support()
-        {
-            ViewData["Title"] = localizer["nav_support"];
-            var viewModel = new CustomerSupportDashboardViewModel
-            {
-                Tickets = new List<SupportTicketViewModel>
-                {
-                    new SupportTicketViewModel { TicketId = "TK-2024-001", Subject = "Missing Item in Order #DK-9021", Status = TicketStatus.Open, Priority = TicketPriority.High, CreatedAt = DateTime.Now.AddDays(-1) },
-                    new SupportTicketViewModel { TicketId = "TK-2024-002", Subject = "Holographic finish question", Status = TicketStatus.Resolved, Priority = TicketPriority.Low, CreatedAt = DateTime.Now.AddDays(-5) }
-                }
-            };
-            return View(viewModel);
-        }
-
-        [HttpGet("support/new")]
-        public IActionResult NewTicket(string? orderId)
-        {
-            ViewData["Title"] = localizer["supp_new_ticket"];
-            return View(new NewTicketViewModel { OrderId = orderId });
-        }
-
-        [HttpPost("support/new")]
-        public IActionResult CreateTicket(NewTicketViewModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                ViewData["Title"] = localizer["supp_new_ticket"];
-                return View("NewTicket", model);
-            }
-
-            TempData["SuccessMessage"] = localizer["supp_ticket_created"].Value;
-            return RedirectToAction("Support");
-        }
-
         [HttpGet("brand-reviews")]
         public async Task<IActionResult> BrandReviews()
         {

@@ -20,6 +20,15 @@ namespace DAKKN.Application.Common.Interfaces
         DbSet<OrderStatusHistory> OrderStatusHistories { get; }
         DbSet<UserFavorite> UserFavorites { get; }
         DbSet<StickerSuggestion> StickerSuggestions { get; }
+        DbSet<SupportTicket> SupportTickets { get; }
+        DbSet<SupportReply> SupportReplies { get; }
+        DbSet<SupportAttachment> SupportAttachments { get; }
+        DbSet<SupportCategory> SupportCategories { get; }
+        DbSet<SupportFAQ> SupportFAQs { get; }
+        DbSet<SupportFAQCategory> SupportFAQCategories { get; }
+        DbSet<SupportActivity> SupportActivities { get; }
+        DbSet<SupportInternalNote> SupportInternalNotes { get; }
+        DbSet<SupportSettings> SupportSettings { get; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }
