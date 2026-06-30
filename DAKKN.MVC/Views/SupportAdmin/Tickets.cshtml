@@ -10,10 +10,10 @@
     var isAr = culture.StartsWith("ar");
     var priorityFilter = Context.Request.Query["priority"].FirstOrDefault();
     var statusFilter = Context.Request.Query["status"].FirstOrDefault();
-    var categoryFilter = Context.Request.Query["category"].FirstOrDefault();
+    var categoryFilter = Context.Request.Query["categoryId"].FirstOrDefault();
     var dateFrom = Context.Request.Query["dateFrom"].FirstOrDefault();
     var dateTo = Context.Request.Query["dateTo"].FirstOrDefault();
-    var searchTerm = Context.Request.Query["searchTerm"].FirstOrDefault();
+    var searchTerm = Context.Request.Query["search"].FirstOrDefault();
 }
 
 <div class="mb-lg flex flex-col md:flex-row justify-between items-start md:items-end gap-md">
@@ -28,7 +28,7 @@
     <div class="p-lg border-b border-admin-border dark:border-white/5 bg-admin-page/50 dark:bg-[#1E293B]">
         <form method="get" class="flex flex-col lg:flex-row gap-3 flex-wrap">
             <div class="relative flex-1 min-w-[200px]">
-                <input type="text" name="searchTerm" value="@searchTerm" placeholder="@Localizer["supp_search_tickets_ph"]" class="w-full bg-admin-input dark:bg-[#1E293B] border border-admin-border dark:border-white/10 rounded-full py-2 ltr:pl-10 ltr:pr-4 rtl:pr-10 rtl:pl-4 font-body text-body text-admin-primary dark:text-white focus:ring-2 focus:ring-primary outline-none transition-all">
+                <input type="text" name="search" value="@searchTerm" placeholder="@Localizer["supp_search_tickets_ph"]" class="w-full bg-admin-input dark:bg-[#1E293B] border border-admin-border dark:border-white/10 rounded-full py-2 ltr:pl-10 ltr:pr-4 rtl:pr-10 rtl:pl-4 font-body text-body text-admin-primary dark:text-white focus:ring-2 focus:ring-primary outline-none transition-all">
                 <span class="material-symbols-outlined absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 text-admin-secondary dark:text-slate-400">search</span>
             </div>
             <div class="relative">
@@ -52,7 +52,7 @@
                 <span class="material-symbols-outlined absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 text-admin-secondary dark:text-slate-400 pointer-events-none">arrow_drop_down</span>
             </div>
             <div class="relative">
-                <select name="category" dir="@(isAr ? "rtl" : "ltr")" class="bg-admin-input dark:bg-[#1E293B] border border-admin-border dark:border-white/10 rounded-full py-2 ltr:pl-4 ltr:pr-10 rtl:pr-4 rtl:pl-10 font-body text-body text-admin-primary dark:text-white focus:ring-2 focus:ring-primary outline-none appearance-none cursor-pointer min-w-[140px]">
+                <select name="categoryId" dir="@(isAr ? "rtl" : "ltr")" class="bg-admin-input dark:bg-[#1E293B] border border-admin-border dark:border-white/10 rounded-full py-2 ltr:pl-4 ltr:pr-10 rtl:pr-4 rtl:pl-10 font-body text-body text-admin-primary dark:text-white focus:ring-2 focus:ring-primary outline-none appearance-none cursor-pointer min-w-[140px]">
                     <option value="" class="dark:bg-[#1E293B] dark:text-white">@Localizer["supp_all_categories"]</option>
                     @if (ViewBag.Categories != null)
                     {
@@ -163,7 +163,7 @@
             <div class="flex items-center gap-1">
                 @if (Model.HasPreviousPage)
                 {
-                    <a asp-action="Tickets" asp-route-page="@(Model.PageNumber - 1)" asp-route-search="@searchTerm" asp-route-status="@statusFilter" asp-route-priority="@priorityFilter" asp-route-category="@categoryFilter" asp-route-dateFrom="@dateFrom" asp-route-dateTo="@dateTo" class="w-9 h-9 rounded-lg border border-admin-border dark:border-white/10 flex items-center justify-center text-admin-secondary dark:text-slate-400 hover:text-primary dark:hover:text-white hover:border-primary transition-all">
+                    <a asp-action="Tickets" asp-route-pageNumber="@(Model.PageNumber - 1)" asp-route-search="@searchTerm" asp-route-status="@statusFilter" asp-route-priority="@priorityFilter" asp-route-categoryId="@categoryFilter" asp-route-dateFrom="@dateFrom" asp-route-dateTo="@dateTo" class="w-9 h-9 rounded-lg border border-admin-border dark:border-white/10 flex items-center justify-center text-admin-secondary dark:text-slate-400 hover:text-primary dark:hover:text-white hover:border-primary transition-all">
                         <span class="material-symbols-outlined text-sm">@(isAr ? "chevron_right" : "chevron_left")</span>
                     </a>
                 }
@@ -174,11 +174,11 @@
                 }
                 @for (var p = startPage; p <= endPage; p++)
                 {
-                    <a asp-action="Tickets" asp-route-page="@p" asp-route-search="@searchTerm" asp-route-status="@statusFilter" asp-route-priority="@priorityFilter" asp-route-category="@categoryFilter" asp-route-dateFrom="@dateFrom" asp-route-dateTo="@dateTo" class="w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold transition-all @(p == Model.PageNumber ? "bg-primary text-on-primary" : "border border-admin-border dark:border-white/10 text-admin-secondary dark:text-slate-400 hover:text-primary dark:hover:text-white hover:border-primary")">@p</a>
+                    <a asp-action="Tickets" asp-route-pageNumber="@p" asp-route-search="@searchTerm" asp-route-status="@statusFilter" asp-route-priority="@priorityFilter" asp-route-categoryId="@categoryFilter" asp-route-dateFrom="@dateFrom" asp-route-dateTo="@dateTo" class="w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold transition-all @(p == Model.PageNumber ? "bg-primary text-on-primary" : "border border-admin-border dark:border-white/10 text-admin-secondary dark:text-slate-400 hover:text-primary dark:hover:text-white hover:border-primary")">@p</a>
                 }
                 @if (Model.HasNextPage)
                 {
-                    <a asp-action="Tickets" asp-route-page="@(Model.PageNumber + 1)" asp-route-search="@searchTerm" asp-route-status="@statusFilter" asp-route-priority="@priorityFilter" asp-route-category="@categoryFilter" asp-route-dateFrom="@dateFrom" asp-route-dateTo="@dateTo" class="w-9 h-9 rounded-lg border border-admin-border dark:border-white/10 flex items-center justify-center text-admin-secondary dark:text-slate-400 hover:text-primary dark:hover:text-white hover:border-primary transition-all">
+                    <a asp-action="Tickets" asp-route-pageNumber="@(Model.PageNumber + 1)" asp-route-search="@searchTerm" asp-route-status="@statusFilter" asp-route-priority="@priorityFilter" asp-route-categoryId="@categoryFilter" asp-route-dateFrom="@dateFrom" asp-route-dateTo="@dateTo" class="w-9 h-9 rounded-lg border border-admin-border dark:border-white/10 flex items-center justify-center text-admin-secondary dark:text-slate-400 hover:text-primary dark:hover:text-white hover:border-primary transition-all">
                         <span class="material-symbols-outlined text-sm">@(isAr ? "chevron_left" : "chevron_right")</span>
                     </a>
                 }

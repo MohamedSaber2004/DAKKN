@@ -294,6 +294,7 @@ namespace DAKKN.Application.Localization
 
         public static class Support
         {
+            public static readonly KeyString NewTicket = new("supp_new_ticket");
             public static readonly KeyString NewTicketDesc = new("supp_new_ticket_desc");
             public static readonly KeyString TicketCatPh = new("supp_ticket_cat_ph");
             public static readonly KeyString OrderIdLabel = new("supp_ticket_order_id_label");

@@ -27,6 +27,7 @@ namespace DAKKN.Application.Features.Support.Queries.GetTicketDetails
                 .Include(t => t.Replies).ThenInclude(r => r.Attachments)
                 .Include(t => t.Attachments)
                 .Include(t => t.Activities)
+                .Include(t => t.InternalNotes)
                 .AsQueryable();
 
             if (!request.IsAdmin)
@@ -98,7 +99,14 @@ namespace DAKKN.Application.Features.Support.Queries.GetTicketDetails
                     NewValue = a.NewValue,
                     CreatedAt = a.CreatedAt
                 }).ToList(),
-                InternalNotes = new List<SupportInternalNoteDto>()
+                InternalNotes = request.IsAdmin
+                    ? ticket.InternalNotes.OrderByDescending(n => n.CreatedAt).Select(n => new SupportInternalNoteDto
+                    {
+                        UserName = n.UserName,
+                        Note = n.Note,
+                        CreatedAt = n.CreatedAt
+                    }).ToList()
+                    : new List<SupportInternalNoteDto>()
             };
         }
     }

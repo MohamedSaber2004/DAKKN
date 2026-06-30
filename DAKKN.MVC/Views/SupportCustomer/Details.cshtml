@@ -1,4 +1,4 @@
-﻿@using DAKKN.Application.Features.Support.DTOs
+@using DAKKN.Application.Features.Support.DTOs
 @using DAKKN.Application.Localization
 @model SupportTicketDetailsDto
 @inject IStringLocalizer<Messages> Localizer
@@ -57,8 +57,8 @@
             <div class="space-y-2">
                 <div class="flex items-center gap-3 flex-wrap">
                     <span class="text-sm font-bold text-text-secondary dark:text-outline-variant uppercase tracking-widest">@Localizer["supp_ticket_number"]: #@Model.TicketNumber</span>
-                    <span class="status-pill @statusClass">@Localizer[$"admin_support_{Model.Status.ToLower()}"]</span>
-                    <span class="status-pill @priorityClass">@Localizer[$"admin_support_priority_{Model.Priority.ToLower()}"]</span>
+                    <span id="ticket-status-badge" class="status-pill @statusClass">@Localizer[$"admin_support_{Model.Status.ToLower()}"]</span>
+                    <span id="ticket-priority-badge" class="status-pill @priorityClass">@Localizer[$"admin_support_priority_{Model.Priority.ToLower()}"]</span>
                 </div>
                 <h1 class="customer-page-title text-text-primary dark:text-inverse-on-surface">@Model.Subject</h1>
             </div>
@@ -112,7 +112,7 @@
                     </h3>
                 </div>
 
-                <div class="divide-y divide-border dark:divide-outline/10">
+                <div id="replies-container" class="divide-y divide-border dark:divide-outline/10">
                     <!-- Original Customer Message -->
                     <div class="p-lg space-y-md">
                         <div class="flex items-start gap-4">
@@ -257,7 +257,7 @@
                     <span class="material-symbols-outlined text-primary">history</span>
                     @Localizer["supp_activity_timeline"]
                 </h3>
-                <div class="space-y-md relative ltr:before:left-[11px] rtl:before:right-[11px] before:content-[''] before:absolute before:top-2 before:bottom-2 before:w-px before:bg-border dark:before:bg-outline/10">
+                <div id="timeline-container" class="space-y-md relative ltr:before:left-[11px] rtl:before:right-[11px] before:content-[''] before:absolute before:top-2 before:bottom-2 before:w-px before:bg-border dark:before:bg-outline/10">
                     @if (Model.Activities.Any())
                     {
                         @foreach (var activity in Model.Activities.OrderByDescending(a => a.CreatedAt))
@@ -309,23 +309,20 @@
                     </div>
                     <div class="flex justify-between">
                         <span class="text-text-secondary dark:text-outline-variant">@Localizer["supp_priority"]</span>
-                        <span class="status-pill @priorityClass text-xs">@Localizer[$"admin_support_priority_{Model.Priority.ToLower()}"]</span>
+                        <span id="ticket-info-priority" class="status-pill @priorityClass text-xs">@Localizer[$"admin_support_priority_{Model.Priority.ToLower()}"]</span>
                     </div>
                     <div class="flex justify-between">
                         <span class="text-text-secondary dark:text-outline-variant">@Localizer["supp_status_timeline"]</span>
-                        <span class="status-pill @statusClass text-xs">@Localizer[$"admin_support_{Model.Status.ToLower()}"]</span>
+                        <span id="ticket-info-status" class="status-pill @statusClass text-xs">@Localizer[$"admin_support_{Model.Status.ToLower()}"]</span>
                     </div>
                     <div class="flex justify-between">
                         <span class="text-text-secondary dark:text-outline-variant">@Localizer["supp_replies"]</span>
-                        <span class="font-bold text-text-primary dark:text-inverse-on-surface">@Model.Replies.Count</span>
+                        <span id="ticket-info-replies" class="font-bold text-text-primary dark:text-inverse-on-surface">@Model.Replies.Count</span>
                     </div>
-                    @if (!string.IsNullOrEmpty(Model.AssignedToName))
-                    {
-                        <div class="flex justify-between">
-                            <span class="text-text-secondary dark:text-outline-variant">@Localizer["supp_assign_ticket"]</span>
-                            <span class="font-bold text-text-primary dark:text-inverse-on-surface">@Model.AssignedToName</span>
-                        </div>
-                    }
+                    <div id="ticket-info-assignee-container" class="flex justify-between @(string.IsNullOrEmpty(Model.AssignedToName) ? "hidden" : "")">
+                        <span class="text-text-secondary dark:text-outline-variant">@Localizer["supp_assign_ticket"]</span>
+                        <span id="ticket-info-assignee" class="font-bold text-text-primary dark:text-inverse-on-surface">@Model.AssignedToName</span>
+                    </div>
                     @if (Model.FirstResponseAt.HasValue)
                     {
                         <div class="flex justify-between">
@@ -338,6 +335,8 @@
         </div>
     </div>
 </div>
+
+<div id="toast-container" class="fixed bottom-8 ltr:right-8 rtl:left-8 z-[200] flex flex-col gap-3"></div>
 
 @section Scripts {
     <script>
@@ -374,6 +373,287 @@
                 if (textSpan) textSpan.textContent = '@Localizer["supp_attachments"]';
             }
         }
+
+        // Polling sync for ticket details
+        (function() {
+            const ticketId = '@Model.Id';
+            let currentReplyCount = @Model.Replies.Count;
+            let currentActivitiesCount = @Model.Activities.Count;
+            let currentStatus = "@Model.Status";
+            let currentPriority = "@Model.Priority";
+            let currentAssignee = "@Model.AssignedToName";
+
+            const statusTexts = {
+                "Open": "@Localizer["admin_support_open"]",
+                "InProgress": "@Localizer["admin_support_inprogress"]",
+                "Resolved": "@Localizer["admin_support_resolved"]",
+                "Closed": "@Localizer["admin_support_closed"]",
+                "WaitingCustomer": "@Localizer["admin_support_waitingcustomer"]",
+                "WaitingStaff": "@Localizer["admin_support_waitingstaff"]"
+            };
+
+            const statusClasses = {
+                "Open": "bg-primary/10 text-primary",
+                "InProgress": "bg-secondary/10 text-secondary",
+                "Resolved": "bg-success/10 text-success",
+                "Closed": "bg-outline/10 text-outline",
+                "WaitingCustomer": "bg-tertiary/10 text-tertiary",
+                "WaitingStaff": "bg-surface-container text-text-secondary"
+            };
+
+            const priorityTexts = {
+                "Low": "@Localizer["admin_support_priority_low"]",
+                "Medium": "@Localizer["admin_support_priority_medium"]",
+                "High": "@Localizer["admin_support_priority_high"]",
+                "Urgent": "@Localizer["admin_support_priority_urgent"]"
+            };
+
+            const priorityClasses = {
+                "Urgent": "bg-error/10 text-error",
+                "High": "bg-warning/10 text-warning",
+                "Medium": "bg-primary/10 text-primary",
+                "Low": "bg-surface-container text-text-secondary"
+            };
+
+            function showToast(message, type = 'success') {
+                const container = document.getElementById('toast-container');
+                if (!container) return;
+                
+                const toast = document.createElement('div');
+                const bgColor = type === 'success' ? 'bg-success text-on-success' : (type === 'error' ? 'bg-error text-on-error' : 'bg-primary text-on-primary');
+                const icon = type === 'success' ? 'check_circle' : (type === 'error' ? 'error' : 'info');
+                
+                toast.className = `${bgColor} px-6 py-4 rounded-2xl shadow-xl flex items-center gap-3 toast-enter`;
+                toast.innerHTML = `<span class="material-symbols-outlined">${icon}</span><span class="text-sm font-bold">${message}</span>`;
+                
+                container.appendChild(toast);
+                setTimeout(() => {
+                    toast.classList.remove('toast-enter');
+                    toast.classList.add('toast-exit');
+                    setTimeout(() => toast.remove(), 300);
+                }, 4000);
+            }
+
+            function getActivityIcon(action) {
+                const a = (action || "").toLowerCase();
+                if (a.includes("create")) return "add_circle";
+                if (a.includes("reply")) return "reply";
+                if (a.includes("close")) return "lock";
+                if (a.includes("reopen")) return "lock_open";
+                if (a.includes("assign")) return "person_add";
+                if (a.includes("priority")) return "flag";
+                if (a.includes("status")) return "sync";
+                if (a.includes("escalate")) return "warning";
+                if (a.includes("archive")) return "archive";
+                if (a.includes("note")) return "note_add";
+                return "circle";
+            }
+
+            async function checkUpdates() {
+                try {
+                    const response = await fetch('/api/v1/support/tickets/' + ticketId);
+                    if (!response.ok) return;
+                    const result = await response.json();
+                    if (!result || !result.success || !result.data) return;
+
+                    const data = result.data;
+                    let hasChanges = false;
+                    let reloadNeeded = false;
+
+                    // 1. Check status
+                    if (data.status !== currentStatus) {
+                        const oldStatus = currentStatus;
+                        currentStatus = data.status;
+                        hasChanges = true;
+
+                        // Update badges
+                        const statusBadge = document.getElementById('ticket-status-badge');
+                        if (statusBadge) {
+                            statusBadge.className = 'status-pill ' + (statusClasses[currentStatus] || '');
+                            statusBadge.textContent = statusTexts[currentStatus] || currentStatus;
+                        }
+                        const infoStatus = document.getElementById('ticket-info-status');
+                        if (infoStatus) {
+                            infoStatus.className = 'status-pill ' + (statusClasses[currentStatus] || '') + ' text-xs';
+                            infoStatus.textContent = statusTexts[currentStatus] || currentStatus;
+                        }
+
+                        showToast('@Localizer["supp_ticket_status_changed"]'.replace('{0}', statusTexts[currentStatus] || currentStatus), 'info');
+
+                        // Check if open state changed
+                        const wasOpen = ["Open", "InProgress", "WaitingCustomer"].includes(oldStatus);
+                        const isNowOpen = ["Open", "InProgress", "WaitingCustomer"].includes(currentStatus);
+                        if (wasOpen !== isNowOpen) {
+                            reloadNeeded = true;
+                        }
+                    }
+
+                    // 2. Check priority
+                    if (data.priority !== currentPriority) {
+                        currentPriority = data.priority;
+                        hasChanges = true;
+
+                        const priorityBadge = document.getElementById('ticket-priority-badge');
+                        if (priorityBadge) {
+                            priorityBadge.className = 'status-pill ' + (priorityClasses[currentPriority] || '');
+                            priorityBadge.textContent = priorityTexts[currentPriority] || currentPriority;
+                        }
+                        const infoPriority = document.getElementById('ticket-info-priority');
+                        if (infoPriority) {
+                            infoPriority.className = 'status-pill ' + (priorityClasses[currentPriority] || '') + ' text-xs';
+                            infoPriority.textContent = priorityTexts[currentPriority] || currentPriority;
+                        }
+
+                        showToast('@Localizer["supp_ticket_priority_changed"]'.replace('{0}', priorityTexts[currentPriority] || currentPriority), 'info');
+                    }
+
+                    // 3. Check assignee
+                    if (data.assignedToName !== currentAssignee) {
+                        currentAssignee = data.assignedToName;
+                        hasChanges = true;
+
+                        const assigneeContainer = document.getElementById('ticket-info-assignee-container');
+                        const assigneeEl = document.getElementById('ticket-info-assignee');
+                        if (assigneeContainer && assigneeEl) {
+                            if (currentAssignee) {
+                                assigneeEl.textContent = currentAssignee;
+                                assigneeContainer.classList.remove('hidden');
+                                showToast('@Localizer["supp_ticket_assigned"]'.replace('{0}', currentAssignee), 'info');
+                            } else {
+                                assigneeContainer.classList.add('hidden');
+                            }
+                        }
+                    }
+
+                    // 4. Check replies
+                    if (data.replies && data.replies.length > currentReplyCount) {
+                        const newReplies = data.replies.slice(currentReplyCount);
+                        currentReplyCount = data.replies.length;
+                        hasChanges = true;
+
+                        const infoReplies = document.getElementById('ticket-info-replies');
+                        if (infoReplies) infoReplies.textContent = currentReplyCount;
+
+                        const repliesContainer = document.getElementById('replies-container');
+                        if (repliesContainer) {
+                            newReplies.forEach(reply => {
+                                const avatar = reply.userName ? reply.userName.substring(0, 1).toUpperCase() : '?';
+                                const dateStr = new Date(reply.createdAt).toLocaleString(undefined, { 
+                                    month: 'short', day: 'numeric', year: 'numeric', 
+                                    hour: '2-digit', minute: '2-digit', hour12: false 
+                                });
+                                
+                                const div = document.createElement('div');
+                                div.className = 'p-lg space-y-md ' + (reply.isStaffReply ? 'bg-primary/[0.02] dark:bg-primary/[0.03]' : '');
+                                
+                                let attachmentsHtml = '';
+                                if (reply.attachments && reply.attachments.length > 0) {
+                                    attachmentsHtml = '<div class="flex flex-wrap gap-3 mt-4">';
+                                    reply.attachments.forEach(att => {
+                                        const sizeStr = att.fileSize > 1024 ? (att.fileSize / 1024.0).toFixed(1) + ' @Localizer["supp_kb"]' : att.fileSize + ' @Localizer["supp_bytes"]';
+                                        attachmentsHtml += `
+                                            <a href="${att.url}" target="_blank" class="flex items-center gap-2 bg-surface-container dark:bg-white/5 px-4 py-2.5 rounded-2xl hover:bg-primary/10 hover:text-primary transition-all group">
+                                                <span class="material-symbols-outlined text-lg">attach_file</span>
+                                                <span class="text-sm font-bold truncate max-w-[200px]">${att.originalFileName}</span>
+                                                <span class="text-[10px] text-text-secondary dark:text-outline-variant">${sizeStr}</span>
+                                            </a>
+                                        `;
+                                    });
+                                    attachmentsHtml += '</div>';
+                                }
+
+                                const staffLabel = reply.isStaffReply ? `<span class="text-[10px] uppercase tracking-widest font-bold bg-secondary/10 text-secondary px-2 py-0.5 rounded-full">@Localizer["admin_support"]</span>` : '';
+                                const avatarBg = reply.isStaffReply ? 'bg-secondary/10 text-secondary' : 'bg-surface-container dark:bg-white/10 text-text-secondary dark:text-outline-variant';
+
+                                div.innerHTML = `
+                                    <div class="flex items-start gap-4">
+                                        <div class="w-10 h-10 rounded-full ${avatarBg} flex items-center justify-center font-bold text-sm flex-shrink-0">
+                                            ${avatar}
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="flex items-center gap-3 mb-2">
+                                                <span class="font-bold text-text-primary dark:text-inverse-on-surface">${reply.userName}</span>
+                                                <span class="text-xs text-text-secondary dark:text-outline-variant">${dateStr}</span>
+                                                ${staffLabel}
+                                            </div>
+                                            <p class="text-text-primary dark:text-inverse-on-surface whitespace-pre-wrap">${reply.message}</p>
+                                            ${attachmentsHtml}
+                                        </div>
+                                    </div>
+                                `;
+                                repliesContainer.appendChild(div);
+                            });
+                        }
+
+                        showToast('@Localizer["supp_ticket_replied"]', 'success');
+                    }
+
+                    // 5. Check activities
+                    if (data.activities && data.activities.length > currentActivitiesCount) {
+                        const newActivities = data.activities.slice(0, data.activities.length - currentActivitiesCount);
+                        currentActivitiesCount = data.activities.length;
+                        hasChanges = true;
+
+                        const timelineContainer = document.getElementById('timeline-container');
+                        if (timelineContainer) {
+                            newActivities.forEach(activity => {
+                                const dateStr = new Date(activity.createdAt).toLocaleString(undefined, { 
+                                    month: 'short', day: 'numeric', year: 'numeric', 
+                                    hour: '2-digit', minute: '2-digit', hour12: false 
+                                });
+                                const icon = getActivityIcon(activity.action);
+                                
+                                const div = document.createElement('div');
+                                div.className = 'relative ltr:pl-8 rtl:pr-8 animate-in fade-in slide-in-from-top-2';
+                                
+                                let detailsHtml = '';
+                                if (activity.details) {
+                                    detailsHtml = `<p class="text-xs text-text-secondary dark:text-outline-variant mt-0.5">${activity.details}</p>`;
+                                }
+                                
+                                let valuesHtml = '';
+                                if (activity.oldValue && activity.newValue) {
+                                    valuesHtml = `
+                                        <p class="text-xs text-text-secondary dark:text-outline-variant mt-0.5">
+                                            <span class="line-through">${activity.oldValue}</span>
+                                            <span class="material-symbols-outlined text-[10px] mx-1 rtl:rotate-180">arrow_forward</span>
+                                            <span>${activity.newValue}</span>
+                                        </p>
+                                    `;
+                                }
+
+                                div.innerHTML = `
+                                    <div class="absolute ltr:left-0 rtl:right-0 top-1 w-[22px] h-[22px] rounded-full bg-primary border-4 border-surface dark:border-inverse-surface flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-[10px] text-on-primary">${icon}</span>
+                                    </div>
+                                    <p class="text-sm font-bold text-text-primary dark:text-inverse-on-surface">${activity.action}</p>
+                                    <p class="text-xs text-text-secondary dark:text-outline-variant">${dateStr}</p>
+                                    ${detailsHtml}
+                                    ${valuesHtml}
+                                `;
+                                timelineContainer.insertBefore(div, timelineContainer.firstChild);
+                            });
+                        }
+                    }
+
+                    if (reloadNeeded) {
+                        const messageTextarea = document.querySelector('textarea[name="message"]');
+                        const fileInput = document.querySelector('input[name="attachments"]');
+                        const isTyping = (messageTextarea && messageTextarea.value.trim() !== "") || (fileInput && fileInput.files.length > 0);
+                        if (!isTyping) {
+                            location.reload();
+                        } else {
+                            showToast('@Localizer["supp_ticket_status_changed"] - @Localizer["supp_confirm_close"]', 'error');
+                        }
+                    }
+
+                } catch (e) {
+                    console.error('Error polling ticket updates:', e);
+                }
+            }
+
+            setInterval(checkUpdates, 5000);
+        })();
     </script>
 }
 

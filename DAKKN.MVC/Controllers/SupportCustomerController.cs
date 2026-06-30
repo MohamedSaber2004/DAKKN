@@ -35,7 +35,7 @@ namespace DAKKN.MVC.Controllers
         [HttpGet("new")]
         public async Task<IActionResult> NewTicket()
         {
-            ViewData["Title"] = localizer["supp_new_ticket"];
+            ViewData["Title"] = localizer[LocalizationKeys.Support.NewTicket.Value];
 
             var categories = await mediator.Send(new GetCategoriesQuery());
             ViewBag.Categories = categories;
@@ -48,7 +48,7 @@ namespace DAKKN.MVC.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewData["Title"] = localizer["supp_new_ticket"];
+                ViewData["Title"] = localizer[LocalizationKeys.Support.NewTicket.Value];
                 var categories = await mediator.Send(new GetCategoriesQuery());
                 ViewBag.Categories = categories;
                 return View(command);

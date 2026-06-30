@@ -1,4 +1,5 @@
 using DAKKN.Appearence.Filters;
+using Microsoft.AspNetCore.Http;
 using DAKKN.Application.Common.Exceptions;
 using DAKKN.Application.Features.Support.Commands.AddInternalNote;
 using DAKKN.Application.Features.Support.Commands.AssignTicket;
@@ -102,16 +103,21 @@ namespace DAKKN.MVC.Controllers
 
         [HttpPost("support/tickets/{id:guid}/reply")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Reply(Guid id, ReplyTicketCommand command)
+        public async Task<IActionResult> Reply(Guid id, string Message, List<IFormFile>? attachments)
         {
-            command.TicketId = id;
-            command.IsStaffReply = true;
-
-            if (!ModelState.IsValid)
+            if (string.IsNullOrWhiteSpace(Message))
             {
                 TempData["ErrorMessage"] = _localizer[LocalizationKeys.ExceptionMessages.InvalidModelState.Value].Value;
                 return RedirectToAction(nameof(TicketDetails), new { id });
             }
+
+            var command = new ReplyTicketCommand
+            {
+                TicketId = id,
+                Message = Message,
+                IsStaffReply = true,
+                Attachments = attachments
+            };
 
             try
             {
@@ -263,7 +269,7 @@ namespace DAKKN.MVC.Controllers
             try
             {
                 await _mediator.Send(command);
-                TempData["SuccessMessage"] = _localizer[LocalizationKeys.Support.Dashboard.Value].Value;
+                TempData["SuccessMessage"] = _localizer[LocalizationKeys.ActionResultMessage.Created.Value].Value;
             }
             catch (Exception ex) when (ex is ValidationException or BadRequestException)
             {
@@ -294,7 +300,7 @@ namespace DAKKN.MVC.Controllers
             try
             {
                 await _mediator.Send(command);
-                TempData["SuccessMessage"] = _localizer[LocalizationKeys.Support.Dashboard.Value].Value;
+                TempData["SuccessMessage"] = _localizer[LocalizationKeys.ActionResultMessage.Ok.Value].Value;
             }
             catch (Exception ex) when (ex is ValidationException or BadRequestException)
             {
@@ -311,7 +317,7 @@ namespace DAKKN.MVC.Controllers
             try
             {
                 await _mediator.Send(new DeleteCategoryCommand(id));
-                TempData["SuccessMessage"] = _localizer[LocalizationKeys.Support.Dashboard.Value].Value;
+                TempData["SuccessMessage"] = _localizer[LocalizationKeys.ActionResultMessage.Deleted.Value].Value;
             }
             catch (Exception ex) when (ex is ValidationException or BadRequestException or NotFoundException)
             {
@@ -366,7 +372,7 @@ namespace DAKKN.MVC.Controllers
             try
             {
                 await _mediator.Send(command);
-                TempData["SuccessMessage"] = _localizer[LocalizationKeys.Support.Dashboard.Value].Value;
+                TempData["SuccessMessage"] = _localizer[LocalizationKeys.ActionResultMessage.Created.Value].Value;
                 return RedirectToAction(nameof(FAQs));
             }
             catch (ValidationException ex)
@@ -443,7 +449,7 @@ namespace DAKKN.MVC.Controllers
             try
             {
                 await _mediator.Send(command);
-                TempData["SuccessMessage"] = _localizer[LocalizationKeys.Support.Dashboard.Value].Value;
+                TempData["SuccessMessage"] = _localizer[LocalizationKeys.ActionResultMessage.Ok.Value].Value;
                 return RedirectToAction(nameof(FAQs));
             }
             catch (ValidationException ex)
@@ -477,7 +483,7 @@ namespace DAKKN.MVC.Controllers
             try
             {
                 await _mediator.Send(new DeleteFAQCommand(id));
-                TempData["SuccessMessage"] = _localizer[LocalizationKeys.Support.Dashboard.Value].Value;
+                TempData["SuccessMessage"] = _localizer[LocalizationKeys.ActionResultMessage.Deleted.Value].Value;
             }
             catch (Exception ex) when (ex is ValidationException or BadRequestException or NotFoundException)
             {
@@ -560,7 +566,7 @@ namespace DAKKN.MVC.Controllers
             try
             {
                 await _mediator.Send(command);
-                TempData["SuccessMessage"] = _localizer[LocalizationKeys.Support.Dashboard.Value].Value;
+                TempData["SuccessMessage"] = _localizer[LocalizationKeys.ActionResultMessage.Created.Value].Value;
             }
             catch (Exception ex) when (ex is ValidationException or BadRequestException)
             {
@@ -577,7 +583,7 @@ namespace DAKKN.MVC.Controllers
             try
             {
                 await _mediator.Send(new DeleteFAQCategoryCommand(id));
-                TempData["SuccessMessage"] = _localizer[LocalizationKeys.Support.Dashboard.Value].Value;
+                TempData["SuccessMessage"] = _localizer[LocalizationKeys.ActionResultMessage.Deleted.Value].Value;
             }
             catch (Exception ex) when (ex is ValidationException or BadRequestException or NotFoundException)
             {

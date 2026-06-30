@@ -1,1 +1,1 @@
-I have enough information. The task involves major work across multiple files. Let me define and launch a worker subagent to implement all the changes:
+in customer dashboard support page sync changes affected that update in support management from admin

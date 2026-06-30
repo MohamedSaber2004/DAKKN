@@ -59,10 +59,10 @@
                 <form asp-action="UpdatePriority" asp-route-id="@Model.Id" method="post" class="px-4 pb-2">
                     @Html.AntiForgeryToken()
                     <select name="newPriority" onchange="this.form.submit()" class="w-full bg-admin-input dark:bg-[#1E293B] border border-admin-border dark:border-white/10 rounded-lg px-2 py-1 text-sm outline-none dark:text-white">
-                        <option value="low" class="dark:bg-[#1E293B] dark:text-white" selected="@(Model.Priority == "low")">@Localizer["supp_priority_low"]</option>
-                        <option value="medium" class="dark:bg-[#1E293B] dark:text-white" selected="@(Model.Priority == "medium")">@Localizer["supp_priority_medium"]</option>
-                        <option value="high" class="dark:bg-[#1E293B] dark:text-white" selected="@(Model.Priority == "high")">@Localizer["supp_priority_high"]</option>
-                        <option value="urgent" class="dark:bg-[#1E293B] dark:text-white" selected="@(Model.Priority == "urgent")">@Localizer["supp_priority_urgent"]</option>
+                        <option value="Low" class="dark:bg-[#1E293B] dark:text-white" selected="@(Model.Priority == "Low")">@Localizer["supp_priority_low"]</option>
+                        <option value="Medium" class="dark:bg-[#1E293B] dark:text-white" selected="@(Model.Priority == "Medium")">@Localizer["supp_priority_medium"]</option>
+                        <option value="High" class="dark:bg-[#1E293B] dark:text-white" selected="@(Model.Priority == "High")">@Localizer["supp_priority_high"]</option>
+                        <option value="Urgent" class="dark:bg-[#1E293B] dark:text-white" selected="@(Model.Priority == "Urgent")">@Localizer["supp_priority_urgent"]</option>
                     </select>
                 </form>
             </div>
@@ -76,6 +76,31 @@
         <div class="bg-admin-card dark:bg-[#1E293B] rounded-2xl border border-admin-border dark:border-white/10 shadow-sm overflow-hidden flex flex-col transition-colors">
             <!-- Messages -->
             <div class="flex-1 overflow-y-auto p-lg flex flex-col gap-lg bg-background/30 dark:bg-dark-page/10 custom-scrollbar max-h-[480px]">
+                @* Original ticket message *@
+                <div class="flex gap-md">
+                    <div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center shrink-0 shadow-sm text-primary font-bold">
+                        @(Model.CustomerName?.Length > 0 ? Model.CustomerName[0] : '?')
+                    </div>
+                    <div class="bg-surface dark:bg-surface-container-high p-md rounded-2xl ltr:rounded-tl-none rtl:rounded-tr-none shadow-sm border border-border dark:border-outline/20 max-w-[80%] transition-colors">
+                        <div class="flex justify-between items-baseline mb-sm">
+                            <span class="font-body-lg text-body-lg font-bold text-text-primary dark:text-inverse-on-surface">@Model.CustomerName</span>
+                            <span class="font-caption text-caption text-text-secondary dark:text-outline">@Model.CreatedAt.ToLocalTime().ToString("MMM dd, HH:mm")</span>
+                        </div>
+                        <p class="font-body text-body text-text-primary dark:text-inverse-on-surface leading-relaxed whitespace-pre-wrap">@Model.Message</p>
+                        @if (Model.Attachments != null && Model.Attachments.Any())
+                        {
+                            <div class="mt-sm flex flex-wrap gap-2">
+                                @foreach (var att in Model.Attachments)
+                                {
+                                    <a href="@att.Url" target="_blank" class="inline-flex items-center gap-1 px-3 py-1 bg-surface-container-low dark:bg-surface-container-high rounded-lg text-caption text-primary hover:underline">
+                                        <span class="material-symbols-outlined text-sm">attach_file</span>
+                                        @att.OriginalFileName
+                                    </a>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
                 @if (Model.Replies != null && Model.Replies.Any())
                 {
                     @foreach (var msg in Model.Replies)
@@ -98,7 +123,7 @@
                                         {
                                             <a href="@att.Url" target="_blank" class="inline-flex items-center gap-1 px-3 py-1 bg-surface-container-low dark:bg-surface-container-high rounded-lg text-caption text-primary hover:underline">
                                                 <span class="material-symbols-outlined text-sm">attach_file</span>
-                                                @att.FileName
+                                                @att.OriginalFileName
                                             </a>
                                         }
                                     </div>
@@ -106,13 +131,6 @@
                             </div>
                         </div>
                     }
-                }
-                else
-                {
-                    <div class="flex flex-col items-center justify-center py-12 text-admin-secondary dark:text-slate-400">
-                        <span class="material-symbols-outlined text-5xl mb-3">chat_bubble_outline</span>
-                        <p class="font-bold">@Localizer["supp_no_messages"]</p>
-                    </div>
                 }
             </div>
 

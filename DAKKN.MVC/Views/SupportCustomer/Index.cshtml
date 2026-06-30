@@ -1,4 +1,4 @@
-﻿@using DAKKN.Application.Features.Support.DTOs
+@using DAKKN.Application.Features.Support.DTOs
 @using DAKKN.Application.Common.Models
 @using DAKKN.Application.Localization
 @model PagginatedResult<SupportTicketDto>
@@ -6,7 +6,7 @@
 @{
     Layout = "_LayoutCustomer";
     ViewData["Title"] = Localizer["supp_dashboard_title"];
-    var statuses = new[] { "", "Open", "InProgress", "Resolved", "Closed" };
+    var statuses = new[] { "", "Open", "InProgress", "WaitingCustomer", "WaitingStaff", "Resolved", "Closed" };
     var currentStatus = Context.Request.Query["status"].FirstOrDefault();
     var currentSearch = Context.Request.Query["search"].FirstOrDefault();
     var isAr = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("ar");
@@ -166,3 +166,70 @@
         }
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        (function() {
+            const pageNumber = @Model.PageNumber;
+            const status = '@Html.Raw(currentStatus)';
+            const search = '@Html.Raw(currentSearch)';
+            
+            // Map of current tickets and their state to check for changes
+            const currentTickets = [
+                @foreach (var ticket in Model.Items)
+                {
+                    <text>{ id: "@ticket.Id", status: "@ticket.Status", replyCount: @ticket.ReplyCount },</text>
+                }
+            ];
+
+            async function checkUpdates() {
+                try {
+                    const params = new URLSearchParams({
+                        pageNumber: pageNumber,
+                        pageSize: 10
+                    });
+                    if (status) params.append('status', status);
+                    if (search) params.append('search', search);
+
+                    const response = await fetch('/api/v1/support/tickets/my?' + params.toString());
+                    if (!response.ok) return;
+                    
+                    const result = await response.json();
+                    if (!result || !result.success || !result.data) return;
+
+                    const data = result.data;
+                    const newTickets = data.items || [];
+
+                    let hasChanges = false;
+
+                    if (newTickets.length !== currentTickets.length) {
+                        hasChanges = true;
+                    } else {
+                        for (let i = 0; i < currentTickets.length; i++) {
+                            const cur = currentTickets[i];
+                            const nxt = newTickets[i];
+                            if (!nxt || cur.id !== nxt.id || cur.status !== nxt.status || cur.replyCount !== nxt.replyCount) {
+                                hasChanges = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (hasChanges) {
+                        // Check if user is focusing or typing in the search box
+                        const searchInput = document.querySelector('input[name="search"]');
+                        const isTyping = searchInput && document.activeElement === searchInput;
+                        if (!isTyping) {
+                            location.reload();
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error checking support dashboard updates:', e);
+                }
+            }
+
+            setInterval(checkUpdates, 5000);
+        })();
+    </script>
+}
+
