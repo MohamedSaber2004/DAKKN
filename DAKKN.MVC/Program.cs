@@ -60,6 +60,9 @@ namespace DAKKN.MVC
 
             Log.Information("DAKKN App is starting up at {Time}", DateTime.Now);
 
+            // Preemptively configure thread pool for high concurrency
+            ThreadPool.SetMinThreads(200, 200);
+
             builder.Host.UseSerilog();
 
             builder.Services.AddHttpContextAccessor();
@@ -194,7 +197,9 @@ namespace DAKKN.MVC
                 options.HeaderName = "X-CSRF-TOKEN";
                 options.Cookie.Name = ".DAKKN.Antiforgery";
                 options.Cookie.HttpOnly = true;
-                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
+                    ? CookieSecurePolicy.SameAsRequest
+                    : CookieSecurePolicy.Always;
                 options.Cookie.SameSite = SameSiteMode.Strict;
             });
 
@@ -457,7 +462,7 @@ namespace DAKKN.MVC
 
             app.UseRequestLocalization(localizationOptions);
 
-            //app.UseOutputCache();
+            app.UseOutputCache();
 
             app.UseAuthorization();
 

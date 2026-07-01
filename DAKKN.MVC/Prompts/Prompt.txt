@@ -1,16 +1,2 @@
-Verify domain ownership via DNS record
-dakkn.runasp.net
-1
-Select record type:
-Learn more
-2
-Sign in to your domain name provider (e.g. godaddy.com or namecheap.com)
-3
-Copy the TXT record below into the DNS configuration for dakkn.runasp.net
-google-site-verification=KExNmmPDKOUIfyg_MDdUD5w0J3o8K2lRmYdiS2M9Pts
-4
-Press verify below
-Note: DNS changes may take some time to apply. If Search Console doesn’t find the record immediately, wait a day and then try to verify againLearn more
-
-Can’t verify via Domain name provider?
-For more verification methods, try a URL prefix property instead
+"C:\Program Files\k6\k6.exe" run -e TARGET_URL=http://localhost:5218 --stage 5s:1000,5s:5000,15s:5000,5s:0 E:\DAKKN\DAKKN.Tests\Tests\Performance\k6-
+  load-test.js > E:\DAKKN\DAKKN.Tests\Tests\Performance\load_test_results.txt
