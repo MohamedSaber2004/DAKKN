@@ -1,27 +1,5 @@
-﻿ ### 🔴 Critical — Fix Now
-
-   # │ Issue                                                                                                │ File
-  ───┼──────────────────────────────────────────────────────────────────────────────────────────────────────┼───────────────────────────────────────────────────
-   1 │ Secrets committed (SMTP password, JWT secret, Google OAuth) in both  appsettings.Development.json    │ Rotate immediately, move to hosting env vars
-     │ and  appsettings.Production.json                                                                     │
-   2 │ 7×  Console.WriteLine  in production code                                                            │ JsonLocalizationProvider.cs
-   3 │  upload-test.html  sitting in  wwwroot/                                                              │ upload-test.html — delete it
-   4 │ No  AddResponseCompression()                                                                         │ Huge miss on shared hosting — add to  Program.cs
-   5 │ No health checks ( /health  endpoint)                                                                │  AddHealthChecks()  not configured at all
-   6 │ No Serilog config in Production                                                                      │ Logs will be silently lost in production
-   7 │  UseOutputCache()  commented out                                                                     │ Program.cs
-
-  ### 🟡 Important — Should Fix
-
-  • No  robots.txt  /  sitemap.xml  / Open Graph meta tags (SEO)
-  • No  Permissions-Policy  header
-  • Product/category seeders run unconditionally — add a production env guard
-  • No CSS/JS minification pipeline
-
-  ### ✅ Already Done Well
-
-  HTTPS, HSTS, CSP, rate limiting,  [RoleAuthorize] , CQRS pipeline, dual auth, FluentValidation, soft-delete, image validation, localization, lazy loading,
-  anti-forgery — all solid.
-  ──────
-  Would you like me to start implementing any of these fixes? I'd suggest starting with items 2, 3, 4, 5, and 6 since those are pure code changes I can make
-  right now.
+﻿Ownership verification failed
+Verification method:
+Domain name provider
+Failure reason:
+We couldn't find your verification token in your domain's TXT records. Sometimes DNS changes can take a while to appear. Please wait a few hours, then reopen your property in Search Console. If verification fails again, try adding a different DNS TXT record.
