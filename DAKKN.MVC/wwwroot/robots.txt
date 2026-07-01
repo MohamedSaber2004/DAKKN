@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+Allow: /shop
+Allow: /home
+Allow: /about
+Allow: /privacy
+Allow: /terms
+
+# Block private/admin areas from crawlers
+Disallow: /admin
+Disallow: /customer
+Disallow: /auth
+Disallow: /api/
+Disallow: /health
+Disallow: /files/uploads/users/
+
+Sitemap: https://dakkn.runasp.net/sitemap.xml

@@ -12,15 +12,20 @@ using DAKKN.MVC.Services;
 using DAKKN.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Localization;
 using Serilog;
+using System.Net.Mime;
 using System.Reflection;
+using System.Text.Json;
 using System.Threading.RateLimiting;
 
 namespace DAKKN.MVC
@@ -74,6 +79,36 @@ namespace DAKKN.MVC
             builder.Services.AddApplication(builder.Configuration);
             builder.Services.AddPersistence(builder.Configuration);
             builder.Services.AddInfrastructure(builder.Configuration, builder.Environment);
+
+            // Response Compression — serves Brotli/Gzip-compressed responses to clients that support them.
+            builder.Services.AddResponseCompression(options =>
+            {
+                options.EnableForHttps = true;
+                options.Providers.Add<BrotliCompressionProvider>();
+                options.Providers.Add<GzipCompressionProvider>();
+                options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
+                {
+                    "application/json",
+                    "application/javascript",
+                    "text/css",
+                    "text/html",
+                    "text/plain",
+                    "image/svg+xml"
+                });
+            });
+            builder.Services.Configure<BrotliCompressionProviderOptions>(options =>
+                options.Level = System.IO.Compression.CompressionLevel.Fastest);
+            builder.Services.Configure<GzipCompressionProviderOptions>(options =>
+                options.Level = System.IO.Compression.CompressionLevel.SmallestSize);
+
+            // Health Checks — monitors DB connectivity and overall liveness.
+            var connectionString = builder.Configuration.GetConnectionString("DakknConnection") ?? string.Empty;
+            builder.Services.AddHealthChecks()
+                .AddSqlServer(
+                    connectionString: connectionString,
+                    name: "sqlserver",
+                    failureStatus: HealthStatus.Unhealthy,
+                    tags: new[] { "db", "sql", "ready" });
 
             builder.Services.AddAuthentication(options =>
             {
@@ -217,7 +252,8 @@ namespace DAKKN.MVC
 
             var app = builder.Build();
 
-            // Seed Data
+            // Seed Data — only run full seeds in Development / Test environments.
+            // In Production/Live only essential data (roles + admin account) is seeded.
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
@@ -227,10 +263,13 @@ namespace DAKKN.MVC
                     var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
                     await DAKKNDbContextSeed.SeedAsync(userManager, roleManager);
 
-                    var context = services.GetRequiredService<DAKKNDbContext>();
-                    await DAKKNDbContextSeed.SeedGovernoratesAsync(context);
-                    await DAKKNDbContextSeed.SeedCategoriesAndProductsAsync(context);
-                    await DAKKNDbContextSeed.SeedSupportDataAsync(context);
+                    if (env.IsDevelopment() || env.EnvironmentName == "Test")
+                    {
+                        var context = services.GetRequiredService<DAKKNDbContext>();
+                        await DAKKNDbContextSeed.SeedGovernoratesAsync(context);
+                        await DAKKNDbContextSeed.SeedCategoriesAndProductsAsync(context);
+                        await DAKKNDbContextSeed.SeedSupportDataAsync(context);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -258,12 +297,22 @@ namespace DAKKN.MVC
                 );
             }
 
+            app.UseResponseCompression();
+
             app.UseHttpsRedirection();
 
             app.UseXContentTypeOptions();
             app.UseXfo(xfo => xfo.Deny());
             app.UseXXssProtection(options => options.EnabledWithBlockMode());
             app.UseReferrerPolicy(opts => opts.NoReferrer());
+
+            // Permissions-Policy: restrict access to sensitive browser APIs
+            app.Use(async (context, next) =>
+            {
+                context.Response.Headers["Permissions-Policy"] =
+                    "camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()";
+                await next();
+            });
 
             app.UseStaticFiles();
 
@@ -411,6 +460,56 @@ namespace DAKKN.MVC
             app.UseAuthorization();
 
             app.MapControllers();
+
+            // Health check endpoints
+            app.MapHealthChecks("/health", new HealthCheckOptions
+            {
+                ResponseWriter = async (context, report) =>
+                {
+                    context.Response.ContentType = MediaTypeNames.Application.Json;
+                    var result = JsonSerializer.Serialize(new
+                    {
+                        status = report.Status.ToString(),
+                        checks = report.Entries.Select(e => new
+                        {
+                            name = e.Key,
+                            status = e.Value.Status.ToString(),
+                            duration = e.Value.Duration.TotalMilliseconds
+                        })
+                    });
+                    await context.Response.WriteAsync(result);
+                }
+            }).AllowAnonymous();
+
+            app.MapHealthChecks("/health/live", new HealthCheckOptions
+            {
+                Predicate = _ => false, // only liveness — no dependency checks
+                ResponseWriter = async (context, report) =>
+                {
+                    context.Response.ContentType = MediaTypeNames.Application.Json;
+                    await context.Response.WriteAsync(JsonSerializer.Serialize(new { status = report.Status.ToString() }));
+                }
+            }).AllowAnonymous();
+
+            app.MapHealthChecks("/health/ready", new HealthCheckOptions
+            {
+                Predicate = check => check.Tags.Contains("ready"),
+                ResponseWriter = async (context, report) =>
+                {
+                    context.Response.ContentType = MediaTypeNames.Application.Json;
+                    var result = JsonSerializer.Serialize(new
+                    {
+                        status = report.Status.ToString(),
+                        checks = report.Entries.Select(e => new
+                        {
+                            name = e.Key,
+                            status = e.Value.Status.ToString(),
+                            duration = e.Value.Duration.TotalMilliseconds
+                        })
+                    });
+                    await context.Response.WriteAsync(result);
+                }
+            }).AllowAnonymous();
 
             app.MapControllerRoute(
                 name: "default",

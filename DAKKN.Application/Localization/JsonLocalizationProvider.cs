@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+using System.Diagnostics;
+using System.Globalization;
 using System.Text.Json;
 
 namespace DAKKN.Application.Localization
@@ -39,13 +40,13 @@ namespace DAKKN.Application.Localization
 
             if (resourcePath == null)
             {
-                Console.WriteLine("Warning: Localization resource directory not found in any expected location.");
-                Console.WriteLine("Paths tried:");
-                foreach (var path in possiblePaths) Console.WriteLine($" - {path}");
+                Debug.WriteLine("Warning: Localization resource directory not found in any expected location.");
+                Debug.WriteLine("Paths tried:");
+                foreach (var path in possiblePaths) Debug.WriteLine($" - {path}");
                 return;
             }
 
-            Console.WriteLine($"Loading localization resources from: {resourcePath}");
+            Debug.WriteLine($"Loading localization resources from: {resourcePath}");
 
             var cultures = new[] { "en", "ar" };
 
@@ -63,16 +64,16 @@ namespace DAKKN.Application.Localization
                         FlattenJson(doc.RootElement, "", cultureData);
 
                         _localizations[culture] = cultureData;
-                        Console.WriteLine($"Successfully loaded {cultureData.Count} keys for culture: {culture}");
+                        Debug.WriteLine($"Successfully loaded {cultureData.Count} keys for culture: {culture}");
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Error loading localization file {filePath}: {ex.Message}");
+                        Debug.WriteLine($"Error loading localization file {filePath}: {ex.Message}");
                     }
                 }
                 else
                 {
-                    Console.WriteLine($"Warning: Localization file not found: {filePath}");
+                    Debug.WriteLine($"Warning: Localization file not found: {filePath}");
                 }
             }
         }

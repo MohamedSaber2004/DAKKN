@@ -9,10 +9,35 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"]</title>
-    <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico" asp-append-version="true" />
     @* <link rel="icon" type="image/png" sizes="32x32" href="~/favicon.png" />
     <link rel="apple-touch-icon" href="~/images/logo.png" /> *@
     <meta name="description" content="@(ViewData["Description"] ?? Localizer["hero_p"])" />
+
+    @{
+        var ogTitle = ViewData["Title"]?.ToString() ?? "DAKKN — ملصقات فينيل عالية الجودة";
+        var ogDesc  = ViewData["Description"]?.ToString() ?? Localizer["hero_p"].ToString();
+        var ogImage = ViewData["OgImage"]?.ToString() ?? $"{Context.Request.Scheme}://{Context.Request.Host}/images/og-banner.png";
+        var ogUrl   = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}";
+    }
+
+    <!-- Open Graph -->
+    <meta property="og:type"        content="website" />
+    <meta property="og:url"         content="@ogUrl" />
+    <meta property="og:title"       content="@ogTitle" />
+    <meta property="og:description" content="@ogDesc" />
+    <meta property="og:image"       content="@ogImage" />
+    <meta property="og:site_name"   content="DAKKN" />
+    <meta property="og:locale"      content="@(culture == "ar" ? "ar_SA" : "en_US")" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:title"       content="@ogTitle" />
+    <meta name="twitter:description" content="@ogDesc" />
+    <meta name="twitter:image"       content="@ogImage" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="@ogUrl" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -109,7 +134,7 @@
 
     <!-- Preloader Overlay -->
     <div id="dakkn-preloader">
-        <img src="~/images/logo.png" alt="DAKKN" class="preloader-logo" />
+        <img src="~/images/logo.png" alt="DAKKN" class="preloader-logo" asp-append-version="true" />
         <div class="preloader-spinner"></div>
     </div>
 

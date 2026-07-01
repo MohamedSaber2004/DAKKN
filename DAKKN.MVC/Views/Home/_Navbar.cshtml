@@ -8,7 +8,7 @@
 <header id="navbar" class="fixed top-0 left-0 right-0 z-50 h-16 md:h-[72px] navbar-animate transition-all duration-300">
     <div class="max-w-7xl mx-auto px-3 sm:px-4 h-full flex items-center justify-between gap-2 sm:gap-4">
         <a asp-controller="Home" asp-action="Index" class="flex-shrink-0 logo-glow" aria-label="@Localizer["logo_alt"]">
-            <img src="~/images/logo.png" alt='@Localizer["logo_alt"]' class="h-8 sm:h-10 md:h-12" />
+            <img src="~/images/logo.png" alt='@Localizer["logo_alt"]' class="h-8 sm:h-10 md:h-12" asp-append-version="true" />
         </a>
         <nav class="hidden lg:flex items-center gap-1" role="navigation" aria-label="@Localizer["aria_main_nav"]">
             <a href="#hero" class="nav-link-premium" data-section="hero">@Localizer["nav_home"]</a>
@@ -62,7 +62,7 @@
     <div id="drawer-panel" class="absolute top-0 end-0 h-full w-72 max-w-[85vw] bg-white dark:bg-[#1E293B] shadow-2xl border-s border-outline-variant/20 dark:border-white/10 overflow-y-auto">
         <div class="p-6">
             <div class="flex items-center justify-between mb-8">
-                <img src="~/images/logo.png" alt='@Localizer["logo_alt"]' class="h-9" />
+                <img src="~/images/logo.png" alt='@Localizer["logo_alt"]' class="h-9" asp-append-version="true" />
                 <button id="drawer-close" class="w-9 h-9 rounded-full bg-surface-container-high dark:bg-slate-800 flex items-center justify-center hover:bg-primary/10 transition-colors" aria-label="@Localizer["aria_close_menu"]">
                     <span class="material-symbols-outlined text-lg">close</span>
                 </button>

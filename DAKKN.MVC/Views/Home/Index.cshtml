@@ -53,7 +53,7 @@
 <nav class="fixed top-0 w-full z-50 flex justify-between items-center px-4 md:px-16 h-16 md:h-20 bg-surface/75 dark:bg-dark-overlay/85 backdrop-blur-md border-b border-outline-variant/10 dark:border-white/5 shadow-sm navbar-animate">
     <div class="flex items-center gap-4 md:gap-6">
         <a href="#hero" class="logo-glow cursor-pointer" data-section="hero">
-            <img src="~/images/logo.png" alt='@Localizer["logo_alt"]' class="h-16 md:h-18" />
+            <img src="~/images/logo.png" alt='@Localizer["logo_alt"]' class="h-16 md:h-18" asp-append-version="true" />
         </a>
         <!-- Desktop nav links with icons -->
         <div class="hidden lg:flex items-center gap-1">
@@ -830,7 +830,7 @@
         <!-- Logo & Copyright (Right on RTL, Left on LTR) -->
         <div class="flex flex-col items-center md:items-end order-1 md:order-3">
             <div class="flex items-center gap-2.5 mb-1">
-                <img src="~/images/logo.png" alt='@Localizer["logo_alt"]' class="h-14 md:h-16" />
+                <img src="~/images/logo.png" alt='@Localizer["logo_alt"]' class="h-14 md:h-16" asp-append-version="true" />
             </div>
             <p class="text-[11px] font-medium text-cyan-100/70">@Localizer["footer_copy"]</p>
         </div>

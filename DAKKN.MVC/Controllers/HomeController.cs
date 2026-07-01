@@ -191,5 +191,38 @@ namespace DAKKN.MVC.Controllers
                 StatusCode = code
             });
         }
+
+        [ResponseCache(Duration = 86400, Location = ResponseCacheLocation.Any)]
+        [Route("sitemap.xml")]
+        public IActionResult Sitemap()
+        {
+            var baseUrl = $"{Request.Scheme}://{Request.Host}";
+            var lastModified = DateTime.UtcNow.ToString("yyyy-MM-dd");
+
+            var urls = new[]
+            {
+                new { loc = $"{baseUrl}/",       priority = "1.0", changefreq = "weekly"  },
+                new { loc = $"{baseUrl}/shop",    priority = "0.9", changefreq = "daily"   },
+                new { loc = $"{baseUrl}/about",   priority = "0.7", changefreq = "monthly" },
+                new { loc = $"{baseUrl}/privacy", priority = "0.4", changefreq = "yearly"  },
+                new { loc = $"{baseUrl}/terms",   priority = "0.4", changefreq = "yearly"  },
+            };
+
+            var xml = new System.Text.StringBuilder();
+            xml.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+            xml.AppendLine("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
+            foreach (var url in urls)
+            {
+                xml.AppendLine("  <url>");
+                xml.AppendLine($"    <loc>{url.loc}</loc>");
+                xml.AppendLine($"    <lastmod>{lastModified}</lastmod>");
+                xml.AppendLine($"    <changefreq>{url.changefreq}</changefreq>");
+                xml.AppendLine($"    <priority>{url.priority}</priority>");
+                xml.AppendLine("  </url>");
+            }
+            xml.AppendLine("</urlset>");
+
+            return Content(xml.ToString(), "application/xml", System.Text.Encoding.UTF8);
+        }
     }
 }
