@@ -122,7 +122,7 @@ namespace DAKKN.Infrastructure.Services
             await SendEmailAsync(adminEmail, adminName, subj, body, ct);
         }
 
-        private async Task SendEmailAsync(string toEmail, string fullName, string subject, string body, CancellationToken ct)
+        public virtual async Task SendEmailAsync(string toEmail, string fullName, string subject, string body, CancellationToken ct)
         {
             var email = new MimeMessage();
             email.From.Add(new MailboxAddress(_settings.Name, _settings.Email));

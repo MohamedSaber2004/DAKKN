@@ -12,6 +12,7 @@ using DAKKN.Application.Features.Auth.DTOs;
 using DAKKN.Application.Localization;
 using DAKKN.Domain.Entities;
 using DAKKN.MVC.Mock;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Localization;
 using DAKKN.MVC.ViewModels.Auth;
 using MediatR;
@@ -25,6 +26,7 @@ using System.Security.Claims;
 
 namespace DAKKN.MVC.Controllers
 {
+    [AllowAnonymous]
     [Route("auth")]
     [EnableRateLimiting("auth")]
     public class AuthController : Controller
@@ -64,6 +66,7 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpPost("login")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login([FromForm] LoginViewModel vm)
         {
             ViewData["GoogleClientId"] = _googleAuthSettings?.WebClientId;
@@ -111,6 +114,7 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpPost("check-google-account")]
+        [IgnoreAntiforgeryToken]
         public async Task<IActionResult> CheckGoogleAccount([FromBody] string idToken)
         {
             try
@@ -129,6 +133,7 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpPost("login-google")]
+        [IgnoreAntiforgeryToken]
         public async Task<IActionResult> LoginWithGoogle([FromBody] GoogleLoginRequest request, string? returnUrl = null)
         {
             try
@@ -180,6 +185,7 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpPost("register")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register([FromForm] RegisterViewModel vm)
         {
             ViewData["GoogleClientId"] = _googleAuthSettings?.WebClientId;
@@ -225,6 +231,7 @@ namespace DAKKN.MVC.Controllers
         // ──────────────────────────────────────────────
 
         [HttpPost("refresh-token")]
+        [IgnoreAntiforgeryToken]
         public async Task<IActionResult> RefreshToken(string token)
         {
             try
@@ -270,6 +277,7 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpPost("otp")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Otp(OtpViewModel vm)
         {
             if (!ModelState.IsValid) return View(vm);
@@ -326,6 +334,7 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpPost("resend-otp")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResendOtp(string email, string purpose)
         {
             TempData["OtpEmail"]   = email;
@@ -361,6 +370,7 @@ namespace DAKKN.MVC.Controllers
         public IActionResult ForgotPassword() => View(new ForgotPasswordViewModel());
 
         [HttpPost("forgot-password")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel vm)
         {
             if (!ModelState.IsValid) return View(vm);
@@ -417,6 +427,7 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpPost("reset-password")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ResetPassword(ResetPasswordViewModel vm)
         {
             if (!ModelState.IsValid) return View(vm);
@@ -454,6 +465,7 @@ namespace DAKKN.MVC.Controllers
         // ──────────────────────────────────────────────
 
         [HttpPost("logout")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout([FromForm] string? refreshToken)
         {
             if (!string.IsNullOrEmpty(refreshToken))

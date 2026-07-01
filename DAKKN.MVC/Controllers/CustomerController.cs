@@ -533,6 +533,7 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpPost("brand-reviews/delete/{id}")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteBrandReview(Guid id)
         {
             var userId = GetUserId();

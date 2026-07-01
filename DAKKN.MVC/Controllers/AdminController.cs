@@ -396,6 +396,7 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpPost("content/update")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateContent()
         {
             using var reader = new StreamReader(Request.Body);
@@ -449,6 +450,7 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpPost("brand-reviews/toggle-display/{id}")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ToggleDisplayBrandReview(Guid id, string? returnUrl)
         {
             try
@@ -463,6 +465,7 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpPost("brand-reviews/approve/{id}")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> ApproveBrandReview(Guid id, string? returnUrl)
         {
             try
@@ -478,6 +481,7 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpPost("brand-reviews/reject/{id}")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> RejectBrandReview(Guid id, string? returnUrl)
         {
             try
@@ -492,6 +496,7 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpPost("brand-reviews/delete/{id}")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteBrandReview(Guid id, string? returnUrl)
         {
             var userId = GetUserId();
@@ -500,6 +505,7 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpPost("brand-reviews/update-display-order/{id}")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateDisplayOrderBrandReview(Guid id, [FromForm] UpdateDisplayOrderBrandReviewCommand command)
         {
             try
@@ -590,6 +596,7 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpPost("settings")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Settings(AdminSettingsViewModel model, int globalDangerQuantity = 10)
         {
             if (!ModelState.IsValid)

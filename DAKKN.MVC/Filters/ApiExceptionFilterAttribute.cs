@@ -25,6 +25,7 @@ namespace DAKKN.Appearence.Filters
                 { typeof(BadRequestException), HandleBadRequestException },
                 { typeof(UnAuthorizedException), HandleUnauthorizedException },
                 { typeof(DbUpdateConcurrencyException), HandleDbUpdateConcurrencyException },
+
             };
             _logger = logger;
             _localizer = localizer;

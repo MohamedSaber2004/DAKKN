@@ -16,15 +16,28 @@ namespace DAKKN.Application.Features.Dashboard.Queries.GetDashboardInventoryStat
 
         public async Task<DashboardInventoryStatsDto> Handle(GetDashboardInventoryStatsQuery request, CancellationToken cancellationToken)
         {
-            var products = await _context.Products
-                .Where(p => !p.IsDeleted)
-                .ToListAsync(cancellationToken);
+            var baseQuery = _context.Products.Where(p => !p.IsDeleted);
+
+            var stats = await baseQuery
+                .GroupBy(p => 1)
+                .Select(g => new
+                {
+                    TotalProducts = g.Count(),
+                    LowStockCount = g.Count(p => p.QuantityInStock > 0 && p.QuantityInStock <= p.DangerQuantity),
+                    OutOfStockCount = g.Count(p => p.QuantityInStock == 0)
+                })
+                .FirstOrDefaultAsync(cancellationToken);
+
+            if (stats is null)
+            {
+                return new DashboardInventoryStatsDto();
+            }
 
             return new DashboardInventoryStatsDto
             {
-                TotalProducts = products.Count,
-                LowStockCount = products.Count(p => p.QuantityInStock > 0 && p.QuantityInStock <= p.DangerQuantity),
-                OutOfStockCount = products.Count(p => p.QuantityInStock == 0)
+                TotalProducts = stats.TotalProducts,
+                LowStockCount = stats.LowStockCount,
+                OutOfStockCount = stats.OutOfStockCount
             };
         }
     }

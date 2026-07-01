@@ -11,9 +11,12 @@ using DAKKN.Infrastructure;
 using DAKKN.MVC.Services;
 using DAKKN.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Localization;
 using Serilog;
@@ -127,13 +130,19 @@ namespace DAKKN.MVC
                 options.KnownProxies.Clear();
             });
 
+            var allowedOrigins = builder.Configuration.GetSection("CorsSettings:AllowedOrigins")
+                .Get<string[]>() ?? Array.Empty<string>();
+
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("CQRS", policy =>
                 {
-                    policy.AllowAnyOrigin()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader();
+                    if (allowedOrigins.Length > 0)
+                        policy.WithOrigins(allowedOrigins)
+                              .AllowAnyMethod()
+                              .AllowAnyHeader();
+                    else
+                        policy.SetIsOriginAllowed(_ => false);
                 });
             });
 
@@ -145,9 +154,21 @@ namespace DAKKN.MVC
                 options.ReportApiVersions = true;
             }).AddMvc();
 
+            builder.Services.AddAntiforgery(options =>
+            {
+                options.HeaderName = "X-CSRF-TOKEN";
+                options.Cookie.Name = ".DAKKN.Antiforgery";
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SameSite = SameSiteMode.Strict;
+            });
+
             builder.Services.AddControllersWithViews(options =>
             {
                 options.Filters.Add<ApiExceptionFilterAttribute>();
+                options.Filters.Add(new AuthorizeFilter(new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build()));
                 options.MaxModelValidationErrors = 50;
             })
             .AddViewLocalization()
@@ -182,8 +203,8 @@ namespace DAKKN.MVC
                 var authPermitLimit = authSettings.GetValue<int>("PermitLimit");
                 var authWindowSeconds = authSettings.GetValue<int>("WindowSeconds");
 
-                if (authPermitLimit <= 0) authPermitLimit = 10;
-                if (authWindowSeconds <= 0) authWindowSeconds = 60;
+                if (authPermitLimit <= 0) authPermitLimit = 5;
+                if (authWindowSeconds <= 0) authWindowSeconds = 120;
 
                 options.AddFixedWindowLimiter(policyName: "auth", options =>
                 {
@@ -378,8 +399,6 @@ namespace DAKKN.MVC
             app.UseRouting();
 
             app.UseSession();
-
-            app.UseCors("CQRS");
 
             app.UseRateLimiter();
 

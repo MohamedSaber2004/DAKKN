@@ -2,6 +2,7 @@
 using DAKKN.Application.Common.Models;
 using DAKKN.Application.Localization;
 using MediatR;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 
@@ -9,6 +10,8 @@ namespace DAKKN.Appearence.Controllers.APIs
 {
 
     [ApiController]
+    [EnableCors("CQRS")]
+    [IgnoreAntiforgeryToken]
     public class BaseApiController : Controller
     {
         protected readonly IMediator _mediator;

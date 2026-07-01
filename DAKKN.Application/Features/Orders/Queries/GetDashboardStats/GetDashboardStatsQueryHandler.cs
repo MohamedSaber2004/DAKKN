@@ -28,23 +28,22 @@ namespace DAKKN.Application.Features.Orders.Queries.GetDashboardStats
 
             var baseQuery = orderRepo.GetAllAsync(null).AsNoTracking().Where(o => !o.IsDeleted);
 
-            var ordersToday = await baseQuery.CountAsync(o => o.CreatedAt >= startOfToday, cancellationToken);
-            var ordersLast24 = await baseQuery.CountAsync(o => o.CreatedAt >= startOf24HoursAgo, cancellationToken);
-
-            var revenueToday = await baseQuery
-                .Where(o => o.CreatedAt >= startOfToday && o.Status == OrderStatus.Delivered)
-                .SumAsync(o => o.TotalAmount, cancellationToken);
-
-            var revenueLast24 = await baseQuery
-                .Where(o => o.CreatedAt >= startOf24HoursAgo && o.Status == OrderStatus.Delivered)
-                .SumAsync(o => o.TotalAmount, cancellationToken);
-
-            var pendingOrders = await baseQuery.CountAsync(o => o.Status == OrderStatus.Pending, cancellationToken);
-            var confirmedOrders = await baseQuery.CountAsync(o => o.Status == OrderStatus.Confirmed, cancellationToken);
-            var processingOrders = await baseQuery.CountAsync(o => o.Status == OrderStatus.Processing, cancellationToken);
-            var shippedOrders = await baseQuery.CountAsync(o => o.Status == OrderStatus.Shipped, cancellationToken);
-            var deliveredOrders = await baseQuery.CountAsync(o => o.Status == OrderStatus.Delivered, cancellationToken);
-            var cancelledOrders = await baseQuery.CountAsync(o => o.Status == OrderStatus.Cancelled, cancellationToken);
+            var orderStats = await baseQuery
+                .GroupBy(o => 1)
+                .Select(g => new
+                {
+                    OrdersToday = g.Count(o => o.CreatedAt >= startOfToday),
+                    OrdersLast24 = g.Count(o => o.CreatedAt >= startOf24HoursAgo),
+                    RevenueToday = g.Where(o => o.CreatedAt >= startOfToday && o.Status == OrderStatus.Delivered).Sum(o => o.TotalAmount),
+                    RevenueLast24 = g.Where(o => o.CreatedAt >= startOf24HoursAgo && o.Status == OrderStatus.Delivered).Sum(o => o.TotalAmount),
+                    PendingOrders = g.Count(o => o.Status == OrderStatus.Pending),
+                    ConfirmedOrders = g.Count(o => o.Status == OrderStatus.Confirmed),
+                    ProcessingOrders = g.Count(o => o.Status == OrderStatus.Processing),
+                    ShippedOrders = g.Count(o => o.Status == OrderStatus.Shipped),
+                    DeliveredOrders = g.Count(o => o.Status == OrderStatus.Delivered),
+                    CancelledOrders = g.Count(o => o.Status == OrderStatus.Cancelled)
+                })
+                .FirstOrDefaultAsync(cancellationToken);
 
             var totalProducts = await productRepo.GetAllAsync(null).AsNoTracking()
                 .CountAsync(p => !p.IsDeleted, cancellationToken);
@@ -53,16 +52,16 @@ namespace DAKKN.Application.Features.Orders.Queries.GetDashboardStats
 
             return new DashboardStatsDto
             {
-                OrdersToday = ordersToday,
-                OrdersLast24Hours = ordersLast24,
-                RevenueToday = revenueToday,
-                RevenueLast24Hours = revenueLast24,
-                PendingOrders = pendingOrders,
-                ConfirmedOrders = confirmedOrders,
-                ProcessingOrders = processingOrders,
-                ShippedOrders = shippedOrders,
-                DeliveredOrders = deliveredOrders,
-                CancelledOrders = cancelledOrders,
+                OrdersToday = orderStats?.OrdersToday ?? 0,
+                OrdersLast24Hours = orderStats?.OrdersLast24 ?? 0,
+                RevenueToday = orderStats?.RevenueToday ?? 0,
+                RevenueLast24Hours = orderStats?.RevenueLast24 ?? 0,
+                PendingOrders = orderStats?.PendingOrders ?? 0,
+                ConfirmedOrders = orderStats?.ConfirmedOrders ?? 0,
+                ProcessingOrders = orderStats?.ProcessingOrders ?? 0,
+                ShippedOrders = orderStats?.ShippedOrders ?? 0,
+                DeliveredOrders = orderStats?.DeliveredOrders ?? 0,
+                CancelledOrders = orderStats?.CancelledOrders ?? 0,
                 TotalProducts = totalProducts,
                 TotalUsers = totalUsers
             };

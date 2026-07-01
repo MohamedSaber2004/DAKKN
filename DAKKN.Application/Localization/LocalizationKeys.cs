@@ -247,6 +247,11 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString DevWarning = new("error_dev_warning");
             public static readonly KeyString DevSensitive = new("error_dev_sensitive");
             public static readonly KeyString BackSafety = new("error_back_safety");
+            public static readonly KeyString ServerError = new("error_server_error");
+            public static readonly KeyString ServerErrorMessage = new("error_server_error_message");
+            public static readonly KeyString ServiceUnavailable = new("error_service_unavailable");
+            public static readonly KeyString ServiceUnavailableMessage = new("error_service_unavailable_message");
+            public static readonly KeyString ServerErrorIcon = new("error_server_error_icon");
         }
 
         public static class AuthView

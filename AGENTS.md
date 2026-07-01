@@ -58,6 +58,22 @@ Policy scheme `JWT_OR_COOKIE` — API paths (`/api/`) use JWT Bearer, MVC pages 
 | `DAKKN.Persistence/Migrations/` | EF migrations |
 | `DAKKN.MVC/wwwroot/uploads/` | Uploaded files destination |
 
+## Tests
+- Project: `DAKKN.Tests`
+- Framework: xUnit + FluentAssertions + Moq
+- Strategy: **InMemory DB** (`TestDbContextFactory.Create()`) + real `UnitOfWork` for handler tests
+- All handler tests in `DAKKN.Tests/Tests/Application/Handlers/` using InMemory pattern
+- Performance tests in `DAKKN.Tests/Tests/Performance/` (hits real DB via `WebApplicationFactory`)
+- Running: `dotnet test DAKKN.Tests\DAKKN.Tests.csproj` (493 total: 489 pass, 4 pre-existing skipped)
+- **InMemoryInclude caveat**: Navigation `.Include()` requires matching FK entities in DB (seed both sides)
+- Identity mocking: `Mock<UserManager<ApplicationUser>>` + `Mock<SignInManager<ApplicationUser>>` with full constructor args
+
+## Performance tests
+- `CustomWebApplicationFactory` hosts the app via `WebApplicationFactory<Program>` hitting the **real DB**
+- `TestAuthHandler` bypasses real login — sets role via `TestAuthRole` cookie (`Admin` / `User`)
+- Reports saved as `perf-report-*.txt` in test output directory
+- **Known issue**: `/admin/support/faq-categories` returns 500 (model mismatch: `SupportCategoryDto` vs `SupportFAQCategoryDto`)
+
 ## Launch profiles
 | Profile | URL | Notes |
 |---------|-----|-------|

@@ -13,6 +13,7 @@ using DAKKN.MVC.Models;
 using DAKKN.MVC.ViewModels.Admin;
 using DAKKN.MVC.ViewModels.Landing;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Extensions.Localization;
@@ -20,6 +21,7 @@ using System.Diagnostics;
 
 namespace DAKKN.MVC.Controllers
 {
+    [AllowAnonymous]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -177,9 +179,17 @@ namespace DAKKN.MVC.Controllers
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Error(int? statusCode = null)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var code = statusCode ?? HttpContext.Response.StatusCode;
+            if (code < 500)
+                code = 500;
+
+            return View(new ErrorViewModel
+            {
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
+                StatusCode = code
+            });
         }
     }
 }

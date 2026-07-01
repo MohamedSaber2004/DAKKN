@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
@@ -6,6 +7,7 @@ using DAKKN.Application.Features.Users.Commands.UpdateUserSettings;
 
 namespace DAKKN.MVC.Controllers
 {
+    [AllowAnonymous]
     public class TranslationController : Controller
     {
         private readonly IMediator _mediator;

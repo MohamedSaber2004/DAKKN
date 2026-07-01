@@ -9,11 +9,13 @@ using DAKKN.Application.Localization;
 using DAKKN.MVC.ViewModels.Customer;
 using DAKKN.MVC.ViewModels.Landing;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 
 namespace DAKKN.MVC.Controllers
 {
+    [AllowAnonymous]
     [Route("shop")]
     public class ShopController : Controller
     {
