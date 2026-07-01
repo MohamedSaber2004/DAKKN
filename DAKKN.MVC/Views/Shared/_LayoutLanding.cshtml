@@ -54,7 +54,7 @@
             opacity: 0;
             visibility: hidden !important;
         }
-        .dark #dakkn-preloader { background: #0f172a; }
+        .dark #dakkn-preloader { background: var(--dark-page, #0A2030); }
 
         .preloader-spinner {
             width: 44px;
@@ -102,7 +102,7 @@
 
     @await RenderSectionAsync("HeadStyles", required: false)
 </head>
-<body class="bg-background dark:bg-[#0F172A] text-slate-900 dark:text-slate-100 min-h-screen flex flex-col antialiased overflow-x-hidden selection:bg-primary/10">
+<body class="bg-background dark:bg-dark-page text-slate-900 dark:text-slate-100 min-h-screen flex flex-col antialiased overflow-x-hidden selection:bg-primary/10">
 
     <!-- Preloader Overlay -->
     <div id="dakkn-preloader">

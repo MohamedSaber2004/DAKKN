@@ -401,6 +401,43 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString AuditHistory = new("supp_audit_history");
             public static readonly KeyString WaitingFor = new("supp_waiting_for");
             public static readonly KeyString HasAttachments = new("supp_has_attachments");
+            
+            // FAQ Localization
+            public static readonly KeyString FAQQuestion = new("supp_faq_question");
+            public static readonly KeyString FAQArQuestion = new("supp_faq_ar_question");
+            public static readonly KeyString FAQAnswer = new("supp_faq_answer");
+            public static readonly KeyString FAQArAnswer = new("supp_faq_ar_answer");
+            public static readonly KeyString FAQCategory = new("supp_category");
+            public static readonly KeyString FAQDisplayOrder = new("supp_display_order");
+            public static readonly KeyString FAQPublished = new("supp_published");
+            public static readonly KeyString FAQSelectCategory = new("supp_select_category");
+            public static readonly KeyString FAQQuestionPh = new("supp_faq_question_ph");
+            public static readonly KeyString FAQArQuestionPh = new("supp_faq_ar_question_ph");
+            public static readonly KeyString FAQAnswerPh = new("supp_faq_answer_ph");
+            public static readonly KeyString FAQArAnswerPh = new("supp_faq_ar_answer_ph");
+            public static readonly KeyString AddFAQ = new("supp_add_faq");
+            public static readonly KeyString EditFAQ = new("supp_edit_faq");
+            public static readonly KeyString Save = new("supp_save");
+            public static readonly KeyString Update = new("supp_update");
+            public static readonly KeyString Cancel = new("supp_cancel");
+            public static readonly KeyString DeleteFAQTitle = new("supp_delete_faq_title");
+            public static readonly KeyString DeleteFAQMessage = new("supp_delete_faq_message");
+            public static readonly KeyString DeleteFAQ = new("supp_delete");
+            public static readonly KeyString NoFAQs = new("supp_no_faqs");
+
+            // Landing Page FAQ Section
+            public static readonly KeyString SectionFAQ = new("section_faq");
+            public static readonly KeyString AdminFAQDesc = new("admin_faq_desc");
+            public static readonly KeyString AdminFAQTitle = new("admin_faq_title");
+            public static readonly KeyString AdminFAQDescLabel = new("admin_faq_desc");
+            public static readonly KeyString AdminFAQDisplayLimit = new("admin_faq_display_limit");
+            public static readonly KeyString AdminFAQAutoFetch = new("admin_faq_auto_fetch");
+            public static readonly KeyString AdminFAQAutoFetchDesc = new("admin_faq_auto_fetch_desc");
+            public static readonly KeyString AdminFAQAutoFetchHint = new("admin_faq_auto_fetch_hint");
+            public static readonly KeyString AdminContentPHFaqTitleAr = new("admin_content_ph_faq_title_ar");
+            public static readonly KeyString AdminContentPHFaqTitleEn = new("admin_content_ph_faq_title_en");
+            public static readonly KeyString AdminContentPHFaqDescAr = new("admin_content_ph_faq_desc_ar");
+            public static readonly KeyString AdminContentPHFaqDescEn = new("admin_content_ph_faq_desc_en");
         }
 
         public static class OrderConfirmation

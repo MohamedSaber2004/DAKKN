@@ -4,6 +4,7 @@ using DAKKN.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DAKKN.Persistence.Migrations
 {
     [DbContext(typeof(DAKKNDbContext))]
-    partial class DAKKNDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260630221050_FixFAQCategoryToSupportCategory")]
+    partial class FixFAQCategoryToSupportCategory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1141,6 +1144,9 @@ namespace DAKKN.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("SupportFAQCategoryId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -1150,6 +1156,8 @@ namespace DAKKN.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("SupportFAQCategoryId");
 
                     b.ToTable("SupportFAQs", "dbo");
                 });
@@ -2006,6 +2014,10 @@ namespace DAKKN.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("DAKKN.Domain.Entities.SupportFAQCategory", null)
+                        .WithMany("FAQs")
+                        .HasForeignKey("SupportFAQCategoryId");
+
                     b.Navigation("Category");
                 });
 
@@ -2194,6 +2206,11 @@ namespace DAKKN.Persistence.Migrations
                     b.Navigation("FAQs");
 
                     b.Navigation("Tickets");
+                });
+
+            modelBuilder.Entity("DAKKN.Domain.Entities.SupportFAQCategory", b =>
+                {
+                    b.Navigation("FAQs");
                 });
 
             modelBuilder.Entity("DAKKN.Domain.Entities.SupportReply", b =>

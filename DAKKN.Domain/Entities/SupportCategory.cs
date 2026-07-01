@@ -12,6 +12,7 @@ namespace DAKKN.Domain.Entities
         public bool IsActive { get; set; } = true;
 
         public ICollection<SupportTicket> Tickets { get; set; } = new List<SupportTicket>();
+        public ICollection<SupportFAQ> FAQs { get; set; } = new List<SupportFAQ>();
 
         public static SupportCategory Create(string name, string arName, string? description = null, string? icon = null, int displayOrder = 0)
         {

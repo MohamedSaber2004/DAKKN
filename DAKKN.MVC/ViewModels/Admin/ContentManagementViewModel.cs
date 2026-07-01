@@ -12,8 +12,10 @@ namespace DAKKN.MVC.ViewModels.Admin
         public AboutSettingsViewModel About { get; set; } = new();
         public TestimonialsSettingsViewModel Testimonials { get; set; } = new();
         public ContactSettingsViewModel Contact { get; set; } = new();
+        public FaqSettingsViewModel Faq { get; set; } = new();
         public List<BrandReviewDto> BrandReviews { get; set; } = new();
     }
+
 
     public class SectionOrderViewModel
     {
@@ -25,7 +27,8 @@ namespace DAKKN.MVC.ViewModels.Admin
             new LandingPageSection { Id = "categories", Name = "Categories Slider", IsVisible = true, DisplayOrder = 3 },
             new LandingPageSection { Id = "all-products", Name = "Browse All Products", IsVisible = true, DisplayOrder = 4 },
             new LandingPageSection { Id = "testimonials", Name = "Customer Stories", IsVisible = true, DisplayOrder = 5 },
-            new LandingPageSection { Id = "contact", Name = "Contact Form", IsVisible = true, DisplayOrder = 6 }
+            new LandingPageSection { Id = "faq", Name = "FAQ", IsVisible = true, DisplayOrder = 6 },
+            new LandingPageSection { Id = "contact", Name = "Contact Form", IsVisible = true, DisplayOrder = 7 }
         };
     }
 
@@ -149,6 +152,16 @@ namespace DAKKN.MVC.ViewModels.Admin
         public string Category { get; set; } = string.Empty;
         public string ImageUrl { get; set; } = string.Empty;
         public bool IsFeatured { get; set; }
+    }
+
+    public class FaqSettingsViewModel
+    {
+        public string TitleAr { get; set; } = "الأسئلة الشائعة";
+        public string TitleEn { get; set; } = "Frequently Asked Questions";
+        public string DescriptionAr { get; set; } = "إجابات سريعة على الأسئلة الأكثر شيوعاً.";
+        public string DescriptionEn { get; set; } = "Quick answers to the most common questions.";
+        public int DisplayLimit { get; set; } = 6;
+        public bool AutoFetchFromSupport { get; set; } = true;
     }
 
 }

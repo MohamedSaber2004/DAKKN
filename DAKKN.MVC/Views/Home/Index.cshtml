@@ -50,7 +50,7 @@
 
 
 <!-- 1. Header Navigation -->
-<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-4 md:px-16 h-16 md:h-20 bg-surface/75 dark:bg-[#0a1020]/85 backdrop-blur-md border-b border-outline-variant/10 dark:border-white/5 shadow-sm navbar-animate">
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-4 md:px-16 h-16 md:h-20 bg-surface/75 dark:bg-dark-overlay/85 backdrop-blur-md border-b border-outline-variant/10 dark:border-white/5 shadow-sm navbar-animate">
     <div class="flex items-center gap-4 md:gap-6">
         <a href="#hero" class="logo-glow cursor-pointer" data-section="hero">
             <img src="~/images/logo.png" alt='@Localizer["logo_alt"]' class="h-16 md:h-18" />
@@ -183,7 +183,7 @@
 
             <!-- Text -->
             <div class="order-2 lg:order-1 lg:col-span-6 flex flex-col justify-center gap-3 md:gap-6 fade-in-up scroll-animate visible">
-                <div class="inline-flex items-center gap-2 px-3 py-1 md:px-4 md:py-1.5 rounded-full bg-surface-container-high dark:bg-[#0d1a2a]/80 border border-outline-variant/30 dark:border-white/5 w-fit shadow-sm scroll-animate delay-100">
+                <div class="inline-flex items-center gap-2 px-3 py-1 md:px-4 md:py-1.5 rounded-full bg-surface-container-high dark:bg-dark-elevated/80 border border-outline-variant/30 dark:border-white/5 w-fit shadow-sm scroll-animate delay-100">
                     <span class="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-primary animate-pulse"></span>
                     <span class="text-[10px] md:text-xs font-bold text-on-surface-variant dark:text-slate-300 uppercase tracking-wider">@HeroText(Model.Hero.BadgeAr, Model.Hero.BadgeEn, "hero_badge")</span>
                 </div>
@@ -239,7 +239,7 @@
                 break;
             case "shop":
                 <text>
-    <section id="shop" class="relative overflow-hidden py-16 md:py-24 px-4 md:px-16 bg-surface dark:bg-[#080e1a] border-t border-outline-variant/10">
+    <section id="shop" class="relative overflow-hidden py-16 md:py-24 px-4 md:px-16 bg-surface dark:bg-dark-surface border-t border-outline-variant/10">
         <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
             <div class="deco-blob animate-blob-3 bg-primary/8 w-[280px] h-[280px] -top-16 right-10"></div>
             <div class="deco-shape-diamond top-1/3 left-8 opacity-40" style="animation-delay: 2s;"></div>
@@ -376,7 +376,7 @@
                 break;
             case "categories":
                 <text>
-    <section id="categories" class="relative overflow-hidden py-16 md:py-24 px-4 md:px-16 bg-surface dark:bg-[#080e1a] border-t border-outline-variant/10">
+    <section id="categories" class="relative overflow-hidden py-16 md:py-24 px-4 md:px-16 bg-surface dark:bg-dark-surface border-t border-outline-variant/10">
         <!-- Decorative Ambient Elements -->
         <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
             <div class="deco-shape-square top-24 left-12 rtl:left-auto rtl:right-12 opacity-60"></div>
@@ -422,7 +422,7 @@
             <!-- Navigation Buttons -->
             <div class="flex items-center justify-center gap-4 mt-8">
                 <button onclick="slidePrev()" aria-label="@Localizer["slider_prev_aria"]"
-                        class="w-11 h-11 rounded-full bg-surface dark:bg-[#0d1a2a] border border-primary/20 shadow-md flex items-center justify-center text-primary hover:bg-primary hover:text-white hover:border-primary transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0">
+                        class="w-11 h-11 rounded-full bg-surface dark:bg-dark-elevated border border-primary/20 shadow-md flex items-center justify-center text-primary hover:bg-primary hover:text-white hover:border-primary transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0">
                     <span class="material-symbols-outlined text-xl ltr:block rtl:hidden">chevron_left</span>
                     <span class="material-symbols-outlined text-xl ltr:hidden rtl:block">chevron_right</span>
                 </button>
@@ -437,7 +437,7 @@
                 </div>
 
                 <button onclick="slideNext()" aria-label="@Localizer["slider_next_aria"]"
-                        class="w-11 h-11 rounded-full bg-surface dark:bg-[#0d1a2a] border border-primary/20 shadow-md flex items-center justify-center text-primary hover:bg-primary hover:text-white hover:border-primary transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0">
+                        class="w-11 h-11 rounded-full bg-surface dark:bg-dark-elevated border border-primary/20 shadow-md flex items-center justify-center text-primary hover:bg-primary hover:text-white hover:border-primary transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0">
                     <span class="material-symbols-outlined text-xl ltr:block rtl:hidden">chevron_right</span>
                     <span class="material-symbols-outlined text-xl ltr:hidden rtl:block">chevron_left</span>
                 </button>
@@ -461,7 +461,7 @@
         </div>
 
         <!-- Filter Controls -->
-        <div class="relative z-10 max-w-5xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6 mb-8 md:mb-10 bg-surface/60 dark:bg-[#0a1220]/80 backdrop-blur-md border border-primary/15 dark:border-white/5 p-4 md:p-6 rounded-2xl shadow-sm">
+        <div class="relative z-10 max-w-5xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6 mb-8 md:mb-10 bg-surface/60 dark:bg-dark-overlay/80 backdrop-blur-md border border-primary/15 dark:border-white/5 p-4 md:p-6 rounded-2xl shadow-sm">
             <!-- Category Filter Pills -->
             <div class="flex flex-col gap-2.5">
                 <span class="text-xs font-bold text-primary uppercase tracking-wider">@Localizer["filter_category"]</span>
@@ -557,14 +557,14 @@
 
         <!-- Pagination Controls -->
         <div class="relative z-10 flex items-center justify-center gap-4 mt-12" id="prods-pagination">
-            <button onclick="prevProdsPage()" id="btn-prod-prev" class="w-10 h-10 rounded-full bg-surface dark:bg-[#0d1a2a] border border-primary/20 shadow-md flex items-center justify-center text-primary hover:bg-primary hover:text-white hover:border-primary transition-all duration-200 disabled:opacity-40 disabled:pointer-events-none">
+            <button onclick="prevProdsPage()" id="btn-prod-prev" class="w-10 h-10 rounded-full bg-surface dark:bg-dark-elevated border border-primary/20 shadow-md flex items-center justify-center text-primary hover:bg-primary hover:text-white hover:border-primary transition-all duration-200 disabled:opacity-40 disabled:pointer-events-none">
                 <span class="material-symbols-outlined text-lg ltr:block rtl:hidden">chevron_left</span>
                 <span class="material-symbols-outlined text-lg ltr:hidden rtl:block">chevron_right</span>
             </button>
             <div class="flex gap-2" id="prods-page-indicators">
                 <!-- Indicators rendered dynamically -->
             </div>
-            <button onclick="nextProdsPage()" id="btn-prod-next" class="w-10 h-10 rounded-full bg-surface dark:bg-[#0d1a2a] border border-primary/20 shadow-md flex items-center justify-center text-primary hover:bg-primary hover:text-white hover:border-primary transition-all duration-200 disabled:opacity-40 disabled:pointer-events-none">
+            <button onclick="nextProdsPage()" id="btn-prod-next" class="w-10 h-10 rounded-full bg-surface dark:bg-dark-elevated border border-primary/20 shadow-md flex items-center justify-center text-primary hover:bg-primary hover:text-white hover:border-primary transition-all duration-200 disabled:opacity-40 disabled:pointer-events-none">
                 <span class="material-symbols-outlined text-lg ltr:block rtl:hidden">chevron_right</span>
                 <span class="material-symbols-outlined text-lg ltr:hidden rtl:block">chevron_left</span>
             </button>
@@ -574,7 +574,7 @@
                 break;
             case "testimonials":
                 <text>
-    <section id="testimonials" class="relative overflow-hidden py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-surface dark:bg-[#080e1a] border-t border-outline-variant/10">
+    <section id="testimonials" class="relative overflow-hidden py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-surface dark:bg-dark-surface border-t border-outline-variant/10">
         <!-- Decorative Ambient Elements -->
         <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
             <div class="deco-blob animate-blob-3 bg-primary/15 w-[320px] h-[320px] top-12 left-12 rtl:left-auto rtl:right-12"></div>
@@ -605,7 +605,7 @@
                     @for (int ri = 0; ri < Model.Testimonials.Reviews.Count; ri++)
                     {
                         var rev = Model.Testimonials.Reviews[ri];
-                        <div class="group bg-surface dark:bg-[#0d1a2a] rounded-3xl border border-outline-variant/20 dark:border-white/5 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 p-6 md:p-8 flex flex-col gap-4 scroll-animate relative overflow-hidden">
+                        <div class="group bg-surface dark:bg-dark-elevated rounded-3xl border border-outline-variant/20 dark:border-white/5 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 p-6 md:p-8 flex flex-col gap-4 scroll-animate relative overflow-hidden">
                             <!-- Top accent gradient -->
                             <div class="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-primary/40 via-primary to-primary/40 dark:from-primary/30 dark:via-primary dark:to-primary/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
@@ -617,7 +617,7 @@
                                         <span class="material-symbols-outlined text-sm @(s < rev.Rating ? "text-yellow-500 fill-icon" : "text-outline/20 dark:text-white/10")">star</span>
                                     }
                                 </div>
-                                <span class="inline-flex items-center gap-1 text-xs font-bold text-on-surface-variant dark:text-slate-400 bg-surface-container dark:bg-[#0f1d30] px-2.5 py-1 rounded-full">
+                                <span class="inline-flex items-center gap-1 text-xs font-bold text-on-surface-variant dark:text-slate-400 bg-surface-container dark:bg-dark-elevated px-2.5 py-1 rounded-full">
                                     <span class="material-symbols-outlined text-sm text-yellow-500 fill-icon">star</span>
                                     @rev.Rating
                                 </span>
@@ -667,6 +667,72 @@
     </section>
                 </text>
                 break;
+            case "faq":
+                <text>
+    <section id="faq" class="relative overflow-hidden py-16 lg:py-24 px-4 md:px-16 bg-surface dark:bg-dark-surface border-t border-outline-variant/10">
+        <!-- Decorative Ambient Elements -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+            <div class="deco-blob animate-blob-3 bg-primary/15 w-[320px] h-[320px] top-12 left-12 rtl:left-auto rtl:right-12"></div>
+            <div class="deco-blob animate-blob-1 bg-primary/10 w-[300px] h-[300px] bottom-12 right-12 rtl:right-auto rtl:left-12"></div>
+            <div class="deco-ring w-[240px] h-[240px] top-10 right-1/3 rtl:right-auto rtl:left-1/3 opacity-40"></div>
+            <div class="deco-dots-grid top-6 right-8 rtl:right-auto rtl:left-8 opacity-40"></div>
+        </div>
+
+        <div class="relative z-20 max-w-7xl mx-auto px-0">
+            <!-- Section Header -->
+            <div class="max-w-3xl mx-auto text-center mb-10 md:mb-14 scroll-animate">
+                <h2 class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-on-surface dark:text-white mb-3">
+                    @(Model.HasCmsData && !string.IsNullOrEmpty(Model.Faq.TitleAr) ? (isAr ? Model.Faq.TitleAr : Model.Faq.TitleEn) : Localizer["section_faq"].Value)
+                </h2>
+                @{
+                    var faqDesc = Model.HasCmsData && !string.IsNullOrEmpty(Model.Faq.DescriptionAr) ? (isAr ? Model.Faq.DescriptionAr : Model.Faq.DescriptionEn) : "";
+                }
+                @if (!string.IsNullOrEmpty(faqDesc))
+                {
+                    <p class="text-base md:text-lg text-on-surface-variant dark:text-slate-400 leading-relaxed max-w-2xl mx-auto">@faqDesc</p>
+                }
+            </div>
+
+            <!-- FAQ Grid -->
+            @if (Model.FaqItems != null && Model.FaqItems.Count > 0)
+            {
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" data-stagger>
+                    @for (int fi = 0; fi < Model.FaqItems.Count; fi++)
+                    {
+                        var faq = Model.FaqItems[fi];
+                        <div class="group bg-surface dark:bg-dark-elevated rounded-3xl border border-outline-variant/20 dark:border-white/5 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 p-6 md:p-8 flex flex-col gap-4 scroll-animate relative overflow-hidden" style="animation-delay: @(fi * 100)ms;">
+                            <div class="flex items-start gap-4">
+                                <div class="w-10 h-10 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary flex-shrink-0">
+                                    <span class="material-symbols-outlined text-xl">help_center</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-bold text-on-surface dark:text-slate-100 mb-2">@(isAr ? faq.ArQuestion : faq.Question)</h3>
+                                    <p class="text-sm text-on-surface-variant dark:text-slate-400 leading-relaxed">@(isAr ? faq.ArAnswer : faq.Answer)</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-outline-variant/10 dark:border-white/5">
+                                <span class="inline-flex items-center gap-1 text-xs font-bold text-on-surface-variant dark:text-slate-400 bg-surface-container dark:bg-dark-elevated px-2.5 py-1 rounded-full">
+                                    <span class="material-symbols-outlined text-sm text-primary">category</span>
+                                    @(isAr ? faq.CategoryArName : faq.CategoryName)
+                                </span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <!-- Empty State -->
+                <div class="text-center py-16 scroll-animate">
+                    <span class="material-symbols-outlined text-6xl text-on-surface-variant/30 dark:text-slate-500/40 mb-4">help_center</span>
+                    <h3 class="text-xl font-bold text-on-surface dark:text-slate-100 mb-2">@Localizer["section_faq"]</h3>
+                    <p class="text-sm text-on-surface-variant dark:text-slate-400 max-w-md mx-auto">@Localizer["supp_no_faqs"]</p>
+                </div>
+            }
+        </div>
+    </section>
+                </text>
+                break;
             case "contact":
                 <text>
     <section id="contact" class="relative overflow-hidden py-16 md:py-24 px-4 md:px-16 bg-surface-container-low dark:bg-dark-page border-t border-outline-variant/10">
@@ -675,23 +741,23 @@
             <div class="deco-ring w-[200px] h-[200px] top-8 left-8 opacity-30"></div>
             <div class="deco-dots-grid bottom-12 right-12 opacity-30"></div>
         </div>
-        <div class="relative z-10 max-w-2xl mx-auto bg-surface-container-low/60 dark:bg-[#0a1220]/80 backdrop-blur-md border border-primary/20 dark:border-white/5 p-6 md:p-12 rounded-3xl shadow-2xl shadow-primary/5 scroll-animate-scale">
+        <div class="relative z-10 max-w-2xl mx-auto bg-surface-container-low/60 dark:bg-dark-overlay/80 backdrop-blur-md border border-primary/20 dark:border-white/5 p-6 md:p-12 rounded-3xl shadow-2xl shadow-primary/5 scroll-animate-scale">
             <h2 class="text-2xl md:text-3xl font-extrabold text-on-surface dark:text-white mb-2 md:mb-3 text-center">@Localizer["form_h2"]</h2>
             <p class="text-sm text-on-surface-variant dark:text-slate-400 text-center mb-6 md:mb-8">@Localizer["form_p"]</p>
             <form data-frozen-action novalidate class="flex flex-col gap-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="flex flex-col gap-2">
                         <label class="text-xs font-bold text-primary">@Localizer["form_name"]</label>
-                        <input class="bg-surface dark:bg-[#0d1a2a] border border-primary/20 dark:border-white/5 rounded-xl p-3.5 text-on-surface dark:text-slate-100 focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-surface-container-low dark:focus:bg-[#0f1d30] outline-none transition-all duration-200" placeholder="@Localizer["form_name_ph"]" type="text" required/>
+                        <input class="bg-surface dark:bg-dark-elevated border border-primary/20 dark:border-white/5 rounded-xl p-3.5 text-on-surface dark:text-slate-100 focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-surface-container-low dark:focus:bg-[#0f1d30] outline-none transition-all duration-200" placeholder="@Localizer["form_name_ph"]" type="text" required/>
                     </div>
                     <div class="flex flex-col gap-2">
                         <label class="text-xs font-bold text-primary">@Localizer["form_email"]</label>
-                        <input class="bg-surface dark:bg-[#0d1a2a] border border-primary/20 dark:border-white/5 rounded-xl p-3.5 text-on-surface dark:text-slate-100 focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-surface-container-low dark:focus:bg-[#0f1d30] outline-none transition-all duration-200" placeholder="@Localizer["form_email_ph"]" type="email" required/>
+                        <input class="bg-surface dark:bg-dark-elevated border border-primary/20 dark:border-white/5 rounded-xl p-3.5 text-on-surface dark:text-slate-100 focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-surface-container-low dark:focus:bg-[#0f1d30] outline-none transition-all duration-200" placeholder="@Localizer["form_email_ph"]" type="email" required/>
                     </div>
                 </div>
                 <div class="flex flex-col gap-2">
                     <label class="text-xs font-bold text-primary">@Localizer["form_msg"]</label>
-                    <textarea class="bg-surface dark:bg-[#0d1a2a] border border-primary/20 dark:border-white/5 rounded-xl p-3.5 text-on-surface dark:text-slate-100 focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-surface-container-low dark:focus:bg-[#0f1d30] outline-none transition-all duration-200" placeholder="@Localizer["form_msg_ph"]" rows="4" required></textarea>
+                    <textarea class="bg-surface dark:bg-dark-elevated border border-primary/20 dark:border-white/5 rounded-xl p-3.5 text-on-surface dark:text-slate-100 focus:ring-2 focus:ring-primary/20 focus:border-primary focus:bg-surface-container-low dark:focus:bg-[#0f1d30] outline-none transition-all duration-200" placeholder="@Localizer["form_msg_ph"]" rows="4" required></textarea>
                 </div>
                 <button class="bg-primary hover:bg-primary/90 text-on-primary font-bold py-4 rounded-xl transition-all shadow-md hover:shadow-lg duration-200 mt-2" type="submit">
                     @Localizer["btn_send"]
@@ -712,7 +778,7 @@
 <!-- Sign-in Modal for Frozen Actions -->
 <div id="signin-modal" class="fixed inset-0 z-[100] flex items-center justify-center hidden" aria-modal="true" role="dialog">
     <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
-    <div class="relative bg-white dark:bg-[#0f1d30] rounded-3xl shadow-2xl border border-primary/10 dark:border-white/5 p-6 md:p-10 max-w-md w-[92%] sm:w-[90%] mx-4 text-center">
+    <div class="relative bg-white dark:bg-dark-elevated rounded-3xl shadow-2xl border border-primary/10 dark:border-white/5 p-6 md:p-10 max-w-md w-[92%] sm:w-[90%] mx-4 text-center">
         <button onclick="hideSignInModal()" class="absolute top-4 end-4 w-10 h-10 rounded-full bg-surface-container-high dark:bg-slate-800 hover:bg-primary/10 flex items-center justify-center text-on-surface-variant dark:text-slate-300 hover:text-primary transition-all" aria-label="@Localizer["close_aria"]">
             <span class="material-symbols-outlined text-xl">close</span>
         </button>
@@ -734,7 +800,7 @@
 </div>
 
 <!-- 8. Footer -->
-<section class="bg-surface dark:bg-[#080e1a] pt-6 pb-24 md:py-8 px-4 relative overflow-hidden">
+<section class="bg-surface dark:bg-dark-surface pt-6 pb-24 md:py-8 px-4 relative overflow-hidden">
     <!-- Dots Pattern Background -->
     <div class="absolute inset-0 opacity-20 pointer-events-none">
         <div class="absolute inset-0" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 32px 32px;"></div>

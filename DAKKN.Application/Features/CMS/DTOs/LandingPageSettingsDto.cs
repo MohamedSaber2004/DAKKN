@@ -9,5 +9,6 @@ namespace DAKKN.Application.Features.CMS.DTOs
         public string Products { get; set; } = "{}";
         public string Testimonials { get; set; } = "{}";
         public string Contact { get; set; } = "{}";
+        public string Faq { get; set; } = "{}";
     }
 }

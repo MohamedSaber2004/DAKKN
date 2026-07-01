@@ -38,14 +38,14 @@ section { width: 100%; overflow-x: hidden; }
     box-shadow: var(--tw-shadow, 0 4px 6px rgba(var(--primary-rgb), 0.03));
 }
 .dark .glass-panel {
-    background: linear-gradient(135deg, rgba(15,23,42,0.40), rgba(12,20,35,0.30));
+    background: linear-gradient(135deg, rgba(19,36,52,0.45), rgba(12,22,37,0.35));
     border-color: rgba(255, 255, 255, 0.06);
     box-shadow: 0 4px 20px rgba(0,0,0,0.20);
 }
 
 /* ── Section background gradients (uses CSS vars) ──── */
 .section-gradient-dark {
-    background: linear-gradient(180deg, #080e1a 0%, #0a1520 50%, #080e1a 100%);
+    background: linear-gradient(180deg, #0A2030 0%, #0E1A28 50%, #0A2030 100%);
 }
 .section-gradient-surface {
     background: linear-gradient(180deg, #f0f5f3 0%, #f6faf9 50%, #f0f5f3 100%);
@@ -103,7 +103,7 @@ section { width: 100%; overflow-x: hidden; }
     animation: slideDown 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 .dark .navbar-animate {
-    background: rgba(10, 16, 32, 0.75);
+    background: rgba(12, 22, 37, 0.75);
     border-bottom-color: rgba(255, 255, 255, 0.04);
 }
 .navbar-animate.navbar-scrolled {
@@ -112,7 +112,7 @@ section { width: 100%; overflow-x: hidden; }
     height: 60px !important;
 }
 .dark .navbar-animate.navbar-scrolled {
-    background: rgba(8, 14, 26, 0.92);
+    background: rgba(10, 32, 48, 0.92);
     box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     border-bottom-color: rgba(var(--primary-rgb), 0.10);
 }
@@ -236,7 +236,7 @@ section { width: 100%; overflow-x: hidden; }
 }
 .product-card[data-tilt] { will-change: transform; }
 .dark .product-card {
-    background: linear-gradient(145deg, rgba(15,23,42,0.50), rgba(12,20,35,0.35));
+    background: linear-gradient(145deg, rgba(19,36,52,0.60), rgba(14,26,40,0.40));
     border-color: rgba(255,255,255,0.04);
 }
 .dark .product-card:hover {
@@ -474,7 +474,7 @@ section { width: 100%; overflow-x: hidden; }
     animation-delay: 0.3s;
 }
 .dark .mobile-bottom-nav {
-    background: rgba(15,23,42,0.9);
+    background: rgba(10,32,48,0.92);
     border-top-color: rgba(255,255,255,0.08);
     box-shadow: 0 -4px 24px rgba(0,0,0,0.4);
 }
@@ -679,7 +679,7 @@ input[type="range"]::-moz-range-track {
     user-select: none;
 }
 .dark .skeleton {
-    background: linear-gradient(90deg, #1e293b 25%, #0f172a 50%, #1e293b 75%);
+    background: linear-gradient(90deg, #132434 25%, #0E1A28 50%, #132434 75%);
     background-size: 200% 100%;
 }
 @keyframes skeletonPulse {
@@ -733,5 +733,5 @@ input[type="range"]::-moz-range-track {
     box-shadow: 0 1px 8px rgba(0,0,0,0.06) !important;
 }
 .dark .navbar-scrolled {
-    background: rgba(15,23,42,0.92) !important;
+    background: rgba(10,32,48,0.92) !important;
 }

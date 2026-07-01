@@ -12,5 +12,6 @@ namespace DAKKN.Application.Features.CMS.Commands.UpdateLandingPageSettings
         public string? Products { get; init; }
         public string? Testimonials { get; init; }
         public string? Contact { get; init; }
+        public string? Faq { get; init; }
     }
 }

@@ -1,6 +1,7 @@
 using DAKKN.Application.Common.Models;
 using DAKKN.Application.DTOs;
 using DAKKN.MVC.ViewModels.Admin;
+using DAKKN.Application.Features.Support.DTOs;
 
 namespace DAKKN.MVC.ViewModels.Landing
 {
@@ -16,6 +17,8 @@ namespace DAKKN.MVC.ViewModels.Landing
         public AboutSettingsViewModel About { get; set; } = new();
         public TestimonialsSettingsViewModel Testimonials { get; set; } = new();
         public ContactSettingsViewModel Contact { get; set; } = new();
+        public FaqSettingsViewModel Faq { get; set; } = new();
+        public List<SupportFAQDto> FaqItems { get; set; } = new();
         public bool HasCmsData { get; set; }
         public HashSet<string> VisibleSections { get; set; } = new();
         public List<string> OrderedSectionIds { get; set; } = new();

@@ -3,5 +3,5 @@ using MediatR;
 
 namespace DAKKN.Application.Features.Support.Queries.GetFAQCategories
 {
-    public record GetFAQCategoriesQuery : IRequest<List<SupportFAQCategoryDto>>;
+    public record GetFAQCategoriesQuery : IRequest<List<SupportCategoryDto>>;
 }

@@ -1,1 +1,151 @@
-﻿https://localhost:44308/support/categories/edit/ab442c06-7bfa-4969-920e-4d03836fdfb6
+﻿﻿FROM [dbo].[AspNetUsers] AS [a]
+﻿WHERE [a].[Id] = @__get_Item_0
+﻿[01:31:50 INF] Executed DbCommand (79ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+﻿SELECT TOP(1) [u].[Id], [u].[CreatedAt], [u].[CreatedBy], [u].[DeletedAt], [u].[DeletedBy], [u].[IsActive], [u].[IsDarkMode], [u].[IsDeleted], [u].[Language], [u].[LayoutMode], [u].[PrimaryColor], [u].[Theme], [u].[UpdatedAt], [u].[UpdatedBy], [u].[UserId]
+﻿FROM [dbo].[UserSettings] AS [u]
+﻿WHERE [u].[UserId] = @__userId_0
+﻿[01:31:50 INF] Handled Request: GetUserSettingsQuery
+﻿[01:31:50 INF] Executing endpoint 'DAKKN.MVC.Controllers.SupportAdminController.CreateFAQ (DAKKN.Appearence)'
+﻿[01:31:50 INF] Route matched with {action = "CreateFAQ", controller = "SupportAdmin"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateFAQ(DAKKN.Application.Features.Support.Commands.CreateFAQ.CreateFAQCommand) on controller DAKKN.MVC.Controllers.SupportAdminController (DAKKN.Appearence).
+﻿[01:31:50 INF] Handling Request: CreateFAQCommand
+﻿[01:31:50 INF] Request Body: {"Question":"?What is your name","ArQuestion":"\u0645\u0627\u0627\u0633\u0645\u0643\u061F","Answer":"my name is mohamed saber","ArAnswer":"\u0627\u0633\u0645\u064A \u0645\u062D\u0645\u062F \u0635\u0627\u0628\u0631","CategoryId":"3ce26911-0164-44e2-b582-cd8901b8f592","DisplayOrder":1,"IsPublished":true}
+﻿[01:31:51 ERR] Failed executing DbCommand (275ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (Size = 4000), @p2='?' (Size = 4000), @p3='?' (Size = 4000), @p4='?' (DbType = Guid), @p5='?' (DbType = DateTime2), @p6='?' (Size = 4000), @p7='?' (DbType = DateTime2), @p8='?' (Size = 4000), @p9='?' (DbType = Int32), @p10='?' (DbType = Boolean), @p11='?' (DbType = Boolean), @p12='?' (DbType = Boolean), @p13='?' (Size = 4000), @p14='?' (DbType = Guid), @p15='?' (DbType = DateTime2), @p16='?' (Size = 4000)], CommandType='Text', CommandTimeout='30']
+﻿SET IMPLICIT_TRANSACTIONS OFF;
+﻿SET NOCOUNT ON;
+﻿INSERT INTO [dbo].[SupportFAQs] ([Id], [Answer], [ArAnswer], [ArQuestion], [CategoryId], [CreatedAt], [CreatedBy], [DeletedAt], [DeletedBy], [DisplayOrder], [IsActive], [IsDeleted], [IsPublished], [Question], [SupportFAQCategoryId], [UpdatedAt], [UpdatedBy])
+﻿VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14, @p15, @p16);
+﻿[01:31:51 ERR] An exception occurred in the database while saving changes for context type 'DAKKN.Persistence.DAKKNDbContext'.
+﻿Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+﻿ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'SupportFAQCategoryId'.
+﻿   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+﻿   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+﻿--- End of stack trace from previous location ---
+﻿   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+﻿   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+﻿--- End of stack trace from previous location ---
+﻿   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+﻿ClientConnectionId:78c76c05-56df-48d6-843e-66a28447e293
+﻿Error Number:207,State:1,Class:16
+﻿   --- End of inner exception stack trace ---
+﻿   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+﻿Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+﻿ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'SupportFAQCategoryId'.
+﻿   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+﻿   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+﻿--- End of stack trace from previous location ---
+﻿   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+﻿   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+﻿--- End of stack trace from previous location ---
+﻿   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+﻿ClientConnectionId:78c76c05-56df-48d6-843e-66a28447e293
+﻿Error Number:207,State:1,Class:16
+﻿   --- End of inner exception stack trace ---
+﻿   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+﻿[01:31:52 ERR] Dakkn Request: Unhandled Exception for Request CreateFAQCommand
+﻿Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+﻿ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'SupportFAQCategoryId'.
+﻿   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+﻿   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+﻿--- End of stack trace from previous location ---
+﻿   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+﻿   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+﻿--- End of stack trace from previous location ---
+﻿   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+﻿ClientConnectionId:78c76c05-56df-48d6-843e-66a28447e293
+﻿Error Number:207,State:1,Class:16
+﻿   --- End of inner exception stack trace ---
+﻿   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+﻿   at DAKKN.Infrastructure.Repositories.Implementations.Base.UnitOfWork.SaveChangesAsync() in E:\DAKKN\DAKKN.Infrastructure\Repositories\Implementations\Base\UnitOfWork.cs:line 55
+﻿   at DAKKN.Application.Features.Support.Commands.CreateFAQ.CreateFAQCommandHandler.Handle(CreateFAQCommand request, CancellationToken ct) in E:\DAKKN\DAKKN.Application\Features\Support\Commands\CreateFAQ\CreateFAQCommandHandler.cs:line 30
+﻿   at DAKKN.Application.Common.Behaviours.LoggingBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\LoggingBehaviour.cs:line 39
+﻿   at DAKKN.Application.Common.Behaviours.PerformanceBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\PerformanceBehaviour.cs:line 23
+﻿   at DAKKN.Application.Common.Behaviours.ValidationBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\ValidationBehaviour.cs:line 28
+﻿   at DAKKN.Application.Common.Behaviours.UnhandledExceptionBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\UnhandledExceptionBehaviour.cs:line 20
+﻿[01:31:52 ERR] An unhandled exception has occurred while executing the request.
+﻿Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
+﻿ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): Invalid column name 'SupportFAQCategoryId'.
+﻿   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+﻿   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+﻿--- End of stack trace from previous location ---
+﻿   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+﻿   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+﻿--- End of stack trace from previous location ---
+﻿   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+﻿ClientConnectionId:78c76c05-56df-48d6-843e-66a28447e293
+﻿Error Number:207,State:1,Class:16
+﻿   --- End of inner exception stack trace ---
+﻿   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+﻿   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
+﻿   at DAKKN.Infrastructure.Repositories.Implementations.Base.UnitOfWork.SaveChangesAsync() in E:\DAKKN\DAKKN.Infrastructure\Repositories\Implementations\Base\UnitOfWork.cs:line 55
+﻿   at DAKKN.Application.Features.Support.Commands.CreateFAQ.CreateFAQCommandHandler.Handle(CreateFAQCommand request, CancellationToken ct) in E:\DAKKN\DAKKN.Application\Features\Support\Commands\CreateFAQ\CreateFAQCommandHandler.cs:line 30
+﻿   at DAKKN.Application.Common.Behaviours.LoggingBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\LoggingBehaviour.cs:line 39
+﻿   at DAKKN.Application.Common.Behaviours.PerformanceBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\PerformanceBehaviour.cs:line 23
+﻿   at DAKKN.Application.Common.Behaviours.ValidationBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\ValidationBehaviour.cs:line 28
+﻿   at DAKKN.Application.Common.Behaviours.UnhandledExceptionBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN\DAKKN.Application\Common\Behaviours\UnhandledExceptionBehaviour.cs:line 20
+﻿   at DAKKN.MVC.Controllers.SupportAdminController.CreateFAQ(CreateFAQCommand command) in E:\DAKKN\DAKKN.MVC\Controllers\SupportAdminController.cs:line 362
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextExceptionFilterAsync>g__Awaited|26_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+﻿[01:31:52 INF] Executing ObjectResult, writing value of type 'DAKKN.Application.Common.Models.ApiResponse`1[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+﻿[01:31:52 INF] Executed action DAKKN.MVC.Controllers.SupportAdminController.CreateFAQ (DAKKN.Appearence) in 2526.7541ms
+﻿[01:31:52 INF] Executed endpoint 'DAKKN.MVC.Controllers.SupportAdminController.CreateFAQ (DAKKN.Appearence)'
+﻿[01:31:52 INF] Request finished HTTP/2 POST https://localhost:44308/admin/support/faqs/create - 500 null application/json; charset=utf-8 2732.852ms
+﻿[01:31:53 INF] Request starting HTTP/2 GET https://localhost:44308/.well-known/appspecific/com.chrome.devtools.json - null null
+﻿[01:31:53 INF] Handling Request: GetUserSettingsQuery
+﻿[01:31:53 INF] Request Body: {}
+﻿[01:31:53 INF] Executed DbCommand (87ms) [Parameters=[@__get_Item_0='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+﻿SELECT TOP(1) [a].[Id], [a].[AccessFailedCount], [a].[BirthDate], [a].[ConcurrencyStamp], [a].[CreatedAt], [a].[CreatedBy], [a].[DeletedAt], [a].[DeletedBy], [a].[Email], [a].[EmailConfirmed], [a].[FullName], [a].[Gender], [a].[GoogleUserId], [a].[IsActive], [a].[IsDeleted], [a].[Language], [a].[LockoutEnabled], [a].[LockoutEnd], [a].[NormalizedEmail], [a].[NormalizedUserName], [a].[PasswordHash], [a].[PasswordResetToken], [a].[PasswordResetTokenExpiry], [a].[PhoneNumber], [a].[PhoneNumberConfirmed], [a].[ProfilePictureUrl], [a].[SecurityStamp], [a].[TwoFactorEnabled], [a].[UpdatedAt], [a].[UpdatedBy], [a].[UserName]
+﻿FROM [dbo].[AspNetUsers] AS [a]
+﻿WHERE [a].[Id] = @__get_Item_0
+﻿[01:31:53 INF] Executed DbCommand (85ms) [Parameters=[@__userId_0='?' (DbType = Guid)], CommandType='Text', CommandTimeout='30']
+﻿SELECT TOP(1) [u].[Id], [u].[CreatedAt], [u].[CreatedBy], [u].[DeletedAt], [u].[DeletedBy], [u].[IsActive], [u].[IsDarkMode], [u].[IsDeleted], [u].[Language], [u].[LayoutMode], [u].[PrimaryColor], [u].[Theme], [u].[UpdatedAt], [u].[UpdatedBy], [u].[UserId]
+﻿FROM [dbo].[UserSettings] AS [u]
+﻿WHERE [u].[UserId] = @__userId_0
+﻿[01:31:53 INF] Handled Request: GetUserSettingsQuery
+﻿[01:31:53 INF] Request finished HTTP/2 GET https://localhost:44308/.well-known/appspecific/com.chrome.devtools.json - 404 null null 182.2312ms
+﻿[01:31:53 INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:44308/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404

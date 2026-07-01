@@ -1,3 +1,4 @@
+using DAKKN.Application.Common.Exceptions;
 using DAKKN.Application.Common.Interfaces;
 using DAKKN.Application.Features.Support.DTOs;
 using DAKKN.Domain.Entities;
@@ -21,6 +22,9 @@ namespace DAKKN.Application.Features.Support.Commands.UpdateCategory
         {
             var repo = _unitOfWork.GetRepository<SupportCategory>();
             var category = await repo.GetByIdAsync(request.Id);
+
+            if (category == null)
+                throw new NotFoundException(nameof(SupportCategory), request.Id);
 
             category.Name = request.Name;
             category.ArName = request.ArName;

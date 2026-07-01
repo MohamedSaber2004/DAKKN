@@ -38,7 +38,11 @@ tailwind.config = {
                 "on-surface-variant": "#3D4948",
                 background: "#F8FAFB",
                 "on-background": "#171D1C",
+                /* ── Dark mode palette ─────────────────────────── */
                 "dark-page": "#0A2030",
+                "dark-surface": "#0E1A28",
+                "dark-elevated": "#132434",
+                "dark-overlay": "#0C1625",
                 outline: "#6D7979",
                 "outline-variant": "#BCC9C8",
                 "inverse-surface": "#2C3131",

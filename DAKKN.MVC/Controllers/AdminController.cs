@@ -531,6 +531,7 @@ namespace DAKKN.MVC.Controllers
                 Products =     DeserializeOrDefault<FeaturedProductsViewModel>(dto.Products),
                 Testimonials = DeserializeOrDefault<TestimonialsSettingsViewModel>(dto.Testimonials),
                 Contact =      DeserializeOrDefault<ContactSettingsViewModel>(dto.Contact),
+                Faq =          DeserializeOrDefault<FaqSettingsViewModel>(dto.Faq),
             };
         }
 
@@ -545,6 +546,7 @@ namespace DAKKN.MVC.Controllers
                 Products =     System.Text.Json.JsonSerializer.Serialize(model.Products),
                 Testimonials = System.Text.Json.JsonSerializer.Serialize(model.Testimonials),
                 Contact =      System.Text.Json.JsonSerializer.Serialize(model.Contact),
+                Faq =          System.Text.Json.JsonSerializer.Serialize(model.Faq),
             };
         }
 

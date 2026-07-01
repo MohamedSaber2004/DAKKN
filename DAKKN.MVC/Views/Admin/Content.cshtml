@@ -29,6 +29,10 @@
                     <span class="material-symbols-outlined">forum</span>
                     <span class="font-body-lg">@Localizer["section_testimonials"]</span>
                 </button>
+                <button onclick="switchTab('faq')" id="tab-faq" class="content-tab-btn flex items-center gap-md p-3 rounded-xl transition-all duration-200 text-left rtl:text-right w-full">
+                    <span class="material-symbols-outlined">help_center</span>
+                    <span class="font-body-lg">@Localizer["section_faq"]</span>
+                </button>
                 <button onclick="switchTab('contact-info')" id="tab-contact-info" class="content-tab-btn flex items-center gap-md p-3 rounded-xl transition-all duration-200 text-left rtl:text-right w-full">
                     <span class="material-symbols-outlined">contact_support</span>
                     <span class="font-body-lg">@Localizer["section_contact"]</span>
@@ -375,6 +379,124 @@
             </p>
         </div>
 
+        <!-- Section: FAQ -->
+        <div id="panel-faq" class="content-panel hidden bg-surface dark:bg-[#1E293B] rounded-[32px] shadow-medium border border-admin-border dark:border-white/5 p-xl">
+            <div class="flex justify-between items-center mb-xl">
+                <div>
+                    <h2 class="font-h2 text-h2 font-bold">@Localizer["section_faq"]</h2>
+                    <p class="text-admin-secondary">@Localizer["admin_faq_desc"]</p>
+                </div>
+                <button onclick="saveFaqSection()" class="bg-primary text-on-primary px-xl py-md rounded-full font-bold">@Localizer["admin_save_changes"]</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-xl">
+                <div class="flex flex-col gap-xs">
+                    <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_faq_title"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_ar_marker"]</span></label>
+                    <input id="faq-title-ar" type="text" value="@Model.Faq.TitleAr" placeholder="@Localizer["admin_content_ph_faq_title_ar"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">
+                </div>
+                <div class="flex flex-col gap-xs">
+                    <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_faq_title"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_en_marker"]</span></label>
+                    <input id="faq-title-en" type="text" value="@Model.Faq.TitleEn" placeholder="@Localizer["admin_content_ph_faq_title_en"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-xl">
+                <div class="flex flex-col gap-xs">
+                    <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_faq_desc"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_ar_marker"]</span></label>
+                    <textarea id="faq-desc-ar" rows="2" placeholder="@Localizer["admin_content_ph_faq_desc_ar"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">@Model.Faq.DescriptionAr</textarea>
+                </div>
+                <div class="flex flex-col gap-xs">
+                    <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_faq_desc"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_en_marker"]</span></label>
+                    <textarea id="faq-desc-en" rows="2" placeholder="@Localizer["admin_content_ph_faq_desc_en"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">@Model.Faq.DescriptionEn</textarea>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-xl">
+                <div class="flex flex-col gap-xs">
+                    <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_faq_display_limit"]</label>
+                    <input id="faq-display-limit" type="number" min="1" max="20" value="@Model.Faq.DisplayLimit" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">
+                </div>
+                <div class="flex flex-col gap-xs">
+                    <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_faq_auto_fetch"]</label>
+                    <div class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="faq-auto-fetch" class="sr-only peer" @(Model.Faq.AutoFetchFromSupport ? "checked" : "")>
+                        <div class="w-11 h-6 bg-admin-border dark:bg-white/10 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/30 after:content-[''] after:absolute after:top-0.5 after:start-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full"></div>
+                    </div>
+                    <span class="ltr:ml-2 rtl:mr-2 text-sm font-medium text-admin-secondary dark:text-slate-400">@Localizer["admin_faq_auto_fetch_desc"]</span>
+                </div>
+            </div>
+
+<p class="text-xs text-admin-muted mt-md flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">info</span>
+                @Localizer["admin_testimonials_dynamic_hint"]
+            </p>
+        </div>
+
+        <!-- Section: FAQ -->
+        <div id="panel-faq" class="content-panel hidden bg-surface dark:bg-[#1E293B] rounded-[32px] shadow-medium border border-admin-border dark:border-white/5 p-xl">
+            <div class="flex justify-between items-center mb-xl">
+                <div>
+                    <h2 class="font-h2 text-h2 font-bold">@Localizer["section_faq"]</h2>
+                    <p class="text-admin-secondary">@Localizer["admin_faq_desc"]</p>
+                </div>
+                <button onclick="saveFaqSection()" class="bg-primary text-on-primary px-xl py-md rounded-full font-bold">@Localizer["admin_save_changes"]</button>
+            </div>
+
+            <!-- Language Tabs -->
+            <div class="flex gap-sm mb-xl border-b border-admin-border dark:border-white/5 pb-sm">
+                <button onclick="switchFaqLang('ar')" id="faq-lang-ar" class="faq-lang-tab active px-lg py-md rounded-xl font-bold text-sm transition-all">@Localizer["admin_hero_lang_ar"]</button>
+                <button onclick="switchFaqLang('en')" id="faq-lang-en" class="faq-lang-tab px-lg py-md rounded-xl font-bold text-sm transition-all">@Localizer["admin_hero_lang_en"]</button>
+            </div>
+
+            <div class="space-y-xl">
+                <!-- Arabic Fields -->
+                <div id="faq-fields-ar" class="faq-lang-fields">
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_faq_title"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_ar_marker"]</span></label>
+                        <input id="faq-title-ar" type="text" value="@Model.Faq.TitleAr" placeholder="@Localizer["admin_faq_title_ph"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md focus:ring-primary focus:border-primary transition-all">
+                    </div>
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_faq_description"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_ar_marker"]</span></label>
+                        <textarea id="faq-desc-ar" rows="3" placeholder="@Localizer["admin_faq_description_ph"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">@Model.Faq.DescriptionAr</textarea>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+                        <div class="flex flex-col gap-xs">
+                            <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_faq_display_limit"]</label>
+                            <input id="faq-display-limit" type="number" min="1" max="20" value="@Model.Faq.DisplayLimit" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md focus:ring-primary focus:border-primary transition-all max-w-xs">
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" id="faq-auto-fetch" class="w-5 h-5 rounded border-admin-border dark:border-white/10 text-primary focus:ring-primary" @(Model.Faq.AutoFetchFromSupport ? "checked" : "")>
+                            <label for="faq-auto-fetch" class="text-sm font-bold text-admin-primary dark:text-white">@Localizer["admin_faq_auto_fetch"]</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- English Fields -->
+                <div id="faq-fields-en" class="faq-lang-fields hidden">
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_faq_title"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_en_marker"]</span></label>
+                        <input id="faq-title-en" type="text" value="@Model.Faq.TitleEn" placeholder="@Localizer["admin_faq_title_ph"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md focus:ring-primary focus:border-primary transition-all">
+                    </div>
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_faq_description"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_en_marker"]</span></label>
+                        <textarea id="faq-desc-en" rows="3" placeholder="@Localizer["admin_faq_description_ph"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">@Model.Faq.DescriptionEn</textarea>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+                        <div class="flex flex-col gap-xs">
+                            <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_faq_display_limit"]</label>
+                            <input id="faq-display-limit-en" type="number" min="1" max="20" value="@Model.Faq.DisplayLimit" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md focus:ring-primary focus:border-primary transition-all max-w-xs">
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="checkbox" id="faq-auto-fetch-en" class="w-5 h-5 rounded border-admin-border dark:border-white/10 text-primary focus:ring-primary" @(Model.Faq.AutoFetchFromSupport ? "checked" : "")>
+                            <label for="faq-auto-fetch-en" class="text-sm font-bold text-admin-primary dark:text-white">@Localizer["admin_faq_auto_fetch"]</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="saveFaqSection()" class="mt-xl bg-primary text-on-primary px-xl py-md rounded-full font-bold">@Localizer["admin_save_changes"]</button>
+        </div>
+
         <!-- Section: Contact Info -->
         <div id="panel-contact-info" class="content-panel hidden bg-surface dark:bg-[#1E293B] rounded-[32px] shadow-medium border border-admin-border dark:border-white/5 p-xl">
             <h2 class="font-h2 text-h2 font-bold mb-xl">@Localizer["section_contact"]</h2>
@@ -440,22 +562,22 @@
         font-variation-settings: 'FILL' 1;
     }
 
-    .hero-lang-tab, .about-lang-tab {
+    .hero-lang-tab, .about-lang-tab, .faq-lang-tab {
         color: var(--admin-text-secondary, #475569);
         border: 1px solid transparent;
     }
-    .dark .hero-lang-tab, .dark .about-lang-tab {
+    .dark .hero-lang-tab, .dark .about-lang-tab, .dark .faq-lang-tab {
         color: #94a3b8;
     }
-    .hero-lang-tab:hover, .about-lang-tab:hover {
+    .hero-lang-tab:hover, .about-lang-tab:hover, .faq-lang-tab:hover {
         background-color: rgba(var(--primary-rgb, 14, 144, 140), 0.08);
         color: var(--primary-color, #0E908C);
     }
-    .dark .hero-lang-tab:hover, .dark .about-lang-tab:hover {
+    .dark .hero-lang-tab:hover, .dark .about-lang-tab:hover, .dark .faq-lang-tab:hover {
         background-color: rgba(255, 255, 255, 0.06);
         color: #ffffff;
     }
-    .hero-lang-tab.active, .about-lang-tab.active {
+    .hero-lang-tab.active, .about-lang-tab.active, .faq-lang-tab.active {
         background-color: var(--primary-color, #0E908C) !important;
         color: #ffffff !important;
         border-color: var(--primary-color, #0E908C) !important;
@@ -501,6 +623,7 @@
             'shop': 'section-order',
             'all-products': 'section-order',
             'testimonials': 'customer-stories',
+            'faq': 'faq',
             'contact': 'contact-info'
         };
 
@@ -600,6 +723,13 @@
             document.getElementById('hero-lang-' + lang).classList.add('active');
             document.querySelectorAll('.hero-lang-fields').forEach(f => f.classList.add('hidden'));
             document.getElementById('hero-fields-' + lang).classList.remove('hidden');
+        }
+
+        function switchFaqLang(lang) {
+            document.querySelectorAll('.faq-lang-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('faq-lang-' + lang).classList.add('active');
+            document.querySelectorAll('.faq-lang-fields').forEach(f => f.classList.add('hidden'));
+            document.getElementById('faq-fields-' + lang).classList.remove('hidden');
         }
 
         function collectHeroData() {
@@ -710,6 +840,20 @@
                     email: document.getElementById('contact-email')?.value || '',
                     phone: document.getElementById('contact-phone')?.value || '',
                     address: document.getElementById('contact-address')?.value || ''
+                }
+            };
+            postCmsData(data);
+        }
+
+        function saveFaqSection() {
+            const data = {
+                faq: {
+                    titleAr: document.getElementById('faq-title-ar')?.value || '',
+                    titleEn: document.getElementById('faq-title-en')?.value || '',
+                    descriptionAr: document.getElementById('faq-desc-ar')?.value || '',
+                    descriptionEn: document.getElementById('faq-desc-en')?.value || '',
+                    displayLimit: parseInt(document.getElementById('faq-display-limit')?.value) || 6,
+                    autoFetchFromSupport: document.getElementById('faq-auto-fetch')?.checked || false
                 }
             };
             postCmsData(data);

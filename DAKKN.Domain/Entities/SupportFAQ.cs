@@ -12,7 +12,7 @@ namespace DAKKN.Domain.Entities
         public int DisplayOrder { get; set; }
         public bool IsPublished { get; set; } = true;
 
-        public SupportFAQCategory Category { get; set; } = null!;
+        public SupportCategory Category { get; set; } = null!;
 
         public static SupportFAQ Create(string question, string arQuestion, string answer, string arAnswer,
             Guid categoryId, int displayOrder = 0)

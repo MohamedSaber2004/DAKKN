@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DAKKN.Application.Features.Support.Queries.GetFAQCategories
 {
-    public class GetFAQCategoriesQueryHandler : IRequestHandler<GetFAQCategoriesQuery, List<SupportFAQCategoryDto>>
+    public class GetFAQCategoriesQueryHandler : IRequestHandler<GetFAQCategoriesQuery, List<SupportCategoryDto>>
     {
         private readonly IUnitOfWork _unitOfWork;
 
@@ -15,21 +15,20 @@ namespace DAKKN.Application.Features.Support.Queries.GetFAQCategories
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<List<SupportFAQCategoryDto>> Handle(GetFAQCategoriesQuery request, CancellationToken ct)
+        public async Task<List<SupportCategoryDto>> Handle(GetFAQCategoriesQuery request, CancellationToken ct)
         {
-            return await _unitOfWork.GetRepository<SupportFAQCategory>()
+            return await _unitOfWork.GetRepository<SupportCategory>()
                 .GetAllAsync(c => c.IsActive)
-                .Include(c => c.FAQs)
                 .OrderBy(c => c.DisplayOrder)
-                .Select(c => new SupportFAQCategoryDto
+                .Select(c => new SupportCategoryDto
                 {
                     Id = c.Id,
                     Name = c.Name,
                     ArName = c.ArName,
+                    Description = c.Description,
                     Icon = c.Icon,
                     DisplayOrder = c.DisplayOrder,
-                    IsActive = c.IsActive,
-                    FAQCount = c.FAQs.Count(f => f.IsPublished)
+                    IsActive = c.IsActive
                 }).ToListAsync(ct);
         }
     }

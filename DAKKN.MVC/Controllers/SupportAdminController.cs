@@ -342,16 +342,9 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpGet("support/faqs/create")]
-        public async Task<IActionResult> CreateFAQ()
+        public IActionResult CreateFAQ()
         {
-            ViewData["Title"] = _localizer[LocalizationKeys.Support.Dashboard.Value];
-            var faqCategories = await _mediator.Send(new GetFAQCategoriesQuery());
-            ViewBag.Categories = faqCategories.Select(c => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = c.Name
-            }).ToList();
-            return View();
+            return RedirectToAction(nameof(FAQs));
         }
 
         [HttpPost("support/faqs/create")]
@@ -360,120 +353,52 @@ namespace DAKKN.MVC.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var catgories = await _mediator.Send(new GetFAQCategoriesQuery());
-                ViewBag.Categories = catgories.Select(c => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
-                {
-                    Value = c.Id.ToString(),
-                    Text = c.Name
-                }).ToList();
-                return View(command);
+                TempData["ErrorMessage"] = _localizer[LocalizationKeys.ExceptionMessages.InvalidModelState.Value].Value;
+                return RedirectToAction(nameof(FAQs));
             }
 
             try
             {
                 await _mediator.Send(command);
                 TempData["SuccessMessage"] = _localizer[LocalizationKeys.ActionResultMessage.Created.Value].Value;
-                return RedirectToAction(nameof(FAQs));
             }
-            catch (ValidationException ex)
+            catch (Exception ex) when (ex is ValidationException or BadRequestException)
             {
-                foreach (var kvp in ex.Errors)
-                {
-                    foreach (var error in kvp.Value)
-                    {
-                        ModelState.AddModelError(kvp.Key, error);
-                    }
-                }
-            }
-            catch (BadRequestException ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
+                TempData["ErrorMessage"] = ex.Message;
             }
 
-            var createCat = await _mediator.Send(new GetFAQCategoriesQuery());
-            ViewBag.Categories = createCat.Select(c => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = c.Name
-            }).ToList();
-            return View(command);
+            return RedirectToAction(nameof(FAQs));
         }
 
         [HttpGet("support/faqs/edit/{id:guid}")]
-        public async Task<IActionResult> EditFAQ(Guid id)
+        public IActionResult EditFAQ(Guid id)
         {
-            ViewData["Title"] = _localizer[LocalizationKeys.Support.Dashboard.Value];
-            var faqs = await _mediator.Send(new GetFAQsQuery(OnlyPublished: false));
-            var faq = faqs.FirstOrDefault(f => f.Id == id);
-            if (faq == null)
-                return NotFound();
-
-            var command = new UpdateFAQCommand
-            {
-                Id = faq.Id,
-                Question = faq.Question,
-                ArQuestion = faq.ArQuestion,
-                Answer = faq.Answer,
-                ArAnswer = faq.ArAnswer,
-                CategoryId = faq.CategoryId,
-                DisplayOrder = faq.DisplayOrder,
-                IsPublished = faq.IsPublished
-            };
-
-            var editCategories = await _mediator.Send(new GetFAQCategoriesQuery());
-            ViewBag.Categories = editCategories.Select(c => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = c.Name
-            }).ToList();
-            return View(command);
+            return RedirectToAction(nameof(FAQs));
         }
 
         [HttpPost("support/faqs/edit/{id:guid}")]
-        [ValidateAntiForgeryToken]
+[ValidateAntiForgeryToken]
         public async Task<IActionResult> EditFAQ(Guid id, UpdateFAQCommand command)
         {
             command.Id = id;
 
             if (!ModelState.IsValid)
             {
-                var editCat = await _mediator.Send(new GetFAQCategoriesQuery());
-                ViewBag.Categories = editCat.Select(c => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
-                {
-                    Value = c.Id.ToString(),
-                    Text = c.Name
-                }).ToList();
-                return View(command);
+                TempData["ErrorMessage"] = _localizer[LocalizationKeys.ExceptionMessages.InvalidModelState.Value].Value;
+                return RedirectToAction(nameof(FAQs));
             }
 
             try
             {
                 await _mediator.Send(command);
                 TempData["SuccessMessage"] = _localizer[LocalizationKeys.ActionResultMessage.Ok.Value].Value;
-                return RedirectToAction(nameof(FAQs));
             }
-            catch (ValidationException ex)
+            catch (Exception ex) when (ex is ValidationException or BadRequestException)
             {
-                foreach (var kvp in ex.Errors)
-                {
-                    foreach (var error in kvp.Value)
-                    {
-                        ModelState.AddModelError(kvp.Key, error);
-                    }
-                }
-            }
-            catch (BadRequestException ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
+                TempData["ErrorMessage"] = ex.Message;
             }
 
-            var editCat2 = await _mediator.Send(new GetFAQCategoriesQuery());
-            ViewBag.Categories = editCat2.Select(c => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
-            {
-                Value = c.Id.ToString(),
-                Text = c.Name
-            }).ToList();
-            return View(command);
+            return RedirectToAction(nameof(FAQs));
         }
 
         [HttpPost("support/faqs/delete/{id:guid}")]

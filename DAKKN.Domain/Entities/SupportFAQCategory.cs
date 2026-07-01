@@ -10,8 +10,6 @@ namespace DAKKN.Domain.Entities
         public int DisplayOrder { get; set; }
         public bool IsActive { get; set; } = true;
 
-        public ICollection<SupportFAQ> FAQs { get; set; } = new List<SupportFAQ>();
-
         public static SupportFAQCategory Create(string name, string arName, string? icon = null, int displayOrder = 0)
         {
             return new SupportFAQCategory

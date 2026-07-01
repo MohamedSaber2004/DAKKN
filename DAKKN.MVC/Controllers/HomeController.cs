@@ -5,6 +5,8 @@ using DAKKN.Application.Features.Products.Queries.GetFeaturedProducts;
 using DAKKN.Application.Features.Products.Queries.GetProducts;
 using DAKKN.Application.Features.BrandReviews.DTOs;
 using DAKKN.Application.Features.BrandReviews.Queries.GetDisplayedBrandReviews;
+using DAKKN.Application.Features.Support.DTOs;
+using DAKKN.Application.Features.Support.Queries.GetFAQs;
 using DAKKN.Application.Localization;
 using DAKKN.MVC.Helpers;
 using DAKKN.MVC.Models;
@@ -52,9 +54,11 @@ namespace DAKKN.MVC.Controllers
             var hasCmsData = IsSectionHasData(cmsSettings.Hero)
                 || IsSectionHasData(cmsSettings.About)
                 || IsSectionHasData(cmsSettings.Testimonials)
-                || IsSectionHasData(cmsSettings.Contact);
+                || IsSectionHasData(cmsSettings.Contact)
+                || IsSectionHasData(cmsSettings.Faq);
 
             var sectionOrder = DeserializeOrDefault<SectionOrderViewModel>(cmsSettings.SectionOrder);
+            EnsureDefaultSections(sectionOrder);
             var visibleSections = sectionOrder.Sections
                 .Where(s => s.IsVisible)
                 .Select(s => s.Id)
@@ -69,6 +73,14 @@ namespace DAKKN.MVC.Controllers
 
             var stats = await _mediator.Send(new GetDashboardStatsQuery());
 
+            var faqSettings = DeserializeOrDefault<FaqSettingsViewModel>(cmsSettings.Faq);
+            List<SupportFAQDto> faqItems = new();
+            if (faqSettings.AutoFetchFromSupport)
+            {
+                var supportFaqs = await _mediator.Send(new GetFAQsQuery());
+                faqItems = supportFaqs.Take(faqSettings.DisplayLimit).ToList();
+            }
+
             var viewModel = new LandingPageViewModel
             {
                 FeaturedProducts = featuredProducts,
@@ -78,6 +90,8 @@ namespace DAKKN.MVC.Controllers
                 About = AboutHelper.Deserialize(cmsSettings.About),
                 Testimonials = MergeTestimonials(DeserializeOrDefault<TestimonialsSettingsViewModel>(cmsSettings.Testimonials), brandReviews),
                 Contact = DeserializeOrDefault<ContactSettingsViewModel>(cmsSettings.Contact),
+                Faq = faqSettings,
+                FaqItems = faqItems,
                 HasCmsData = hasCmsData,
                 VisibleSections = visibleSections,
                 OrderedSectionIds = orderedSectionIds,
@@ -128,6 +142,18 @@ namespace DAKKN.MVC.Controllers
             catch
             {
                 return new T();
+            }
+        }
+
+        private static void EnsureDefaultSections(SectionOrderViewModel sectionOrder)
+        {
+            var defaultSections = new SectionOrderViewModel().Sections;
+            foreach (var defaultSection in defaultSections)
+            {
+                if (!sectionOrder.Sections.Any(s => s.Id == defaultSection.Id))
+                {
+                    sectionOrder.Sections.Add(defaultSection);
+                }
             }
         }
 
