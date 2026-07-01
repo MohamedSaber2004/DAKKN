@@ -9,11 +9,13 @@ using DAKKN.Application.Features.Cart.Queries.GetCart;
 using DAKKN.Application.Features.Cart.Queries.GetCartCount;
 using DAKKN.Application.Localization;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 
 namespace DAKKN.Appearence.Controllers.APIs.V1
 {
+    [AllowAnonymous]
     [ApiVersion("1.0")]
     public class CartController : BaseApiController
     {

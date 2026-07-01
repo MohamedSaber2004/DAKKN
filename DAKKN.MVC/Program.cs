@@ -447,6 +447,8 @@ namespace DAKKN.MVC
 
             app.UseRouting();
 
+            app.UseCors("CQRS");
+
             app.UseSession();
 
             app.UseRateLimiter();

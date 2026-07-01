@@ -1,17 +1,22 @@
 User-agent: *
+
+# Allow public-facing pages
 Allow: /
-Allow: /shop
-Allow: /home
+Allow: /shop/
+Allow: /shop/products
+Allow: /shop/product/
 Allow: /about
 Allow: /privacy
 Allow: /terms
+Allow: /sitemap.xml
 
-# Block private/admin areas from crawlers
-Disallow: /admin
-Disallow: /customer
-Disallow: /auth
+# Block private/admin/auth areas from crawlers
+Disallow: /admin/
+Disallow: /customer/
+Disallow: /auth/
 Disallow: /api/
 Disallow: /health
 Disallow: /files/uploads/users/
+Disallow: /uploads/users/
 
 Sitemap: https://dakkn.runasp.net/sitemap.xml

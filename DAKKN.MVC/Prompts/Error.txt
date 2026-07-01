@@ -1,5 +1,27 @@
-﻿Ownership verification failed
-Verification method:
-Domain name provider
-Failure reason:
-We couldn't find your verification token in your domain's TXT records. Sometimes DNS changes can take a while to appear. Please wait a few hours, then reopen your property in Search Console. If verification fails again, try adding a different DNS TXT record.
+﻿:44308/api/v1/catalog/products/featured:1  Failed to load resource: the server responded with a status of 500 ()
+landing.js?v=DU5zBHTaOjVBCSfVo_vOcJQmWzwOjzkY3uPDDt4uc4g:624 Error rendering featured products: Error: HTTP 500
+    at apiFetch (landing.js?v=DU5zBHTaOjVBCSfVo_vOcJQmWzwOjzkY3uPDDt4uc4g:459:24)
+    at async fetchFeaturedProducts (landing.js?v=DU5zBHTaOjVBCSfVo_vOcJQmWzwOjzkY3uPDDt4uc4g:469:18)
+    at async renderFeaturedProducts (landing.js?v=DU5zBHTaOjVBCSfVo_vOcJQmWzwOjzkY3uPDDt4uc4g:591:23)
+    at async applyLang (landing.js?v=DU5zBHTaOjVBCSfVo_vOcJQmWzwOjzkY3uPDDt4uc4g:135:5)
+    at async HTMLDocument.<anonymous> (landing.js?v=DU5zBHTaOjVBCSfVo_vOcJQmWzwOjzkY3uPDDt4uc4g:200:9)
+renderFeaturedProducts @ landing.js?v=DU5zBHTaOjVBCSfVo_vOcJQmWzwOjzkY3uPDDt4uc4g:624
+:44308/api/v1/cart/count:1  Failed to load resource: the server responded with a status of 500 ()
+:44308/api/v1/catalog/categories:1  Failed to load resource: the server responded with a status of 500 ()
+landing.js?v=DU5zBHTaOjVBCSfVo_vOcJQmWzwOjzkY3uPDDt4uc4g:669 Error rendering categories: Error: HTTP 500
+    at apiFetch (landing.js?v=DU5zBHTaOjVBCSfVo_vOcJQmWzwOjzkY3uPDDt4uc4g:459:24)
+    at async fetchCategories (landing.js?v=DU5zBHTaOjVBCSfVo_vOcJQmWzwOjzkY3uPDDt4uc4g:464:18)
+    at async renderCategoriesSlider (landing.js?v=DU5zBHTaOjVBCSfVo_vOcJQmWzwOjzkY3uPDDt4uc4g:644:26)
+    at async applyLang (landing.js?v=DU5zBHTaOjVBCSfVo_vOcJQmWzwOjzkY3uPDDt4uc4g:136:5)
+    at async HTMLDocument.<anonymous> (landing.js?v=DU5zBHTaOjVBCSfVo_vOcJQmWzwOjzkY3uPDDt4uc4g:200:9)
+renderCategoriesSlider @ landing.js?v=DU5zBHTaOjVBCSfVo_vOcJQmWzwOjzkY3uPDDt4uc4g:669
+:44308/api/v1/catalog/products/price-range:1  Failed to load resource: the server responded with a status of 500 ()
+:44308/api/v1/catalog/products?pageNumber=1&pageSize=8:1  Failed to load resource: the server responded with a status of 500 ()
+landing.js?v=DU5zBHTaOjVBCSfVo_vOcJQmWzwOjzkY3uPDDt4uc4g:730 Error rendering all products: Error: HTTP 500
+    at apiFetch (landing.js?v=DU5zBHTaOjVBCSfVo_vOcJQmWzwOjzkY3uPDDt4uc4g:459:24)
+    at async fetchProducts (landing.js?v=DU5zBHTaOjVBCSfVo_vOcJQmWzwOjzkY3uPDDt4uc4g:477:18)
+    at async renderAllProducts (landing.js?v=DU5zBHTaOjVBCSfVo_vOcJQmWzwOjzkY3uPDDt4uc4g:704:24)
+    at async applyLang (landing.js?v=DU5zBHTaOjVBCSfVo_vOcJQmWzwOjzkY3uPDDt4uc4g:139:5)
+    at async HTMLDocument.<anonymous> (landing.js?v=DU5zBHTaOjVBCSfVo_vOcJQmWzwOjzkY3uPDDt4uc4g:200:9)
+renderAllProducts @ landing.js?v=DU5zBHTaOjVBCSfVo_vOcJQmWzwOjzkY3uPDDt4uc4g:730
+[NEW] Explain Console errors by using Copilot in Edge: click  to explain an

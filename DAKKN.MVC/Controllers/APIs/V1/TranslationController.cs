@@ -1,11 +1,13 @@
-﻿using Asp.Versioning;
+using Asp.Versioning;
 using DAKKN.Appearence.Routes;
 using DAKKN.Application.Localization;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DAKKN.Appearence.Controllers.APIs.V1
 {
+    [AllowAnonymous]
     [ApiVersion("1.0")]
     public class TranslationController: BaseApiController
     {

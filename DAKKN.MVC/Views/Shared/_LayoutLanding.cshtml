@@ -2,14 +2,16 @@
 @{
     var culture = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("en") ? "en" : "ar";
     var dir = culture == "ar" ? "rtl" : "ltr";
+    var baseUrl = $"{Context.Request.Scheme}://{Context.Request.Host}";
 }
 <!DOCTYPE html>
 <html lang="@culture" dir="@dir" id="html-root" data-dakkn-loading="true" style="--primary-color: #0E908C; --primary-rgb: 14, 144, 140;">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    @* <meta name="google-site-verification" content="KExNmmPDKOUIfyg_MDdUD5w0J3o8K2lRmYdiS2M9Pts" /> *@
-    <title>@ViewData["Title"]</title>
+    <meta name="google-site-verification" content="KExNmmPDKOUIfyg_MDdUD5w0J3o8K2lRmYdiS2M9Pts" />
+    <meta name="robots" content="index, follow" />
+    <title>@(ViewData["Title"] != null ? ViewData["Title"] + " | DAKKN" : "DAKKN — ملصقات فينيل عالية الجودة")</title>
     <link rel="icon" type="image/x-icon" href="~/favicon.ico" asp-append-version="true" />
     @* <link rel="icon" type="image/png" sizes="32x32" href="~/favicon.png" />
     <link rel="apple-touch-icon" href="~/images/logo.png" /> *@
@@ -18,8 +20,8 @@
     @{
         var ogTitle = ViewData["Title"]?.ToString() ?? "DAKKN — ملصقات فينيل عالية الجودة";
         var ogDesc  = ViewData["Description"]?.ToString() ?? Localizer["hero_p"].ToString();
-        var ogImage = ViewData["OgImage"]?.ToString() ?? $"{Context.Request.Scheme}://{Context.Request.Host}/images/og-banner.png";
-        var ogUrl   = $"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}";
+        var ogImage = ViewData["OgImage"]?.ToString() ?? $"{baseUrl}/images/og-banner.png";
+        var ogUrl   = $"{baseUrl}{Context.Request.Path}";
     }
 
     <!-- Open Graph -->
@@ -39,6 +41,51 @@
 
     <!-- Canonical URL -->
     <link rel="canonical" href="@ogUrl" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@graph": [
+            {
+                "@@type": "Organization",
+                "@@id": "@baseUrl/#organization",
+                "name": "DAKKN",
+                "url": "@baseUrl",
+                "logo": {
+                    "@@type": "ImageObject",
+                    "url": "@baseUrl/images/logo.png",
+                    "width": 256,
+                    "height": 256
+                },
+                "sameAs": [],
+                "contactPoint": {
+                    "@@type": "ContactPoint",
+                    "telephone": "+20-XXX-XXXXXXX",
+                    "contactType": "customer service",
+                    "availableLanguage": ["Arabic", "English"]
+                }
+            },
+            {
+                "@@type": "WebSite",
+                "@@id": "@baseUrl/#website",
+                "url": "@baseUrl",
+                "name": "DAKKN",
+                "description": "@ogDesc",
+                "publisher": { "@@id": "@baseUrl/#organization" },
+                "potentialAction": {
+                    "@@type": "SearchAction",
+                    "target": {
+                        "@@type": "EntryPoint",
+                        "urlTemplate": "@baseUrl/shop/products?search={search_term_string}"
+                    },
+                    "query-input": "required name=search_term_string"
+                },
+                "inLanguage": "@(culture == "ar" ? "ar-SA" : "en-US")"
+            }
+        ]
+    }
+    </script>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />

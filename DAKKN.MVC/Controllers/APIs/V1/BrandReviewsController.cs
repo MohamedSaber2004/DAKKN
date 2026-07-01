@@ -13,6 +13,7 @@ using DAKKN.Application.Features.BrandReviews.Queries.GetCustomerBrandReviews;
 using DAKKN.Application.Features.BrandReviews.Queries.GetDisplayedBrandReviews;
 using DAKKN.Domain.Enums;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -24,6 +25,7 @@ namespace DAKKN.Appearence.Controllers.APIs.V1
         public BrandReviewsController(IMediator mediator) : base(mediator) { }
 
         [HttpGet]
+        [AllowAnonymous]
         [Route(ApiRoutes.BrandReviews.Displayed)]
         public async Task<IActionResult> GetDisplayed()
         {

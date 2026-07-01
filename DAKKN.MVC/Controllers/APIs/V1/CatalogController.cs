@@ -6,10 +6,12 @@ using DAKKN.Application.Features.Products.Queries.GetFeaturedProducts;
 using DAKKN.Application.Features.Products.Queries.GetPriceRange;
 using DAKKN.Application.Features.Products.Queries.GetProducts;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DAKKN.Appearence.Controllers.APIs.V1
 {
+    [AllowAnonymous]
     [ApiVersion("1.0")]
     public class CatalogController : BaseApiController
     {
