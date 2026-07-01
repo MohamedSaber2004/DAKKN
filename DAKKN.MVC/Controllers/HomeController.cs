@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Extensions.Localization;
 using System.Diagnostics;
+using System.Text;
 
 namespace DAKKN.MVC.Controllers
 {
@@ -194,35 +195,66 @@ namespace DAKKN.MVC.Controllers
 
         [ResponseCache(Duration = 86400, Location = ResponseCacheLocation.Any)]
         [Route("sitemap.xml")]
-        public IActionResult Sitemap()
+        public async Task<IActionResult> Sitemap()
         {
             var baseUrl = $"{Request.Scheme}://{Request.Host}";
-            var lastModified = DateTime.UtcNow.ToString("yyyy-MM-dd");
 
-            var urls = new[]
-            {
-                new { loc = $"{baseUrl}/",       priority = "1.0", changefreq = "weekly"  },
-                new { loc = $"{baseUrl}/shop",    priority = "0.9", changefreq = "daily"   },
-                new { loc = $"{baseUrl}/about",   priority = "0.7", changefreq = "monthly" },
-                new { loc = $"{baseUrl}/privacy", priority = "0.4", changefreq = "yearly"  },
-                new { loc = $"{baseUrl}/terms",   priority = "0.4", changefreq = "yearly"  },
-            };
+            var categories = await _mediator.Send(new GetCategoriesQuery(null, false, null));
+            var productsResult = await _mediator.Send(new GetProductsQuery(null, null, 1, 5000));
 
-            var xml = new System.Text.StringBuilder();
+            var xml = new StringBuilder();
             xml.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
             xml.AppendLine("<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">");
-            foreach (var url in urls)
+
+            // Static pages
+            var staticUrls = new[]
+            {
+                new { loc = $"{baseUrl}/",       priority = "1.0", changefreq = "weekly",  lastmod = DateTime.UtcNow.ToString("yyyy-MM-dd") },
+                new { loc = $"{baseUrl}/shop",    priority = "0.9", changefreq = "daily",   lastmod = DateTime.UtcNow.ToString("yyyy-MM-dd") },
+                new { loc = $"{baseUrl}/about",   priority = "0.7", changefreq = "monthly", lastmod = DateTime.UtcNow.ToString("yyyy-MM-dd") },
+                new { loc = $"{baseUrl}/privacy", priority = "0.4", changefreq = "yearly",  lastmod = DateTime.UtcNow.ToString("yyyy-MM-dd") },
+                new { loc = $"{baseUrl}/terms",   priority = "0.4", changefreq = "yearly",  lastmod = DateTime.UtcNow.ToString("yyyy-MM-dd") },
+            };
+
+            foreach (var url in staticUrls)
             {
                 xml.AppendLine("  <url>");
                 xml.AppendLine($"    <loc>{url.loc}</loc>");
-                xml.AppendLine($"    <lastmod>{lastModified}</lastmod>");
+                xml.AppendLine($"    <lastmod>{url.lastmod}</lastmod>");
                 xml.AppendLine($"    <changefreq>{url.changefreq}</changefreq>");
                 xml.AppendLine($"    <priority>{url.priority}</priority>");
                 xml.AppendLine("  </url>");
             }
+
+            // Categories
+            foreach (var category in categories.Where(c => !c.IsDeleted))
+            {
+                var lastmod = DateTime.UtcNow.ToString("yyyy-MM-dd");
+                var loc = $"{baseUrl}/shop/products?categoryId={category.Id}";
+                xml.AppendLine("  <url>");
+                xml.AppendLine($"    <loc>{loc}</loc>");
+                xml.AppendLine($"    <lastmod>{lastmod}</lastmod>");
+                xml.AppendLine("    <changefreq>weekly</changefreq>");
+                xml.AppendLine("    <priority>0.8</priority>");
+                xml.AppendLine("  </url>");
+            }
+
+            // Products
+            foreach (var product in productsResult.Items.Where(p => p.IsActive && !p.IsDeleted))
+            {
+                var lastmod = product.UpdatedAt?.ToString("yyyy-MM-dd") ?? product.CreatedAt.ToString("yyyy-MM-dd");
+                var loc = $"{baseUrl}/shop/product/{product.Id}";
+                xml.AppendLine("  <url>");
+                xml.AppendLine($"    <loc>{loc}</loc>");
+                xml.AppendLine($"    <lastmod>{lastmod}</lastmod>");
+                xml.AppendLine("    <changefreq>weekly</changefreq>");
+                xml.AppendLine("    <priority>0.7</priority>");
+                xml.AppendLine("  </url>");
+            }
+
             xml.AppendLine("</urlset>");
 
-            return Content(xml.ToString(), "application/xml", System.Text.Encoding.UTF8);
+            return Content(xml.ToString(), "application/xml", Encoding.UTF8);
         }
     }
 }
