@@ -38,10 +38,12 @@ using DAKKN.Application.Features.CMS.Commands.UpdateLandingPageSettings;
 using DAKKN.Application.Features.CMS.DTOs;
 using DAKKN.Application.Features.CMS.Queries.GetLandingPageSettings;
 using DAKKN.Application.Localization;
+using DAKKN.Application.DTOs;
 using DAKKN.Domain.Enums;
 using DAKKN.MVC.Helpers;
 using DAKKN.MVC.ViewModels.Admin;
 using MediatR;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 using DAKKN.Application.Features.BrandReviews.Queries.GetAdminBrandReviews;
@@ -575,8 +577,18 @@ namespace DAKKN.MVC.Controllers
         {
             ViewData["Title"] = _localizer["admin_settings"];
 
-            var settings = await _mediator.Send(new GetUserSettingsQuery());
-            var inventorySettings = await _mediator.Send(new GetInventorySettingsQuery());
+            UserSettingsDto settings;
+            InventorySettingsDto inventorySettings;
+            try
+            {
+                settings = await _mediator.Send(new GetUserSettingsQuery());
+                inventorySettings = await _mediator.Send(new GetInventorySettingsQuery());
+            }
+            catch
+            {
+                await HttpContext.SignOutAsync();
+                return RedirectToAction("Login", "Auth");
+            }
 
             var viewModel = new AdminSettingsViewModel
             {
@@ -602,13 +614,29 @@ namespace DAKKN.MVC.Controllers
             if (!ModelState.IsValid)
             {
                 ViewData["Title"] = _localizer["admin_settings"];
-                var inventorySettings = await _mediator.Send(new GetInventorySettingsQuery());
-                ViewData["GlobalDangerQuantity"] = inventorySettings.GlobalDangerQuantity;
+                try
+                {
+                    var inventorySettings = await _mediator.Send(new GetInventorySettingsQuery());
+                    ViewData["GlobalDangerQuantity"] = inventorySettings.GlobalDangerQuantity;
+                }
+                catch
+                {
+                    ViewData["GlobalDangerQuantity"] = 10;
+                }
                 return View(model);
             }
 
             // Get current settings to check if language changed
-            var currentSettings = await _mediator.Send(new GetUserSettingsQuery());
+            UserSettingsDto currentSettings;
+            try
+            {
+                currentSettings = await _mediator.Send(new GetUserSettingsQuery());
+            }
+            catch
+            {
+                await HttpContext.SignOutAsync();
+                return RedirectToAction("Login", "Auth");
+            }
 
             await _mediator.Send(new UpdateUserSettingsCommand(
                 model.FullName,

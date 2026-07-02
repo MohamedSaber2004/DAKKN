@@ -1,8 +1,4 @@
-﻿
-Remote:             
-Remote:      (?) Learn how to resolve a blocked push        
-Remote:      https://docs.github.com/code-security/secret-scanning/working-with-secret-scanning-and-push-protection/working-with-push-protection-from-the-command-line#resolving-a-blocked-push        
-Remote:             
+﻿ 
 Remote:             
 Remote:       —— Google OAuth Client ID ————————————————————————————        
 Remote:        locations:        
@@ -29,46 +25,19 @@ failed to push some refs to 'https://github.com/MohamedSaber2004/DAKKN.git'
 
 Error encountered while pushing to the remote repository: Failed to push to the remote repository. See the Output window for more details.
 Failed to push to the remote repository. See the Output window for more details.
-Commit d06ff67f created locally in repository E:\DAKKN
 Pushing master
-Enumerating objects: 95, done.
+Everything up-to-date
+Commit f0478e00 created locally in repository E:\DAKKN
+Pushing master
+Enumerating objects: 9, done.
 Delta compression using up to 4 threads
-Total 45 (delta 33), reused 0 (delta 0), pack-reused 0 (from 0)
-Remote: Resolving deltas:   0% (0/33)        
-Remote: Resolving deltas:   3% (1/33)        
-Remote: Resolving deltas:   6% (2/33)        
-Remote: Resolving deltas:   9% (3/33)        
-Remote: Resolving deltas:  12% (4/33)        
-Remote: Resolving deltas:  15% (5/33)        
-Remote: Resolving deltas:  18% (6/33)        
-Remote: Resolving deltas:  21% (7/33)        
-Remote: Resolving deltas:  24% (8/33)        
-Remote: Resolving deltas:  27% (9/33)        
-Remote: Resolving deltas:  30% (10/33)        
-Remote: Resolving deltas:  33% (11/33)        
-Remote: Resolving deltas:  36% (12/33)        
-Remote: Resolving deltas:  39% (13/33)        
-Remote: Resolving deltas:  42% (14/33)        
-Remote: Resolving deltas:  45% (15/33)        
-Remote: Resolving deltas:  48% (16/33)        
-Remote: Resolving deltas:  51% (17/33)        
-Remote: Resolving deltas:  54% (18/33)        
-Remote: Resolving deltas:  57% (19/33)        
-Remote: Resolving deltas:  60% (20/33)        
-Remote: Resolving deltas:  63% (21/33)        
-Remote: Resolving deltas:  66% (22/33)        
-Remote: Resolving deltas:  69% (23/33)        
-Remote: Resolving deltas:  72% (24/33)        
-Remote: Resolving deltas:  75% (25/33)        
-Remote: Resolving deltas:  78% (26/33)        
-Remote: Resolving deltas:  81% (27/33)        
-Remote: Resolving deltas:  84% (28/33)        
-Remote: Resolving deltas:  87% (29/33)        
-Remote: Resolving deltas:  90% (30/33)        
-Remote: Resolving deltas:  93% (31/33)        
-Remote: Resolving deltas:  96% (32/33)        
-Remote: Resolving deltas: 100% (33/33)        
-Remote: Resolving deltas: 100% (33/33), completed with 22 local objects.        
+Total 7 (delta 4), reused 0 (delta 0), pack-reused 0 (from 0)
+Remote: Resolving deltas:   0% (0/4)        
+Remote: Resolving deltas:  25% (1/4)        
+Remote: Resolving deltas:  50% (2/4)        
+Remote: Resolving deltas:  75% (3/4)        
+Remote: Resolving deltas: 100% (4/4)        
+Remote: Resolving deltas: 100% (4/4), completed with 2 local objects.        
 Remote: Error: GH013: Repository rule violations found for refs/heads/master.        
 Remote: 
 Remote: - GITHUB PUSH PROTECTION        
@@ -84,7 +53,7 @@ Remote:
 Remote:             
 Remote:       —— Google OAuth Client ID ————————————————————————————        
 Remote:        locations:        
-Remote:          - commit: 5b035bb8bdabea75637a8ac5d0ff0df13b35ab6d        
+Remote:          - commit: f0478e00bb70f8e66e10854762623ebfc9bd51d9        
 Remote:            path: DAKKN.MVC/appsettings.Production.json:92        
 Remote:             
 Remote:        (?) To push, remove secret from commit(s) or follow this URL to allow the secret.        
@@ -93,7 +62,7 @@ Remote:
 Remote:             
 Remote:       —— Google OAuth Client Secret ————————————————————————        
 Remote:        locations:        
-Remote:          - commit: 5b035bb8bdabea75637a8ac5d0ff0df13b35ab6d        
+Remote:          - commit: f0478e00bb70f8e66e10854762623ebfc9bd51d9        
 Remote:            path: DAKKN.MVC/appsettings.Production.json:93        
 Remote:             
 Remote:        (?) To push, remove secret from commit(s) or follow this URL to allow the secret.        
@@ -107,48 +76,19 @@ failed to push some refs to 'https://github.com/MohamedSaber2004/DAKKN.git'
 
 Error encountered while pushing to the remote repository: Failed to push to the remote repository. See the Output window for more details.
 Failed to push to the remote repository. See the Output window for more details.
-Commit 2f130e1b created locally in repository E:\DAKKN
+Commit 3a45ad4d created locally in repository E:\DAKKN
 Pushing master
-Enumerating objects: 98, done.
+Enumerating objects: 13, done.
 Delta compression using up to 4 threads
-Total 48 (delta 35), reused 0 (delta 0), pack-reused 0 (from 0)
-Remote: Resolving deltas:   0% (0/35)        
-Remote: Resolving deltas:   2% (1/35)        
-Remote: Resolving deltas:   5% (2/35)        
-Remote: Resolving deltas:   8% (3/35)        
-Remote: Resolving deltas:  11% (4/35)        
-Remote: Resolving deltas:  14% (5/35)        
-Remote: Resolving deltas:  17% (6/35)        
-Remote: Resolving deltas:  20% (7/35)        
-Remote: Resolving deltas:  22% (8/35)        
-Remote: Resolving deltas:  25% (9/35)        
-Remote: Resolving deltas:  28% (10/35)        
-Remote: Resolving deltas:  31% (11/35)        
-Remote: Resolving deltas:  34% (12/35)        
-Remote: Resolving deltas:  37% (13/35)        
-Remote: Resolving deltas:  40% (14/35)        
-Remote: Resolving deltas:  42% (15/35)        
-Remote: Resolving deltas:  45% (16/35)        
-Remote: Resolving deltas:  48% (17/35)        
-Remote: Resolving deltas:  51% (18/35)        
-Remote: Resolving deltas:  54% (19/35)        
-Remote: Resolving deltas:  57% (20/35)        
-Remote: Resolving deltas:  60% (21/35)        
-Remote: Resolving deltas:  62% (22/35)        
-Remote: Resolving deltas:  65% (23/35)        
-Remote: Resolving deltas:  68% (24/35)        
-Remote: Resolving deltas:  71% (25/35)        
-Remote: Resolving deltas:  74% (26/35)        
-Remote: Resolving deltas:  77% (27/35)        
-Remote: Resolving deltas:  80% (28/35)        
-Remote: Resolving deltas:  82% (29/35)        
-Remote: Resolving deltas:  85% (30/35)        
-Remote: Resolving deltas:  88% (31/35)        
-Remote: Resolving deltas:  91% (32/35)        
-Remote: Resolving deltas:  94% (33/35)        
-Remote: Resolving deltas:  97% (34/35)        
-Remote: Resolving deltas: 100% (35/35)        
-Remote: Resolving deltas: 100% (35/35), completed with 22 local objects.        
+Total 10 (delta 6), reused 0 (delta 0), pack-reused 0 (from 0)
+Remote: Resolving deltas:   0% (0/6)        
+Remote: Resolving deltas:  16% (1/6)        
+Remote: Resolving deltas:  33% (2/6)        
+Remote: Resolving deltas:  50% (3/6)        
+Remote: Resolving deltas:  66% (4/6)        
+Remote: Resolving deltas:  83% (5/6)        
+Remote: Resolving deltas: 100% (6/6)        
+Remote: Resolving deltas: 100% (6/6), completed with 3 local objects.        
 Remote: Error: GH013: Repository rule violations found for refs/heads/master.        
 Remote: 
 Remote: - GITHUB PUSH PROTECTION        
@@ -164,7 +104,7 @@ Remote:
 Remote:             
 Remote:       —— Google OAuth Client ID ————————————————————————————        
 Remote:        locations:        
-Remote:          - commit: 5b035bb8bdabea75637a8ac5d0ff0df13b35ab6d        
+Remote:          - commit: f0478e00bb70f8e66e10854762623ebfc9bd51d9        
 Remote:            path: DAKKN.MVC/appsettings.Production.json:92        
 Remote:             
 Remote:        (?) To push, remove secret from commit(s) or follow this URL to allow the secret.        
@@ -173,7 +113,7 @@ Remote:
 Remote:             
 Remote:       —— Google OAuth Client Secret ————————————————————————        
 Remote:        locations:        
-Remote:          - commit: 5b035bb8bdabea75637a8ac5d0ff0df13b35ab6d        
+Remote:          - commit: f0478e00bb70f8e66e10854762623ebfc9bd51d9        
 Remote:            path: DAKKN.MVC/appsettings.Production.json:93        
 Remote:             
 Remote:        (?) To push, remove secret from commit(s) or follow this URL to allow the secret.        
@@ -187,3 +127,53 @@ failed to push some refs to 'https://github.com/MohamedSaber2004/DAKKN.git'
 
 Error encountered while pushing to the remote repository: Failed to push to the remote repository. See the Output window for more details.
 Failed to push to the remote repository. See the Output window for more details.
+Pushing master
+Enumerating objects: 13, done.
+Delta compression using up to 4 threads
+Total 10 (delta 6), reused 0 (delta 0), pack-reused 0 (from 0)
+Remote: Resolving deltas:   0% (0/6)        
+Remote: Resolving deltas:  16% (1/6)        
+Remote: Resolving deltas:  33% (2/6)        
+Remote: Resolving deltas:  50% (3/6)        
+Remote: Resolving deltas:  66% (4/6)        
+Remote: Resolving deltas:  83% (5/6)        
+Remote: Resolving deltas: 100% (6/6)        
+Remote: Resolving deltas: 100% (6/6), completed with 3 local objects.        
+Failed to push to the remote repository. See the Output window for more details.
+Remote: Error: GH013: Repository rule violations found for refs/heads/master.        
+Remote: 
+Remote: - GITHUB PUSH PROTECTION        
+Remote:   —————————————————————————————————————————        
+Remote:     Resolve the following violations before pushing again        
+Remote: 
+Remote:     - Push cannot contain secrets        
+Remote: 
+Remote:             
+Remote:      (?) Learn how to resolve a blocked push        
+Remote:      https://docs.github.com/code-security/secret-scanning/working-with-secret-scanning-and-push-protection/working-with-push-protection-from-the-command-line#resolving-a-blocked-push        
+Remote:             
+Remote:             
+Remote:       —— Google OAuth Client ID ————————————————————————————        
+Remote:        locations:        
+Remote:          - commit: f0478e00bb70f8e66e10854762623ebfc9bd51d9        
+Remote:            path: DAKKN.MVC/appsettings.Production.json:92        
+Remote:             
+Remote:        (?) To push, remove secret from commit(s) or follow this URL to allow the secret.        
+Remote:        https://github.com/MohamedSaber2004/DAKKN/security/secret-scanning/unblock-secret/3FwliZFUrHu8AQlCxdfMehfkVip        
+Remote:             
+Remote:             
+Remote:       —— Google OAuth Client Secret ————————————————————————        
+Remote:        locations:        
+Remote:          - commit: f0478e00bb70f8e66e10854762623ebfc9bd51d9        
+Remote:            path: DAKKN.MVC/appsettings.Production.json:93        
+Remote:             
+Remote:        (?) To push, remove secret from commit(s) or follow this URL to allow the secret.        
+Remote:        https://github.com/MohamedSaber2004/DAKKN/security/secret-scanning/unblock-secret/3FwliUdyqLdaCfPGHkfbJycc9W6        
+Remote:             
+Remote: 
+Remote: 
+To https://github.com/MohamedSaber2004/DAKKN.git
+Error: master -> master (push declined due to repository rule violations)
+failed to push some refs to 'https://github.com/MohamedSaber2004/DAKKN.git'
+
+Error encountered while pushing to the remote repository: Failed to push to the remote repository. See the Output window for more details.

@@ -40,11 +40,9 @@ namespace DAKKN.Application.Features.Users.Queries.GetUserSettings
             if (settings == null)
             {
                 // Create default settings if not exists
-                // We don't set a hardcoded language here so it can fall back to the browser/cookie preference
                 settings = new UserSettings
                 {
                     UserId = userId,
-                    Language = null, 
                     Theme = "light",
                     PrimaryColor = "#3B82F6",
                     IsDarkMode = false,

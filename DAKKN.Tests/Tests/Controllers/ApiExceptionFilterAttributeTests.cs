@@ -141,5 +141,22 @@ namespace DAKKN.Tests.Tests.Controllers
                     It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
                 Times.AtLeastOnce);
         }
+
+        [Fact]
+        public void OnException_WithMvcViewPath_ShouldNotHandleException()
+        {
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Path = "/admin/settings";
+            var actionContext = new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
+            var context = new ExceptionContext(actionContext, new List<IFilterMetadata>())
+            {
+                Exception = new NotFoundException("Not found")
+            };
+
+            _filter.OnException(context);
+
+            context.ExceptionHandled.Should().BeFalse();
+            context.Result.Should().BeNull();
+        }
     }
 }

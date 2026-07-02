@@ -33,7 +33,11 @@ namespace DAKKN.Appearence.Filters
 
         public override void OnException(ExceptionContext context)
         {
-            HandleException(context);
+            var path = context.HttpContext.Request.Path.Value;
+            if (path != null && path.StartsWith("/api", StringComparison.OrdinalIgnoreCase))
+            {
+                HandleException(context);
+            }
 
             base.OnException(context);
         }
