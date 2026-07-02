@@ -273,7 +273,8 @@ namespace DAKKN.MVC
                     {
                         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
                         var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
-                        await DAKKNDbContextSeed.SeedAsync(userManager, roleManager);
+                        bool isDevOrTest = env.IsDevelopment() || env.EnvironmentName == "Test";
+                        await DAKKNDbContextSeed.SeedAsync(userManager, roleManager, seedAdmin: isDevOrTest);
 
                         if (env.IsDevelopment() || env.EnvironmentName == "Test")
                         {

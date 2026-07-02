@@ -11,7 +11,7 @@ namespace DAKKN.Persistence
 {
     public static class DAKKNDbContextSeed
     {
-        public static async Task SeedAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole<Guid>> roleManager)
+        public static async Task SeedAsync(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole<Guid>> roleManager, bool seedAdmin = true)
         {
             // Seed Roles
             string[] roleNames = { "Admin", "User" };
@@ -22,6 +22,8 @@ namespace DAKKN.Persistence
                     await roleManager.CreateAsync(new IdentityRole<Guid> { Id = Guid.NewGuid(), Name = roleName, NormalizedName = roleName.ToUpper() });
                 }
             }
+
+            if (!seedAdmin) return;
 
             // Seed Admin User
             var adminEmail = "dev.mohamed104saber@gmail.com";
