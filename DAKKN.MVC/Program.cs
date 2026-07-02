@@ -259,28 +259,41 @@ namespace DAKKN.MVC
 
             // Seed Data — only run full seeds in Development / Test environments.
             // In Production/Live only essential data (roles + admin account) is seeded.
-            using (var scope = app.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                try
-                {
-                    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
-                    var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
-                    await DAKKNDbContextSeed.SeedAsync(userManager, roleManager);
+            // Seed database is skipped entirely during EF Core design-time migrations (e.g. dotnet ef database update)
+            // or if configured to be disabled via 'SeedDatabase' setting.
+            bool isDesignTime = Environment.GetEnvironmentVariable("EF_MIGRATION_DESIGN_TIME") == "true";
+            bool shouldSeed = app.Configuration.GetValue<bool>("SeedDatabase", true);
 
-                    if (env.IsDevelopment() || env.EnvironmentName == "Test")
+            if (!isDesignTime && shouldSeed)
+            {
+                using (var scope = app.Services.CreateScope())
+                {
+                    var services = scope.ServiceProvider;
+                    try
                     {
-                        var context = services.GetRequiredService<DAKKNDbContext>();
-                        await DAKKNDbContextSeed.SeedGovernoratesAsync(context);
-                        await DAKKNDbContextSeed.SeedCategoriesAndProductsAsync(context);
-                        await DAKKNDbContextSeed.SeedSupportDataAsync(context);
+                        var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                        var roleManager = services.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+                        await DAKKNDbContextSeed.SeedAsync(userManager, roleManager);
+
+                        if (env.IsDevelopment() || env.EnvironmentName == "Test")
+                        {
+                            var context = services.GetRequiredService<DAKKNDbContext>();
+                            await DAKKNDbContextSeed.SeedGovernoratesAsync(context);
+
+                            if (app.Configuration.GetValue<bool>("SeedDemoData", false))
+                            {
+                                await DAKKNDbContextSeed.SeedCategoriesAndProductsAsync(context);
+                                await DAKKNDbContextSeed.SeedSupportDataAsync(context);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error(ex, "An error occurred during database seeding.");
                     }
                 }
-                catch (Exception ex)
-                {
-                    Log.Error(ex, "An error occurred during database seeding.");
-                }
             }
+
 
             app.UseForwardedHeaders();
 

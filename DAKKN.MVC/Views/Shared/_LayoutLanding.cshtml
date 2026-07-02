@@ -13,13 +13,13 @@
     <meta name="robots" content="index, follow" />
     <title>@(ViewData["Title"] != null ? ViewData["Title"] + " | DAKKN" : "DAKKN — ملصقات فينيل عالية الجودة")</title>
     <link rel="icon" type="image/x-icon" href="~/favicon.ico" asp-append-version="true" />
-    @* <link rel="icon" type="image/png" sizes="32x32" href="~/favicon.png" />
-    <link rel="apple-touch-icon" href="~/images/logo.png" /> *@
-    <meta name="description" content="@(ViewData["Description"] ?? Localizer["hero_p"])" />
+    <link rel="icon" type="image/png" sizes="192x192" href="~/favicon.png" />
+    <link rel="apple-touch-icon" href="~/favicon.png" />
+    <meta name="description" content="@(ViewData["Description"] ?? Localizer["seo_description"])" />
 
     @{
         var ogTitle = ViewData["Title"]?.ToString() ?? "DAKKN — ملصقات فينيل عالية الجودة";
-        var ogDesc  = ViewData["Description"]?.ToString() ?? Localizer["hero_p"].ToString();
+        var ogDesc  = ViewData["Description"]?.ToString() ?? Localizer["seo_description"].ToString();
         var ogImage = ViewData["OgImage"]?.ToString() ?? $"{baseUrl}/images/og-banner.png";
         var ogUrl   = $"{baseUrl}{Context.Request.Path}";
     }

@@ -113,7 +113,7 @@ namespace DAKKN.MVC.ViewModels.Admin
         public string Description { get; set; } = "Have a custom bulk order or need support?";
         public string Email { get; set; } = "support@dakkn.com";
         public string Phone { get; set; } = "+20 123 456 7890";
-        public string Address { get; set; } = "Damietta, Egypt";
+        public string Address { get; set; } = "Egypt, Dakahlia, Mansoura";
     }
 
     public class FeaturedCategoriesViewModel

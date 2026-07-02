@@ -19,4 +19,4 @@ Disallow: /health
 Disallow: /files/uploads/users/
 Disallow: /uploads/users/
 
-Sitemap: https://dakkn.runasp.net/sitemap.xml
+Sitemap: https://dakkn.premiumasp.net/sitemap.xml
