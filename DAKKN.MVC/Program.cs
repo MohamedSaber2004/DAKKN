@@ -307,6 +307,8 @@ namespace DAKKN.MVC
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
+
             if (!app.Environment.IsDevelopment())
             {
                 app.UseHsts(hsts => hsts

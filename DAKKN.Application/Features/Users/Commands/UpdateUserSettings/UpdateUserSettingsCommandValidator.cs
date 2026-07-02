@@ -25,11 +25,6 @@ namespace DAKKN.Application.Features.Users.Commands.UpdateUserSettings
                 .Must(x => x == null || x == "light" || x == "dark" || x == "system")
                 .WithMessage(_localizer[LocalizationKeys.UserSettings.InvalidTheme.Value]);
 
-            RuleFor(x => x.PrimaryColor)
-                .Matches("^#(?:[0-9a-fA-F]{3}){1,2}$")
-                .When(x => !string.IsNullOrEmpty(x.PrimaryColor))
-                .WithMessage(_localizer[LocalizationKeys.UserSettings.InvalidColor.Value]);
-
             // Profile image validation (only when a file is submitted)
             RuleFor(x => x.ProfileImage)
                 .Must(file => file == null || imageValidator.IsValidImage(file))

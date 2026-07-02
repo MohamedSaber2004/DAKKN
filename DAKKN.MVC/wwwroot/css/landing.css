@@ -533,6 +533,11 @@ section { width: 100%; overflow-x: hidden; }
 #signin-modal > div:first-child { animation: modalFadeIn 0.25s ease-out; }
 #signin-modal > div:last-child { animation: modalSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
 
+/* ── Phone Prompt Modal ──────────────────────────── */
+#phone-prompt-modal { animation: modalFadeIn 0.25s ease-out; }
+#phone-prompt-modal > div:first-child { animation: modalFadeIn 0.25s ease-out; }
+#phone-prompt-modal > div:nth-child(2) { animation: modalSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+
 /* ── Cart Toast ──────────────────────────────────── */
 .cart-toast {
     display: flex;

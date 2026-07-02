@@ -80,7 +80,7 @@ namespace DAKKN.Tests.Tests.Application.Handlers
         [Fact]
         public async Task GetInventorySettings_ShouldReturnDefault_WhenNoneExist()
         {
-            var handler = new GetInventorySettingsQueryHandler(_context);
+            var handler = new GetInventorySettingsQueryHandler(new UnitOfWork(_context, new ServiceCollection().BuildServiceProvider()));
             var result = await handler.Handle(new GetInventorySettingsQuery(), default);
 
             result.Should().NotBeNull();
@@ -90,7 +90,7 @@ namespace DAKKN.Tests.Tests.Application.Handlers
         [Fact]
         public async Task UpdateInventorySettings_ShouldUpdate()
         {
-            var handler = new UpdateInventorySettingsCommandHandler(_context, _localizerMock.Object);
+            var handler = new UpdateInventorySettingsCommandHandler(new UnitOfWork(_context, new ServiceCollection().BuildServiceProvider()), _localizerMock.Object);
             var result = await handler.Handle(new UpdateInventorySettingsCommand(5), default);
 
             result.GlobalDangerQuantity.Should().Be(5);
@@ -105,7 +105,7 @@ namespace DAKKN.Tests.Tests.Application.Handlers
             await _context.SaveChangesAsync();
             _context.ChangeTracker.Clear();
 
-            var handler = new ApplyGlobalDangerQuantityCommandHandler(_context);
+            var handler = new ApplyGlobalDangerQuantityCommandHandler(new UnitOfWork(_context, new ServiceCollection().BuildServiceProvider()));
             var updated = await handler.Handle(new ApplyGlobalDangerQuantityCommand(), default);
 
             updated.Should().BeGreaterThan(0);

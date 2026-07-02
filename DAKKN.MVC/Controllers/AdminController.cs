@@ -46,6 +46,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
+using Microsoft.Extensions.Logging;
 using DAKKN.Application.Features.BrandReviews.Queries.GetAdminBrandReviews;
 using DAKKN.Application.Features.BrandReviews.Commands.ApproveBrandReview;
 using DAKKN.Application.Features.BrandReviews.Commands.RejectBrandReview;
@@ -64,13 +65,15 @@ namespace DAKKN.MVC.Controllers
         private readonly IStringLocalizer<Messages> _localizer;
         private readonly IMediator _mediator;
         private readonly IImageValidator _imageValidator;
+        private readonly ILogger<AdminController> _logger;
 
-        public AdminController(IWebHostEnvironment env,IStringLocalizer<Messages> localizer, IMediator mediator, IImageValidator imageValidator)
+        public AdminController(IWebHostEnvironment env, IStringLocalizer<Messages> localizer, IMediator mediator, IImageValidator imageValidator, ILogger<AdminController> logger)
         {
             _env = env;
             _localizer = localizer;
             _mediator = mediator;
             _imageValidator = imageValidator;
+            _logger = logger;
         }
 
         [HttpGet("")]
@@ -577,32 +580,50 @@ namespace DAKKN.MVC.Controllers
         {
             ViewData["Title"] = _localizer["admin_settings"];
 
-            UserSettingsDto settings;
-            InventorySettingsDto inventorySettings;
+            UserSettingsDto? settings = null;
+            InventorySettingsDto? inventorySettings = null;
+
             try
             {
                 settings = await _mediator.Send(new GetUserSettingsQuery());
-                inventorySettings = await _mediator.Send(new GetInventorySettingsQuery());
             }
-            catch
+            catch (UnAuthorizedException)
             {
                 await HttpContext.SignOutAsync();
                 return RedirectToAction("Login", "Auth");
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to load user settings for admin settings page");
+                TempData["ErrorMessage"] = _localizer[LocalizationKeys.ExceptionMessages.UnknownException.Value].ToString();
+                settings = new UserSettingsDto
+                {
+                    FullName = User.FindFirstValue("FullName") ?? User.Identity?.Name ?? "Admin",
+                    Email = User.FindFirstValue(ClaimTypes.Email) ?? string.Empty
+                };
+            }
+
+            try
+            {
+                inventorySettings = await _mediator.Send(new GetInventorySettingsQuery());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to load inventory settings for admin settings page");
+            }
 
             var viewModel = new AdminSettingsViewModel
             {
-                FullName         = settings.FullName,
-                Email            = settings.Email,
-                Language         = settings.Language,
-                Theme            = settings.Theme,
-                PrimaryColor     = settings.PrimaryColor,
-                IsDarkMode       = settings.IsDarkMode,
-                LayoutMode       = settings.LayoutMode,
+                FullName          = settings.FullName,
+                Email             = settings.Email,
+                Language          = settings.Language,
+                Theme             = settings.Theme,
+                IsDarkMode        = settings.IsDarkMode,
+                LayoutMode        = settings.LayoutMode,
                 ProfilePictureUrl = settings.ProfilePictureUrl
             };
 
-            ViewData["GlobalDangerQuantity"] = inventorySettings.GlobalDangerQuantity;
+            ViewData["GlobalDangerQuantity"] = inventorySettings?.GlobalDangerQuantity ?? 10;
 
             return View(viewModel);
         }
@@ -642,7 +663,6 @@ namespace DAKKN.MVC.Controllers
                 model.FullName,
                 model.Language,
                 model.Theme,
-                model.PrimaryColor,
                 model.IsDarkMode,
                 model.LayoutMode
             ));
@@ -675,8 +695,7 @@ namespace DAKKN.MVC.Controllers
                 return BadRequest(new { success = false, message = _localizer[LocalizationKeys.UploadFileMessages.Requried.Value] });
 
             var result = await _mediator.Send(new UpdateUserSettingsCommand(
-                null, null, null, null, null, null,
-                ProfileImage: profileImage));
+                null, null, null, null, null, ProfileImage: profileImage));
 
             return Json(new
             {

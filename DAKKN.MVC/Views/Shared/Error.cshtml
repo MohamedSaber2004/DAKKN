@@ -1,22 +1,27 @@
 ﻿@model ErrorViewModel
 @inject IStringLocalizer<Messages> Localizer
 @{
-    var isAdmin = ViewContext.RouteData.Values["controller"]?.ToString() == "Admin";
+    var isAdmin = ViewContext.RouteData.Values["controller"]?.ToString() == "Admin" || Context.Request.Path.StartsWithSegments("/admin");
     Layout = isAdmin ? "_LayoutAdmin" : "_LayoutLanding";
-    ViewData["Title"] = Localizer["error_server_error"];
+
+    var titleKey = Model.StatusCode == 429 ? "error_too_many_requests" : "error_server_error";
+    var messageKey = Model.StatusCode == 429 ? "error_too_many_requests_message" : "error_server_error_message";
+    var icon = Model.StatusCode == 429 ? "timer_off" : "error";
+
+    ViewData["Title"] = Localizer[titleKey];
 }
 
 <section class="min-h-[70vh] flex items-center justify-center px-4 py-24 bg-background dark:bg-[#0F172A]">
     <div class="max-w-lg w-full text-center space-y-6 bg-surface dark:bg-[#1E293B] p-12 rounded-3xl shadow-xl border border-border dark:border-white/5">
         <div class="inline-flex items-center justify-center w-28 h-28 rounded-full bg-error/10 text-error mx-auto">
-            <span class="material-symbols-outlined text-[64px]">@Localizer["error_server_error_icon"]</span>
+            <span class="material-symbols-outlined text-[64px]">@icon</span>
         </div>
 
         <h1 class="text-5xl font-black text-text-primary dark:text-white">@Model.StatusCode</h1>
-        <h2 class="text-2xl font-bold text-error">@Localizer["error_server_error"]</h2>
+        <h2 class="text-2xl font-bold text-error">@Localizer[titleKey]</h2>
 
         <p class="text-base text-text-secondary dark:text-outline-variant leading-relaxed max-w-sm mx-auto">
-            @Localizer["error_server_error_message"]
+            @Localizer[messageKey]
         </p>
 
         <div class="pt-6">

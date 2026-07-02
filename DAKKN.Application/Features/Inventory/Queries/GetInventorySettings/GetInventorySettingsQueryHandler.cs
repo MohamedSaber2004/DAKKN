@@ -1,24 +1,23 @@
-using DAKKN.Application.Common.Interfaces;
 using DAKKN.Application.DTOs;
 using DAKKN.Domain.Entities;
+using DAKKN.Domain.Repositories.Interfaces.Base;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace DAKKN.Application.Features.Inventory.Queries.GetInventorySettings
 {
     public class GetInventorySettingsQueryHandler : IRequestHandler<GetInventorySettingsQuery, InventorySettingsDto>
     {
-        private readonly IApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public GetInventorySettingsQueryHandler(IApplicationDbContext context)
+        public GetInventorySettingsQueryHandler(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<InventorySettingsDto> Handle(GetInventorySettingsQuery request, CancellationToken cancellationToken)
         {
-            var setting = await _context.SystemSettings
-                .FirstOrDefaultAsync(s => s.Key == "GlobalDangerQuantity", cancellationToken);
+            var setting = await _unitOfWork.GetRepository<SystemSetting>()
+                .GetFirstAsync(s => s.Key == "GlobalDangerQuantity", cancellationToken);
 
             return new InventorySettingsDto
             {

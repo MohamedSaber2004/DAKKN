@@ -91,11 +91,10 @@ namespace DAKKN.Application.Features.Users.Commands.UpdateUserSettings
                 await settingsRepo.AddAsync(settings);
             }
 
-            if (request.Language != null)    settings.Language    = request.Language;
-            if (request.Theme != null)        settings.Theme        = request.Theme;
-            if (request.PrimaryColor != null) settings.PrimaryColor = request.PrimaryColor;
-            if (request.IsDarkMode.HasValue)  settings.IsDarkMode   = request.IsDarkMode.Value;
-            if (request.LayoutMode != null)   settings.LayoutMode   = request.LayoutMode;
+            if (request.Language != null)   settings.Language  = request.Language;
+            if (request.Theme != null)       settings.Theme      = request.Theme;
+            if (request.IsDarkMode.HasValue) settings.IsDarkMode = request.IsDarkMode.Value;
+            if (request.LayoutMode != null)  settings.LayoutMode = request.LayoutMode;
 
             settings.UpdatedAt = DateTime.UtcNow;
             settings.UpdatedBy = userId.ToString();
@@ -106,7 +105,6 @@ namespace DAKKN.Application.Features.Users.Commands.UpdateUserSettings
             {
                 Language        = settings.Language,
                 Theme           = settings.Theme,
-                PrimaryColor    = settings.PrimaryColor,
                 IsDarkMode      = settings.IsDarkMode,
                 LayoutMode      = settings.LayoutMode,
                 FullName        = user.FullName,

@@ -8,7 +8,6 @@ namespace DAKKN.Application.Features.Users.Commands.UpdateUserSettings
         string? FullName,
         string? Language,
         string? Theme,
-        string? PrimaryColor,
         bool? IsDarkMode,
         string? LayoutMode,
         IFormFile? ProfileImage = null,

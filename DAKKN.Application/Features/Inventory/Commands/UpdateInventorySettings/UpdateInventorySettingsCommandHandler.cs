@@ -1,23 +1,22 @@
 using DAKKN.Application.Common.Exceptions;
-using DAKKN.Application.Common.Interfaces;
 using DAKKN.Application.DTOs;
 using DAKKN.Application.Localization;
 using DAKKN.Domain.Entities;
+using DAKKN.Domain.Repositories.Interfaces.Base;
 using FluentValidation.Results;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 
 namespace DAKKN.Application.Features.Inventory.Commands.UpdateInventorySettings
 {
     public class UpdateInventorySettingsCommandHandler : IRequestHandler<UpdateInventorySettingsCommand, InventorySettingsDto>
     {
-        private readonly IApplicationDbContext _context;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IStringLocalizer<Messages> _localizer;
 
-        public UpdateInventorySettingsCommandHandler(IApplicationDbContext context, IStringLocalizer<Messages> localizer)
+        public UpdateInventorySettingsCommandHandler(IUnitOfWork unitOfWork, IStringLocalizer<Messages> localizer)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
             _localizer = localizer;
         }
 
@@ -33,8 +32,8 @@ namespace DAKKN.Application.Features.Inventory.Commands.UpdateInventorySettings
                 throw new ValidationException(failures);
             }
 
-            var setting = await _context.SystemSettings
-                .FirstOrDefaultAsync(s => s.Key == "GlobalDangerQuantity", cancellationToken);
+            var repo = _unitOfWork.GetRepository<SystemSetting>();
+            var setting = await repo.GetFirstAsync(s => s.Key == "GlobalDangerQuantity", cancellationToken);
 
             if (setting == null)
             {
@@ -44,14 +43,14 @@ namespace DAKKN.Application.Features.Inventory.Commands.UpdateInventorySettings
                     Value = request.GlobalDangerQuantity.ToString(),
                     Description = "Global default danger quantity threshold for low stock warning"
                 };
-                _context.SystemSettings.Add(setting);
+                await repo.AddAsync(setting);
             }
             else
             {
                 setting.Value = request.GlobalDangerQuantity.ToString();
             }
 
-            await _context.SaveChangesAsync(cancellationToken);
+            await _unitOfWork.SaveChangesAsync();
 
             return new InventorySettingsDto
             {

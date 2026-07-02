@@ -44,7 +44,6 @@ namespace DAKKN.Application.Features.Users.Queries.GetUserSettings
                 {
                     UserId = userId,
                     Theme = "light",
-                    PrimaryColor = "#3B82F6",
                     IsDarkMode = false,
                     LayoutMode = "default",
                     CreatedBy = userId.ToString()
@@ -57,7 +56,6 @@ namespace DAKKN.Application.Features.Users.Queries.GetUserSettings
             {
                 Language          = settings.Language,
                 Theme             = settings.Theme,
-                PrimaryColor      = settings.PrimaryColor,
                 IsDarkMode        = settings.IsDarkMode,
                 LayoutMode        = settings.LayoutMode,
                 FullName          = user.FullName,

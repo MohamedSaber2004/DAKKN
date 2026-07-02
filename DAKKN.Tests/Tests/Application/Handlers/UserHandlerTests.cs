@@ -107,7 +107,6 @@ namespace DAKKN.Tests.Tests.Application.Handlers
                 UserId = _userId,
                 Language = "ar",
                 Theme = "dark",
-                PrimaryColor = "#000",
                 LayoutMode = "default"
             });
             await _context.SaveChangesAsync();

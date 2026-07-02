@@ -183,8 +183,6 @@ namespace DAKKN.MVC.Controllers
         public IActionResult Error(int? statusCode = null)
         {
             var code = statusCode ?? HttpContext.Response.StatusCode;
-            if (code < 500)
-                code = 500;
 
             return View(new ErrorViewModel
             {

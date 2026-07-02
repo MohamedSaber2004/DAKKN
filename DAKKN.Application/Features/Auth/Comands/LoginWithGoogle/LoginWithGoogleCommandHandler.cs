@@ -70,7 +70,7 @@ namespace DAKKN.Application.Features.Auth.Comands.LoginWithGoogle
                     }
 
                     user = ApplicationUser.Create(
-                        payload.Name ?? payload.GivenName ?? email,
+                        request.FullName ?? payload.Name ?? payload.GivenName ?? email,
                         email,
                         request.PhoneNumber
                     );

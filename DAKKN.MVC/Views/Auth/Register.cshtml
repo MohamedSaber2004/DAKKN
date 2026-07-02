@@ -140,15 +140,18 @@
                 },
                 body: JSON.stringify(idToken)
             })
-            .then(res => {
-                if (res.ok) {
-                    return res.json().then(data => {
-                        if (data.needsPhoneNumber) {
-                            // Show the modal if phone number is missing
-                            PhonePromptModal.show((phone) => {
-                                performGoogleLogin(idToken, phone);
-                            });
-                        } else {
+                        .then(res => {
+                            if (res.ok) {
+                                return res.json().then(data => {
+                                    if (data.needsPhoneNumber) {
+                                        // Show the modal if phone number or name is missing
+                                        PhonePromptModal.show({
+                                            isNewUser: data.isNewUser,
+                                            callback: function(result) {
+                                                performGoogleLogin(idToken, result.phone, result.name);
+                                            }
+                                        });
+                                    } else {
                             // Account already complete, login directly
                             performGoogleLogin(idToken);
                         }
@@ -163,18 +166,19 @@
             });
         }
 
-        function performGoogleLogin(idToken, phoneNumber = null) {
-            fetch('/auth/login-google', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
-                },
-                body: JSON.stringify({
-                    idToken: idToken,
-                    phoneNumber: phoneNumber
-                })
-            })
+                function performGoogleLogin(idToken, phoneNumber, fullName) {
+                    fetch('/auth/login-google', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        body: JSON.stringify({
+                            idToken: idToken,
+                            phoneNumber: phoneNumber || null,
+                            fullName: fullName || null
+                        })
+                    })
             .then(res => {
                 if (res.ok) {
                     return res.json().then(data => {

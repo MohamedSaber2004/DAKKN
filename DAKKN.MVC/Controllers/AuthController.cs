@@ -138,7 +138,11 @@ namespace DAKKN.MVC.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new LoginWithGoogleCommand(request.IdToken, request.PhoneNumber));
+                var result = await _mediator.Send(new LoginWithGoogleCommand(
+                    request.IdToken,
+                    request.PhoneNumber,
+                    request.FullName
+                ));
 
                 // Sign in via Identity Cookies
                 var user = await _userManager.FindByIdAsync(result.UserId.ToString());
@@ -171,6 +175,7 @@ namespace DAKKN.MVC.Controllers
         {
             public string IdToken { get; set; } = null!;
             public string? PhoneNumber { get; set; }
+            public string? FullName { get; set; }
         }
 
         // ──────────────────────────────────────────────

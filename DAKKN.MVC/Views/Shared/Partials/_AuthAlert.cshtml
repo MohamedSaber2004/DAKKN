@@ -1,17 +1,18 @@
 @inject IStringLocalizer<Messages> Localizer
 
-@if (TempData["SuccessMessage"] is string successKey)
+@{
+    var successMessage = TempData["SuccessMessage"] as string;
+    var errorMessage = TempData["ErrorMessage"] as string;
+    var modelErrors = ViewData.ModelState.Values.SelectMany(v => v.Errors).ToList();
+    var hasErrors = !string.IsNullOrEmpty(errorMessage) || modelErrors.Any();
+}
+
+@if (!string.IsNullOrEmpty(successMessage))
 {
     <div class="flex items-center gap-3 bg-green-500/15 border border-green-500/40 text-green-600 dark:text-green-400 rounded-2xl px-4 py-3 mb-6 text-sm scroll-animate visible" role="alert">
         <span class="material-symbols-outlined text-xl flex-shrink-0">check_circle</span>
-        <span data-i18n="alert.@successKey">@Localizer["alert." + successKey]</span>
+        <span>@successMessage</span>
     </div>
-}
-
-@{
-    var errorKey = TempData["ErrorMessage"] as string;
-    var modelErrors = ViewData.ModelState.Values.SelectMany(v => v.Errors).ToList();
-    var hasErrors = !string.IsNullOrEmpty(errorKey) || modelErrors.Any();
 }
 
 @if (hasErrors)
@@ -19,23 +20,14 @@
     <div class="flex items-start gap-3 bg-error-container/30 border border-error/20 text-error dark:text-red-400 rounded-2xl px-4 py-3 mb-6 text-sm scroll-animate visible" role="alert">
         <span class="material-symbols-outlined text-xl flex-shrink-0 mt-0.5">report</span>
         <div class="flex flex-col gap-1">
-            @if (!string.IsNullOrEmpty(errorKey))
+            @if (!string.IsNullOrEmpty(errorMessage))
             {
-                <span data-i18n="alert.@errorKey">@Localizer["alert." + errorKey]</span>
+                <span>@errorMessage</span>
             }
 
             @foreach (var error in modelErrors)
             {
-                var msg = error.ErrorMessage;
-                // If the message looks like a key (no spaces and has dots/underscores), try to localize it
-                if (!msg.Contains(" ") && (msg.Contains(".") || msg.Contains("_")))
-                {
-                    <span data-i18n="alert.@msg">@Localizer["alert." + msg]</span>
-                }
-                else
-                {
-                    <span>@msg</span>
-                }
+                <span>@error.ErrorMessage</span>
             }
         </div>
     </div>

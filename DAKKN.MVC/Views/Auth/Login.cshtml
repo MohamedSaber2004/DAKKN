@@ -139,9 +139,12 @@
                             if (res.ok) {
                                 return res.json().then(data => {
                                     if (data.needsPhoneNumber) {
-                                        // Show the modal if phone number is missing (new or incomplete user)
-                                        PhonePromptModal.show((phone) => {
-                                            performGoogleLogin(idToken, phone);
+                                        // Show the modal if phone number or name is missing
+                                        PhonePromptModal.show({
+                                            isNewUser: data.isNewUser,
+                                            callback: function(result) {
+                                                performGoogleLogin(idToken, result.phone, result.name);
+                                            }
                                         });
                                     } else {
                                         // Account already complete, login directly
@@ -158,7 +161,7 @@
                         });
                     }
 
-                    function performGoogleLogin(idToken, phoneNumber = null) {
+                    function performGoogleLogin(idToken, phoneNumber, fullName) {
                         fetch('/auth/login-google', {
                             method: 'POST',
                             headers: {
@@ -167,7 +170,8 @@
                             },
                             body: JSON.stringify({
                                 idToken: idToken,
-                                phoneNumber: phoneNumber
+                                phoneNumber: phoneNumber || null,
+                                fullName: fullName || null
                             })
                         })
                         .then(res => {

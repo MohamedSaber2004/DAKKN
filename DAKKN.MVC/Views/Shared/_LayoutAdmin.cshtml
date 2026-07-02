@@ -197,14 +197,54 @@
             border-top-color: rgba(255,255,255,.06);
         }
 
-        /* Collapsed sub-menu behavior */
-        .sidebar-is-collapsed .sub-menu {
-            display: none !important;
+        /* Admin support sub-list */
+        #admin-support-sub-list {
+            transition: max-height 0.25s ease;
         }
-        @@media (min-width: 768px) and (max-width: 1279px) {
-            .admin-sidebar:not(.tablet-sidebar-expanded) .sub-menu {
-                display: none !important;
-            }
+        #admin-support-chevron.rotate-180 {
+            transform: rotate(180deg);
+        }
+
+        /* Collapsed/icon-only sidebar: sub-list becomes an overlay dropdown */
+        .sidebar-is-collapsed #admin-support-sub-list,
+        .admin-sidebar:not(.tablet-sidebar-expanded) #admin-support-sub-list {
+            display: none;
+            position: fixed;
+            left: 80px;
+            width: 220px;
+            background: var(--surface, #fff);
+            border-radius: 0.75rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            z-index: 300;
+            padding: 8px 0 !important;
+            max-height: none !important;
+            overflow: visible !important;
+            border: 1px solid var(--border-color, rgba(0,0,0,0.08));
+        }
+        .dark .sidebar-is-collapsed #admin-support-sub-list,
+        .dark .admin-sidebar:not(.tablet-sidebar-expanded) #admin-support-sub-list {
+            background: #1E293B;
+            border-color: rgba(255,255,255,0.06);
+        }
+        [dir="rtl"] .sidebar-is-collapsed #admin-support-sub-list,
+        [dir="rtl"] .admin-sidebar:not(.tablet-sidebar-expanded) #admin-support-sub-list {
+            left: auto !important;
+            right: 80px;
+        }
+        .sidebar-is-collapsed #admin-support-sub-list .sidebar-text,
+        .admin-sidebar:not(.tablet-sidebar-expanded) #admin-support-sub-list .sidebar-text {
+            display: inline !important;
+            opacity: 1 !important;
+            width: auto !important;
+            pointer-events: auto !important;
+        }
+        .sidebar-is-collapsed #admin-support-sub-list .nav-item,
+        .admin-sidebar:not(.tablet-sidebar-expanded) #admin-support-sub-list .nav-item {
+            justify-content: flex-start !important;
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+            margin-left: 4px !important;
+            margin-right: 4px !important;
         }
     </style>
 
@@ -342,27 +382,30 @@
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_categories"]</span>
             </a>
             <div class="nav-section">
-                <a asp-controller="SupportAdmin" asp-action="Dashboard" class="nav-item flex items-center gap-md px-4 py-3 rounded-xl @(currentController == "SupportAdmin" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") transition-all duration-200" title="@Localizer["admin_support"]">
+                <button type="button" onclick="toggleAdminSupportSubList()" class="nav-item w-full flex items-center gap-md px-4 py-3 rounded-xl @(currentController == "SupportAdmin" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") transition-all duration-200" title="@Localizer["admin_support"]">
                     <span class="material-symbols-outlined flex-shrink-0">support_agent</span>
                     <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_support"]</span>
-                </a>
-                <div class="sub-menu ps-lg space-y-1 @(currentController == "SupportAdmin" ? "" : "hidden")">
-                    <a asp-controller="SupportAdmin" asp-action="Tickets" class="nav-item flex items-center gap-md @(currentController == "SupportAdmin" && (currentAction == "Tickets" || currentAction == "TicketDetails") ? "active bg-primary/10 text-primary dark:text-primary-light" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-2 rounded-xl transition-all duration-200">
-                        <span class="material-symbols-outlined text-sm flex-shrink-0">confirmation_number</span>
-                        <span class="font-caption text-caption sidebar-text">@Localizer["admin_support_tickets"]</span>
-                    </a>
-                    <a asp-controller="SupportAdmin" asp-action="Categories" class="nav-item flex items-center gap-md @(currentController == "SupportAdmin" && currentAction == "Categories" ? "active bg-primary/10 text-primary dark:text-primary-light" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-2 rounded-xl transition-all duration-200">
-                        <span class="material-symbols-outlined text-sm flex-shrink-0">category</span>
-                        <span class="font-caption text-caption sidebar-text">@Localizer["admin_support_categories"]</span>
-                    </a>
-                    <a asp-controller="SupportAdmin" asp-action="FAQs" class="nav-item flex items-center gap-md @(currentController == "SupportAdmin" && currentAction == "FAQs" ? "active bg-primary/10 text-primary dark:text-primary-light" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-2 rounded-xl transition-all duration-200">
-                        <span class="material-symbols-outlined text-sm flex-shrink-0">quiz</span>
-                        <span class="font-caption text-caption sidebar-text">@Localizer["admin_support_faq"]</span>
-                    </a>
-                    <a asp-controller="SupportAdmin" asp-action="Settings" class="nav-item flex items-center gap-md @(currentController == "SupportAdmin" && currentAction == "Settings" ? "active bg-primary/10 text-primary dark:text-primary-light" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-2 rounded-xl transition-all duration-200">
-                        <span class="material-symbols-outlined text-sm flex-shrink-0">settings</span>
-                        <span class="font-caption text-caption sidebar-text">@Localizer["admin_settings"]</span>
-                    </a>
+                    <span id="admin-support-chevron" class="material-symbols-outlined sidebar-text ml-auto transition-transform @(currentController == "SupportAdmin" ? "rotate-180" : "")">expand_more</span>
+                </button>
+                <div id="admin-support-sub-list" style="overflow:hidden;@(currentController == "SupportAdmin" ? "max-height:300px" : "max-height:0")">
+                    <div class="pt-1 pb-1 space-y-1 ltr:pl-8 rtl:pr-8">
+                        <a asp-controller="SupportAdmin" asp-action="Tickets" class="nav-item flex items-center gap-md @(currentController == "SupportAdmin" && (currentAction == "Tickets" || currentAction == "TicketDetails") ? "active bg-primary/10 text-primary dark:text-primary-light font-bold" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-2 rounded-xl transition-all duration-200">
+                            <span class="material-symbols-outlined text-sm flex-shrink-0">confirmation_number</span>
+                            <span class="font-caption text-caption sidebar-text">@Localizer["admin_support_tickets"]</span>
+                        </a>
+                        <a asp-controller="SupportAdmin" asp-action="Categories" class="nav-item flex items-center gap-md @(currentController == "SupportAdmin" && currentAction == "Categories" ? "active bg-primary/10 text-primary dark:text-primary-light font-bold" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-2 rounded-xl transition-all duration-200">
+                            <span class="material-symbols-outlined text-sm flex-shrink-0">category</span>
+                            <span class="font-caption text-caption sidebar-text">@Localizer["admin_support_categories"]</span>
+                        </a>
+                        <a asp-controller="SupportAdmin" asp-action="FAQs" class="nav-item flex items-center gap-md @(currentController == "SupportAdmin" && currentAction == "FAQs" ? "active bg-primary/10 text-primary dark:text-primary-light font-bold" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-2 rounded-xl transition-all duration-200">
+                            <span class="material-symbols-outlined text-sm flex-shrink-0">quiz</span>
+                            <span class="font-caption text-caption sidebar-text">@Localizer["admin_support_faq"]</span>
+                        </a>
+                        <a asp-controller="SupportAdmin" asp-action="Settings" class="nav-item flex items-center gap-md @(currentController == "SupportAdmin" && currentAction == "Settings" ? "active bg-primary/10 text-primary dark:text-primary-light font-bold" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-2 rounded-xl transition-all duration-200">
+                            <span class="material-symbols-outlined text-sm flex-shrink-0">settings</span>
+                            <span class="font-caption text-caption sidebar-text">@Localizer["admin_settings"]</span>
+                        </a>
+                    </div>
                 </div>
             </div>
             <a asp-controller="Admin" asp-action="Shipping" class="nav-item flex items-center gap-md @((currentAction == "Shipping" || currentAction == "CreateShipping" || currentAction == "EditShipping") && currentController == "Admin" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_shipping.title"]">
@@ -501,6 +544,33 @@
         }
 
 
+        function toggleAdminSupportSubList() {
+            const list = document.getElementById('admin-support-sub-list');
+            const chevron = document.getElementById('admin-support-chevron');
+            const btn = document.querySelector('button[onclick="toggleAdminSupportSubList()"]');
+            if (!list) return;
+            const isCollapsed = document.documentElement.classList.contains('sidebar-is-collapsed') ||
+                (window.innerWidth >= 768 && window.innerWidth < 1280 && !document.documentElement.classList.contains('tablet-sidebar-expanded'));
+            if (isCollapsed) {
+                const isVisible = getComputedStyle(list).display !== 'none';
+                if (isVisible) {
+                    list.style.display = 'none';
+                    if (chevron) chevron.classList.remove('rotate-180');
+                } else {
+                    if (btn) {
+                        const rect = btn.getBoundingClientRect();
+                        list.style.top = Math.max(rect.top, 8) + 'px';
+                    }
+                    list.style.display = 'block';
+                    if (chevron) chevron.classList.add('rotate-180');
+                }
+            } else {
+                const isOpen = list.style.maxHeight !== '0px' && list.style.maxHeight !== '0';
+                list.style.maxHeight = isOpen ? '0' : '300px';
+                if (chevron) chevron.classList.toggle('rotate-180', !isOpen);
+            }
+        }
+
         function submitLogout() {
             const form = document.getElementById('logout-form');
             const tokenInput = document.getElementById('logout-refresh-token');
@@ -535,6 +605,39 @@
                 // Tablet or mobile: sidebar starts as icon-only (CSS handles it); icon shows 'menu'
                 updateSidebarIcon(true);
             }
+        });
+
+        // Close overlay sub-list when clicking outside
+        document.addEventListener('click', function(e) {
+            const list = document.getElementById('admin-support-sub-list');
+            const btn = document.querySelector('button[onclick="toggleAdminSupportSubList()"]');
+            if (list && btn && getComputedStyle(list).display !== 'none') {
+                const isCollapsed = document.documentElement.classList.contains('sidebar-is-collapsed') ||
+                    (window.innerWidth >= 768 && window.innerWidth < 1280 && !document.documentElement.classList.contains('tablet-sidebar-expanded'));
+                if (isCollapsed && !list.contains(e.target) && !btn.contains(e.target)) {
+                    list.style.display = 'none';
+                    const chevron = document.getElementById('admin-support-chevron');
+                    if (chevron) chevron.classList.remove('rotate-180');
+                }
+            }
+        });
+
+        // Clean up inline styles when resizing between collapsed/full modes
+        let resizeTimer;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function() {
+                const list = document.getElementById('admin-support-sub-list');
+                if (list) {
+                    const isCollapsed = document.documentElement.classList.contains('sidebar-is-collapsed') ||
+                        (window.innerWidth >= 768 && window.innerWidth < 1280 && !document.documentElement.classList.contains('tablet-sidebar-expanded'));
+                    if (!isCollapsed) {
+                        list.style.display = '';
+                        list.style.top = '';
+                        list.style.position = '';
+                    }
+                }
+            }, 100);
         });
 
         // Hover-based link prefetching for instant page transitions

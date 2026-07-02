@@ -1,2 +1,5 @@
-﻿404	02.07. 2026 10:23	 66.249.93.2	GET	/googlee8a4d0fad8cf16e7.html	
-Mozilla/5.0+(compatible;+Google-Site-Verification/1.0)
+﻿refresh-token?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwNDFlNzE5NS0zMWNlLTQ3YWQtYjVmMi1mZDllZjZlNDhmYzIiLCJqdGkiOiIyZjEzODQyYi03YmMzLTRmZDAtOTk5YS05NTM5NjZhMTY0ZTkiLCJUb2tlblR5cGUiOiJSZWZyZXNoVG9rZW4iLCJleHAiOjE3ODU1OTQzNDYsImlzcyI6Imh0dHBzOi8vbG9jYWxob3N0OjQ0MzEyLyIsImF1ZCI6Imh0dHBzOi8vbG9jYWxob3N0OjQ0MzEyLyJ9.VzJ2whGP3D1k1zX23LaSIQ1bS6qhikyC-Yj_KE9dgB0:1  Failed to load resource: the server responded with a status of 429 ()
+button?theme=outline&size=large&width=400&shape=rectangular&text=signin_with&logo_alignment=left&is…:1  Failed to load resource: the server responded with a status of 400 ()
+m=credential_button_library:88 [GSI_LOGGER]: The given origin is not allowed for the given client ID.
+_.H @ m=credential_button_library:88
+[NEW] Explain Console errors by using Copilot in Edge: click  to explain an error. Learn more

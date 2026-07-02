@@ -16,7 +16,6 @@ public class UserSettingsTests
         settings.UserId.Should().NotBeEmpty();
         settings.Language.Should().Be("ar");
         settings.Theme.Should().Be("light");
-        settings.PrimaryColor.Should().Be("#3B82F6");
         settings.IsDarkMode.Should().BeFalse();
         settings.LayoutMode.Should().Be("default");
     }
@@ -48,13 +47,11 @@ public class UserSettingsTests
         var settings = new UserSettings();
         settings.Language = "en";
         settings.Theme = "dark";
-        settings.PrimaryColor = "#000000";
         settings.IsDarkMode = true;
         settings.LayoutMode = "compact";
 
         settings.Language.Should().Be("en");
         settings.Theme.Should().Be("dark");
-        settings.PrimaryColor.Should().Be("#000000");
         settings.IsDarkMode.Should().BeTrue();
         settings.LayoutMode.Should().Be("compact");
     }

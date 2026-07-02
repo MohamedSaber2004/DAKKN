@@ -4,7 +4,6 @@ namespace DAKKN.Application.DTOs
     {
         public string? Language { get; set; }
         public string Theme { get; set; } = "light";
-        public string PrimaryColor { get; set; } = "#3B82F6";
         public bool IsDarkMode { get; set; }
         public string LayoutMode { get; set; } = "default";
         public string FullName { get; set; } = string.Empty;

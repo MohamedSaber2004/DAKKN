@@ -5,6 +5,7 @@
     var culture = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("en") ? "en" : "ar";
     var dir = culture == "ar" ? "rtl" : "ltr";
     var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
     var fullName = User.FindFirstValue("FullName") ?? User.Identity?.Name ?? Localizer["layout_user_fallback"].Value;
 
     var isDarkMode = false;
@@ -261,10 +262,25 @@
                 <span class="material-symbols-outlined @(currentAction == "Orders" ? "filled-icon" : "")">receipt_long</span>
                 <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["admin_orders"]</span>
             </a>
-            <a asp-controller="Customer" asp-action="Support" class="nav-item flex items-center gap-md @(currentAction == "Support" ? "bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["nav_support"]">
-                <span class="material-symbols-outlined @(currentAction == "Support" ? "filled-icon" : "")">support_agent</span>
-                <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["nav_support"]</span>
-            </a>
+            <div class="nav-section">
+                <button type="button" onclick="toggleSupportSubList()" class="nav-item w-full flex items-center gap-md @(currentController == "SupportCustomer" ? "bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["nav_support"]">
+                    <span class="material-symbols-outlined @(currentController == "SupportCustomer" ? "filled-icon" : "")">support_agent</span>
+                    <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["nav_support"]</span>
+                    <span id="support-chevron" class="material-symbols-outlined sidebar-text ml-auto transition-transform @(currentController == "SupportCustomer" ? "rotate-180" : "")">expand_more</span>
+                </button>
+                <div id="support-sub-list" class="overflow-hidden transition-all duration-200 @(currentController == "SupportCustomer" ? "max-h-40" : "max-h-0")">
+                    <div class="pt-1 pb-1 space-y-1 ltr:pl-8 rtl:pr-8">
+                        <a href="/customer/support" class="nav-item flex items-center gap-md @(currentAction == "Index" && currentController == "SupportCustomer" ? "bg-primary/10 text-primary font-bold" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-2xl px-4 py-2.5 text-sm transition-all duration-200">
+                            <span class="material-symbols-outlined text-lg @(currentAction == "Index" && currentController == "SupportCustomer" ? "filled-icon" : "")">list_alt</span>
+                            <span class="font-semibold sidebar-text whitespace-nowrap">@Localizer["supp_previous_tickets"]</span>
+                        </a>
+                        <a href="/customer/support/new" class="nav-item flex items-center gap-md @(currentAction == "NewTicket" ? "bg-primary/10 text-primary font-bold" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-2xl px-4 py-2.5 text-sm transition-all duration-200">
+                            <span class="material-symbols-outlined text-lg @(currentAction == "NewTicket" ? "filled-icon" : "")">add_circle</span>
+                            <span class="font-semibold sidebar-text whitespace-nowrap">@Localizer["supp_new_ticket"]</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
             <a asp-controller="Customer" asp-action="BrandReviews" class="nav-item flex items-center gap-md @(currentAction == "BrandReviews" ? "bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["brand_reviews_my_reviews"]">
                 <span class="material-symbols-outlined @(currentAction == "BrandReviews" ? "filled-icon" : "")">rate_review</span>
                 <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["brand_reviews_my_reviews"]</span>
@@ -344,7 +360,11 @@
         </a>
         <a asp-controller="Customer" asp-action="Orders" class="mob-nav-item @(currentAction == "Orders" ? "active" : "")">
             <span class="material-symbols-outlined">receipt_long</span>
-            <span>@Localizer["admin_orders"]</span>
+            <span>@Localizer["nav_orders"]</span>
+        </a>
+        <a href="/customer/support" class="mob-nav-item @(currentController == "SupportCustomer" ? "active" : "")">
+            <span class="material-symbols-outlined">support_agent</span>
+            <span>@Localizer["nav_support"]</span>
         </a>
         <a asp-controller="Customer" asp-action="Profile" class="mob-nav-item @(currentAction == "Profile" ? "active" : "")">
             <span class="material-symbols-outlined">person</span>
@@ -401,6 +421,28 @@
             const icon = document.getElementById('sidebar-toggle-icon');
             if (icon) icon.textContent = isCollapsed ? 'menu' : 'menu_open';
         }
+
+        function toggleSupportSubList() {
+            const list = document.getElementById('support-sub-list');
+            const chevron = document.getElementById('support-chevron');
+            if (!list) return;
+            const isOpen = list.classList.contains('max-h-40');
+            list.classList.toggle('max-h-40', !isOpen);
+            list.classList.toggle('max-h-0', isOpen);
+            if (chevron) chevron.classList.toggle('rotate-180', !isOpen);
+        }
+
+        // Auto-expand support sub-list on page load if already on a support page
+        document.addEventListener('DOMContentLoaded', function() {
+            const isSupport = @(currentController == "SupportCustomer" ? "true" : "false");
+            if (isSupport) {
+                const list = document.getElementById('support-sub-list');
+                if (list) {
+                    list.classList.remove('max-h-0');
+                    list.classList.add('max-h-40');
+                }
+            }
+        });
 
         function submitLogout() {
             const form = document.getElementById('logout-form');

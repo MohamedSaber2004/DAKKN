@@ -410,8 +410,7 @@ namespace DAKKN.MVC.Controllers
                 return BadRequest(new { success = false, message = localizer[LocalizationKeys.UploadFileMessages.Requried.Value] });
 
             var result = await mediator.Send(new UpdateUserSettingsCommand(
-                null, null, null, null, null, null,
-                ProfileImage: profileImage));
+                null, null, null, null, null, ProfileImage: profileImage));
 
             return Json(new
             {

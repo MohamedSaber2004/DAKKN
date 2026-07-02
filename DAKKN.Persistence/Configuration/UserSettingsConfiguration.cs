@@ -19,10 +19,6 @@ namespace DAKKN.Persistence.Configuration
                 .HasMaxLength(20)
                 .HasDefaultValue("light");
 
-            builder.Property(x => x.PrimaryColor)
-                .HasMaxLength(20)
-                .HasDefaultValue("#3B82F6");
-
             builder.Property(x => x.LayoutMode)
                 .HasMaxLength(20)
                 .HasDefaultValue("default");

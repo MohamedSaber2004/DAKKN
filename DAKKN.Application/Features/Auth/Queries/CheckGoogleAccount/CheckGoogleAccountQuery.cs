@@ -11,7 +11,7 @@ namespace DAKKN.Application.Features.Auth.Queries.CheckGoogleAccount
 {
     public sealed record CheckGoogleAccountQuery(string IdToken) : IRequest<CheckGoogleAccountResponseDto>;
 
-    public sealed record CheckGoogleAccountResponseDto(bool NeedsPhoneNumber, string? Email, string? FullName);
+    public sealed record CheckGoogleAccountResponseDto(bool NeedsPhoneNumber, bool IsNewUser, string? Email, string? FullName);
 
     public sealed class CheckGoogleAccountQueryHandler : IRequestHandler<CheckGoogleAccountQuery, CheckGoogleAccountResponseDto>
     {
@@ -42,9 +42,10 @@ namespace DAKKN.Application.Features.Auth.Queries.CheckGoogleAccount
                 user = await _userManager.FindByEmailAsync(payload.Email);
             }
 
-            bool needsPhoneNumber = user == null || string.IsNullOrEmpty(user.PhoneNumber);
+            bool isNewUser = user == null;
+            bool needsPhoneNumber = isNewUser || string.IsNullOrEmpty(user.PhoneNumber);
 
-            return new CheckGoogleAccountResponseDto(needsPhoneNumber, payload.Email, payload.Name);
+            return new CheckGoogleAccountResponseDto(needsPhoneNumber, isNewUser, payload.Email, payload.Name);
         }
     }
 }
