@@ -12,6 +12,57 @@
     <link rel="icon" type="image/x-icon" href="~/favicon.ico" asp-append-version="true" />
     <link rel="icon" type="image/png" sizes="192x192" href="~/favicon.png" />
     <link rel="apple-touch-icon" href="~/favicon.png" />
+    <meta name="description" content="@Localizer["seo_description"]" />
+    <meta name="robots" content="index, follow" />
+
+    @{
+        var baseUrl = $"{Context.Request.Scheme}://{Context.Request.Host}";
+    }
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@graph": [
+            {
+                "@@type": "Organization",
+                "@@id": "@baseUrl/#organization",
+                "name": "DAKKN",
+                "url": "@baseUrl",
+                "logo": {
+                    "@@type": "ImageObject",
+                    "url": "@baseUrl/images/logo.png",
+                    "width": 512,
+                    "height": 341
+                },
+                "sameAs": [],
+                "contactPoint": {
+                    "@@type": "ContactPoint",
+                    "telephone": "+20-XXX-XXXXXXX",
+                    "contactType": "customer service",
+                    "availableLanguage": ["Arabic", "English"]
+                }
+            },
+            {
+                "@@type": "WebSite",
+                "@@id": "@baseUrl/#website",
+                "url": "@baseUrl",
+                "name": "DAKKN",
+                "description": "@Localizer["seo_description"]",
+                "publisher": { "@@id": "@baseUrl/#organization" },
+                "potentialAction": {
+                    "@@type": "SearchAction",
+                    "target": {
+                        "@@type": "EntryPoint",
+                        "urlTemplate": "@baseUrl/shop/products?search={search_term_string}"
+                    },
+                    "query-input": "required name=search_term_string"
+                },
+                "inLanguage": "@(culture == "ar" ? "ar-SA" : "en-US")"
+            }
+        ]
+    }
+    </script>
 
     @* Fonts & Icons *@
     <link rel="preconnect" href="https://fonts.googleapis.com" />

@@ -47,6 +47,21 @@
     <link rel="icon" type="image/x-icon" href="~/favicon.ico" asp-append-version="true" />
     <link rel="icon" type="image/png" sizes="192x192" href="~/favicon.png" />
     <link rel="apple-touch-icon" href="~/favicon.png" />
+    <meta name="description" content="@(ViewData["Description"] ?? Localizer["seo_description"])" />
+
+    <!-- Open Graph -->
+    <meta property="og:type"        content="website" />
+    <meta property="og:title"       content="@(ViewData["Title"] ?? "DAKKN")" />
+    <meta property="og:description" content="@(ViewData["Description"] ?? Localizer["seo_description"])" />
+    <meta property="og:image"       content="@($"{Context.Request.Scheme}://{Context.Request.Host}/images/logo.png")" />
+    <meta property="og:site_name"   content="DAKKN" />
+    <meta property="og:locale"      content="@(culture == "ar" ? "ar_SA" : "en_US")" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:title"       content="@(ViewData["Title"] ?? "DAKKN")" />
+    <meta name="twitter:description" content="@(ViewData["Description"] ?? Localizer["seo_description"])" />
+    <meta name="twitter:image"       content="@($"{Context.Request.Scheme}://{Context.Request.Host}/images/logo.png")" />
 
     <!-- Resource Hints -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />

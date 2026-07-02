@@ -52,6 +52,71 @@
     <link rel="icon" type="image/x-icon" href="~/favicon.ico" asp-append-version="true" />
     <link rel="icon" type="image/png" sizes="192x192" href="~/favicon.png" />
     <link rel="apple-touch-icon" href="~/favicon.png" />
+    <meta name="description" content="@(ViewData["Description"] ?? Localizer["customer_seo_description"])" />
+
+    <!-- Open Graph -->
+    <meta property="og:type"        content="website" />
+    <meta property="og:title"       content="@(ViewData["Title"] ?? "DAKKN")" />
+    <meta property="og:description" content="@(ViewData["Description"] ?? Localizer["customer_seo_description"])" />
+    <meta property="og:image"       content="@($"{Context.Request.Scheme}://{Context.Request.Host}/images/logo.png")" />
+    <meta property="og:site_name"   content="DAKKN" />
+    <meta property="og:locale"      content="@(culture == "ar" ? "ar_SA" : "en_US")" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card"        content="summary_large_image" />
+    <meta name="twitter:title"       content="@(ViewData["Title"] ?? "DAKKN")" />
+    <meta name="twitter:description" content="@(ViewData["Description"] ?? Localizer["customer_seo_description"])" />
+    <meta name="twitter:image"       content="@($"{Context.Request.Scheme}://{Context.Request.Host}/images/logo.png")" />
+
+    @{
+        var baseUrl = $"{Context.Request.Scheme}://{Context.Request.Host}";
+        var ogDescription = ViewData["Description"]?.ToString() ?? Localizer["customer_seo_description"].ToString();
+    }
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@@context": "https://schema.org",
+        "@@graph": [
+            {
+                "@@type": "Organization",
+                "@@id": "@baseUrl/#organization",
+                "name": "DAKKN",
+                "url": "@baseUrl",
+                "logo": {
+                    "@@type": "ImageObject",
+                    "url": "@baseUrl/images/logo.png",
+                    "width": 512,
+                    "height": 341
+                },
+                "sameAs": [],
+                "contactPoint": {
+                    "@@type": "ContactPoint",
+                    "telephone": "+20-XXX-XXXXXXX",
+                    "contactType": "customer service",
+                    "availableLanguage": ["Arabic", "English"]
+                }
+            },
+            {
+                "@@type": "WebSite",
+                "@@id": "@baseUrl/#website",
+                "url": "@baseUrl",
+                "name": "DAKKN",
+                "description": "@ogDescription",
+                "publisher": { "@@id": "@baseUrl/#organization" },
+                "potentialAction": {
+                    "@@type": "SearchAction",
+                    "target": {
+                        "@@type": "EntryPoint",
+                        "urlTemplate": "@baseUrl/shop/products?search={search_term_string}"
+                    },
+                    "query-input": "required name=search_term_string"
+                },
+                "inLanguage": "@(culture == "ar" ? "ar-SA" : "en-US")"
+            }
+        ]
+    }
+    </script>
 
     <!-- Resource Hints -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
