@@ -377,3 +377,7 @@ FodyWeavers.xsd
 /DAKKN.MVC/appsettings.Development.json
 /DAKKN.MVC/appsettings.Live.json
 /DAKKN.MVC/appsettings.Production.json
+/DAKKN.MVC/appsettings.json
+/DAKKN.MVC/appsettings.Development.json
+/DAKKN.MVC/appsettings.Live.json
+/DAKKN.MVC/appsettings.Production.json
