@@ -1,5 +1,2 @@
-﻿404	02.07. 2026 10:23	 66.249.93.14	GET	/google877f3f71ff8553c2.html	
-Mozilla/5.0+(compatible;+Google-Site-Verification/1.0)
-12 ms	1.4 KB
-404	02.07. 2026 10:23	 66.249.93.2	GET	/googlee8a4d0fad8cf16e7.html	
+﻿404	02.07. 2026 10:23	 66.249.93.2	GET	/googlee8a4d0fad8cf16e7.html	
 Mozilla/5.0+(compatible;+Google-Site-Verification/1.0)
