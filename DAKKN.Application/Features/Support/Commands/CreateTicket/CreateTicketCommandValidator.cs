@@ -16,8 +16,7 @@ namespace DAKKN.Application.Features.Support.Commands.CreateTicket
                 .NotEmpty().WithMessage(localizer[LocalizationKeys.ValidationMessages.Required.Value])
                 .MaximumLength(5000).WithMessage(localizer[LocalizationKeys.ValidationMessages.MaxLength.Value, 5000]);
 
-            RuleFor(v => v.CategoryId)
-                .NotEmpty().WithMessage(localizer[LocalizationKeys.ValidationMessages.Required.Value]);
+
         }
     }
 }

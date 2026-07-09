@@ -43,7 +43,6 @@ namespace DAKKN.MVC.Helpers
             var titleB = GetString(root, "TitleB") ?? GetString(root, "titleB") ?? string.Empty;
             var titleC = GetString(root, "TitleC") ?? GetString(root, "titleC") ?? string.Empty;
             var titleD = GetString(root, "TitleD") ?? GetString(root, "titleD") ?? string.Empty;
-            var description = GetString(root, "Description") ?? GetString(root, "description") ?? string.Empty;
             var buttonText = GetString(root, "ButtonText") ?? GetString(root, "buttonText") ?? string.Empty;
             var imageUrl = GetString(root, "ImageUrl") ?? GetString(root, "imageUrl") ?? string.Empty;
 
@@ -59,8 +58,6 @@ namespace DAKKN.MVC.Helpers
                 TitleCEn = titleC,
                 TitleDAr = titleD,
                 TitleDEn = titleD,
-                DescriptionAr = description,
-                DescriptionEn = description,
                 ButtonTextAr = buttonText,
                 ButtonTextEn = buttonText,
                 ImageUrl = imageUrl

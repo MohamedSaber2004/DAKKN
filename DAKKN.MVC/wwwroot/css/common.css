@@ -1,8 +1,8 @@
 /* common.css – shared design tokens and palette */
 :root {
   /* Primary brand color (used across dashboards and landing) */
-  --primary-color: #0E908C;
-  --primary-rgb: 14, 144, 140;
+  --primary-color: #18C7C7;
+  --primary-rgb: 24, 199, 199;
   /* Light and dark background colors */
   --background-light: #F8FAFC; /* Tailwind gray-50 */
   --background-dark: #0A2030; /* dakkn dark-page */

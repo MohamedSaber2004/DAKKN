@@ -10,7 +10,6 @@
     var titleB = Pick(Model.Hero.TitleBAr, Model.Hero.TitleBEn);
     var titleC = Pick(Model.Hero.TitleCAr, Model.Hero.TitleCEn);
     var titleD = Pick(Model.Hero.TitleDAr, Model.Hero.TitleDEn);
-    var desc = Pick(Model.Hero.DescriptionAr, Model.Hero.DescriptionEn);
     var btnText = Pick(Model.Hero.ButtonTextAr, Model.Hero.ButtonTextEn);
 }
 <section id="hero" class="relative min-h-[90vh] md:min-h-[85vh] flex items-center pt-16 md:pt-[72px] overflow-hidden bg-gradient-to-br from-primary/5 via-transparent to-primary/5 dark:from-primary/10 dark:via-transparent dark:to-primary/5">
@@ -40,10 +39,6 @@
                     @if (!string.IsNullOrEmpty(titleC)) { <span class="text-on-surface dark:text-white">@titleC </span> }
                     @if (!string.IsNullOrEmpty(titleD)) { <span class="text-primary">@titleD</span> }
                 </h1>
-                @if (!string.IsNullOrEmpty(desc))
-                {
-                    <p class="text-base md:text-lg text-on-surface-variant dark:text-slate-400 leading-relaxed max-w-xl mx-auto lg:mx-0 mb-8 scroll-animate delay-200">@desc</p>
-                }
                 <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 mb-6 max-w-lg mx-auto lg:mx-0 scroll-animate delay-300">
                     <a asp-action="Register" asp-controller="Auth" class="flex-1 bg-primary hover:bg-primary-hover active:bg-primary-active text-on-primary font-bold py-3 sm:py-3.5 px-6 sm:px-8 rounded-xl transition-all shadow-button hover:shadow-card-hover hover:-translate-y-0.5 active:scale-[0.97] text-center text-xs sm:text-sm">@(string.IsNullOrEmpty(btnText) ? Localizer["btn_start_shopping"] : btnText)</a>
                     <a href="#how-it-works" class="flex-1 bg-white dark:bg-[#1E293B] hover:bg-primary/5 text-on-surface dark:text-white font-bold py-3 sm:py-3.5 px-6 sm:px-8 rounded-xl transition-all border-2 border-outline-variant/30 dark:border-white/10 hover:border-primary/30 hover:-translate-y-0.5 active:scale-[0.97] text-center text-xs sm:text-sm">@Localizer["btn_learn_more"]</a>
@@ -81,7 +76,7 @@
                             </div>
                             <div class="text-xs">
                                 <span class="font-bold text-on-surface dark:text-white block">@Localizer["hero_rating_value"]</span>
-                                <span class="text-on-surface-variant dark:text-slate-400">@Localizer["hero_trust", Model.EffectiveTrustedCount]</span>
+                                <span class="text-on-surface-variant dark:text-slate-400">@Localizer["hero_trust", Model.TotalCustomers]</span>
                             </div>
                         </div>
                     </div>

@@ -1271,6 +1271,7 @@
   "supp_view_details": "عرض التفاصيل",
   "supp_quick_help": "مساعدة سريعة",
   "supp_instant_chat": "دردشة فورية",
+  "supp_phone_support": "دعم الهاتف",
   "supp_email_support": "دعم البريد الإلكتروني",
   "supp_follow_updates": "تابعنا لآخر التحديثات",
   "supp_mock_response": "نحن نعتذر عن هذا التأخير. لقد قمنا بالتحقق من طلبك ووجدنا أنه جاهز للشحن وسيتم تسليمه لشركة الشحن خلال ساعتين. سنقوم بإرسال رقم التتبع لك عبر البريد الإلكتروني فور صدوره.",
@@ -1926,5 +1927,15 @@
   "admin_faq_display_limit": "عدد الأسئلة المعروضة",
   "admin_faq_auto_fetch": "جلب تلقائي من الدعم",
   "admin_faq_auto_fetch_desc": "عند تفعيل هذا الخيار، سيتم عرض الأسئلة المنشورة من صفحة إدارة الأسئلة الشائعة",
-  "admin_faq_auto_fetch_hint": "عند التفعيل، ستظهر الأسئلة المنشورة من صفحة دعم > الأسئلة الشائعة. يمكنك تحديد عدد الأسئلة المعروضة."
+  "admin_faq_auto_fetch_hint": "عند التفعيل، ستظهر الأسئلة المنشورة من صفحة دعم > الأسئلة الشائعة. يمكنك تحديد عدد الأسئلة المعروضة.",
+
+  "hero_ticker_5layer": "فينيل فاخر 5 طبقات",
+  "hero_ticker_dishwasher": "آمن للغسالة",
+  "hero_ticker_scratch": "مقاوم للخدوش",
+  "hero_ticker_made_in": "صنع في مصر",
+  "hero_delivery_title": "شحن داخل مصر",
+  "hero_delivery_sub": "جميع المحافظات",
+  "hero_trust_shipping": "شحن مجاني حول العالم",
+  "hero_trust_support": "دعم على مدار الساعة",
+  "hero_trust_quality": "جودة فاخرة"
 }

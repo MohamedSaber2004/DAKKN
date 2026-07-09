@@ -55,6 +55,13 @@
                 <a asp-action="ProductDetails" asp-route-id="@product.Id" class="block">
                     <div class="aspect-square relative overflow-hidden bg-white/5">
                         <img src="@product.ImageUrl" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="@(isArabic ? product.ArName : product.Name)">
+                        
+                        <!-- Favorite (Heart) Button -->
+                        <button type="button" onclick="toggleFavorite('@product.Id', this); event.preventDefault(); event.stopPropagation();" 
+                                class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-surface/90 dark:bg-inverse-surface/90 backdrop-blur-md shadow-medium flex items-center justify-center transition-all @(isFav ? "text-error" : "text-text-secondary hover:text-error")"
+                                title="@(isFav ? Localizer["fav_remove"] : Localizer["fav_add"])">
+                            <span class="material-symbols-outlined @(isFav ? "filled-icon" : "")">favorite</span>
+                        </button>
                     </div>
                 </a>
                 <div class="p-lg">
@@ -170,3 +177,9 @@
         });
     </script>
 }
+
+<style>
+    .filled-icon {
+        font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+</style>

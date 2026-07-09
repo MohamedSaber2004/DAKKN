@@ -1278,6 +1278,7 @@
   "supp_view_details": "View Details",
   "supp_quick_help": "Quick Help",
   "supp_instant_chat": "Instant Chat",
+  "supp_phone_support": "Phone Support",
   "supp_email_support": "Email Support",
   "supp_follow_updates": "Follow for updates",
   "supp_mock_response": "We apologize for this delay. We have checked your order and found that it is ready for shipping and will be delivered to the courier within two hours. We will send you the tracking number via email as soon as it is issued.",
@@ -2113,5 +2114,15 @@
   "admin_faq_display_limit": "Display Limit",
   "admin_faq_auto_fetch": "Auto-fetch from Support",
   "admin_faq_auto_fetch_desc": "Automatically load published FAQs from the Support module",
-  "admin_faq_auto_fetch_hint": "When enabled, the landing page will display published FAQs from the Support > FAQs management page. You can limit how many to show."
+  "admin_faq_auto_fetch_hint": "When enabled, the landing page will display published FAQs from the Support > FAQs management page. You can limit how many to show.",
+
+  "hero_ticker_5layer": "Premium 5-Layer Vinyl",
+  "hero_ticker_dishwasher": "Dishwasher Safe",
+  "hero_ticker_scratch": "Scratch Resistant",
+  "hero_ticker_made_in": "Made in Egypt",
+  "hero_delivery_title": "Shipping in Egypt",
+  "hero_delivery_sub": "All governorates",
+  "hero_trust_shipping": "Free Worldwide Shipping",
+  "hero_trust_support": "24/7 Support",
+  "hero_trust_quality": "Premium Quality"
 }

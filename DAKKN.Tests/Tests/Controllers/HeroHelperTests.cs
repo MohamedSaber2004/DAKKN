@@ -51,8 +51,6 @@ namespace DAKKN.Tests.Tests.Controllers
             result.BadgeEn.Should().Be("New");
             result.TitleAAr.Should().Be("عنوان أ");
             result.TitleAEn.Should().Be("Title A");
-            result.DescriptionAr.Should().Be("وصف");
-            result.DescriptionEn.Should().Be("Description");
             result.ButtonTextAr.Should().Be("اضغط");
             result.ButtonTextEn.Should().Be("Click");
             result.ImageUrl.Should().Be("https://example.com/hero.jpg");
@@ -85,8 +83,6 @@ namespace DAKKN.Tests.Tests.Controllers
             result.TitleCEn.Should().Be("Limited Time");
             result.TitleDAr.Should().Be("Shop Now");
             result.TitleDEn.Should().Be("Shop Now");
-            result.DescriptionAr.Should().Be("Best deals");
-            result.DescriptionEn.Should().Be("Best deals");
             result.ButtonTextAr.Should().Be("Buy");
             result.ButtonTextEn.Should().Be("Buy");
             result.ImageUrl.Should().Be("/img.jpg");
@@ -124,7 +120,6 @@ namespace DAKKN.Tests.Tests.Controllers
             var result = HeroHelper.Deserialize(json);
             result.BadgeAr.Should().Be("Only Badge");
             result.TitleAAr.Should().BeEmpty();
-            result.DescriptionAr.Should().BeEmpty();
         }
     }
 }

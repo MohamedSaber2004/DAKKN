@@ -178,9 +178,12 @@ namespace DAKKN.MVC
                     if (allowedOrigins.Length > 0)
                         policy.WithOrigins(allowedOrigins)
                               .AllowAnyMethod()
-                              .AllowAnyHeader();
+                              .AllowAnyHeader()
+                              .AllowCredentials();
                     else
-                        policy.SetIsOriginAllowed(_ => false);
+                        policy.SetIsOriginAllowed(_ => true)
+                              .AllowAnyMethod()
+                              .AllowAnyHeader();
                 });
             });
 
@@ -194,7 +197,7 @@ namespace DAKKN.MVC
 
             builder.Services.AddAntiforgery(options =>
             {
-                options.HeaderName = "X-CSRF-TOKEN";
+                options.HeaderName = "RequestVerificationToken";
                 options.Cookie.Name = ".DAKKN.Antiforgery";
                 options.Cookie.HttpOnly = true;
                 options.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
@@ -320,7 +323,10 @@ namespace DAKKN.MVC
 
             app.UseResponseCompression();
 
-            app.UseHttpsRedirection();
+            if (!app.Environment.IsDevelopment())
+            {
+                app.UseHttpsRedirection();
+            }
 
             app.UseXContentTypeOptions();
             app.UseXfo(xfo => xfo.Deny());
@@ -378,6 +384,7 @@ namespace DAKKN.MVC
                             "https://ui-avatars.com",
                             "https://flagcdn.com",
                             "https://dakkn.runasp.net",
+                            "https://dakkn.premiumasp.net",
                             "https://picsum.photos",
                             "https://fastly.picsum.photos",
                             "https://placehold.co",
@@ -435,6 +442,7 @@ namespace DAKKN.MVC
                             "https://ui-avatars.com",
                             "https://flagcdn.com",
                             "https://dakkn.runasp.net",
+                            "https://dakkn.premiumasp.net",
                             "https://picsum.photos",
                             "https://fastly.picsum.photos",
                             "https://placehold.co",

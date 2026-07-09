@@ -119,15 +119,18 @@
 <!-- Change Password Modal -->
 <div id="changePasswordModal" class="fixed inset-0 z-50 flex items-center justify-center p-lg hidden">
     <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeChangePasswordModal()"></div>
-    <div class="customer-modal-panel relative bg-surface dark:bg-[#1E293B] rounded-[32px] shadow-2xl w-full max-w-md border border-border dark:border-white/10 max-h-[90vh] overflow-y-auto">
-        <div class="p-xl">
+    <div class="customer-modal-panel relative bg-surface dark:bg-[#1E293B] rounded-[32px] shadow-2xl w-full max-w-md border border-border dark:border-white/10 flex flex-col max-h-[90vh] overflow-hidden">
+        
+        <div class="p-xl pb-0 flex-shrink-0">
             <div class="flex items-center justify-between mb-lg">
                 <h3 class="font-h3 text-h3 font-bold text-text-primary dark:text-white">@Localizer["profile_change_pwd"]</h3>
                 <button type="button" onclick="closeChangePasswordModal()" class="w-10 h-10 rounded-full bg-surface-container dark:bg-black/20 flex items-center justify-center text-text-secondary hover:text-text-primary transition-colors">
                     <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
+        </div>
 
+        <div class="px-xl pb-xl pt-2 overflow-y-auto flex-1 custom-scrollbar">
             <div class="space-y-lg">
                 <!-- Current Password -->
                 <div class="space-y-2">
@@ -173,12 +176,14 @@
                 </div>
 
                 <div id="cp-error" class="hidden px-4 py-3 rounded-2xl bg-error/10 text-error text-sm font-bold"></div>
-
-                <button id="cp-submit" type="button" onclick="submitChangePassword()" class="w-full bg-primary text-on-primary py-3 rounded-2xl font-bold text-sm hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
-                    <span class="material-symbols-outlined text-lg">lock</span>
-                    <span>@Localizer["admin_update_password"]</span>
-                </button>
             </div>
+        </div>
+
+        <div class="p-xl border-t border-border dark:border-white/10 bg-surface dark:bg-surface-container-high flex-shrink-0 flex justify-end">
+            <button id="cp-submit" type="button" onclick="submitChangePassword()" class="w-full sm:w-auto px-8 bg-primary text-on-primary py-3 rounded-2xl font-bold text-sm hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-lg">lock</span>
+                <span>@Localizer["admin_update_password"]</span>
+            </button>
         </div>
     </div>
 </div>

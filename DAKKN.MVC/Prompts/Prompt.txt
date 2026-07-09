@@ -1,4 +1,1 @@
-select * from AspNetRoles
-insert into AspNetRoles (id, Name, NormalizedName, ConcurrencyStamp)
-values (NEWID(), 'User', 'USER', NEWID())
-where not exists (select 1 from AspNetRoles where Name = 'User')
+i want to give me a prompt to make the image of hero banner as background and set the title and description in the cetner and remove creators section and suggest any thing here in that section to enhance user experience. also the is related with admin dashboard in the content control center of landing sync changes to all ow to admin to adapt changes

@@ -232,6 +232,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         safeInit('initFloatingShapes');
         safeInit('initTextReveal');
         safeInit('initSectionParallax');
+        safeInit('initHeroParallax');
+        safeInit('initMarquee');
 
         // OTP & Password micro-interactions
         initOtpBoxes();
@@ -447,10 +449,10 @@ window.updateSlider = updateSlider;
 window.toggleLang = toggleLang;
 window.guestAddToCart = guestAddToCart;
 
-let resizeTimer;
+let landingResizeTimer;
 window.addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(updateSlider, 150);
+    clearTimeout(landingResizeTimer);
+    landingResizeTimer = setTimeout(updateSlider, 150);
 });
 
 /* ── Catalog API ────────────────────────────────────── */
@@ -861,13 +863,60 @@ function initFrozenActions() {
     nextProdsPage = function() { showSignInModal(); };
     goToProdsPage = function() { showSignInModal(); };
 
-    // Intercept contact form submit
+    // Submit contact form via API
     const contactForm = document.querySelector('#contact form');
     if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
+        const submitBtn = contactForm.querySelector('button[type="submit"]');
+        const originalBtnHtml = submitBtn ? submitBtn.innerHTML : '';
+        contactForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            showSignInModal();
+            const btn = submitBtn;
+            const successEl = document.getElementById('cf-success');
+            const errors = contactForm.querySelectorAll('.cf-error');
+
+            errors.forEach(el => el.classList.add('hidden'));
+
+            const name = document.getElementById('cf-name').value.trim();
+            const email = document.getElementById('cf-email').value.trim();
+            const phone = document.getElementById('cf-phone').value.trim();
+            const subjectEl = document.getElementById('cf-subject');
+            const categoryId = subjectEl.value;
+            const subject = subjectEl.options[subjectEl.selectedIndex]?.text || '';
+            const message = document.getElementById('cf-msg').value.trim();
+            
+            if (!name) { showFieldError('name', 'Name is required'); return; }
+            if (!phone) { showFieldError('phone', 'Phone number is required'); return; }
+            if (!categoryId) { showFieldError('subject', 'Subject is required'); return; }
+            if (!message) { showFieldError('msg', 'Message is required'); return; }
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-symbols-outlined text-lg animate-spin">refresh</span>';
+
+            try {
+                const res = await fetch('/api/v1/support/contact', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, phone, subject, message, categoryId })
+                });
+                const result = await res.json();
+                if (res.ok) {
+                    contactForm.reset();
+                    if (successEl) successEl.classList.remove('hidden');
+                } else {
+                    showFieldError('msg', result.message || 'Something went wrong');
+                }
+            } catch {
+                showFieldError('msg', 'Connection error. Please try again.');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalBtnHtml;
+            }
         });
+    }
+
+    function showFieldError(field, msg) {
+        const el = document.querySelector(`.cf-error[data-for="${field}"]`);
+        if (el) { el.textContent = msg; el.classList.remove('hidden'); }
     }
 
     // Modal close on backdrop click
@@ -1086,7 +1135,7 @@ function initSectionParallax() {
                         const progress = rect.top / window.innerHeight;
                         const bg = section.querySelector('.deco-blob, .deco-ring-solid');
                         if (bg) {
-                            bg.style.transform = `translateY(${progress * -30}px)`;
+                            bg.style.translate = `0 ${progress * -30}px`;
                         }
                     }
                 });
@@ -1095,6 +1144,74 @@ function initSectionParallax() {
             ticking = true;
         }
     }, { passive: true });
+}
+
+/* ── Hero Parallax Scrolling Effect ──────────── */
+function initHeroParallax() {
+    const hero = document.getElementById('hero');
+    const bg = hero?.querySelector('.hero-bg-parallax img');
+    if (!hero || !bg) return;
+    let ticking = false;
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(() => {
+                const rect = hero.getBoundingClientRect();
+                const scrollProgress = Math.max(0, Math.min(1, -rect.top / rect.height));
+                const translateY = scrollProgress * 30;
+                bg.style.transform = `translateY(${translateY}px) scale(1.1)`;
+                ticking = false;
+            });
+            ticking = true;
+        }
+    }, { passive: true });
+}
+
+/* ── Marquee Infinite Scroll (JS-driven) ─────── */
+function initMarquee() {
+    const wrapper = document.querySelector('.marquee-wrapper');
+    if (!wrapper) return;
+    const track = wrapper.querySelector('.marquee-track');
+    if (!track) return;
+    const speed = 0.8;
+    let pos = 0;
+    let animId = null;
+    let paused = false;
+    let cachedHalfWidth = 0;
+
+    function getHalfWidth() {
+        if (cachedHalfWidth > 0) return cachedHalfWidth;
+        const items = track.querySelectorAll('.marquee-item');
+        if (items.length === 0) return 0;
+        const halfCount = items.length / 2;
+        let w = 0;
+        for (let i = 0; i < halfCount; i++) {
+            w += items[i].offsetWidth;
+            const style = getComputedStyle(items[i]);
+            w += parseFloat(style.marginLeft) + parseFloat(style.marginRight);
+        }
+        cachedHalfWidth = w;
+        return w;
+    }
+
+    window.addEventListener('resize', () => { cachedHalfWidth = 0; });
+
+    function step() {
+        if (!paused) {
+            pos -= speed;
+            const half = getHalfWidth();
+            if (half > 0 && Math.abs(pos) >= half) {
+                pos += half;
+            }
+            const isRtl = document.documentElement.dir === 'rtl';
+            track.style.transform = isRtl ? `translateX(${Math.abs(pos)}px)` : `translateX(${pos}px)`;
+        }
+        animId = requestAnimationFrame(step);
+    }
+
+    wrapper.addEventListener('mouseenter', () => { paused = true; });
+    wrapper.addEventListener('mouseleave', () => { paused = false; });
+
+    animId = requestAnimationFrame(step);
 }
 
 window.showSignInModal = showSignInModal;

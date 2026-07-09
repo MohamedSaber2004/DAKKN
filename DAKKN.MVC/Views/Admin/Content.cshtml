@@ -114,10 +114,6 @@
                                 <input id="hero-title-d-ar" type="text" value="@Model.Hero.TitleDAr" placeholder="@Localizer["admin_content_ph_hero_title_d_ar"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md text-secondary font-bold">
                             </div>
                         </div>
-                        <div class="flex flex-col gap-xs">
-                            <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_hero_desc"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_ar_marker"]</span></label>
-                            <textarea id="hero-desc-ar" rows="4" placeholder="@Localizer["admin_content_ph_hero_desc_ar"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">@Model.Hero.DescriptionAr</textarea>
-                        </div>
                         @* <div class="flex flex-col gap-xs">
                             <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_hero_btn_text"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_ar_marker"]</span></label>
                              <input id="hero-btn-text-ar" type="text" value="@Model.Hero.ButtonTextAr" placeholder="@Localizer["admin_hero_btn_text"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">
@@ -139,10 +135,6 @@
                                 <input id="hero-title-d-en" type="text" value="@Model.Hero.TitleDEn" placeholder="@Localizer["admin_content_ph_hero_title_d_en"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md text-secondary font-bold">
                             </div>
                         </div>
-                        <div class="flex flex-col gap-xs">
-                            <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_hero_desc"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_en_marker"]</span></label>
-                            <textarea id="hero-desc-en" rows="4" placeholder="@Localizer["admin_hero_desc_ph"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">@Model.Hero.DescriptionEn</textarea>
-                        </div>
                         @* <div class="flex flex-col gap-xs">
                             <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_hero_btn_text"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_en_marker"]</span></label>
                             <input id="hero-btn-text-en" type="text" value="@Model.Hero.ButtonTextEn" placeholder="@Localizer["btn_shop"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">
@@ -163,12 +155,6 @@
                 </div>
             </div>
 
-            <!-- Trusted Count Override -->
-            <div class="flex flex-col gap-xs mt-lg pt-lg border-t border-admin-border dark:border-white/5">
-                <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_hero_trusted_count"]</label>
-                <p class="text-xs text-admin-muted px-1">@Localizer["admin_hero_trusted_count_hint"]</p>
-                <input id="hero-trusted-count" type="number" min="0" value="@Model.Hero.TrustedCountOverride" placeholder="@Localizer["admin_hero_trusted_count_ph"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md focus:ring-primary focus:border-primary transition-all max-w-xs">
-            </div>
         </div>
 
         <!-- Section: About Us -->
@@ -503,10 +489,6 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
                 <div class="space-y-lg">
                     <div class="flex flex-col gap-xs">
-                        <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_contact_email"]</label>
-                        <input id="contact-email" type="email" value="@Model.Contact.Email" placeholder="@Localizer["admin_content_ph_contact_email"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">
-                    </div>
-                    <div class="flex flex-col gap-xs">
                         <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_contact_phone"]</label>
                         <input id="contact-phone" type="text" value="@Model.Contact.Phone" placeholder="@Localizer["admin_content_ph_contact_phone"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">
                     </div>
@@ -739,17 +721,14 @@
                 titleBAr: document.getElementById('hero-title-b-ar')?.value || '',
                 titleCAr: document.getElementById('hero-title-c-ar')?.value || '',
                 titleDAr: document.getElementById('hero-title-d-ar')?.value || '',
-                descriptionAr: document.getElementById('hero-desc-ar')?.value || '',
                 buttonTextAr: document.getElementById('hero-btn-text-ar')?.value || '',
                 badgeEn: document.getElementById('hero-badge-en')?.value || '',
                 titleAEn: document.getElementById('hero-title-a-en')?.value || '',
                 titleBEn: document.getElementById('hero-title-b-en')?.value || '',
                 titleCEn: document.getElementById('hero-title-c-en')?.value || '',
                 titleDEn: document.getElementById('hero-title-d-en')?.value || '',
-                descriptionEn: document.getElementById('hero-desc-en')?.value || '',
                 buttonTextEn: document.getElementById('hero-btn-text-en')?.value || '',
-                imageUrl: document.getElementById('hero-image-url-input')?.value || '',
-                trustedCountOverride: parseInt(document.getElementById('hero-trusted-count')?.value) || 0
+                imageUrl: document.getElementById('hero-image-url-input')?.value || ''
             };
         }
 
@@ -837,7 +816,6 @@
         function saveContactSection() {
             const data = {
                 contact: {
-                    email: document.getElementById('contact-email')?.value || '',
                     phone: document.getElementById('contact-phone')?.value || '',
                     address: document.getElementById('contact-address')?.value || ''
                 }
@@ -880,7 +858,6 @@
 
             // Collect contact
             const contact = {
-                email: document.getElementById('contact-email')?.value || '',
                 phone: document.getElementById('contact-phone')?.value || '',
                 address: document.getElementById('contact-address')?.value || ''
             };

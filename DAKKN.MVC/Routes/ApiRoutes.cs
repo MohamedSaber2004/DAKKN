@@ -123,6 +123,7 @@ namespace DAKKN.Appearence.Routes
             public const string Settings = Base + "/admin/settings";
             public const string PublicFAQs = Base + "/faqs";
             public const string PublicCategories = Base + "/categories";
+            public const string PublicContact = Base + "/contact";
         }
     }
 }

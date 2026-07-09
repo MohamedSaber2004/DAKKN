@@ -1,4 +1,7 @@
 @inject IStringLocalizer<Messages> Localizer
 <div id="dakkn-preloader" role="status" aria-label="@Localizer["loading"]">
-    <div class="preloader-spinner" aria-hidden="true"></div>
+    <div class="preloader-wrapper">
+        <div class="preloader-spinner" aria-hidden="true"></div>
+        <img src="/images/logo.png" alt="DAKKN" class="preloader-logo" asp-append-version="true" />
+    </div>
 </div>

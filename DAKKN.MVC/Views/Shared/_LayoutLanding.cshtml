@@ -120,7 +120,6 @@
             z-index: 9999;
             background: #ffffff;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             visibility: visible !important;
@@ -132,20 +131,34 @@
         }
         .dark #dakkn-preloader { background: var(--dark-page, #0A2030); }
 
+        .preloader-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+            height: 100px;
+        }
         .preloader-spinner {
-            width: 44px;
-            height: 44px;
+            position: absolute;
+            width: 80px;
+            height: 80px;
             border: 3px solid rgba(var(--primary-rgb, 14, 144, 140), 0.15);
             border-top-color: var(--primary-color, #0E908C);
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
         }
         .preloader-logo {
-            height: 48px;
-            margin-bottom: 1.5rem;
-            opacity: 0.8;
+            position: absolute;
+            height: 36px;
+            width: auto;
+            animation: pulse-logo 2s ease-in-out infinite;
         }
         @@keyframes spin { to { transform: rotate(360deg); } }
+        @@keyframes pulse-logo {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
     </style>
 
     <script>
@@ -181,12 +194,11 @@
 <body class="bg-background dark:bg-dark-page text-slate-900 dark:text-slate-100 min-h-screen flex flex-col antialiased overflow-x-hidden selection:bg-primary/10">
 
     <!-- Preloader Overlay -->
-    <div id="dakkn-preloader">
-        <img src="~/images/logo.png" alt="DAKKN" class="preloader-logo" asp-append-version="true" />
-        <div class="preloader-spinner"></div>
-    </div>
+    @await Html.PartialAsync("Partials/_Preloader")
 
-    @RenderBody()
+    <main class="flex-grow">
+        @RenderBody()
+    </main>
 
     <!-- Theme Toggle Floating -->
     <div class="fixed bottom-6 end-6 z-50">

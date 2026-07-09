@@ -84,6 +84,8 @@ namespace DAKKN.MVC.Controllers
                 faqItems = supportFaqs.Take(faqSettings.DisplayLimit).ToList();
             }
 
+            var supportCategories = await _mediator.Send(new DAKKN.Application.Features.Support.Queries.GetCategories.GetCategoriesQuery(false));
+
             var viewModel = new LandingPageViewModel
             {
                 FeaturedProducts = featuredProducts,
@@ -95,6 +97,7 @@ namespace DAKKN.MVC.Controllers
                 Contact = DeserializeOrDefault<ContactSettingsViewModel>(cmsSettings.Contact),
                 Faq = faqSettings,
                 FaqItems = faqItems,
+                SupportCategories = supportCategories,
                 HasCmsData = hasCmsData,
                 VisibleSections = visibleSections,
                 OrderedSectionIds = orderedSectionIds,

@@ -54,6 +54,12 @@ section { width: 100%; overflow-x: hidden; }
     background: linear-gradient(180deg, #ffffff 0%, #f8fafb 50%, #ffffff 100%);
 }
 
+/* ── Hero section ──────────────────────────────────── */
+#hero {
+    color-scheme: dark;
+    overflow: hidden;
+}
+
 /* ── Hero gradient glow ─────────────────────────────── */
 .hero-glow {
     background-image:
@@ -146,9 +152,28 @@ section { width: 100%; overflow-x: hidden; }
     from { transform: translateY(-100%); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
 }
+@keyframes heroFadeUp {
+    0% { opacity: 0; transform: translateY(24px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+.hero-fade-in {
+    opacity: 0;
+    animation: heroFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 @keyframes spinSlow {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
+}
+@keyframes spinSlowReverse {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(-360deg); }
+}
+.animate-spin-slow {
+    animation: spinSlow 80s linear infinite;
+}
+.animate-spin-slow-reverse {
+    animation: spinSlowReverse 60s linear infinite;
 }
 @keyframes revealUp {
     0% { opacity: 0; transform: translateY(30px); }
@@ -739,4 +764,61 @@ input[type="range"]::-moz-range-track {
 }
 .dark .navbar-scrolled {
     background: rgba(10,32,48,0.92) !important;
+}
+
+/* -- Marquee Infinite Scroll ------------------------ */
+.marquee-wrapper {
+    overflow: hidden;
+    display: flex;
+    position: relative;
+    width: 100%;
+    user-select: none;
+}
+.marquee-track {
+    display: inline-flex;
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+.marquee-wrapper:hover .marquee-track {
+    animation-play-state: paused !important;
+}
+.marquee-item {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+.marquee-chip {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    will-change: transform;
+}
+.marquee-chip:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.15);
+}
+
+/* ── Custom Cursor (Desktop) ──────────────────── */
+.custom-cursor-dot {
+    position: fixed;
+    z-index: 99999;
+    pointer-events: none;
+    width: 8px;
+    height: 8px;
+    background: var(--primary-color, #0E908C);
+    border-radius: 50%;
+    will-change: transform;
+    transition: opacity 0.15s ease;
+}
+.custom-cursor-ring {
+    position: fixed;
+    z-index: 99998;
+    pointer-events: none;
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--primary-color, #0E908C);
+    border-radius: 50%;
+    will-change: transform;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.custom-cursor-ring.hovering {
+    transform: scale(1.5);
 }

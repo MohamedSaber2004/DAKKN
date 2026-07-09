@@ -33,9 +33,24 @@ namespace DAKKN.Application.Features.Support.Commands.CreateTicket
 
         public async Task<CreateTicketResponseDto> Handle(CreateTicketCommand request, CancellationToken ct)
         {
-            var user = await _userManager.FindByIdAsync(_currentUserService.UserId.ToString());
-            var customerName = user?.FullName ?? _currentUserService.UserId.ToString();
-            var customerEmail = user?.Email ?? string.Empty;
+            Guid? userId = _currentUserService.UserId;
+            var isAnonymous = userId == null || userId == Guid.Empty || !_currentUserService.IsAuthenticated;
+            if (isAnonymous) userId = null;
+
+            string customerName;
+            string customerEmail;
+
+            if (isAnonymous)
+            {
+                customerName = request.CustomerName ?? "Guest";
+                customerEmail = request.CustomerEmail ?? string.Empty;
+            }
+            else
+            {
+                var user = await _userManager.FindByIdAsync(userId.Value.ToString());
+                customerName = user?.FullName ?? _currentUserService.UserName;
+                customerEmail = user?.Email ?? string.Empty;
+            }
 
             var priority = request.Priority?.ToLowerInvariant() switch
             {
@@ -46,13 +61,21 @@ namespace DAKKN.Application.Features.Support.Commands.CreateTicket
                 _ => SupportTicketPriority.Medium
             };
 
+            var categoryId = request.CategoryId;
+            if (categoryId == Guid.Empty)
+            {
+                var categoriesRepo = _unitOfWork.GetRepository<SupportCategory>();
+                var firstCategory = await categoriesRepo.GetFirstAsync(c => c.IsActive, ct);
+                categoryId = firstCategory?.Id ?? Guid.Empty;
+            }
+
             var ticket = SupportTicket.Create(
-                _currentUserService.UserId,
+                userId,
                 customerName,
                 customerEmail,
                 request.Subject,
                 request.Message,
-                request.CategoryId,
+                categoryId,
                 priority,
                 request.PhoneNumber,
                 request.Source,
@@ -84,8 +107,11 @@ namespace DAKKN.Application.Features.Support.Commands.CreateTicket
 
             await _unitOfWork.SaveChangesAsync();
 
-            _ = SafeSendEmailAsync(() =>
-                _emailService.SendTicketCreatedEmailAsync(customerEmail, customerName, ticket.TicketNumber, ticket.Subject, ct));
+            if (!string.IsNullOrEmpty(customerEmail))
+            {
+                _ = SafeSendEmailAsync(() =>
+                    _emailService.SendTicketCreatedEmailAsync(customerEmail, customerName, ticket.TicketNumber, ticket.Subject, ct));
+            }
 
             var admins = await _userManager.GetUsersInRoleAsync("Admin");
             foreach (var admin in admins.Where(a => !string.IsNullOrEmpty(a.Email)))

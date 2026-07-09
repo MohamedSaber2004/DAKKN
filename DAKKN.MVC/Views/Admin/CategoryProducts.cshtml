@@ -132,16 +132,18 @@
 <!-- Delete Product Modal -->
 <div id="deleteProductModal" class="fixed inset-0 z-50 hidden flex items-center justify-center">
     <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" onclick="closeDeleteProductModal()"></div>
-    <div class="relative bg-white dark:bg-[#161d27] rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 border border-admin-border z-10">
-        <div class="text-center">
-            <div class="mx-auto w-14 h-14 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center mb-4">
-                <span class="material-symbols-outlined text-3xl text-red-500">delete_forever</span>
+    <div class="relative bg-white dark:bg-[#161d27] rounded-2xl shadow-2xl max-w-md w-full mx-4 border border-admin-border z-10 flex flex-col max-h-[90vh] overflow-hidden">
+        <div class="p-8 overflow-y-auto flex-1 custom-scrollbar">
+            <div class="text-center">
+                <div class="mx-auto w-14 h-14 rounded-full bg-red-100 dark:bg-red-900/20 flex items-center justify-center mb-4">
+                    <span class="material-symbols-outlined text-3xl text-red-500">delete_forever</span>
+                </div>
+                <h3 class="text-xl font-bold text-admin-primary mb-2">@Localizer["admin_product_delete_confirm_title"]</h3>
+                <p class="text-admin-secondary text-sm mb-1">@Localizer["admin_product_delete_confirm_message"]</p>
+                <p class="text-admin-primary font-semibold text-base mb-6" id="deleteProductModalName"></p>
             </div>
-            <h3 class="text-xl font-bold text-admin-primary mb-2">@Localizer["admin_product_delete_confirm_title"]</h3>
-            <p class="text-admin-secondary text-sm mb-1">@Localizer["admin_product_delete_confirm_message"]</p>
-            <p class="text-admin-primary font-semibold text-base mb-6" id="deleteProductModalName"></p>
         </div>
-        <form id="deleteProductForm" method="post" class="flex gap-3">
+        <form id="deleteProductForm" method="post" class="p-6 border-t border-border dark:border-outline/10 flex gap-3 bg-surface-container/30 dark:bg-black/20 shrink-0">
             @Html.AntiForgeryToken()
             <button type="button" onclick="closeDeleteProductModal()" class="flex-1 px-4 py-2.5 rounded-xl border border-admin-border text-admin-primary font-medium text-sm hover:bg-admin-page transition-all">
                 @Localizer["admin_cancel"]

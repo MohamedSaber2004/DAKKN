@@ -12,6 +12,8 @@ namespace DAKKN.Application.Features.Support.Commands.CreateTicket
         public string Priority { get; set; } = "Medium";
         public string? OrderNumber { get; set; }
         public string? PhoneNumber { get; set; }
+        public string? CustomerName { get; set; }
+        public string? CustomerEmail { get; set; }
         public string? Source { get; set; }
         public List<IFormFile>? Attachments { get; set; }
     }

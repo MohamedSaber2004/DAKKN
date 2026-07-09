@@ -47,7 +47,6 @@ namespace DAKKN.MVC.ViewModels.Admin
         public string TitleBAr { get; set; } = string.Empty;
         public string TitleCAr { get; set; } = string.Empty;
         public string TitleDAr { get; set; } = string.Empty;
-        public string DescriptionAr { get; set; } = string.Empty;
         public string ButtonTextAr { get; set; } = string.Empty;
 
         public string BadgeEn { get; set; } = string.Empty;
@@ -55,12 +54,9 @@ namespace DAKKN.MVC.ViewModels.Admin
         public string TitleBEn { get; set; } = string.Empty;
         public string TitleCEn { get; set; } = string.Empty;
         public string TitleDEn { get; set; } = string.Empty;
-        public string DescriptionEn { get; set; } = string.Empty;
         public string ButtonTextEn { get; set; } = string.Empty;
 
         public string ImageUrl { get; set; } = "https://lh3.googleusercontent.com/...";
-
-        public int TrustedCountOverride { get; set; }
     }
 
     public class AboutSettingsViewModel
@@ -111,7 +107,6 @@ namespace DAKKN.MVC.ViewModels.Admin
     {
         public string Title { get; set; } = "Get in Touch";
         public string Description { get; set; } = "Have a custom bulk order or need support?";
-        public string Email { get; set; } = "support@dakkn.com";
         public string Phone { get; set; } = "+20 123 456 7890";
         public string Address { get; set; } = "Egypt, Dakahlia, Mansoura";
     }

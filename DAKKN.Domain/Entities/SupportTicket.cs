@@ -6,7 +6,7 @@ namespace DAKKN.Domain.Entities
     public class SupportTicket : BaseEntity<Guid>
     {
         public string TicketNumber { get; set; } = string.Empty;
-        public Guid CustomerId { get; set; }
+        public Guid? CustomerId { get; set; }
         public string CustomerName { get; set; } = string.Empty;
         public string CustomerEmail { get; set; } = string.Empty;
         public string? CustomerPhone { get; set; }
@@ -31,7 +31,7 @@ namespace DAKKN.Domain.Entities
         public ICollection<SupportActivity> Activities { get; set; } = new List<SupportActivity>();
         public ICollection<SupportInternalNote> InternalNotes { get; set; } = new List<SupportInternalNote>();
 
-        public static SupportTicket Create(Guid customerId, string customerName, string customerEmail,
+        public static SupportTicket Create(Guid? customerId, string customerName, string customerEmail,
             string subject, string message, Guid categoryId, SupportTicketPriority priority = SupportTicketPriority.Medium,
             string? customerPhone = null, string? source = null, string? orderNumber = null)
         {

@@ -85,72 +85,74 @@
             </button>
         </div>
         
-        <!-- Modal Body -->
-        <form id="userForm" class="p-6 space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
-            <input type="hidden" id="userId" name="id" />
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-text-secondary dark:text-admin-text-secondary px-1">@Localizer["admin_user_full_name"]</label>
-                    <input type="text" id="userFullName" name="fullName" required class="w-full bg-surface-container dark:bg-[#1a2535] border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none transition-all text-admin-primary" />
-                </div>
-                <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-text-secondary dark:text-admin-text-secondary px-1">@Localizer["admin_user_email"]</label>
-                    <input type="email" id="userEmail" name="email" required class="w-full bg-surface-container dark:bg-[#1a2535] border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none transition-all text-admin-primary" />
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div id="passwordFieldContainer" class="space-y-1.5">
-                    <label class="text-xs font-bold text-text-secondary dark:text-admin-text-secondary px-1">@Localizer["admin_user_password"]</label>
-                    <input type="password" id="userPassword" name="password" class="w-full bg-surface-container dark:bg-[#1a2535] border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none transition-all text-admin-primary" />
-                    <p id="passwordHint" class="hidden text-[10px] text-text-secondary px-1">@Localizer["admin_user_password_hint"]</p>
-                </div>
-                <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-text-secondary dark:text-admin-text-secondary px-1">@Localizer["admin_user_phone"]</label>
-                    <input type="text" id="userPhone" name="phoneNumber" class="w-full bg-surface-container dark:bg-[#1a2535] border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none transition-all text-admin-primary" />
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="space-y-1.5">
-                    <label class="text-xs font-bold text-text-secondary dark:text-admin-text-secondary px-1">@Localizer["admin_user_role"]</label>
-                    <div class="relative">
-                        <select id="userRole" name="role" required class="w-full bg-surface-container dark:bg-[#1a2535] border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none transition-all appearance-none cursor-pointer bg-none text-admin-primary">
-                            <option value="Admin">@Localizer["role_Admin"]</option>
-                            <option value="User">@Localizer["role_Customer"]</option>
-                        </select>
-                        <span class="material-symbols-outlined absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 pointer-events-none text-text-secondary">expand_more</span>
+        <!-- Modal Body & Footer Wrapper -->
+        <form id="userForm" class="flex flex-col max-h-[85vh]">
+            <div class="p-6 space-y-4 overflow-y-auto custom-scrollbar flex-grow">
+                <input type="hidden" id="userId" name="id" />
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-text-secondary dark:text-admin-text-secondary px-1">@Localizer["admin_user_full_name"]</label>
+                        <input type="text" id="userFullName" name="fullName" required class="w-full bg-surface-container dark:bg-[#1a2535] border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none transition-all text-admin-primary" />
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-text-secondary dark:text-admin-text-secondary px-1">@Localizer["admin_user_email"]</label>
+                        <input type="email" id="userEmail" name="email" required class="w-full bg-surface-container dark:bg-[#1a2535] border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none transition-all text-admin-primary" />
                     </div>
                 </div>
-                <div id="joinDateField" class="hidden space-y-1.5">
-                    <label class="text-xs font-bold text-text-secondary dark:text-admin-text-secondary px-1">@Localizer["admin_th_join_date"]</label>
-                    <input type="date" id="userJoinDate" disabled class="w-full bg-surface-container/50 dark:bg-[#1a2535]/50 border-none rounded-2xl px-4 py-3 text-sm outline-none cursor-not-allowed text-admin-primary" />
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div id="passwordFieldContainer" class="space-y-1.5">
+                        <label class="text-xs font-bold text-text-secondary dark:text-admin-text-secondary px-1">@Localizer["admin_user_password"]</label>
+                        <input type="password" id="userPassword" name="password" class="w-full bg-surface-container dark:bg-[#1a2535] border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none transition-all text-admin-primary" />
+                        <p id="passwordHint" class="hidden text-[10px] text-text-secondary px-1">@Localizer["admin_user_password_hint"]</p>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-text-secondary dark:text-admin-text-secondary px-1">@Localizer["admin_user_phone"]</label>
+                        <input type="text" id="userPhone" name="phoneNumber" class="w-full bg-surface-container dark:bg-[#1a2535] border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none transition-all text-admin-primary" />
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="space-y-1.5">
+                        <label class="text-xs font-bold text-text-secondary dark:text-admin-text-secondary px-1">@Localizer["admin_user_role"]</label>
+                        <div class="relative">
+                            <select id="userRole" name="role" required class="w-full bg-surface-container dark:bg-[#1a2535] border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-primary outline-none transition-all appearance-none cursor-pointer bg-none text-admin-primary">
+                                <option value="Admin">@Localizer["role_Admin"]</option>
+                                <option value="User">@Localizer["role_Customer"]</option>
+                            </select>
+                            <span class="material-symbols-outlined absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 pointer-events-none text-text-secondary">expand_more</span>
+                        </div>
+                    </div>
+                    <div id="joinDateField" class="hidden space-y-1.5">
+                        <label class="text-xs font-bold text-text-secondary dark:text-admin-text-secondary px-1">@Localizer["admin_th_join_date"]</label>
+                        <input type="date" id="userJoinDate" disabled class="w-full bg-surface-container/50 dark:bg-[#1a2535]/50 border-none rounded-2xl px-4 py-3 text-sm outline-none cursor-not-allowed text-admin-primary" />
+                    </div>
+                </div>
+
+                <div id="statusField" class="hidden space-y-1.5">
+                    <label class="text-xs font-bold text-text-secondary dark:text-admin-text-secondary px-1">@Localizer["admin_user_status"]</label>
+                    <div class="flex items-center gap-4 py-2 px-1">
+                        <label class="inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="userIsActive" name="isActive" class="sr-only peer" checked>
+                            <div class="relative w-11 h-6 bg-border peer-focus:outline-none rounded-full peer dark:bg-outline/20 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:ltr:left-[2px] after:rtl:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
+                            <span class="ltr:ml-3 rtl:mr-3 text-sm font-medium text-admin-primary">@Localizer["admin_active"]</span>
+                        </label>
+                    </div>
                 </div>
             </div>
-
-            <div id="statusField" class="hidden space-y-1.5">
-                <label class="text-xs font-bold text-text-secondary dark:text-admin-text-secondary px-1">@Localizer["admin_user_status"]</label>
-                <div class="flex items-center gap-4 py-2 px-1">
-                    <label class="inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="userIsActive" name="isActive" class="sr-only peer" checked>
-                        <div class="relative w-11 h-6 bg-border peer-focus:outline-none rounded-full peer dark:bg-outline/20 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:ltr:left-[2px] after:rtl:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary"></div>
-                        <span class="ltr:ml-3 rtl:mr-3 text-sm font-medium text-admin-primary">@Localizer["admin_active"]</span>
-                    </label>
-                </div>
+            
+            <!-- Modal Footer -->
+            <div class="p-6 border-t border-border dark:border-outline/10 flex gap-3 bg-surface-container/30 dark:bg-black/20 flex-shrink-0">
+                <button type="button" onclick="closeUserModal()" class="flex-1 px-6 py-3 border border-border dark:border-outline/20 text-text-secondary hover:bg-surface-container dark:hover:bg-white/5 rounded-2xl text-sm font-bold transition-all">
+                    @Localizer["admin_user_cancel"]
+                </button>
+                <button type="button" onclick="saveUser()" class="flex-1 px-6 py-3 bg-primary text-on-primary rounded-2xl text-sm font-bold shadow-medium hover:scale-102 active:scale-98 transition-all flex items-center justify-center gap-2">
+                    <span id="saveBtnText">@Localizer["admin_user_save"]</span>
+                    <div id="saveLoader" class="hidden w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                </button>
             </div>
         </form>
-        
-        <!-- Modal Footer -->
-        <div class="p-6 border-t border-border dark:border-outline/10 flex gap-3 bg-surface-container/30 dark:bg-black/20">
-            <button onclick="closeUserModal()" class="flex-1 px-6 py-3 border border-border dark:border-outline/20 text-text-secondary hover:bg-surface-container dark:hover:bg-white/5 rounded-2xl text-sm font-bold transition-all">
-                @Localizer["admin_user_cancel"]
-            </button>
-            <button onclick="saveUser()" class="flex-1 px-6 py-3 bg-primary text-on-primary rounded-2xl text-sm font-bold shadow-medium hover:scale-102 active:scale-98 transition-all flex items-center justify-center gap-2">
-                <span id="saveBtnText">@Localizer["admin_user_save"]</span>
-                <div id="saveLoader" class="hidden w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-            </button>
-        </div>
     </div>
 </div>
 

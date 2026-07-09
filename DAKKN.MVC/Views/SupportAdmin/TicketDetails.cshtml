@@ -169,7 +169,10 @@
                 </div>
                 <div>
                     <h4 class="text-body-lg font-bold text-admin-primary dark:text-white">@Model.CustomerName</h4>
-                    <p class="text-caption text-admin-secondary dark:text-slate-400">@Model.CustomerEmail</p>
+                    @if (!string.IsNullOrEmpty(Model.CustomerPhone))
+                    {
+                        <p class="text-caption text-admin-secondary dark:text-slate-400" dir="ltr">@Model.CustomerPhone</p>
+                    }
                 </div>
             </div>
             <div class="space-y-sm">

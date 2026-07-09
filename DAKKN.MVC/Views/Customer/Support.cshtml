@@ -112,16 +112,16 @@
                     </div>
                 </a>
 
-                <!-- Email -->
-                <a href="mailto:@Model.ContactInfo.Email" class="block bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 p-lg rounded-3xl hover:border-primary/50 transition-all group relative overflow-hidden">
+                <!-- Phone -->
+                <a href="tel:@Model.ContactInfo.Phone" class="block bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 p-lg rounded-3xl hover:border-primary/50 transition-all group relative overflow-hidden">
                     <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors"></div>
                     <div class="flex items-center gap-4">
                         <div class="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                            <span class="material-symbols-outlined text-3xl">mail</span>
+                            <span class="material-symbols-outlined text-3xl">phone</span>
                         </div>
                         <div>
-                            <p class="text-xs text-text-secondary uppercase font-bold tracking-widest">@Localizer["supp_email_support"]</p>
-                            <h3 class="font-bold text-lg">@Model.ContactInfo.Email</h3>
+                            <p class="text-xs text-text-secondary uppercase font-bold tracking-widest">@Localizer["supp_phone_support"]</p>
+                            <h3 class="font-bold text-lg">@Model.ContactInfo.Phone</h3>
                         </div>
                     </div>
                 </a>

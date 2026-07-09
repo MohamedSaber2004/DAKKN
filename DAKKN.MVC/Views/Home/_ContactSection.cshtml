@@ -27,29 +27,21 @@
                                 <span class="cf-error text-xs text-red-500 hidden" data-for="name"></span>
                             </div>
                             <div>
-                                <label for="cf-email" class="block text-xs font-bold text-on-surface dark:text-slate-300 mb-1.5">@Localizer["contact_form_email_label"] <span class="text-red-500">*</span></label>
-                                <input id="cf-email" type="email" required placeholder="@Localizer["contact_form_email_ph"]" class="w-full px-4 py-3 rounded-xl bg-surface dark:bg-[#0F172A] border border-outline-variant/30 dark:border-white/10 text-sm text-on-surface dark:text-white placeholder:text-on-surface-variant/50 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all" />
-                                <span class="cf-error text-xs text-red-500 hidden" data-for="email"></span>
+                                <label for="cf-phone" class="block text-xs font-bold text-on-surface dark:text-slate-300 mb-1.5">@Localizer["contact_form_phone_label"] <span class="text-red-500">*</span></label>
+                                <input id="cf-phone" type="tel" required placeholder="@Localizer["contact_form_phone_ph"]" class="w-full px-4 py-3 rounded-xl bg-surface dark:bg-[#0F172A] border border-outline-variant/30 dark:border-white/10 text-sm text-on-surface dark:text-white placeholder:text-on-surface-variant/50 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all" />
+                                <span class="cf-error text-xs text-red-500 hidden" data-for="phone"></span>
                             </div>
                         </div>
-                        <div class="grid sm:grid-cols-2 gap-4">
-                            <div>
-                                <label for="cf-phone" class="block text-xs font-bold text-on-surface dark:text-slate-300 mb-1.5">@Localizer["contact_form_phone_label"] <span class="text-on-surface-variant text-[10px]">@Localizer["contact_form_phone_opt"]</span></label>
-                                <input id="cf-phone" type="tel" placeholder="@Localizer["contact_form_phone_ph"]" class="w-full px-4 py-3 rounded-xl bg-surface dark:bg-[#0F172A] border border-outline-variant/30 dark:border-white/10 text-sm text-on-surface dark:text-white placeholder:text-on-surface-variant/50 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all" />
-                            </div>
-                            <div>
-                                <label for="cf-subject" class="block text-xs font-bold text-on-surface dark:text-slate-300 mb-1.5">@Localizer["contact_form_subject_label"] <span class="text-red-500">*</span></label>
-                                <select id="cf-subject" required class="w-full px-4 py-3 rounded-xl bg-surface dark:bg-[#0F172A] border border-outline-variant/30 dark:border-white/10 text-sm text-on-surface dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all">
-                                    <option value="">@Localizer["contact_form_subject_ph"]</option>
-                                    <option value="order">@Localizer["contact_form_subj_order"]</option>
-                                    <option value="bulk">@Localizer["contact_form_subj_bulk"]</option>
-                                    <option value="shipping">@Localizer["contact_form_subj_shipping"]</option>
-                                    <option value="return">@Localizer["contact_form_subj_return"]</option>
-                                    <option value="design">@Localizer["contact_form_subj_design"]</option>
-                                    <option value="other">@Localizer["contact_form_subj_other"]</option>
-                                </select>
-                                <span class="cf-error text-xs text-red-500 hidden" data-for="subject"></span>
-                            </div>
+                        <div>
+                            <label for="cf-subject" class="block text-xs font-bold text-on-surface dark:text-slate-300 mb-1.5">@Localizer["contact_form_subject_label"] <span class="text-red-500">*</span></label>
+                            <select id="cf-subject" required class="w-full px-4 py-3 rounded-xl bg-surface dark:bg-[#0F172A] border border-outline-variant/30 dark:border-white/10 text-sm text-on-surface dark:text-white focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all">
+                                <option value="">@Localizer["contact_form_subject_ph"]</option>
+                                @foreach (var cat in Model.SupportCategories.OrderBy(c => c.DisplayOrder))
+                                {
+                                    <option value="@cat.Id">@(isAr ? cat.ArName : cat.Name)</option>
+                                }
+                            </select>
+                            <span class="cf-error text-xs text-red-500 hidden" data-for="subject"></span>
                         </div>
                         <div>
                             <label for="cf-msg" class="block text-xs font-bold text-on-surface dark:text-slate-300 mb-1.5">@Localizer["contact_form_msg_label"] <span class="text-red-500">*</span></label>
@@ -69,16 +61,6 @@
                 </div>
             </div>
             <div class="lg:col-span-2 space-y-4 scroll-animate delay-200">
-                <div class="bg-surface-container-high dark:bg-[#1E293B] rounded-2xl p-5 border border-outline-variant/20 dark:border-white/5 shadow-lg flex items-start gap-4">
-                    <div class="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                        <span class="material-symbols-outlined text-primary">mail</span>
-                    </div>
-                    <div>
-                        <span class="block text-sm font-bold text-on-surface dark:text-white">@Localizer["contact_card_email_title"]</span>
-                        <span class="block text-xs text-on-surface-variant dark:text-slate-400">@Localizer["contact_card_email_sub"]</span>
-                        <a href="mailto:@contact.Email" class="text-sm font-bold text-primary hover:text-primary-container transition-colors mt-1 block">@contact.Email</a>
-                    </div>
-                </div>
                 <div class="bg-surface-container-high dark:bg-[#1E293B] rounded-2xl p-5 border border-outline-variant/20 dark:border-white/5 shadow-lg flex items-start gap-4">
                     <div class="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
                         <span class="material-symbols-outlined text-primary">phone</span>

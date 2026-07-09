@@ -1,5 +1,7 @@
 @inject IStringLocalizer<Messages> Localizer
 @using System.Security.Claims
+@using DAKKN.Application.Localization
+@using System.Text.Json
 @inject IMediator Mediator
 @{
     var culture = System.Globalization.CultureInfo.CurrentUICulture.Name.StartsWith("en") ? "en" : "ar";
@@ -142,6 +144,58 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 
     <style>
+        /* Prevent FOUC and show preloader */
+        [data-dakkn-loading] body {
+            visibility: hidden !important;
+            overflow: hidden !important;
+        }
+
+        #dakkn-preloader {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            visibility: visible !important;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+        #dakkn-preloader.fade-out {
+            opacity: 0;
+            visibility: hidden !important;
+        }
+        .dark #dakkn-preloader { background: var(--dark-page, #0A2030); }
+
+        .preloader-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100px;
+            height: 100px;
+        }
+        .preloader-spinner {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            border: 3px solid rgba(var(--primary-rgb, 14, 144, 140), 0.15);
+            border-top-color: var(--primary-color, #0E908C);
+            border-radius: 50%;
+            animation: spin 1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+        .preloader-logo {
+            position: absolute;
+            height: 36px;
+            width: auto;
+            animation: pulse-logo 2s ease-in-out infinite;
+        }
+        @@keyframes spin { to { transform: rotate(360deg); } }
+        @@keyframes pulse-logo {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
         /* Page fade-in transition */
         main { animation: pageFadeIn 0.25s ease-out; }
         @@keyframes pageFadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
@@ -289,6 +343,11 @@
             }
         }, 1500);
     </script>
+
+    <script>
+        // Inject current translations immediately to avoid flickering
+        window.currentTranslations = @Html.Raw(JsonSerializer.Serialize(DAKKN.Application.Localization.JsonLocalizationProvider.GetTranslations(culture)));
+    </script>
 </head>
 <body class="text-text-primary dark:text-white bg-background dark:bg-[#0F172A] transition-colors duration-300 h-screen overflow-hidden flex font-sans">
     
@@ -368,7 +427,7 @@
     </aside>
 
     <!-- Main Content Area -->
-    <main class="flex-1 flex flex-col h-screen overflow-hidden bg-background dark:bg-[#0F172A] transition-colors duration-300">
+    <main data-page-entrance class="flex-1 flex flex-col h-screen overflow-hidden bg-background dark:bg-[#0F172A] transition-colors duration-300">
         <!-- Top Appbar -->
         <header class="flex justify-between items-center w-full px-lg h-20 z-30 bg-surface/80 dark:bg-[#1E293B]/80 backdrop-blur-md flex-shrink-0 border-b border-border dark:border-white/5">
             <div class="flex items-center gap-md">

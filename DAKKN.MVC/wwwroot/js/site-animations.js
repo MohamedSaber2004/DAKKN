@@ -14,20 +14,89 @@
     scrollDebounce: 100,
   };
 
-  /* ── 2. Page Entrance ──────────────────────────────────────────────── */
+  /* ── 2. Page Entrance & Exit Transitions ───────────────────────────── */
   function initPageEntrance() {
     const target = document.querySelector(
       '#admin-canvas, main, [data-page-entrance]'
     );
     if (!target) return;
     if (window.dakknBfCached) return;
+
+    // Apply high-end modern transition properties (smooth scale, translate, and fade)
     target.style.opacity = '0';
-    target.style.transform = 'translateY(12px)';
+    target.style.transform = 'scale(0.985) translateY(16px)';
     target.style.transition =
-      'opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1)';
+      'opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+    
+    // Trigger transition in the next frame
     requestAnimationFrame(() => {
       target.style.opacity = '1';
-      target.style.transform = 'translateY(0)';
+      target.style.transform = 'scale(1) translateY(0)';
+      
+      // Cleanup inline styles after transition to prevent layout/interaction bugs
+      setTimeout(() => {
+        if (target.style.opacity === '1') {
+          target.style.removeProperty('opacity');
+          target.style.removeProperty('transform');
+          target.style.removeProperty('transition');
+        }
+      }, 600);
+    });
+  }
+
+  function initPageExit() {
+    const target = document.querySelector(
+      '#admin-canvas, main, [data-page-entrance]'
+    );
+    if (!target) return;
+
+    document.addEventListener('click', (e) => {
+      // Skip if another handler already prevented navigation
+      if (e.defaultPrevented) return;
+
+      // Find the closest anchor tag
+      const link = e.target.closest('a');
+      if (!link) return;
+
+      const href = link.getAttribute('href');
+      
+      // Skip exit transition if:
+      // - No href, empty or anchor links
+      // - External links
+      // - JS void/empty links
+      // - File downloads or target="_blank"
+      // - Custom data-no-transition attribute
+      if (!href || 
+          href.startsWith('#') || 
+          href.startsWith('javascript:') || 
+          link.getAttribute('target') === '_blank' || 
+          link.hasAttribute('download') ||
+          link.hasAttribute('data-no-transition') ||
+          (!href.startsWith('/') && !href.startsWith(window.location.origin))) {
+        return;
+      }
+
+      // Skip if it's the exact same URL but just with hash
+      try {
+        const targetUrl = new URL(link.href);
+        if (targetUrl.pathname === window.location.pathname && 
+            targetUrl.search === window.location.search && 
+            targetUrl.hash) {
+          return;
+        }
+      } catch (err) {}
+
+      e.preventDefault();
+
+      // Trigger exit transition (fade out and translate up slightly)
+      target.style.transition = 'opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1)';
+      target.style.opacity = '0';
+      target.style.transform = 'scale(0.985) translateY(-16px)';
+
+      // Navigate after transition completes
+      setTimeout(() => {
+        window.location.href = href;
+      }, 300);
     });
   }
 
@@ -160,18 +229,39 @@
 
   /* ── 7. Hover Lift (3D card tilt) ─────────────────────────────────── */
   function initHoverLift() {
-    document.querySelectorAll('[data-hover-lift]').forEach((card) => {
+    document.querySelectorAll('[data-hover-lift], .product-card, .stats-card').forEach((card) => {
+      if (card.dataset.hoverLiftInitialized) return;
+      card.dataset.hoverLiftInitialized = 'true';
+
       card.addEventListener('mousemove', (e) => {
         const rect = card.getBoundingClientRect();
         const x = (e.clientX - rect.left) / rect.width - 0.5;
         const y = (e.clientY - rect.top) / rect.height - 0.5;
-        card.style.transform = `perspective(600px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg) translateY(-4px)`;
-        card.style.transition = 'transform 0.08s ease';
+        // Premium 3D rotation and lift
+        card.style.transform = `perspective(800px) rotateY(${x * 8}deg) rotateX(${-y * 8}deg) translateY(-6px) scale(1.01)`;
+        card.style.transition = 'transform 0.1s cubic-bezier(0.25, 0.8, 0.25, 1)';
       });
       card.addEventListener('mouseleave', () => {
         card.style.transform =
-          'perspective(600px) rotateY(0deg) rotateX(0deg) translateY(0)';
-        card.style.transition = 'transform 0.35s ease';
+          'perspective(800px) rotateY(0deg) rotateX(0deg) translateY(0) scale(1)';
+        card.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)';
+      });
+    });
+  }
+
+  /* ── 7b. Spotlight Glow Effect ────────────────────────────────────── */
+  function initSpotlightGlow() {
+    const cards = document.querySelectorAll('.product-card, .stats-card, [data-hover-glow], .bg-surface');
+    cards.forEach((card) => {
+      if (card.dataset.spotlightInitialized) return;
+      card.dataset.spotlightInitialized = 'true';
+
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
       });
     });
   }
@@ -323,6 +413,95 @@
     update();
   }
 
+  /* ── 15. Custom Animated Cursor ────────────────────────────────────── */
+  function initCustomCursor() {
+    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return;
+
+    const cursorDot = document.createElement('div');
+    cursorDot.className = 'custom-cursor-dot';
+    cursorDot.style.cssText = 'position:fixed;z-index:99999;pointer-events:none;width:8px;height:8px;background:var(--primary-color,#0E908C);border-radius:50%;will-change:transform;transition:opacity 0.15s ease;';
+    
+    const cursorRing = document.createElement('div');
+    cursorRing.className = 'custom-cursor-ring';
+    cursorRing.style.cssText = 'position:fixed;z-index:99998;pointer-events:none;width:32px;height:32px;border:2px solid var(--primary-color,#0E908C);border-radius:50%;will-change:transform;transition:opacity 0.15s ease,transform 0.15s ease;';
+    
+    document.body.appendChild(cursorDot);
+    document.body.appendChild(cursorRing);
+
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let ringX = mouseX;
+    let ringY = mouseY;
+    let isHovering = false;
+    let isVisible = false;
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isVisible) {
+        document.body.classList.add('custom-cursor-active');
+        cursorDot.style.opacity = isHovering ? 0 : 1;
+        cursorRing.style.opacity = 1;
+        isVisible = true;
+      }
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      cursorDot.style.transform = `translate3d(${mouseX - 4}px, ${mouseY - 4}px, 0)`;
+    });
+
+    document.addEventListener('mouseleave', () => {
+      cursorDot.style.opacity = 0;
+      cursorRing.style.opacity = 0;
+      isVisible = false;
+    });
+    
+    document.addEventListener('mouseenter', () => {
+      cursorDot.style.opacity = isHovering ? 0 : 1;
+      cursorRing.style.opacity = 1;
+      isVisible = true;
+    });
+
+    function renderCursor() {
+      ringX += (mouseX - ringX) * 0.2;
+      ringY += (mouseY - ringY) * 0.2;
+      
+      const scale = isHovering ? 'scale(1.5)' : 'scale(1)';
+      cursorRing.style.transform = `translate3d(${ringX - 16}px, ${ringY - 16}px, 0) ${scale}`;
+      
+      requestAnimationFrame(renderCursor);
+    }
+    requestAnimationFrame(renderCursor);
+
+    const bindHover = (el) => {
+      el.addEventListener('mouseenter', () => {
+        isHovering = true;
+        if (isVisible) cursorDot.style.opacity = 0;
+        cursorRing.classList.add('hovering');
+      });
+      el.addEventListener('mouseleave', () => {
+        isHovering = false;
+        if (isVisible) cursorDot.style.opacity = 1;
+        cursorRing.classList.remove('hovering');
+      });
+    };
+
+    const interactives = document.querySelectorAll('a, button, input, select, textarea, [role="button"], .interactive, .product-card, .stats-card, .btn');
+    interactives.forEach(bindHover);
+    
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.addedNodes.length) {
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === 1) {
+              const newInteractives = node.querySelectorAll ? node.querySelectorAll('a, button, input, select, textarea, [role="button"], .interactive, .product-card, .stats-card, .btn') : [];
+              const elementsToCheck = node.matches && node.matches('a, button, input, select, textarea, [role="button"], .interactive, .product-card, .stats-card, .btn') ? [node, ...newInteractives] : newInteractives;
+              elementsToCheck.forEach(bindHover);
+            }
+          });
+        }
+      });
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
   /* ── Boot ──────────────────────────────────────────────────────────── */
   function boot() {
     const safe = (fn) => {
@@ -348,39 +527,28 @@
       }
     });
 
-    // Wait a tick to let layout-specific DOMContentLoaded handlers run first
+    const runInit = () => {
+      safe(initPageEntrance);
+      safe(initPageExit);
+      safe(initScrollReveal);
+      safe(initStagger);
+      safe(initCounters);
+      safe(initSmoothScroll);
+      safe(initHoverLift);
+      safe(initSpotlightGlow);
+      safe(initImageFadeIn);
+      safe(initBackToTop);
+      safe(initRipple);
+      safe(initSkeletons);
+      safe(initFloatingElements);
+      safe(initNavbarScroll);
+      safe(initCustomCursor);
+    };
+
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', () =>
-        requestAnimationFrame(() => {
-          safe(initPageEntrance);
-          safe(initScrollReveal);
-          safe(initStagger);
-          safe(initCounters);
-          safe(initSmoothScroll);
-          safe(initHoverLift);
-          safe(initImageFadeIn);
-          safe(initBackToTop);
-          safe(initRipple);
-          safe(initSkeletons);
-          safe(initFloatingElements);
-          safe(initNavbarScroll);
-        })
-      );
+      document.addEventListener('DOMContentLoaded', () => requestAnimationFrame(runInit));
     } else {
-      requestAnimationFrame(() => {
-        safe(initPageEntrance);
-        safe(initScrollReveal);
-        safe(initStagger);
-        safe(initCounters);
-        safe(initSmoothScroll);
-        safe(initHoverLift);
-        safe(initImageFadeIn);
-        safe(initBackToTop);
-        safe(initRipple);
-        safe(initSkeletons);
-        safe(initFloatingElements);
-        safe(initNavbarScroll);
-      });
+      requestAnimationFrame(runInit);
     }
   }
 

@@ -11,7 +11,7 @@ namespace DAKKN.MVC.ViewModels.Customer
 
     public class ContactInfoViewModel
     {
-        public string Email { get; set; } = "support@dakkn.com";
+        public string Phone { get; set; } = "+20 123 456 7890";
         public string WhatsApp { get; set; } = "+201001234567";
         public string Instagram { get; set; } = "dakkn_stickers";
     }

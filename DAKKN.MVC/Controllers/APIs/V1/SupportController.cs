@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using Microsoft.AspNetCore.Authorization;
 using DAKKN.Appearence.Filters;
 using DAKKN.Appearence.Routes;
 using DAKKN.Application.Features.Support.Commands.AddInternalNote;
@@ -32,6 +33,7 @@ using DAKKN.Application.Features.Support.Queries.GetFAQs;
 using DAKKN.Application.Features.Support.Queries.GetMyTickets;
 using DAKKN.Application.Features.Support.Queries.GetSettings;
 using DAKKN.Application.Features.Support.Queries.GetTicketDetails;
+using DAKKN.Application.Common.Models;
 using DAKKN.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -349,6 +351,48 @@ namespace DAKKN.Appearence.Controllers.APIs.V1
         {
             var result = await _mediator.Send(new GetCategoriesQuery(false));
             return Ok(result);
+        }
+
+        #endregion
+
+        #region Contact Form (Public)
+
+        public record ContactFormRequest
+        {
+            public string Name { get; init; } = string.Empty;
+            public string Email { get; init; } = string.Empty;
+            public string Phone { get; init; } = string.Empty;
+            public string Subject { get; init; } = string.Empty;
+            public string Message { get; init; } = string.Empty;
+            public Guid? CategoryId { get; init; }
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [Route(ApiRoutes.Support.PublicContact)]
+        public async Task<IActionResult> SubmitContactForm([FromBody] ContactFormRequest request)
+        {
+            var categories = await _mediator.Send(new GetCategoriesQuery(false));
+            var category = request.CategoryId.HasValue
+                ? categories?.FirstOrDefault(c => c.Id == request.CategoryId.Value)
+                : categories?.FirstOrDefault();
+
+            if (category == null)
+                return BadRequest(ApiResponse<object>.Error("No support categories available. Please try again later."));
+
+            var command = new CreateTicketCommand
+            {
+                CustomerName = request.Name,
+                CustomerEmail = request.Email,
+                PhoneNumber = request.Phone,
+                Subject = category.Name,
+                Message = request.Message,
+                Source = "Landing",
+                Priority = "Medium",
+                CategoryId = category.Id
+            };
+            var result = await _mediator.Send(command);
+            return Created(ApiRoutes.Support.PublicContact, result);
         }
 
         #endregion
