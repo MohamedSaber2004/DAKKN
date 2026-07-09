@@ -147,7 +147,7 @@
         {
             case "hero":
                 <text>
-    <section id="hero" class="relative h-[calc(100vh-5rem)] flex flex-col overflow-hidden" style="background:#050505">
+    <section id="hero" class="relative min-h-[calc(100vh-5rem)] flex flex-col" style="background:#050505">
         @* ── Static brand background image ── *@
         <div class="absolute inset-0 z-0">
             <img alt="" class="w-full h-full object-cover" src="/images/hero-bg.jpg" onerror="this.style.display='none'" aria-hidden="true" />
@@ -244,26 +244,26 @@
         @{
             var tickerItems = new (string Label, string Icon, string Style)[]
             {
-                (Localizer["waterproof"].Value, "water_drop", "background:rgba(6,182,212,0.12);border-color:rgba(6,182,212,0.25);color:#0891B2"),
-                (Localizer["uv"].Value, "sunny", "background:rgba(251,146,60,0.12);border-color:rgba(251,146,60,0.25);color:#D97706"),
-                (Localizer["hero_ticker_scratch"].Value, "content_cut", "background:rgba(251,113,133,0.12);border-color:rgba(251,113,133,0.25);color:#E11D48"),
-                (Localizer["hero_ticker_made_in"].Value, "location_on", "background:rgba(74,222,128,0.12);border-color:rgba(74,222,128,0.25);color:#16A34A"),
-                (Localizer["hero_trust_support"].Value, "headset_mic", "background:rgba(251,191,36,0.12);border-color:rgba(251,191,36,0.25);color:#D97706"),
+                (Localizer["waterproof"].Value, "water_drop", "#0891B2"),
+                (Localizer["uv"].Value, "sunny", "#D97706"),
+                (Localizer["hero_ticker_scratch"].Value, "content_cut", "#E11D48"),
+                (Localizer["hero_ticker_made_in"].Value, "location_on", "#16A34A"),
+                (Localizer["hero_trust_support"].Value, "headset_mic", "#D97706"),
             };
         }
         <div class="relative z-20">
-            <div class="marquee-wrapper py-2.5 md:py-3 bg-[rgba(5,5,5,0.85)] backdrop-blur-md border-t border-white/5">
+            <div class="marquee-wrapper bg-[rgba(5,5,5,0.85)] backdrop-blur-md border-t border-white/5 py-3 md:py-4">
                 <div class="marquee-track">
                     @for (int t = 0; t < 2; t++)
                     {
-                        @foreach (var (label, icon, style) in tickerItems)
+                        @foreach (var (label, icon, accent) in tickerItems)
                         {
-                            <span class="marquee-item mx-3 md:mx-4 flex-shrink-0">
-                                <span class="marquee-chip inline-flex items-center gap-2 px-4 py-1.5 rounded-full border text-xs md:text-sm font-semibold tracking-wide whitespace-nowrap" style="@style">
-                                    <span class="material-symbols-outlined text-[16px] md:text-[18px]">@icon</span>
-                                    @label
-                                </span>
-                            </span>
+                            <div class="marquee-item">
+                                <div class="marquee-chip" style="--accent:@accent">
+                                    <span class="material-symbols-outlined text-lg">@icon</span>
+                                    <span>@label</span>
+                                </div>
+                            </div>
                         }
                     }
                 </div>

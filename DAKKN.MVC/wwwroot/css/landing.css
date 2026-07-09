@@ -156,6 +156,18 @@ section { width: 100%; overflow-x: hidden; }
     0% { opacity: 0; transform: translateY(24px); }
     100% { opacity: 1; transform: translateY(0); }
 }
+
+.animate-text-gradient {
+    background: linear-gradient(135deg, #18C7C7, #06B6D4, #8B5CF6, #18C7C7);
+    background-size: 300% 300%;
+    -webkit-text-fill-color: transparent;
+    animation: textGradientShift 5s ease-in-out infinite;
+}
+
+@keyframes textGradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
 .hero-fade-in {
     opacity: 0;
     animation: heroFadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -769,31 +781,53 @@ input[type="range"]::-moz-range-track {
 /* -- Marquee Infinite Scroll ------------------------ */
 .marquee-wrapper {
     overflow: hidden;
-    display: flex;
-    position: relative;
     width: 100%;
+    position: relative;
     user-select: none;
 }
 .marquee-track {
-    display: inline-flex;
-    will-change: transform;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
+    display: flex;
+    gap: 12px;
+    width: max-content;
+    animation: marqueeScroll 40s linear infinite;
 }
 .marquee-wrapper:hover .marquee-track {
-    animation-play-state: paused !important;
+    animation-play-state: paused;
 }
 .marquee-item {
     flex-shrink: 0;
-    white-space: nowrap;
+    display: flex;
+    align-items: center;
 }
 .marquee-chip {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    will-change: transform;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 20px;
+    border-radius: 100px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.85);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.marquee-chip .material-symbols-outlined {
+    color: var(--accent, #18C7C7);
+    text-shadow: 0 0 8px rgba(0,0,0,0.3);
 }
 .marquee-chip:hover {
-    transform: scale(1.08);
-    box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.15);
+    transform: scale(1.08) translateY(-1px);
+    background: rgba(255,255,255,0.08);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.3), 0 0 16px rgba(24,199,199,0.15);
+}
+
+@keyframes marqueeScroll {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
 }
 
 /* ── Custom Cursor (Desktop) ──────────────────── */

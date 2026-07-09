@@ -233,7 +233,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         safeInit('initTextReveal');
         safeInit('initSectionParallax');
         safeInit('initHeroParallax');
-        safeInit('initMarquee');
+
 
         // OTP & Password micro-interactions
         initOtpBoxes();
@@ -1167,52 +1167,6 @@ function initHeroParallax() {
 }
 
 /* ── Marquee Infinite Scroll (JS-driven) ─────── */
-function initMarquee() {
-    const wrapper = document.querySelector('.marquee-wrapper');
-    if (!wrapper) return;
-    const track = wrapper.querySelector('.marquee-track');
-    if (!track) return;
-    const speed = 0.8;
-    let pos = 0;
-    let animId = null;
-    let paused = false;
-    let cachedHalfWidth = 0;
-
-    function getHalfWidth() {
-        if (cachedHalfWidth > 0) return cachedHalfWidth;
-        const items = track.querySelectorAll('.marquee-item');
-        if (items.length === 0) return 0;
-        const halfCount = items.length / 2;
-        let w = 0;
-        for (let i = 0; i < halfCount; i++) {
-            w += items[i].offsetWidth;
-            const style = getComputedStyle(items[i]);
-            w += parseFloat(style.marginLeft) + parseFloat(style.marginRight);
-        }
-        cachedHalfWidth = w;
-        return w;
-    }
-
-    window.addEventListener('resize', () => { cachedHalfWidth = 0; });
-
-    function step() {
-        if (!paused) {
-            pos -= speed;
-            const half = getHalfWidth();
-            if (half > 0 && Math.abs(pos) >= half) {
-                pos += half;
-            }
-            const isRtl = document.documentElement.dir === 'rtl';
-            track.style.transform = isRtl ? `translateX(${Math.abs(pos)}px)` : `translateX(${pos}px)`;
-        }
-        animId = requestAnimationFrame(step);
-    }
-
-    wrapper.addEventListener('mouseenter', () => { paused = true; });
-    wrapper.addEventListener('mouseleave', () => { paused = false; });
-
-    animId = requestAnimationFrame(step);
-}
 
 window.showSignInModal = showSignInModal;
 window.hideSignInModal = hideSignInModal;
