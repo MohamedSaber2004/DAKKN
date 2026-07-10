@@ -26,11 +26,9 @@ namespace DAKKN.Application.Features.Products.Commands.UpdateProduct
                 .MaximumLength(200).WithMessage(localizer[LocalizationKeys.ValidationMessages.MaxLength.Value, 200]);
 
             RuleFor(v => v.Description)
-                .NotEmpty().WithMessage(localizer[LocalizationKeys.ValidationMessages.Required.Value])
                 .MaximumLength(3000).WithMessage(localizer[LocalizationKeys.ValidationMessages.MaxLength.Value, 3000]);
 
             RuleFor(v => v.ArDescription)
-                .NotEmpty().WithMessage(localizer[LocalizationKeys.ValidationMessages.Required.Value])
                 .MaximumLength(3000).WithMessage(localizer[LocalizationKeys.ValidationMessages.MaxLength.Value, 3000]);
 
             RuleFor(v => v.Price)

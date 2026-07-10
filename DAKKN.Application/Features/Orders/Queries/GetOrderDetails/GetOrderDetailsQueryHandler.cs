@@ -30,9 +30,10 @@ namespace DAKKN.Application.Features.Orders.Queries.GetOrderDetails
 
             if (!request.IsAdmin)
             {
-                if (!_currentUser.IsAuthenticated)
-                    throw new UnAuthorizedException();
-                query = query.Where(o => o.UserId == _currentUser.UserId);
+                if (_currentUser.IsAuthenticated)
+                    query = query.Where(o => o.UserId == _currentUser.UserId);
+                else
+                    query = query.Where(o => o.UserId == null);
             }
 
             var order = await query.FirstOrDefaultAsync(cancellationToken);

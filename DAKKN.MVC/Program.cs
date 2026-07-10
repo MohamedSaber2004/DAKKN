@@ -78,6 +78,7 @@ namespace DAKKN.MVC
             });
 
             builder.Services.AddScoped<IGuestCartStorage, SessionCartStorage>();
+            builder.Services.AddScoped<IPdfExportService, PdfExportService>();
 
             builder.Services.AddApplication(builder.Configuration);
             builder.Services.AddPersistence(builder.Configuration);

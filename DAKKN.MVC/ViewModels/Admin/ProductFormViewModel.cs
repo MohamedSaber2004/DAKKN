@@ -22,9 +22,9 @@ namespace DAKKN.MVC.ViewModels.Admin
         [Required]
         public string ArName { get; set; } = string.Empty;
 
-        public string Description { get; set; } = string.Empty;
+        public string? Description { get; set; }
 
-        public string ArDescription { get; set; } = string.Empty;
+        public string? ArDescription { get; set; }
 
         [Required]
         public Guid CategoryId { get; set; }

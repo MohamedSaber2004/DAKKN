@@ -11,6 +11,7 @@ using DAKKN.Application.Localization;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.Extensions.Localization;
 
 namespace DAKKN.Appearence.Controllers.APIs.V1
@@ -38,6 +39,7 @@ namespace DAKKN.Appearence.Controllers.APIs.V1
         [HttpGet]
         [Route(ApiRoutes.Cart.Count)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [OutputCache(NoStore = true)]
         public async Task<IActionResult> GetCount()
         {
             var count = await _mediator.Send(new GetCartCountQuery());

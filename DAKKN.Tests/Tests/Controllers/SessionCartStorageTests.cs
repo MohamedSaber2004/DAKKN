@@ -1,6 +1,7 @@
 using DAKKN.Application.Features.Cart.DTOs;
 using DAKKN.MVC.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging.Abstractions;
 using System.Text.Json;
 
 namespace DAKKN.Tests.Tests.Controllers
@@ -15,7 +16,7 @@ namespace DAKKN.Tests.Tests.Controllers
 
             var accessorMock = new Mock<IHttpContextAccessor>();
             accessorMock.Setup(x => x.HttpContext).Returns(httpContext);
-            return new SessionCartStorage(accessorMock.Object);
+            return new SessionCartStorage(accessorMock.Object, NullLogger<SessionCartStorage>.Instance);
         }
 
         [Fact]
@@ -107,7 +108,7 @@ namespace DAKKN.Tests.Tests.Controllers
         {
             var accessorMock = new Mock<IHttpContextAccessor>();
             accessorMock.Setup(x => x.HttpContext).Returns((HttpContext?)null);
-            var storage = new SessionCartStorage(accessorMock.Object);
+            var storage = new SessionCartStorage(accessorMock.Object, NullLogger<SessionCartStorage>.Instance);
 
             var cart = storage.GetCart();
             cart.Should().BeEmpty();
@@ -118,7 +119,7 @@ namespace DAKKN.Tests.Tests.Controllers
         {
             var accessorMock = new Mock<IHttpContextAccessor>();
             accessorMock.Setup(x => x.HttpContext).Returns((HttpContext?)null);
-            var storage = new SessionCartStorage(accessorMock.Object);
+            var storage = new SessionCartStorage(accessorMock.Object, NullLogger<SessionCartStorage>.Instance);
 
             var act = () => storage.SetCart(new List<CartItemDto>
             {
@@ -137,7 +138,7 @@ namespace DAKKN.Tests.Tests.Controllers
 
             var accessorMock = new Mock<IHttpContextAccessor>();
             accessorMock.Setup(x => x.HttpContext).Returns(httpContext);
-            var storage = new SessionCartStorage(accessorMock.Object);
+            var storage = new SessionCartStorage(accessorMock.Object, NullLogger<SessionCartStorage>.Instance);
 
             var cart = storage.GetCart();
             cart.Should().BeEmpty();

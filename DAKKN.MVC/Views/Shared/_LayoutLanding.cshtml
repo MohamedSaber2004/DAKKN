@@ -200,13 +200,6 @@
         @RenderBody()
     </main>
 
-    <!-- Theme Toggle Floating -->
-    <div class="fixed bottom-6 end-6 z-50">
-        <div class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full shadow-lg transition-all hover:scale-110 active:scale-95">
-            @await Html.PartialAsync("Partials/_ThemeToggle")
-        </div>
-    </div>
-
     <!-- Back to Top -->
     <button id="back-to-top" class="opacity-0 pointer-events-none" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="@Localizer["back_to_top"]">
         <span class="material-symbols-outlined text-lg">arrow_upward</span>

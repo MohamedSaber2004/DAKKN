@@ -28,12 +28,12 @@ namespace DAKKN.Persistence.Configuration
                 .HasColumnType("nvarchar(200)");
 
             builder.Property(x => x.Description)
-                .IsRequired()
+                .IsRequired(false)
                 .HasMaxLength(3000)
                 .HasColumnType("nvarchar(3000)");
 
             builder.Property(x => x.ArDescription)
-                .IsRequired()
+                .IsRequired(false)
                 .HasMaxLength(3000)
                 .HasColumnType("nvarchar(3000)");
 

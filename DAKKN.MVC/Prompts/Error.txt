@@ -1,171 +1,62 @@
-﻿﻿   at DAKKN.Application.Common.Behaviours.UnhandledExceptionBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN-Live\DAKKN.Application\Common\Behaviours\UnhandledExceptionBehaviour.cs:line 20
-﻿   at DAKKN.Appearence.Controllers.APIs.V1.SupportController.SubmitContactForm(ContactFormRequest request) in E:\DAKKN-Live\DAKKN.MVC\Controllers\APIs\V1\SupportController.cs:line 394
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextExceptionFilterAsync>g__Awaited|26_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
-﻿[23:23:05 INF] Executing ObjectResult, writing value of type 'DAKKN.Application.Common.Models.ApiResponse`1[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
-﻿[23:23:05 INF] Executed action DAKKN.Appearence.Controllers.APIs.V1.SupportController.SubmitContactForm (DAKKN.Appearence) in 2519.1973ms
-﻿[23:23:05 INF] Executed endpoint 'DAKKN.Appearence.Controllers.APIs.V1.SupportController.SubmitContactForm (DAKKN.Appearence)'
-﻿[23:23:05 INF] Request finished HTTP/2 POST https://localhost:44308/api/v1/support/contact - 500 null application/json; charset=utf-8 2521.8984ms
-﻿[23:23:17 INF] Request starting HTTP/2 POST https://localhost:44308/api/v1/support/contact - application/json 171
-﻿[23:23:17 INF] CORS policy execution failed.
-﻿[23:23:17 INF] Request origin https://localhost:44308 does not have permission to access the resource.
-﻿[23:23:17 INF] Executing endpoint 'DAKKN.Appearence.Controllers.APIs.V1.SupportController.SubmitContactForm (DAKKN.Appearence)'
-﻿[23:23:17 INF] Route matched with {action = "SubmitContactForm", controller = "Support"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] SubmitContactForm(ContactFormRequest) on controller DAKKN.Appearence.Controllers.APIs.V1.SupportController (DAKKN.Appearence).
-﻿[23:23:17 INF] Handling Request: GetCategoriesQuery
-﻿[23:23:17 INF] Request Body: {"IncludeInactive":false}
-﻿[23:23:17 INF] Executed DbCommand (92ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
-﻿SELECT [s].[Id], [s].[Name], [s].[ArName], [s].[Description], [s].[Icon], [s].[DisplayOrder], [s].[IsActive]
-﻿FROM [dbo].[SupportCategories] AS [s]
-﻿WHERE [s].[IsActive] = CAST(1 AS bit)
-﻿ORDER BY [s].[DisplayOrder]
-﻿[23:23:17 INF] Handled Request: GetCategoriesQuery
-﻿[23:23:17 INF] Handling Request: CreateTicketCommand
-﻿[23:23:17 INF] Request Body: {"Subject":"Test","Message":"dafadsfadsf","CategoryId":"c9ddba5a-60c2-4d06-8154-071e3247adfa","Priority":"Medium","PhoneNumber":"01022812243","CustomerName":"\u0645\u062D\u0645\u062F \u0635\u0627\u0628\u0631 \u0623\u062D\u0645\u062F","CustomerEmail":"","Source":"Landing"}
-﻿[23:23:18 ERR] Failed executing DbCommand (259ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = Guid), @p2='?' (Size = 200), @p3='?' (DbType = Guid), @p4='?' (DbType = DateTime2), @p5='?' (DbType = DateTime2), @p6='?' (Size = 4000), @p7='?' (Size = 200), @p8='?' (DbType = Guid), @p9='?' (Size = 200), @p10='?' (Size = 50), @p11='?' (DbType = DateTime2), @p12='?' (Size = 4000), @p13='?' (DbType = DateTime2), @p14='?' (DbType = Boolean), @p15='?' (DbType = Boolean), @p16='?' (Size = 4000), @p17='?' (Size = 50), @p18='?' (DbType = Int32), @p19='?' (DbType = DateTime2), @p20='?' (Size = 100), @p21='?' (DbType = Int32), @p22='?' (Size = 500), @p23='?' (Size = 50), @p24='?' (DbType = DateTime2), @p25='?' (Size = 4000), @p26='?' (DbType = Guid), @p27='?' (Size = 200), @p28='?' (DbType = DateTime2), @p29='?' (Size = 4000), @p30='?' (DbType = DateTime2), @p31='?' (Size = 4000), @p32='?' (Size = 1000), @p33='?' (DbType = Boolean), @p34='?' (DbType = Boolean), @p35='?' (Size = 500), @p36='?' (Size = 500), @p37='?' (DbType = Guid), @p38='?' (DbType = DateTime2), @p39='?' (Size = 4000), @p40='?' (DbType = Guid), @p41='?' (Size = 200)], CommandType='Text', CommandTimeout='30']
-﻿SET NOCOUNT ON;
-﻿INSERT INTO [dbo].[SupportTickets] ([Id], [AssignedToId], [AssignedToName], [CategoryId], [ClosedAt], [CreatedAt], [CreatedBy], [CustomerEmail], [CustomerId], [CustomerName], [CustomerPhone], [DeletedAt], [DeletedBy], [FirstResponseAt], [IsActive], [IsDeleted], [Message], [OrderNumber], [Priority], [ResolvedAt], [Source], [Status], [Subject], [TicketNumber], [UpdatedAt], [UpdatedBy])
-﻿VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10, @p11, @p12, @p13, @p14, @p15, @p16, @p17, @p18, @p19, @p20, @p21, @p22, @p23, @p24, @p25);
-﻿INSERT INTO [dbo].[SupportActivities] ([Id], [Action], [CreatedAt], [CreatedBy], [DeletedAt], [DeletedBy], [Details], [IsActive], [IsDeleted], [NewValue], [OldValue], [TicketId], [UpdatedAt], [UpdatedBy], [UserId], [UserName])
-﻿VALUES (@p26, @p27, @p28, @p29, @p30, @p31, @p32, @p33, @p34, @p35, @p36, @p37, @p38, @p39, @p40, @p41);
-﻿[23:23:18 ERR] An exception occurred in the database while saving changes for context type 'DAKKN.Persistence.DAKKNDbContext'.
-﻿Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
-﻿ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The INSERT statement conflicted with the FOREIGN KEY constraint "FK_SupportTickets_AspNetUsers_CustomerId". The conflict occurred in database "db55037", table "dbo.AspNetUsers", column 'Id'.
-﻿The INSERT statement conflicted with the FOREIGN KEY constraint "FK_SupportActivities_SupportTickets_TicketId". The conflict occurred in database "db55037", table "dbo.SupportTickets", column 'Id'.
-﻿The statement has been terminated.
-﻿The statement has been terminated.
-﻿   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__195_0(Task`1 result)
-﻿   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
-﻿   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
-﻿--- End of stack trace from previous location ---
-﻿   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
-﻿   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
-﻿--- End of stack trace from previous location ---
-﻿   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
-﻿ClientConnectionId:80cc46d9-295d-4315-aa25-5ee5eccafda4
-﻿Error Number:547,State:0,Class:16
-﻿   --- End of inner exception stack trace ---
-﻿   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
-﻿Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
-﻿ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The INSERT statement conflicted with the FOREIGN KEY constraint "FK_SupportTickets_AspNetUsers_CustomerId". The conflict occurred in database "db55037", table "dbo.AspNetUsers", column 'Id'.
-﻿The INSERT statement conflicted with the FOREIGN KEY constraint "FK_SupportActivities_SupportTickets_TicketId". The conflict occurred in database "db55037", table "dbo.SupportTickets", column 'Id'.
-﻿The statement has been terminated.
-﻿The statement has been terminated.
-﻿   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__195_0(Task`1 result)
-﻿   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
-﻿   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
-﻿--- End of stack trace from previous location ---
-﻿   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
-﻿   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
-﻿--- End of stack trace from previous location ---
-﻿   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
-﻿ClientConnectionId:80cc46d9-295d-4315-aa25-5ee5eccafda4
-﻿Error Number:547,State:0,Class:16
-﻿   --- End of inner exception stack trace ---
-﻿   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
-﻿[23:23:19 ERR] Dakkn Request: Unhandled Exception for Request CreateTicketCommand
-﻿Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
-﻿ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The INSERT statement conflicted with the FOREIGN KEY constraint "FK_SupportTickets_AspNetUsers_CustomerId". The conflict occurred in database "db55037", table "dbo.AspNetUsers", column 'Id'.
-﻿The INSERT statement conflicted with the FOREIGN KEY constraint "FK_SupportActivities_SupportTickets_TicketId". The conflict occurred in database "db55037", table "dbo.SupportTickets", column 'Id'.
-﻿The statement has been terminated.
-﻿The statement has been terminated.
-﻿   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__195_0(Task`1 result)
-﻿   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
-﻿   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
-﻿--- End of stack trace from previous location ---
-﻿   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
-﻿   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
-﻿--- End of stack trace from previous location ---
-﻿   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
-﻿ClientConnectionId:80cc46d9-295d-4315-aa25-5ee5eccafda4
-﻿Error Number:547,State:0,Class:16
-﻿   --- End of inner exception stack trace ---
-﻿   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
-﻿   at DAKKN.Infrastructure.Repositories.Implementations.Base.UnitOfWork.SaveChangesAsync() in E:\DAKKN-Live\DAKKN.Infrastructure\Repositories\Implementations\Base\UnitOfWork.cs:line 55
-﻿   at DAKKN.Application.Features.Support.Commands.CreateTicket.CreateTicketCommandHandler.Handle(CreateTicketCommand request, CancellationToken ct) in E:\DAKKN-Live\DAKKN.Application\Features\Support\Commands\CreateTicket\CreateTicketCommandHandler.cs:line 107
-﻿   at DAKKN.Application.Common.Behaviours.LoggingBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN-Live\DAKKN.Application\Common\Behaviours\LoggingBehaviour.cs:line 39
-﻿   at DAKKN.Application.Common.Behaviours.PerformanceBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN-Live\DAKKN.Application\Common\Behaviours\PerformanceBehaviour.cs:line 23
-﻿   at DAKKN.Application.Common.Behaviours.ValidationBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN-Live\DAKKN.Application\Common\Behaviours\ValidationBehaviour.cs:line 28
-﻿   at DAKKN.Application.Common.Behaviours.UnhandledExceptionBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN-Live\DAKKN.Application\Common\Behaviours\UnhandledExceptionBehaviour.cs:line 20
-﻿[23:23:20 ERR] An unhandled exception has occurred while executing the request.
-﻿Microsoft.EntityFrameworkCore.DbUpdateException: An error occurred while saving the entity changes. See the inner exception for details.
-﻿ ---> Microsoft.Data.SqlClient.SqlException (0x80131904): The INSERT statement conflicted with the FOREIGN KEY constraint "FK_SupportTickets_AspNetUsers_CustomerId". The conflict occurred in database "db55037", table "dbo.AspNetUsers", column 'Id'.
-﻿The INSERT statement conflicted with the FOREIGN KEY constraint "FK_SupportActivities_SupportTickets_TicketId". The conflict occurred in database "db55037", table "dbo.SupportTickets", column 'Id'.
-﻿The statement has been terminated.
-﻿The statement has been terminated.
-﻿   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__195_0(Task`1 result)
-﻿   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
-﻿   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
-﻿--- End of stack trace from previous location ---
-﻿   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
-﻿   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
-﻿--- End of stack trace from previous location ---
-﻿   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
-﻿ClientConnectionId:80cc46d9-295d-4315-aa25-5ee5eccafda4
-﻿Error Number:547,State:0,Class:16
-﻿   --- End of inner exception stack trace ---
-﻿   at Microsoft.EntityFrameworkCore.Update.ReaderModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.SqlServer.Update.Internal.SqlServerModificationCommandBatch.ExecuteAsync(IRelationalConnection connection, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.Update.Internal.BatchExecutor.ExecuteAsync(IEnumerable`1 commandBatches, IRelationalConnection connection, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(IList`1 entriesToSave, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.SaveChangesAsync(StateManager stateManager, Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
-﻿   at Microsoft.EntityFrameworkCore.DbContext.SaveChangesAsync(Boolean acceptAllChangesOnSuccess, CancellationToken cancellationToken)
-﻿   at DAKKN.Infrastructure.Repositories.Implementations.Base.UnitOfWork.SaveChangesAsync() in E:\DAKKN-Live\DAKKN.Infrastructure\Repositories\Implementations\Base\UnitOfWork.cs:line 55
-﻿   at DAKKN.Application.Features.Support.Commands.CreateTicket.CreateTicketCommandHandler.Handle(CreateTicketCommand request, CancellationToken ct) in E:\DAKKN-Live\DAKKN.Application\Features\Support\Commands\CreateTicket\CreateTicketCommandHandler.cs:line 107
-﻿   at DAKKN.Application.Common.Behaviours.LoggingBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN-Live\DAKKN.Application\Common\Behaviours\LoggingBehaviour.cs:line 39
-﻿   at DAKKN.Application.Common.Behaviours.PerformanceBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN-Live\DAKKN.Application\Common\Behaviours\PerformanceBehaviour.cs:line 23
-﻿   at DAKKN.Application.Common.Behaviours.ValidationBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN-Live\DAKKN.Application\Common\Behaviours\ValidationBehaviour.cs:line 28
-﻿   at DAKKN.Application.Common.Behaviours.UnhandledExceptionBehaviour`2.Handle(TRequest request, RequestHandlerDelegate`1 next, CancellationToken cancellationToken) in E:\DAKKN-Live\DAKKN.Application\Common\Behaviours\UnhandledExceptionBehaviour.cs:line 20
-﻿   at DAKKN.Appearence.Controllers.APIs.V1.SupportController.SubmitContactForm(ContactFormRequest request) in E:\DAKKN-Live\DAKKN.MVC\Controllers\APIs\V1\SupportController.cs:line 394
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
-﻿   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextExceptionFilterAsync>g__Awaited|26_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
-﻿[23:23:20 INF] Executing ObjectResult, writing value of type 'DAKKN.Application.Common.Models.ApiResponse`1[[System.Object, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
-﻿[23:23:20 INF] Executed action DAKKN.Appearence.Controllers.APIs.V1.SupportController.SubmitContactForm (DAKKN.Appearence) in 2274.9992ms
-﻿[23:23:20 INF] Executed endpoint 'DAKKN.Appearence.Controllers.APIs.V1.SupportController.SubmitContactForm (DAKKN.Appearence)'
-﻿[23:23:20 INF] Request finished HTTP/2 POST https://localhost:44308/api/v1/support/contact - 500 null application/json; charset=utf-8 2276.9212ms
+﻿An unhandled exception occurred while processing the request.
+UnAuthorizedException: Exception of type 'DAKKN.Application.Common.Exceptions.UnAuthorizedException' was thrown.
+DAKKN.Application.Features.Orders.Queries.GetOrderDetails.GetOrderDetailsQueryHandler.Handle(GetOrderDetailsQuery request, CancellationToken cancellationToken) in GetOrderDetailsQueryHandler.cs, line 34
+
+Stack Query Cookies Headers Routing
+UnAuthorizedException: Exception of type 'DAKKN.Application.Common.Exceptions.UnAuthorizedException' was thrown.
+DAKKN.Application.Features.Orders.Queries.GetOrderDetails.GetOrderDetailsQueryHandler.Handle(GetOrderDetailsQuery request, CancellationToken cancellationToken) in GetOrderDetailsQueryHandler.cs
++
+                    throw new UnAuthorizedException();
+DAKKN.Application.Common.Behaviours.LoggingBehaviour<TRequest, TResponse>.Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken) in LoggingBehaviour.cs
++
+            var response = await next();
+DAKKN.Application.Common.Behaviours.PerformanceBehaviour<TRequest, TResponse>.Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken) in PerformanceBehaviour.cs
++
+            var response = await next();
+DAKKN.Application.Common.Behaviours.ValidationBehaviour<TRequest, TResponse>.Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken) in ValidationBehaviour.cs
++
+            return await next();
+DAKKN.Application.Common.Behaviours.UnhandledExceptionBehaviour<TRequest, TResponse>.Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken) in UnhandledExceptionBehaviour.cs
++
+                return await next();
+DAKKN.MVC.Controllers.ShopController.OrderConfirmation(Guid orderId) in ShopController.cs
++
+                var order = await _mediator.Send(new GetOrderDetailsQuery(orderId, IsAdmin: false));
+Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor+TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, object controller, object[] arguments)
+System.Threading.Tasks.ValueTask<TResult>.get_Result()
+Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask<IActionResult> actionResultValueTask)
+Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, object state, bool isCompleted)
+Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(ref State next, ref Scope scope, ref object state, ref bool isCompleted)
+Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeNextExceptionFilterAsync>g__Awaited|26_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, object state, bool isCompleted)
+Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ExceptionContextSealed context)
+Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(ref State next, ref Scope scope, ref object state, ref bool isCompleted)
+Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeNextResourceFilter()
+Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Rethrow(ResourceExecutedContextSealed context)
+Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.Next(ref State next, ref Scope scope, ref object state, ref bool isCompleted)
+Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.InvokeFilterPipelineAsync()
+Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|7_0(Endpoint endpoint, Task requestTask, ILogger logger)
+Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+Microsoft.AspNetCore.OutputCaching.OutputCacheMiddleware.InvokeAwaited(HttpContext httpContext, IReadOnlyList<IOutputCachePolicy> policies)
+Microsoft.AspNetCore.Localization.RequestLocalizationMiddleware.Invoke(HttpContext context)
+Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+Microsoft.AspNetCore.Session.SessionMiddleware.Invoke(HttpContext context)
+NWebsec.AspNetCore.Middleware.Middleware.CspMiddleware.Invoke(HttpContext context)
+NWebsec.AspNetCore.Middleware.Middleware.MiddlewareBase.Invoke(HttpContext context)
+DAKKN.MVC.Program+<>c+<<Main>b__0_18>d.MoveNext() in Program.cs
++
+                await next();
+NWebsec.AspNetCore.Middleware.Middleware.MiddlewareBase.Invoke(HttpContext context)
+NWebsec.AspNetCore.Middleware.Middleware.MiddlewareBase.Invoke(HttpContext context)
+NWebsec.AspNetCore.Middleware.Middleware.MiddlewareBase.Invoke(HttpContext context)
+NWebsec.AspNetCore.Middleware.Middleware.MiddlewareBase.Invoke(HttpContext context)
+Microsoft.AspNetCore.ResponseCompression.ResponseCompressionMiddleware.InvokeCore(HttpContext context)
+Microsoft.AspNetCore.Diagnostics.StatusCodePagesMiddleware.Invoke(HttpContext context)
+Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddlewareImpl.Invoke(HttpContext context)
+
+Show raw exception details

@@ -599,9 +599,20 @@ async function renderFeaturedProducts() {
             </div>`;
             return;
         }
+        const t = currentTranslations;
         const isAr = document.documentElement.lang.startsWith('ar');
-        grid.innerHTML = items.map((p, i) => `
-            <div class="product-card glass-panel p-5 rounded-2xl flex flex-col gap-4 scroll-animate delay-${(i + 1) * 100} dark:bg-slate-900/40 group hover:-translate-y-1 transition-all duration-300">
+        grid.innerHTML = items.map((p, i) => {
+            const outOfStock = p.quantityInStock === 0;
+            const lowStock = !outOfStock && p.dangerQuantity > 0 && p.quantityInStock <= p.dangerQuantity;
+            const stockHtml = outOfStock
+                ? '<span class="text-[10px] font-bold text-red-500 flex items-center gap-1"><span class="material-symbols-outlined text-xs">block</span> ' + (t.inventory_out_of_stock || 'Out of Stock') + '</span>'
+                : lowStock
+                    ? '<span class="text-[10px] font-bold text-amber-500 flex items-center gap-1"><span class="material-symbols-outlined text-xs">warning</span> ' + (t.inventory_only_x_left || 'Only {0} left').replace('{0}', p.quantityInStock) + '</span>'
+                    : '<span class="text-[10px] font-bold text-green-500 flex items-center gap-1"><span class="material-symbols-outlined text-xs">check_circle</span> ' + (t.inventory_in_stock || 'Available') + '</span>';
+            const addBtnHtml = outOfStock
+                ? '<button disabled class="px-3 py-2 rounded-lg bg-gray-300 text-gray-500 text-[10px] font-bold cursor-not-allowed flex items-center gap-1"><span class="material-symbols-outlined text-sm">block</span></button>'
+                : '<button data-product-add="' + p.id + '" data-product-name="' + (isAr ? (p.arName || p.name) : p.name) + '" data-product-price="' + p.price + '" data-product-image="' + (p.imageUrl || '') + '" class="px-3 py-2 rounded-lg bg-primary text-on-primary text-[10px] font-bold hover:bg-primary-container hover:text-primary transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_shopping_cart</span></button>';
+            return `<div class="product-card glass-panel p-5 rounded-2xl flex flex-col gap-4 scroll-animate delay-${(i + 1) * 100} dark:bg-slate-900/40 group hover:-translate-y-1 transition-all duration-300">
                 <a href="/shop/product/${p.id}" class="no-underline">
                     <div class="aspect-square rounded-xl overflow-hidden relative">
                         <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="${resolveImage(p.imageUrl)}"
@@ -612,16 +623,13 @@ async function renderFeaturedProducts() {
                         <p class="text-xs text-on-surface-variant dark:text-slate-400">${isAr ? p.categoryArName : p.categoryName}</p>
                     </div>
                 </a>
+                ${stockHtml}
                 <div class="flex items-center justify-between mt-auto pt-2">
-                    <span class="text-xl font-bold text-primary">${p.price.toLocaleString()} ${currentTranslations.currency || 'EGP'}</span>
-                    <div class="flex gap-2">
-                        <button data-product-add="${p.id}" data-product-name="${isAr ? (p.arName || p.name) : p.name}" data-product-price="${p.price}" data-product-image="${p.imageUrl || ''}" class="px-3 py-2 rounded-lg bg-primary text-on-primary text-[10px] font-bold hover:bg-primary-container hover:text-primary transition-all flex items-center gap-1">
-                            <span class="material-symbols-outlined text-sm">add_shopping_cart</span>
-                        </button>
-                        <a href="/shop/product/${p.id}" class="px-3 py-2 rounded-lg bg-primary/10 text-primary text-[10px] font-bold hover:bg-primary hover:text-on-primary transition-all no-underline">${currentTranslations.shop_view_details || 'View Details'}</a>
-                    </div>
+                    <span class="text-xl font-bold text-primary">${p.price.toLocaleString()} ${t.currency || 'EGP'}</span>
+                    <div class="flex gap-2">${addBtnHtml}<a href="/shop/product/${p.id}" class="px-3 py-2 rounded-lg bg-primary/10 text-primary text-[10px] font-bold hover:bg-primary hover:text-on-primary transition-all no-underline">${t.shop_view_details || 'View Details'}</a></div>
                 </div>
-            </div>`).join('');
+            </div>`;
+        }).join('');
     } catch (err) {
         console.error('Error rendering featured products:', err);
         grid.innerHTML = `<div class="col-span-full text-center py-12"><p class="text-on-surface-variant">${currentTranslations.no_products_title || 'Failed to load products.'}</p></div>`;
@@ -655,7 +663,7 @@ async function renderCategoriesSlider() {
         const isAr = document.documentElement.lang.startsWith('ar');
         const CATEGORY_PLACEHOLDER = '/images/placeholders/category-placeholder.svg';
         track.innerHTML = categoriesData.map(cat => `
-            <a href="/shop/products?categoryId=${cat.id}" data-frozen-action
+            <a href="/shop/products?categoryId=${cat.id}"
                class="group rounded-2xl overflow-hidden relative flex-shrink-0 w-[calc(100%-0px)] sm:w-[calc(50%-12px)] md:w-[calc(33.333%-16px)] lg:w-[calc(25%-18px)] aspect-square glass-panel shadow-sm dark:bg-slate-900/40 no-underline block">
                 <img src="${resolveImage(cat.imageUrl)}" alt="${isAr ? cat.arName : cat.categoryName}"
                      class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -714,12 +722,25 @@ async function renderAllProducts() {
                 <p class="text-sm text-on-surface-variant dark:text-slate-400">${currentTranslations.no_products_found || 'No stickers match your filters.'}</p>
             </div>`;
         } else {
-            grid.innerHTML = items.map(p => `
-                <div class="product-card glass-panel p-5 rounded-2xl flex flex-col gap-4 scroll-animate visible" style="opacity:1;transform:none;">
+            const t = currentTranslations;
+            grid.innerHTML = items.map(p => {
+                const outOfStock = p.quantityInStock === 0;
+                const lowStock = !outOfStock && p.dangerQuantity > 0 && p.quantityInStock <= p.dangerQuantity;
+                const stockHtml = outOfStock
+                    ? '<span class="text-[10px] font-bold text-red-500 flex items-center gap-1"><span class="material-symbols-outlined text-xs">block</span> ' + (t.inventory_out_of_stock || 'Out of Stock') + '</span>'
+                    : lowStock
+                        ? '<span class="text-[10px] font-bold text-amber-500 flex items-center gap-1"><span class="material-symbols-outlined text-xs">warning</span> ' + (t.inventory_only_x_left || 'Only {0} left').replace('{0}', p.quantityInStock) + '</span>'
+                        : '<span class="text-[10px] font-bold text-green-500 flex items-center gap-1"><span class="material-symbols-outlined text-xs">check_circle</span> ' + (t.inventory_in_stock || 'Available') + '</span>';
+                const addBtnHtml = outOfStock
+                    ? '<button disabled class="px-3 py-2 rounded-lg bg-gray-300 text-gray-500 text-[10px] font-bold cursor-not-allowed flex items-center gap-1"><span class="material-symbols-outlined text-sm">block</span></button>'
+                    : '<button data-product-add="' + p.id + '" data-product-name="' + (isAr ? (p.arName || p.name) : p.name) + '" data-product-price="' + p.price + '" data-product-image="' + (p.imageUrl || '') + '" class="px-3 py-2 rounded-lg bg-primary text-on-primary text-[10px] font-bold hover:bg-primary-container hover:text-primary transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_shopping_cart</span></button>';
+                return `<div class="product-card glass-panel p-5 rounded-2xl flex flex-col gap-4 scroll-animate visible" style="opacity:1;transform:none;">
                     <div class="aspect-square rounded-xl overflow-hidden relative"><img class="w-full h-full object-cover" src="${resolveImage(p.imageUrl)}" onerror="this.src='${PRODUCT_PLACEHOLDER}'" alt="${isAr ? p.arName : p.name}" loading="lazy"/></div>
                     <div><h3 class="text-lg font-bold text-on-surface dark:text-white">${isAr ? p.arName : p.name}</h3><p class="text-xs text-on-surface-variant dark:text-slate-400">${isAr ? p.categoryArName : p.categoryName}</p></div>
-                    <div class="flex items-center justify-between mt-auto pt-2"><span class="text-xl font-bold text-primary font-sans">${p.price.toLocaleString()} ${currentTranslations.currency || 'EGP'}</span><div class="flex gap-2"><button data-product-add="${p.id}" data-product-name="${isAr ? (p.arName || p.name) : p.name}" data-product-price="${p.price}" data-product-image="${p.imageUrl || ''}" class="px-3 py-2 rounded-lg bg-primary text-on-primary text-[10px] font-bold hover:bg-primary-container hover:text-primary transition-all flex items-center gap-1"><span class="material-symbols-outlined text-sm">add_shopping_cart</span></button><a href="/shop/product/${p.id}" class="px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-[10px] font-bold transition-all duration-200">${currentTranslations.shop_view_details || 'View Details'}</a></div></div>
-                </div>`).join('');
+                    ${stockHtml}
+                    <div class="flex items-center justify-between mt-auto pt-2"><span class="text-xl font-bold text-primary font-sans">${p.price.toLocaleString()} ${t.currency || 'EGP'}</span><div class="flex gap-2">${addBtnHtml}<a href="/shop/product/${p.id}" class="px-3 py-2 rounded-lg bg-primary/10 text-primary hover:bg-primary hover:text-on-primary text-[10px] font-bold transition-all duration-200">${t.shop_view_details || 'View Details'}</a></div></div>
+                </div>`;
+            }).join('');
         }
         const priceDisplay = document.getElementById('price-val-display');
         if (priceDisplay) {
@@ -825,44 +846,7 @@ window.nextProdsPage = nextProdsPage;
 window.goToProdsPage = goToProdsPage;
 window.renderAllProducts = renderAllProducts;
 
-/* ── Sign-in Modal ─────────────────────────────── */
-function showSignInModal() {
-    const modal = document.getElementById('signin-modal');
-    if (modal) {
-        modal.classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-    }
-}
-
-function hideSignInModal() {
-    const modal = document.getElementById('signin-modal');
-    if (modal) {
-        modal.classList.add('hidden');
-        document.body.style.overflow = '';
-    }
-}
-
 function initFrozenActions() {
-    // Delegated click listener for frozen <a> tags (both static & dynamic)
-    document.addEventListener('click', function(e) {
-        const frozen = e.target.closest('a[data-frozen-action]');
-        if (frozen) {
-            e.preventDefault();
-            showSignInModal();
-        }
-    });
-
-    // Override category filter (All Products)
-    filterCategory = function() { showSignInModal(); };
-
-    // Override price filter
-    filterPrice = function() { showSignInModal(); };
-
-    // Override pagination
-    prevProdsPage = function() { showSignInModal(); };
-    nextProdsPage = function() { showSignInModal(); };
-    goToProdsPage = function() { showSignInModal(); };
-
     // Submit contact form via API
     const contactForm = document.querySelector('#contact form');
     if (contactForm) {
@@ -918,16 +902,6 @@ function initFrozenActions() {
         const el = document.querySelector(`.cf-error[data-for="${field}"]`);
         if (el) { el.textContent = msg; el.classList.remove('hidden'); }
     }
-
-    // Modal close on backdrop click
-    document.getElementById('signin-modal')?.addEventListener('click', function(e) {
-        if (e.target === this) hideSignInModal();
-    });
-
-    // Modal close on Escape key
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') hideSignInModal();
-    });
 }
 
 function initDelegatedAddToCart() {
@@ -1167,6 +1141,3 @@ function initHeroParallax() {
 }
 
 /* ── Marquee Infinite Scroll (JS-driven) ─────── */
-
-window.showSignInModal = showSignInModal;
-window.hideSignInModal = hideSignInModal;

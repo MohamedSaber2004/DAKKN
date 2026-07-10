@@ -1,4 +1,5 @@
 using DAKKN.Appearence.Filters;
+using DAKKN.Appearence.Services;
 using DAKKN.Application.Common.Exceptions;
 using DAKKN.Application.Common.Interfaces;
 using DAKKN.Application.Features.Categories.Commands.CreateCategory;
@@ -21,6 +22,7 @@ using DAKKN.Application.Features.Dashboard.Queries.GetDashboardInventoryStats;
 using DAKKN.Application.Features.Dashboard.Queries.GetRecentProductRatings;
 using DAKKN.Application.Features.Orders.Queries.GetOrders;
 using DAKKN.Application.Features.Orders.Queries.GetOrderDetails;
+using DAKKN.Application.Features.Orders.Queries.ExportUndeliveredOrders;
 using DAKKN.Application.Features.Orders.Queries.GetRecentOrders;
 using DAKKN.Application.Features.Orders.Queries.GetDashboardStats;
 using DAKKN.Application.Features.Orders.Commands.UpdateOrderStatus;
@@ -194,6 +196,15 @@ namespace DAKKN.MVC.Controllers
 
             var csvData = System.Text.Encoding.UTF8.GetPreamble().Concat(System.Text.Encoding.UTF8.GetBytes(builder.ToString())).ToArray();
             return File(csvData, "text/csv", $"users_{DateTime.Now:yyyyMMddHHmmss}.csv");
+        }
+
+        [HttpGet("orders/export-undelivered-pdf")]
+        public async Task<IActionResult> ExportUndeliveredOrdersPdf()
+        {
+            var orders = await _mediator.Send(new ExportUndeliveredOrdersQuery());
+            var pdfService = HttpContext.RequestServices.GetRequiredService<IPdfExportService>();
+            var pdfBytes = pdfService.GenerateUndeliveredOrdersPdf(orders);
+            return File(pdfBytes, "application/pdf", $"undelivered_orders_{DateTime.Now:yyyyMMddHHmmss}.pdf");
         }
 
         [HttpGet("orders")]

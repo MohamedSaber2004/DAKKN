@@ -1,1 +1,30 @@
-i want to give me a prompt to make the image of hero banner as background and set the title and description in the cetner and remove creators section and suggest any thing here in that section to enhance user experience. also the is related with admin dashboard in the content control center of landing sync changes to all ow to admin to adapt changes
+﻿WHERE [p].[Id] = @__key_0
+﻿[17:25:36 INF] Handled Request: AddToCartCommand
+﻿[17:25:36 INF] Executing OkObjectResult, writing value of type 'DAKKN.Application.Common.Models.ApiResponse`1[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+﻿[17:25:36 INF] Executed action DAKKN.Appearence.Controllers.APIs.V1.CartController.AddToCart (DAKKN.Appearence) in 97.2842ms
+﻿[17:25:36 INF] Executed endpoint 'DAKKN.Appearence.Controllers.APIs.V1.CartController.AddToCart (DAKKN.Appearence)'
+﻿[17:25:36 INF] Request finished HTTP/2 POST https://localhost:44308/api/v1/cart/add - 200 null application/json; charset=utf-8 101.4741ms
+﻿[17:25:38 INF] Request starting HTTP/2 GET https://localhost:44308/shop/cart - null null
+﻿[17:25:38 INF] Serving response from cache.
+﻿[17:25:38 WRN] Unable to configure Browser Link script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+﻿[17:25:38 WRN] Unable to configure browser refresh script injection on the response. This may have been caused by the response's Content-Encoding: '["br"]'. Consider disabling response compression.
+﻿[17:25:38 INF] Request finished HTTP/2 GET https://localhost:44308/shop/cart - 200 null text/html; charset=utf-8 56.6213ms
+﻿[17:25:39 INF] Request starting HTTP/2 GET https://localhost:44308/.well-known/appspecific/com.chrome.devtools.json - null null
+﻿[17:25:39 INF] No cached response available for this request.
+﻿[17:25:39 INF] The response could not be cached for this request.
+﻿[17:25:39 INF] No cached response available for this request.
+﻿[17:25:39 INF] Executing endpoint 'DAKKN.MVC.Controllers.HomeController.Error (DAKKN.Appearence)'
+﻿[17:25:39 INF] Route matched with {action = "Error", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Error(System.Nullable`1[System.Int32]) on controller DAKKN.MVC.Controllers.HomeController (DAKKN.Appearence).
+﻿[17:25:39 INF] Executing ViewResult, running view Error.
+﻿[17:25:39 INF] Executed ViewResult - view Error executed in 24.9009ms.
+﻿[17:25:39 INF] Executed action DAKKN.MVC.Controllers.HomeController.Error (DAKKN.Appearence) in 26.9993ms
+﻿[17:25:39 INF] Executed endpoint 'DAKKN.MVC.Controllers.HomeController.Error (DAKKN.Appearence)'
+﻿[17:25:39 INF] The response could not be cached for this request.
+﻿[17:25:39 INF] Request finished HTTP/2 GET https://localhost:44308/.well-known/appspecific/com.chrome.devtools.json - 404 null text/html; charset=utf-8 41.7304ms
+﻿[17:25:39 INF] Request reached the end of the middleware pipeline without being handled by application code. Request path: GET https://localhost:44308/.well-known/appspecific/com.chrome.devtools.json, Response status code: 404
+﻿[17:25:39 INF] Request starting HTTP/2 GET https://localhost:44308/api/v1/cart/count - null null
+﻿[17:25:39 INF] Serving response from cache.
+﻿[17:25:39 INF] Request finished HTTP/2 GET https://localhost:44308/api/v1/cart/count - 200 null application/json; charset=utf-8 3.4482ms
+﻿[17:25:39 INF] Request starting HTTP/2 GET https://localhost:44308/api/v1/catalog/products/price-range - null null
+﻿[17:25:39 INF] Serving response from cache.
+﻿[17:25:39 INF] Request finished HTTP/2 GET https://localhost:44308/api/v1/catalog/products/price-range - 200 null application/json; charset=utf-8 11.1137ms

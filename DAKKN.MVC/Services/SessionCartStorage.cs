@@ -7,18 +7,29 @@ namespace DAKKN.MVC.Services
     public class SessionCartStorage : IGuestCartStorage
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ILogger<SessionCartStorage> _logger;
         private const string SessionKey = "GuestCart";
         private const string ShippingGovKey = "GuestCart_ShippingGovId";
 
-        public SessionCartStorage(IHttpContextAccessor httpContextAccessor)
+        private static readonly JsonSerializerOptions JsonOptions = new()
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        public SessionCartStorage(IHttpContextAccessor httpContextAccessor, ILogger<SessionCartStorage> logger)
         {
             _httpContextAccessor = httpContextAccessor;
+            _logger = logger;
         }
 
         public List<CartItemDto> GetCart()
         {
             var session = _httpContextAccessor.HttpContext?.Session;
-            if (session == null) return new List<CartItemDto>();
+            if (session == null)
+            {
+                _logger.LogWarning("SessionCartStorage.GetCart: HttpContext.Session is null");
+                return new List<CartItemDto>();
+            }
 
             var data = session.GetString(SessionKey);
             if (string.IsNullOrEmpty(data))
@@ -26,10 +37,12 @@ namespace DAKKN.MVC.Services
 
             try
             {
-                return JsonSerializer.Deserialize<List<CartItemDto>>(data) ?? new List<CartItemDto>();
+                return JsonSerializer.Deserialize<List<CartItemDto>>(data, JsonOptions) ?? new List<CartItemDto>();
             }
-            catch
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "SessionCartStorage.GetCart: Failed to deserialize cart data. Key={SessionKey}, DataLength={Length}", SessionKey, data.Length);
+                session.Remove(SessionKey);
                 return new List<CartItemDto>();
             }
         }
@@ -37,9 +50,13 @@ namespace DAKKN.MVC.Services
         public void SetCart(List<CartItemDto> items)
         {
             var session = _httpContextAccessor.HttpContext?.Session;
-            if (session == null) return;
+            if (session == null)
+            {
+                _logger.LogWarning("SessionCartStorage.SetCart: HttpContext.Session is null");
+                return;
+            }
 
-            var data = JsonSerializer.Serialize(items);
+            var data = JsonSerializer.Serialize(items, JsonOptions);
             session.SetString(SessionKey, data);
         }
 

@@ -53,4 +53,14 @@ namespace DAKKN.Application.Features.Orders.DTOs
         public DateTime ChangedAt { get; set; }
         public string? Notes { get; set; }
     }
+
+    public class ExportUndeliveredOrderDto
+    {
+        public string CustomerName { get; set; } = null!;
+        public string CustomerPhone { get; set; } = null!;
+        public string ShippingAddress { get; set; } = null!;
+        public string OrderNumber { get; set; } = null!;
+        public string TrackingNumber { get; set; } = null!;
+        public DateTime CreatedAt { get; set; }
+    }
 }

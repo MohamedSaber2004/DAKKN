@@ -565,11 +565,6 @@ section { width: 100%; overflow-x: hidden; }
     main { padding-bottom: 72px; }
 }
 
-/* ── Sign-in Modal ───────────────────────────────── */
-#signin-modal { animation: modalFadeIn 0.25s ease-out; }
-#signin-modal > div:first-child { animation: modalFadeIn 0.25s ease-out; }
-#signin-modal > div:last-child { animation: modalSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
-
 /* ── Phone Prompt Modal ──────────────────────────── */
 #phone-prompt-modal { animation: modalFadeIn 0.25s ease-out; }
 #phone-prompt-modal > div:first-child { animation: modalFadeIn 0.25s ease-out; }
@@ -624,8 +619,6 @@ section { width: 100%; overflow-x: hidden; }
 .btn-micro { transition: transform 0.15s, box-shadow 0.15s; }
 .btn-micro:active { transform: scale(0.96); }
 
-/* ── Frozen Action Cursor ────────────────────────── */
-[data-frozen-action] { cursor: pointer; }
 
 /* ── Drawer link ─────────────────────────────────── */
 .drawer-link {
