@@ -21,10 +21,6 @@
                     <span class="material-symbols-outlined">branding_watermark</span>
                     <span class="font-body-lg">@Localizer["admin_hero_settings"]</span>
                 </button>
-                <button onclick="switchTab('about-us')" id="tab-about-us" class="content-tab-btn flex items-center gap-md p-3 rounded-xl transition-all duration-200 text-left rtl:text-right w-full">
-                    <span class="material-symbols-outlined">info</span>
-                    <span class="font-body-lg">@Localizer["section_about"]</span>
-                </button>
                 <button onclick="switchTab('customer-stories')" id="tab-customer-stories" class="content-tab-btn flex items-center gap-md p-3 rounded-xl transition-all duration-200 text-left rtl:text-right w-full">
                     <span class="material-symbols-outlined">forum</span>
                     <span class="font-body-lg">@Localizer["section_testimonials"]</span>
@@ -96,22 +92,16 @@
                 <button onclick="switchHeroLang('en')" id="hero-lang-en" class="hero-lang-tab px-lg py-md rounded-xl font-bold text-sm transition-all">@Localizer["admin_hero_lang_en"]</button>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
-                <!-- Language-Specific Fields -->
-                <div class="space-y-lg">
+            <div class="space-y-lg">
                     <!-- Arabic Fields -->
                     <div id="hero-fields-ar" class="hero-lang-fields">
                         <div class="flex flex-col gap-xs">
-                            <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_hero_badge"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_ar_marker"]</span></label>
-                            <input id="hero-badge-ar" type="text" value="@Model.Hero.BadgeAr" placeholder="@Localizer["admin_content_ph_badge_ar"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md focus:ring-primary focus:border-primary transition-all">
-                        </div>
-                        <div class="flex flex-col gap-xs">
                             <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_hero_title_segments"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_ar_marker"]</span></label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm">
-                                <input id="hero-title-a-ar" type="text" value="@Model.Hero.TitleAAr" placeholder="@Localizer["admin_content_ph_hero_title_a_ar"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">
-                                <input id="hero-title-b-ar" type="text" value="@Model.Hero.TitleBAr" placeholder="@Localizer["admin_content_ph_hero_title_b_ar"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md text-primary font-bold">
-                                <input id="hero-title-c-ar" type="text" value="@Model.Hero.TitleCAr" placeholder="@Localizer["admin_content_ph_hero_title_c_ar"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">
-                                <input id="hero-title-d-ar" type="text" value="@Model.Hero.TitleDAr" placeholder="@Localizer["admin_content_ph_hero_title_d_ar"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md text-secondary font-bold">
+                                <input id="hero-title-a-ar" type="text" value="@Model.Hero.TitleAAr" placeholder="@Localizer["admin_content_ph_hero_title_a_ar"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md focus:ring-primary focus:border-primary transition-all">
+                                <input id="hero-title-b-ar" type="text" value="@Model.Hero.TitleBAr" placeholder="@Localizer["admin_content_ph_hero_title_b_ar"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md text-primary font-bold focus:ring-primary focus:border-primary transition-all">
+                                <input id="hero-title-c-ar" type="text" value="@Model.Hero.TitleCAr" placeholder="@Localizer["admin_content_ph_hero_title_c_ar"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md focus:ring-primary focus:border-primary transition-all">
+                                <input id="hero-title-d-ar" type="text" value="@Model.Hero.TitleDAr" placeholder="@Localizer["admin_content_ph_hero_title_d_ar"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md text-secondary font-bold focus:ring-primary focus:border-primary transition-all">
                             </div>
                         </div>
                         @* <div class="flex flex-col gap-xs">
@@ -123,16 +113,12 @@
                     <!-- English Fields -->
                     <div id="hero-fields-en" class="hero-lang-fields hidden">
                         <div class="flex flex-col gap-xs">
-                            <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_hero_badge"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_en_marker"]</span></label>
-                            <input id="hero-badge-en" type="text" value="@Model.Hero.BadgeEn" placeholder="@Localizer["admin_content_ph_badge_en"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md focus:ring-primary focus:border-primary transition-all">
-                        </div>
-                        <div class="flex flex-col gap-xs">
                             <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_hero_title_segments"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_en_marker"]</span></label>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-sm">
-                                <input id="hero-title-a-en" type="text" value="@Model.Hero.TitleAEn" placeholder="@Localizer["admin_content_ph_hero_title_a_en"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">
-                                <input id="hero-title-b-en" type="text" value="@Model.Hero.TitleBEn" placeholder="@Localizer["admin_content_ph_hero_title_b_en"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md text-primary font-bold">
-                                <input id="hero-title-c-en" type="text" value="@Model.Hero.TitleCEn" placeholder="@Localizer["admin_content_ph_hero_title_c_en"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">
-                                <input id="hero-title-d-en" type="text" value="@Model.Hero.TitleDEn" placeholder="@Localizer["admin_content_ph_hero_title_d_en"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md text-secondary font-bold">
+                                <input id="hero-title-a-en" type="text" value="@Model.Hero.TitleAEn" placeholder="@Localizer["admin_content_ph_hero_title_a_en"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md focus:ring-primary focus:border-primary transition-all">
+                                <input id="hero-title-b-en" type="text" value="@Model.Hero.TitleBEn" placeholder="@Localizer["admin_content_ph_hero_title_b_en"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md text-primary font-bold focus:ring-primary focus:border-primary transition-all">
+                                <input id="hero-title-c-en" type="text" value="@Model.Hero.TitleCEn" placeholder="@Localizer["admin_content_ph_hero_title_c_en"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md focus:ring-primary focus:border-primary transition-all">
+                                <input id="hero-title-d-en" type="text" value="@Model.Hero.TitleDEn" placeholder="@Localizer["admin_content_ph_hero_title_d_en"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md text-secondary font-bold focus:ring-primary focus:border-primary transition-all">
                             </div>
                         </div>
                         @* <div class="flex flex-col gap-xs">
@@ -142,114 +128,6 @@
                     </div>
                 </div>
 
-                <!-- Image Upload (Shared) -->
-                <div class="flex flex-col gap-lg">
-                    <div class="aspect-video rounded-3xl bg-admin-input dark:bg-[#1E293B] border-2 border-dashed border-admin-border dark:border-white/10 flex flex-col items-center justify-center p-xl relative group overflow-hidden">
-                        <img id="hero-image-preview" src="@Model.Hero.ImageUrl" class="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-10 transition-opacity">
-                        <span class="material-symbols-outlined text-4xl text-admin-muted mb-sm">image</span>
-                        <span class="font-bold text-admin-secondary">@Localizer["admin_hero_image_update"]</span>
-                        <input id="hero-image-input" type="file" accept="image/*" class="absolute inset-0 opacity-0 cursor-pointer">
-                    </div>
-                    <input id="hero-image-url-input" type="hidden" value="@Model.Hero.ImageUrl">
-                    <button class="bg-primary text-on-primary py-md rounded-full font-bold shadow-medium hover:scale-103 transition-all" onclick="saveHeroSection()">@Localizer["admin_save_changes"]</button>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- Section: About Us -->
-        <div id="panel-about-us" class="content-panel hidden bg-surface dark:bg-[#1E293B] rounded-[32px] shadow-medium border border-admin-border dark:border-white/5 p-xl">
-            <h2 class="font-h2 text-h2 font-bold mb-xl">@Localizer["section_about"]</h2>
-
-            <!-- Language Tabs -->
-            <div class="flex gap-sm mb-xl border-b border-admin-border dark:border-white/5 pb-sm">
-                <button onclick="switchAboutLang('ar')" id="about-lang-ar" class="about-lang-tab active px-lg py-md rounded-xl font-bold text-sm transition-all">@Localizer["admin_hero_lang_ar"]</button>
-                <button onclick="switchAboutLang('en')" id="about-lang-en" class="about-lang-tab px-lg py-md rounded-xl font-bold text-sm transition-all">@Localizer["admin_hero_lang_en"]</button>
-            </div>
-
-            <div class="space-y-xl">
-                <!-- Arabic Fields -->
-                <div id="about-fields-ar" class="about-lang-fields">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-2">
-                        <div class="flex flex-col gap-xs">
-                            <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_about_title"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_ar_marker"]</span></label>
-                            <input id="about-title-ar" type="text" value="@Model.About.TitleAr" placeholder="@Localizer["admin_content_ph_about_title_ar"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">
-                        </div>
-                        <div class="flex flex-col gap-xs">
-                            <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_about_desc"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_ar_marker"]</span></label>
-                            <textarea id="about-desc-ar" rows="2" placeholder="@Localizer["admin_content_ph_about_desc_ar"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">@Model.About.DescriptionAr</textarea>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
-                        <div class="p-lg rounded-2xl border border-admin-border dark:border-white/5" style="background-color:var(--admin-page-bg)">
-                            <div class="flex items-center gap-md mb-md">
-                                <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">1</span>
-                                <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 1) <span class="text-xs text-admin-muted">@Localizer["admin_lang_ar_marker"]</span></h4>
-                            </div>
-                            <input id="about-feat1-title-ar" type="text" value="@Model.About.Feature1TitleAr" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-admin-border rounded-lg p-md mb-sm">
-                            <textarea id="about-feat1-desc-ar" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-admin-border rounded-lg p-md text-sm">@Model.About.Feature1DescAr</textarea>
-                        </div>
-                        <div class="p-lg rounded-2xl border border-admin-border dark:border-white/5" style="background-color:var(--admin-page-bg)">
-                            <div class="flex items-center gap-md mb-md">
-                                <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">2</span>
-                                <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 2) <span class="text-xs text-admin-muted">@Localizer["admin_lang_ar_marker"]</span></h4>
-                            </div>
-                            <input id="about-feat2-title-ar" type="text" value="@Model.About.Feature2TitleAr" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-admin-border rounded-lg p-md mb-sm">
-                            <textarea id="about-feat2-desc-ar" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-admin-border rounded-lg p-md text-sm">@Model.About.Feature2DescAr</textarea>
-                        </div>
-                        <div class="p-lg rounded-2xl border border-admin-border dark:border-white/5" style="background-color:var(--admin-page-bg)">
-                            <div class="flex items-center gap-md mb-md">
-                                <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">3</span>
-                                <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 3) <span class="text-xs text-admin-muted">@Localizer["admin_lang_ar_marker"]</span></h4>
-                            </div>
-                            <input id="about-feat3-title-ar" type="text" value="@Model.About.Feature3TitleAr" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-admin-border rounded-lg p-md mb-sm">
-                            <textarea id="about-feat3-desc-ar" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-admin-border rounded-lg p-md text-sm">@Model.About.Feature3DescAr</textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- English Fields -->
-                <div id="about-fields-en" class="about-lang-fields hidden">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-2">
-                        <div class="flex flex-col gap-xs">
-                            <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_about_title"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_en_marker"]</span></label>
-                            <input id="about-title-en" type="text" value="@Model.About.TitleEn" placeholder="@Localizer["admin_about_title_ph"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">
-                        </div>
-                        <div class="flex flex-col gap-xs">
-                            <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_about_desc"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_en_marker"]</span></label>
-                            <textarea id="about-desc-en" rows="2" placeholder="@Localizer["admin_about_desc_ph"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">@Model.About.DescriptionEn</textarea>
-                        </div>
-                    </div>
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
-                        <div class="p-lg rounded-2xl border border-admin-border dark:border-white/5" style="background-color:var(--admin-page-bg)">
-                            <div class="flex items-center gap-md mb-md">
-                                <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">1</span>
-                                <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 1) <span class="text-xs text-admin-muted">@Localizer["admin_lang_en_marker"]</span></h4>
-                            </div>
-                            <input id="about-feat1-title-en" type="text" value="@Model.About.Feature1TitleEn" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-admin-border rounded-lg p-md mb-sm">
-                            <textarea id="about-feat1-desc-en" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-admin-border rounded-lg p-md text-sm">@Model.About.Feature1DescEn</textarea>
-                        </div>
-                        <div class="p-lg rounded-2xl border border-admin-border dark:border-white/5" style="background-color:var(--admin-page-bg)">
-                            <div class="flex items-center gap-md mb-md">
-                                <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">2</span>
-                                <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 2) <span class="text-xs text-admin-muted">@Localizer["admin_lang_en_marker"]</span></h4>
-                            </div>
-                            <input id="about-feat2-title-en" type="text" value="@Model.About.Feature2TitleEn" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-admin-border rounded-lg p-md mb-sm">
-                            <textarea id="about-feat2-desc-en" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-admin-border rounded-lg p-md text-sm">@Model.About.Feature2DescEn</textarea>
-                        </div>
-                        <div class="p-lg rounded-2xl border border-admin-border dark:border-white/5" style="background-color:var(--admin-page-bg)">
-                            <div class="flex items-center gap-md mb-md">
-                                <span class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">3</span>
-                                <h4 class="font-bold">@string.Format(Localizer["admin_feature_h"].Value, 3) <span class="text-xs text-admin-muted">@Localizer["admin_lang_en_marker"]</span></h4>
-                            </div>
-                            <input id="about-feat3-title-en" type="text" value="@Model.About.Feature3TitleEn" placeholder="@Localizer["admin_feature_title_ph"]" class="w-full bg-surface border-admin-border rounded-lg p-md mb-sm">
-                            <textarea id="about-feat3-desc-en" rows="3" placeholder="@Localizer["admin_feature_desc_ph"]" class="w-full bg-surface border-admin-border rounded-lg p-md text-sm">@Model.About.Feature3DescEn</textarea>
-                        </div>
-                    </div>
-                </div>
-
-                <button onclick="saveAboutSection()" class="bg-primary text-on-primary px-xl py-md rounded-full font-bold">@Localizer["admin_save_changes"]</button>
-            </div>
         </div>
 
         <!-- Section: Customer Stories (Testimonials) -->
@@ -360,59 +238,6 @@
             }
 
             <p class="text-xs text-admin-muted mt-md flex items-center gap-1">
-                <span class="material-symbols-outlined text-sm">info</span>
-                @Localizer["admin_testimonials_dynamic_hint"]
-            </p>
-        </div>
-
-        <!-- Section: FAQ -->
-        <div id="panel-faq" class="content-panel hidden bg-surface dark:bg-[#1E293B] rounded-[32px] shadow-medium border border-admin-border dark:border-white/5 p-xl">
-            <div class="flex justify-between items-center mb-xl">
-                <div>
-                    <h2 class="font-h2 text-h2 font-bold">@Localizer["section_faq"]</h2>
-                    <p class="text-admin-secondary">@Localizer["admin_faq_desc"]</p>
-                </div>
-                <button onclick="saveFaqSection()" class="bg-primary text-on-primary px-xl py-md rounded-full font-bold">@Localizer["admin_save_changes"]</button>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-xl">
-                <div class="flex flex-col gap-xs">
-                    <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_faq_title"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_ar_marker"]</span></label>
-                    <input id="faq-title-ar" type="text" value="@Model.Faq.TitleAr" placeholder="@Localizer["admin_content_ph_faq_title_ar"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">
-                </div>
-                <div class="flex flex-col gap-xs">
-                    <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_faq_title"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_en_marker"]</span></label>
-                    <input id="faq-title-en" type="text" value="@Model.Faq.TitleEn" placeholder="@Localizer["admin_content_ph_faq_title_en"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-xl">
-                <div class="flex flex-col gap-xs">
-                    <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_faq_desc"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_ar_marker"]</span></label>
-                    <textarea id="faq-desc-ar" rows="2" placeholder="@Localizer["admin_content_ph_faq_desc_ar"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">@Model.Faq.DescriptionAr</textarea>
-                </div>
-                <div class="flex flex-col gap-xs">
-                    <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_faq_desc"] <span class="text-xs text-admin-muted">@Localizer["admin_lang_en_marker"]</span></label>
-                    <textarea id="faq-desc-en" rows="2" placeholder="@Localizer["admin_content_ph_faq_desc_en"]" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">@Model.Faq.DescriptionEn</textarea>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-lg mb-xl">
-                <div class="flex flex-col gap-xs">
-                    <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_faq_display_limit"]</label>
-                    <input id="faq-display-limit" type="number" min="1" max="20" value="@Model.Faq.DisplayLimit" class="bg-admin-input dark:bg-[#1E293B] border-admin-border rounded-xl p-md">
-                </div>
-                <div class="flex flex-col gap-xs">
-                    <label class="font-bold text-sm text-admin-muted px-1 uppercase">@Localizer["admin_faq_auto_fetch"]</label>
-                    <div class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="faq-auto-fetch" class="sr-only peer" @(Model.Faq.AutoFetchFromSupport ? "checked" : "")>
-                        <div class="w-11 h-6 bg-admin-border dark:bg-white/10 rounded-full peer peer-checked:bg-primary peer-focus:ring-2 peer-focus:ring-primary/30 after:content-[''] after:absolute after:top-0.5 after:start-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full"></div>
-                    </div>
-                    <span class="ltr:ml-2 rtl:mr-2 text-sm font-medium text-admin-secondary dark:text-slate-400">@Localizer["admin_faq_auto_fetch_desc"]</span>
-                </div>
-            </div>
-
-<p class="text-xs text-admin-muted mt-md flex items-center gap-1">
                 <span class="material-symbols-outlined text-sm">info</span>
                 @Localizer["admin_testimonials_dynamic_hint"]
             </p>
@@ -544,22 +369,22 @@
         font-variation-settings: 'FILL' 1;
     }
 
-    .hero-lang-tab, .about-lang-tab, .faq-lang-tab {
+    .hero-lang-tab, .faq-lang-tab {
         color: var(--admin-text-secondary, #475569);
         border: 1px solid transparent;
     }
-    .dark .hero-lang-tab, .dark .about-lang-tab, .dark .faq-lang-tab {
+    .dark .hero-lang-tab, .dark .faq-lang-tab {
         color: #94a3b8;
     }
-    .hero-lang-tab:hover, .about-lang-tab:hover, .faq-lang-tab:hover {
+    .hero-lang-tab:hover, .faq-lang-tab:hover {
         background-color: rgba(var(--primary-rgb, 14, 144, 140), 0.08);
         color: var(--primary-color, #0E908C);
     }
-    .dark .hero-lang-tab:hover, .dark .about-lang-tab:hover, .dark .faq-lang-tab:hover {
+    .dark .hero-lang-tab:hover, .dark .faq-lang-tab:hover {
         background-color: rgba(255, 255, 255, 0.06);
         color: #ffffff;
     }
-    .hero-lang-tab.active, .about-lang-tab.active, .faq-lang-tab.active {
+    .hero-lang-tab.active, .faq-lang-tab.active {
         background-color: var(--primary-color, #0E908C) !important;
         color: #ffffff !important;
         border-color: var(--primary-color, #0E908C) !important;
@@ -600,7 +425,6 @@
         // Mapping of section IDs to tab IDs
         const sectionToTabMap = {
             'hero': 'hero-banner',
-            'about': 'about-us',
             'categories': 'section-order',
             'shop': 'section-order',
             'all-products': 'section-order',
@@ -716,13 +540,11 @@
 
         function collectHeroData() {
             return {
-                badgeAr: document.getElementById('hero-badge-ar')?.value || '',
                 titleAAr: document.getElementById('hero-title-a-ar')?.value || '',
                 titleBAr: document.getElementById('hero-title-b-ar')?.value || '',
                 titleCAr: document.getElementById('hero-title-c-ar')?.value || '',
                 titleDAr: document.getElementById('hero-title-d-ar')?.value || '',
                 buttonTextAr: document.getElementById('hero-btn-text-ar')?.value || '',
-                badgeEn: document.getElementById('hero-badge-en')?.value || '',
                 titleAEn: document.getElementById('hero-title-a-en')?.value || '',
                 titleBEn: document.getElementById('hero-title-b-en')?.value || '',
                 titleCEn: document.getElementById('hero-title-c-en')?.value || '',
@@ -776,39 +598,6 @@
             });
         }
 
-        function switchAboutLang(lang) {
-            document.querySelectorAll('.about-lang-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById('about-lang-' + lang).classList.add('active');
-            document.querySelectorAll('.about-lang-fields').forEach(f => f.classList.add('hidden'));
-            document.getElementById('about-fields-' + lang).classList.remove('hidden');
-        }
-
-        function collectAboutData() {
-            return {
-                titleAr: document.getElementById('about-title-ar')?.value || '',
-                titleEn: document.getElementById('about-title-en')?.value || '',
-                descriptionAr: document.getElementById('about-desc-ar')?.value || '',
-                descriptionEn: document.getElementById('about-desc-en')?.value || '',
-                feature1TitleAr: document.getElementById('about-feat1-title-ar')?.value || '',
-                feature1TitleEn: document.getElementById('about-feat1-title-en')?.value || '',
-                feature1DescAr: document.getElementById('about-feat1-desc-ar')?.value || '',
-                feature1DescEn: document.getElementById('about-feat1-desc-en')?.value || '',
-                feature2TitleAr: document.getElementById('about-feat2-title-ar')?.value || '',
-                feature2TitleEn: document.getElementById('about-feat2-title-en')?.value || '',
-                feature2DescAr: document.getElementById('about-feat2-desc-ar')?.value || '',
-                feature2DescEn: document.getElementById('about-feat2-desc-en')?.value || '',
-                feature3TitleAr: document.getElementById('about-feat3-title-ar')?.value || '',
-                feature3TitleEn: document.getElementById('about-feat3-title-en')?.value || '',
-                feature3DescAr: document.getElementById('about-feat3-desc-ar')?.value || '',
-                feature3DescEn: document.getElementById('about-feat3-desc-en')?.value || ''
-            };
-        }
-
-        function saveAboutSection() {
-            const data = { about: collectAboutData() };
-            postCmsData(data);
-        }
-
         function saveTestimonialsSection() {
             postCmsData({ testimonials: { title: document.getElementById('testi-title')?.value || '', description: document.getElementById('testi-desc')?.value || '', reviews: [] } });
         }
@@ -853,9 +642,6 @@
             // Collect hero (bilingual)
             const hero = collectHeroData();
 
-            // Collect about (bilingual)
-            const about = collectAboutData();
-
             // Collect contact
             const contact = {
                 phone: document.getElementById('contact-phone')?.value || '',
@@ -865,7 +651,6 @@
             const payload = {};
             if (sectionOrder) payload.sectionOrder = sectionOrder;
             payload.hero = hero;
-            payload.about = about;
             payload.testimonials = { title: document.getElementById('testi-title')?.value || '', description: document.getElementById('testi-desc')?.value || '', reviews: [] };
             payload.contact = contact;
 

@@ -419,11 +419,11 @@
 
     const cursorDot = document.createElement('div');
     cursorDot.className = 'custom-cursor-dot';
-    cursorDot.style.cssText = 'position:fixed;z-index:99999;pointer-events:none;width:8px;height:8px;background:var(--primary-color,#0E908C);border-radius:50%;will-change:transform;transition:opacity 0.15s ease;';
+    cursorDot.style.cssText = 'position:fixed;top:0;left:0;z-index:99999;pointer-events:none;width:8px;height:8px;background:var(--primary-color,#0E908C);border-radius:50%;will-change:transform;transition:opacity 0.15s ease;visibility:visible;';
     
     const cursorRing = document.createElement('div');
     cursorRing.className = 'custom-cursor-ring';
-    cursorRing.style.cssText = 'position:fixed;z-index:99998;pointer-events:none;width:32px;height:32px;border:2px solid var(--primary-color,#0E908C);border-radius:50%;will-change:transform;transition:opacity 0.15s ease,transform 0.15s ease;';
+    cursorRing.style.cssText = 'position:fixed;top:0;left:0;z-index:99998;pointer-events:none;width:32px;height:32px;border:2px solid var(--primary-color,#0E908C);border-radius:50%;will-change:transform;transition:opacity 0.15s ease,transform 0.15s ease;visibility:visible;';
     
     document.body.appendChild(cursorDot);
     document.body.appendChild(cursorRing);

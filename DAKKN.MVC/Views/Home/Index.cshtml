@@ -22,13 +22,6 @@
         return Model.BaseUrl + imageFullUrl;
     }
 
-    string ResolveImageUrl(string? imageUrl)
-    {
-        if (string.IsNullOrEmpty(imageUrl)) return placeholder;
-        if (imageUrl.StartsWith("http")) return imageUrl;
-        return Model.BaseUrl + imageUrl;
-    }
-
     string GetHeroButtonText()
     {
         if (!Model.HasCmsData) return Localizer["btn_shop"].Value;
@@ -167,20 +160,14 @@
         </div>
 
         @* ── Main Hero Content ── *@
-        <div class="relative z-10 w-full max-w-6xl mx-auto px-6 md:px-8 flex-1 flex items-center justify-center pt-8 pb-4 md:pt-12 md:pb-6">
-            <div class="grid lg:grid-cols-12 gap-8 md:gap-12 items-center">
-                @* ── Left: Text Content (55%) ── *@
-                <div class="lg:col-span-7 text-center lg:text-left">
-                    @* Brand Badge *@
-                    <div class="hero-fade-in inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full mb-6 md:mb-8 bg-white/5 border border-white/10 backdrop-blur-sm" style="animation-delay:0.1s">
-                        <span class="w-1.5 h-1.5 rounded-full" style="background:#18C7C7;box-shadow:0 0 8px rgba(24,199,199,0.5)"></span>
-                        <span class="text-[11px] md:text-xs font-bold text-white/80 uppercase tracking-[0.15em]">@HeroText(Model.Hero.BadgeAr, Model.Hero.BadgeEn, "hero_badge")</span>
-                    </div>
+        <div class="relative z-10 w-full max-w-4xl mx-auto px-6 md:px-8 flex-1 flex items-center justify-center pt-8 pb-4 md:pt-12 md:pb-6">
+            <div class="w-full text-center">
+                    
 
                     @* Headline *@
                     @if (Model.HasCmsData)
                     {
-                        <h1 class="hero-fade-in text-[2.5rem] sm:text-[3.2rem] md:text-[4rem] lg:text-[4.5rem] xl:text-[5rem] font-black text-white leading-[1.05] tracking-tight mb-5" style="animation-delay:0.2s">
+                        <h1 class="mt-3 hero-fade-in text-[2.5rem] sm:text-[3.2rem] md:text-[4rem] lg:text-[4.5rem] xl:text-[5rem] font-black text-white leading-[1.05] tracking-tight mb-5" style="animation-delay:0.2s">
                             <span class="block">@HeroText(Model.Hero.TitleAAr, Model.Hero.TitleAEn, "hero_h1_a")</span>
                             <span class="block text-[0.85em] text-transparent bg-clip-text animate-text-gradient">@HeroText(Model.Hero.TitleBAr, Model.Hero.TitleBEn, "hero_h1_b")@HeroText(Model.Hero.TitleCAr, Model.Hero.TitleCEn, "hero_h1_c")</span>
                             <span class="block text-white/90">@HeroText(Model.Hero.TitleDAr, Model.Hero.TitleDEn, "hero_h1_d")</span>
@@ -188,15 +175,16 @@
                     }
                     else
                     {
-                        <h1 class="hero-fade-in text-[2.5rem] sm:text-[3.2rem] md:text-[4rem] lg:text-[4.5rem] xl:text-[5rem] font-black text-white leading-[1.05] tracking-tight mb-5" style="animation-delay:0.2s">
+                        <h1 class="mt-3 hero-fade-in text-[2.5rem] sm:text-[3.2rem] md:text-[4rem] lg:text-[4.5rem] xl:text-[5rem] font-black text-white leading-[1.05] tracking-tight mb-5" style="animation-delay:0.2s">
                             <span class="block">@Localizer["hero_h1_a"]</span>
                             <span class="block text-[0.85em] text-transparent bg-clip-text animate-text-gradient">@Localizer["hero_h1_b"]@Localizer["hero_h1_c"]</span>
                             <span class="block text-white/90">@Localizer["hero_h1_d"]</span>
                         </h1>
+
                     }
 
                     @* CTA Button *@
-                    <div class="hero-fade-in flex flex-col sm:flex-row items-stretch sm:items-center gap-4 md:gap-6 mb-10 md:mb-12" style="animation-delay:0.5s">
+                    <div class="hero-fade-in flex justify-center mb-10 md:mb-12" style="animation-delay:0.5s">
                         <a href="#shop" class="group relative inline-flex items-center justify-center font-bold text-center text-sm md:text-base overflow-hidden transition-all duration-300 active:scale-[0.97]" style="height:60px;padding:0 36px;border-radius:18px;background:linear-gradient(135deg,#17C5C5,#13AFAF);color:#fff;box-shadow:0 15px 40px rgba(24,199,199,0.35)">
                             <span class="relative z-10 flex items-center justify-center gap-2">
                                 @GetHeroButtonText()
@@ -206,29 +194,7 @@
                         </a>
                     </div>
                 </div>
-
-                @* ── Right: Product Showcase (45%) ── *@
-                <div class="hero-fade-in lg:col-span-5 hidden lg:flex items-center justify-center" style="animation-delay:0.4s">
-                    <div class="relative w-full max-w-[400px] xl:max-w-[440px]">
-                        @* Glow behind product *@
-                        <div class="absolute inset-0 -top-8 -bottom-8 -left-8 -right-8 rounded-full" style="background:radial-gradient(circle, rgba(24,199,199,0.12) 0%, transparent 70%)"></div>
-                        @* Product card *@
-                        <div class="relative rounded-2xl overflow-hidden bg-[rgba(22,24,28,0.95)] border border-white/5 shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
-                            @* Subtle reflection line *@
-                            <div class="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
-                            <div class="aspect-square p-8 md:p-10 flex items-center justify-center">
-                                <img src="@(Model.Hero.ImageUrl ?? "~/images/hero-placeholder.svg")" alt='@Localizer["alt_hero_sticker"]' class="w-full h-full object-contain transition-transform duration-700 hover:scale-105" loading="eager" fetchpriority="high" />
-                            </div>
-                        </div>
-                        @* Premium floating badge *@
-                        <div class="absolute -top-3 -end-3 flex items-center gap-2 px-3 py-2 rounded-xl bg-[rgba(22,24,28,0.95)] backdrop-blur-xl border border-white/10 shadow-[0_8px_24px_rgba(0,0,0,0.3)]">
-                            <span class="material-symbols-outlined text-base text-primary">local_shipping</span>
-                            <span class="text-[11px] font-bold text-white/90">@Localizer["hero_delivery_title"]</span>
-                        </div>
-                    </div>
-                </div>
             </div>
-        </div>
 
         @* ── Scroll Down Indicator ── *@
         <div class="hero-fade-in relative z-10 flex justify-center pb-1 hidden md:flex" style="animation-delay:1s">
@@ -282,7 +248,8 @@
             <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-on-surface dark:text-white mb-3" data-reveal>@Localizer["prod_h2"]</h2>
             <p class="text-sm md:text-base text-on-surface-variant dark:text-slate-400 leading-relaxed">@Localizer["prod_p"]</p>
         </div>
-        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8" id="featured-products-grid" data-stagger>
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 justify-items-center" id="featured-products-grid" data-stagger>
             @if (Model.HasFeaturedProducts)
             {
                 @foreach (var product in Model.FeaturedProducts)
@@ -360,48 +327,6 @@
                     <p class="text-sm text-on-surface-variant dark:text-slate-400">@Localizer["featured_empty_msg"]</p>
                 </div>
             }
-        </div>
-    </section>
-                </text>
-                break;
-            case "about":
-                <text>
-    <section id="about" class="relative overflow-hidden py-16 md:py-24 px-4 md:px-16 bg-surface-container-low dark:bg-dark-page border-t border-outline-variant/10">
-        <!-- Decorative Ambient Elements -->
-        <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
-            <div class="deco-blob animate-blob-2 bg-primary/10 w-[300px] h-[300px] -top-12 -right-12 rtl:right-auto rtl:-left-12"></div>
-            <div class="deco-blob animate-blob-1 bg-secondary-container/15 w-[350px] h-[350px] -bottom-24 -left-12 rtl:left-auto rtl:-right-12"></div>
-            <div class="deco-ring w-[200px] h-[200px] bottom-10 right-1/4 rtl:right-auto rtl:left-1/4 opacity-40"></div>
-            <div class="deco-dots-grid bottom-12 left-8 rtl:left-auto rtl:right-8 opacity-40"></div>
-        </div>
-
-        <div class="relative z-10 max-w-3xl mx-auto text-center mb-16 scroll-animate">
-            <h2 class="text-3xl md:text-4xl font-extrabold text-on-surface dark:text-white mb-4" data-reveal>@HeroText(Model.About.TitleAr, Model.About.TitleEn, "about_h2")</h2>
-            <p class="text-base text-on-surface-variant dark:text-slate-400 leading-relaxed">@HeroText(Model.About.DescriptionAr, Model.About.DescriptionEn, "about_p")</p>
-        </div>
-        <div class="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8" data-stagger>
-            <div class="glass-panel p-8 rounded-2xl flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 shadow-sm scroll-animate delay-100">
-                <div class="w-12 h-12 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary mb-2">
-                    <span class="material-symbols-outlined text-2xl">layers</span>
-                </div>
-                <h3 class="text-xl font-bold text-on-surface dark:text-slate-100">@HeroText(Model.About.Feature1TitleAr, Model.About.Feature1TitleEn, "feat1_h")</h3>
-                <p class="text-sm text-on-surface-variant dark:text-slate-400 leading-relaxed flex-grow">@HeroText(Model.About.Feature1DescAr, Model.About.Feature1DescEn, "feat1_p")</p>
-            </div>
-            
-            <div class="glass-panel p-8 rounded-2xl flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 shadow-sm scroll-animate delay-200">
-                <div class="w-12 h-12 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary mb-2">
-                    <span class="material-symbols-outlined text-2xl">palette</span>
-                </div>
-                <h3 class="text-xl font-bold text-on-surface dark:text-slate-100">@HeroText(Model.About.Feature2TitleAr, Model.About.Feature2TitleEn, "feat2_h")</h3>
-                <p class="text-sm text-on-surface-variant dark:text-slate-400 leading-relaxed flex-grow">@HeroText(Model.About.Feature2DescAr, Model.About.Feature2DescEn, "feat2_p")</p>
-            </div>
-            
-            <div class="glass-panel p-8 rounded-2xl flex flex-col gap-4 hover:-translate-y-1 transition-transform duration-300 shadow-sm scroll-animate delay-300">
-                <div class="w-12 h-12 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary mb-2">
-                    <span class="material-symbols-outlined text-2xl">shield</span>
-                </div>
-                <h3 class="text-xl font-bold text-on-surface dark:text-white">@HeroText(Model.About.Feature3TitleAr, Model.About.Feature3TitleEn, "feat3_h")</h3>
-                <p class="text-sm text-on-surface-variant dark:text-slate-400 leading-relaxed flex-grow">@HeroText(Model.About.Feature3DescAr, Model.About.Feature3DescEn, "feat3_p")</p>
             </div>
         </div>
     </section>
