@@ -10,10 +10,12 @@ namespace DAKKN.Persistence.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "PrimaryColor",
-                schema: "dbo",
-                table: "UserSettings");
+            migrationBuilder.Sql(@"
+                IF COL_LENGTH('dbo.UserSettings', 'PrimaryColor') IS NOT NULL
+                BEGIN
+                    ALTER TABLE [dbo].[UserSettings] DROP COLUMN [PrimaryColor]
+                END
+            ");
         }
 
         /// <inheritdoc />
