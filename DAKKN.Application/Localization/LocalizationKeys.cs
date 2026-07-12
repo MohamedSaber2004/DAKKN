@@ -670,5 +670,36 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString NoGovernorates = new("admin_shipping.no_governorates");
             public static readonly KeyString Subtitle = new("admin_shipping.subtitle");
         }
+
+        public static class CustomOrderSubmission
+        {
+            public static readonly KeyString Submitted = new("custom_order.submitted");
+            public static readonly KeyString SubmitError = new("custom_order.submit_error");
+            public static readonly KeyString NotFound = new("custom_order.not_found");
+            public static readonly KeyString NameLabel = new("custom_order.name_label");
+            public static readonly KeyString NamePh = new("custom_order.name_ph");
+            public static readonly KeyString PhoneLabel = new("custom_order.phone_label");
+            public static readonly KeyString PhonePh = new("custom_order.phone_ph");
+            public static readonly KeyString AddressLabel = new("custom_order.address_label");
+            public static readonly KeyString AddressPh = new("custom_order.address_ph");
+            public static readonly KeyString NotesLabel = new("custom_order.notes_label");
+            public static readonly KeyString NotesPh = new("custom_order.notes_ph");
+            public static readonly KeyString SubmitBtn = new("custom_order.submit_btn");
+        }
+
+        public static class AdminCustomOrder
+        {
+            public static readonly KeyString Title = new("admin_custom_order.title");
+            public static readonly KeyString Details = new("admin_custom_order.details");
+            public static readonly KeyString Approve = new("admin_custom_order.approve");
+            public static readonly KeyString Reject = new("admin_custom_order.reject");
+            public static readonly KeyString Approved = new("admin_custom_order.approved");
+            public static readonly KeyString Rejected = new("admin_custom_order.rejected");
+            public static readonly KeyString Empty = new("admin_custom_order.empty");
+            public static readonly KeyString Status = new("admin_custom_order.status");
+            public static readonly KeyString CustomerInfo = new("admin_custom_order.customer_info");
+            public static readonly KeyString OrderInfo = new("admin_custom_order.order_info");
+            public static readonly KeyString Attachment = new("admin_custom_order.attachment");
+        }
     }
 }

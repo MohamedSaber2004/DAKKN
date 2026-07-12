@@ -94,6 +94,16 @@ namespace DAKKN.Appearence.Routes
             public const string UpdateDisplayOrder = Base + "/brand-reviews/{id}/display-order";
         }
 
+        public static class CustomOrders
+        {
+            public const string Create = Base + "/custom-orders";
+            public const string GetAll = Base + "/custom-orders";
+            public const string GetById = Base + "/custom-orders/{id:guid}";
+            public const string Approve = Base + "/custom-orders/{id:guid}/approve";
+            public const string Reject = Base + "/custom-orders/{id:guid}/reject";
+            public const string Upload = Base + "/custom-orders/upload";
+        }
+
         public static class Support
         {
             public const string Base = ApiRoutes.Base + "/support";

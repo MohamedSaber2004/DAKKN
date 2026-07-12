@@ -10,5 +10,6 @@
         public string Reviews { get; set; } = string.Empty;
         public string Suggestions { get; set; } = string.Empty;
         public string Support { get; set; } = string.Empty;
+        public string CustomOrders { get; set; } = string.Empty;
     }
 }

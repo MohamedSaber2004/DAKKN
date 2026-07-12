@@ -84,11 +84,10 @@ namespace DAKKN.MVC
             builder.Services.AddPersistence(builder.Configuration);
             builder.Services.AddInfrastructure(builder.Configuration, builder.Environment);
 
-            // Response Compression — serves Brotli/Gzip-compressed responses to clients that support them.
+            // Response Compression — serves Gzip-compressed responses (Brotli disabled to avoid ERR_CONTENT_DECODING_FAILED)
             builder.Services.AddResponseCompression(options =>
             {
                 options.EnableForHttps = true;
-                options.Providers.Add<BrotliCompressionProvider>();
                 options.Providers.Add<GzipCompressionProvider>();
                 options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[]
                 {
@@ -100,8 +99,6 @@ namespace DAKKN.MVC
                     "image/svg+xml"
                 });
             });
-            builder.Services.Configure<BrotliCompressionProviderOptions>(options =>
-                options.Level = System.IO.Compression.CompressionLevel.Fastest);
             builder.Services.Configure<GzipCompressionProviderOptions>(options =>
                 options.Level = System.IO.Compression.CompressionLevel.SmallestSize);
 
@@ -311,6 +308,8 @@ namespace DAKKN.MVC
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            app.UseResponseCompression();
+
             app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
 
             if (!app.Environment.IsDevelopment())
@@ -321,8 +320,6 @@ namespace DAKKN.MVC
                     .Preload()
                 );
             }
-
-            app.UseResponseCompression();
 
             if (!app.Environment.IsDevelopment())
             {

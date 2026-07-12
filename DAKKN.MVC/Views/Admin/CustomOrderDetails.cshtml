@@ -1,0 +1,135 @@
+@using DAKKN.MVC.ViewModels.Admin
+@using DAKKN.Domain.Enums
+@model AdminCustomOrderDetailsViewModel
+@inject IStringLocalizer<Messages> Localizer
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = Localizer["admin_custom_order.details"];
+}
+
+<div class="mb-lg flex flex-col lg:flex-row justify-between items-start lg:items-center gap-md">
+    <div>
+        <div class="flex flex-wrap items-center gap-sm mb-xs">
+            <h2 class="text-h2 text-admin-primary dark:text-white">@Model.CustomerName</h2>
+            @{
+                var statusClass = Model.Status switch
+                {
+                    CustomOrderStatus.Approved => "bg-primary-container/20 text-primary",
+                    CustomOrderStatus.Rejected => "bg-error-container/20 text-error",
+                    _ => "bg-admin-card text-admin-secondary"
+                };
+            }
+            <span class="@statusClass px-sm py-xs rounded-full text-caption font-bold">@Localizer[$"custom_order_status_{Model.Status.ToString()}"]</span>
+        </div>
+        <p class="text-body text-admin-secondary dark:text-slate-400">
+            @Localizer["admin_order_date"]: @Model.CreatedAt.ToLocalTime().ToString("dd MMM yyyy - HH:mm")
+        </p>
+    </div>
+    @if (Model.Status == CustomOrderStatus.Pending)
+    {
+        <div class="flex items-center gap-md">
+            <form asp-action="ApproveCustomOrder" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="bg-primary text-on-primary px-xl py-sm rounded-full font-bold text-sm hover:shadow-lg transition-all">
+                    <span class="material-symbols-outlined text-lg">check_circle</span>
+                    @Localizer["admin_custom_order.approve"]
+                </button>
+            </form>
+            <form asp-action="RejectCustomOrder" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="bg-error text-on-error px-xl py-sm rounded-full font-bold text-sm hover:shadow-lg transition-all">
+                    <span class="material-symbols-outlined text-lg">cancel</span>
+                    @Localizer["admin_custom_order.reject"]
+                </button>
+            </form>
+        </div>
+    }
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+    <div class="lg:col-span-2 space-y-lg">
+        <section class="bg-admin-card dark:bg-[#1E293B] rounded-2xl border border-admin-border dark:border-white/10 overflow-hidden shadow-sm">
+            <div class="p-lg border-b border-admin-border dark:border-white/5 bg-admin-page dark:bg-[#1E293B]">
+                <h3 class="text-h4 flex items-center gap-sm text-admin-primary dark:text-white">
+                    <span class="material-symbols-outlined text-primary">info</span>
+                    @Localizer["admin_custom_order.order_info"]
+                </h3>
+            </div>
+            <div class="p-lg space-y-md">
+                <div class="grid grid-cols-2 gap-lg">
+                    <div>
+                        <label class="text-caption text-admin-secondary dark:text-slate-400 block mb-xs">@Localizer["admin_order_qty"]</label>
+                        <p class="font-bold text-admin-primary dark:text-white">@Model.Quantity</p>
+                    </div>
+                    <div>
+                        <label class="text-caption text-admin-secondary dark:text-slate-400 block mb-xs">@Localizer["admin_order_size"]</label>
+                        <p class="font-bold text-admin-primary dark:text-white">@(Model.Size ?? "-")</p>
+                    </div>
+                    <div>
+                        <label class="text-caption text-admin-secondary dark:text-slate-400 block mb-xs">@Localizer["custom_step2"]</label>
+                        <p class="font-bold text-admin-primary dark:text-white">@(Model.Shape ?? "-")</p>
+                    </div>
+                    <div>
+                        <label class="text-caption text-admin-secondary dark:text-slate-400 block mb-xs">@Localizer["admin_order_total"]</label>
+                        <p class="font-bold text-primary text-lg">@Model.TotalAmount.ToString("N0") @Localizer["egp"]</p>
+                    </div>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.Notes))
+                {
+                    <div class="pt-md border-t border-admin-border dark:border-white/5">
+                        <label class="text-caption text-admin-secondary dark:text-slate-400 block mb-xs">@Localizer["admin_order_notes"]</label>
+                        <p class="text-admin-primary dark:text-white">@Model.Notes</p>
+                    </div>
+                }
+            </div>
+        </section>
+
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        {
+            var images = Model.ImageUrl.Split(',', StringSplitOptions.RemoveEmptyEntries);
+            <section class="bg-admin-card dark:bg-[#1E293B] rounded-2xl border border-admin-border dark:border-white/10 overflow-hidden shadow-sm">
+                <div class="p-lg border-b border-admin-border dark:border-white/5 bg-admin-page dark:bg-[#1E293B]">
+                    <h3 class="text-h4 flex items-center gap-sm text-admin-primary dark:text-white">
+                        <span class="material-symbols-outlined text-primary">image</span>
+                        @Localizer["admin_custom_order.attachment"]
+                    </h3>
+                </div>
+                <div class="p-lg">
+                    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-md">
+                        @foreach (var img in images)
+                        {
+                            <div class="aspect-square rounded-xl overflow-hidden bg-surface-container dark:bg-white/5 border border-border dark:border-white/10">
+                                <img src="@img" alt="Custom order image" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='/images/placeholders/product-placeholder.svg'" />
+                            </div>
+                        }
+                    </div>
+                </div>
+            </section>
+        }
+    </div>
+
+    <div class="space-y-lg">
+        <section class="bg-admin-card dark:bg-[#1E293B] rounded-2xl border border-admin-border dark:border-white/10 overflow-hidden shadow-sm">
+            <div class="p-lg border-b border-admin-border dark:border-white/5 bg-admin-page dark:bg-[#1E293B]">
+                <h3 class="text-h4 flex items-center gap-sm text-admin-primary dark:text-white">
+                    <span class="material-symbols-outlined text-primary">person</span>
+                    @Localizer["admin_custom_order.customer_info"]
+                </h3>
+            </div>
+            <div class="p-lg space-y-md">
+                <div>
+                    <label class="text-caption text-admin-secondary dark:text-slate-400 block mb-xs">@Localizer["checkout_name"]</label>
+                    <p class="font-bold text-admin-primary dark:text-white">@Model.CustomerName</p>
+                </div>
+                <div>
+                    <label class="text-caption text-admin-secondary dark:text-slate-400 block mb-xs">@Localizer["checkout_phone"]</label>
+                    <p class="text-admin-primary dark:text-white">@Model.CustomerPhone</p>
+                </div>
+                <div>
+                    <label class="text-caption text-admin-secondary dark:text-slate-400 block mb-xs">@Localizer["checkout_address"]</label>
+                    <p class="text-admin-primary dark:text-white">@Model.ShippingAddress</p>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

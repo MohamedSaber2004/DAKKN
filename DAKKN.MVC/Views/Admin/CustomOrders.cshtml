@@ -1,0 +1,109 @@
+@using DAKKN.MVC.ViewModels.Admin
+@using DAKKN.Domain.Enums
+@model AdminCustomOrderListViewModel
+@inject IStringLocalizer<Messages> Localizer
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = Localizer["admin_custom_order.title"];
+}
+
+<div class="mb-lg flex flex-col md:flex-row justify-between items-start md:items-end gap-md">
+    <div>
+        <h2 class="font-h2 text-h2 text-admin-primary dark:text-white mb-sm">@Localizer["admin_custom_order.title"]</h2>
+        <p class="font-body text-body text-admin-secondary dark:text-slate-400">@Localizer["admin_stats_overview"]</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-lg mb-lg">
+    <div class="premium-card p-lg flex items-center justify-between">
+        <div>
+            <p class="font-body text-body text-admin-secondary dark:text-slate-400 mb-xs">@Localizer["admin_orders_total_label"]</p>
+            <p class="font-h2 text-h2 text-admin-primary dark:text-white">@Model.TotalCount</p>
+        </div>
+        <div class="w-12 h-12 rounded-full bg-primary-container/20 text-primary flex items-center justify-center">
+            <span class="material-symbols-outlined filled-icon">shopping_cart</span>
+        </div>
+    </div>
+    <div class="premium-card p-lg flex items-center justify-between">
+        <div>
+            <p class="font-body text-body text-admin-secondary dark:text-slate-400 mb-xs">@Localizer["admin_orders_processing"]</p>
+            <p class="font-h2 text-h2 text-admin-primary dark:text-white">@Model.PendingCount</p>
+        </div>
+        <div class="w-12 h-12 rounded-full bg-secondary-container/20 text-secondary flex items-center justify-center">
+            <span class="material-symbols-outlined filled-icon">pending_actions</span>
+        </div>
+    </div>
+    <div class="premium-card p-lg flex items-center justify-between">
+        <div>
+            <p class="font-body text-body text-admin-secondary dark:text-slate-400 mb-xs">@Localizer["admin_custom_order.status"]</p>
+            <p class="font-h2 text-h2 text-admin-primary dark:text-white">@Model.ApprovedCount / @Model.RejectedCount</p>
+        </div>
+        <div class="w-12 h-12 rounded-full bg-tertiary-container/20 text-tertiary flex items-center justify-center">
+            <span class="material-symbols-outlined filled-icon">check_circle</span>
+        </div>
+    </div>
+</div>
+
+<div class="premium-card overflow-hidden">
+    <div class="p-lg border-b border-admin-border dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-md bg-admin-page dark:bg-[#1E293B]">
+        <h3 class="font-h3 text-h3 text-admin-primary dark:text-white">@Localizer["admin_custom_order.title"]</h3>
+        <div class="flex items-center gap-sm">
+            <a href="@Url.Action("CustomOrders")" class="px-lg py-sm rounded-full font-bold text-sm @(Model.FilterStatus == null ? "bg-primary text-on-primary" : "bg-admin-card dark:bg-white/5 text-admin-secondary dark:text-slate-300 hover:bg-primary/10") transition-all">@Localizer["admin_all"]</a>
+            <a href="@Url.Action("CustomOrders", new { filterStatus = CustomOrderStatus.Pending })" class="px-lg py-sm rounded-full font-bold text-sm @(Model.FilterStatus == CustomOrderStatus.Pending ? "bg-primary text-on-primary" : "bg-admin-card dark:bg-white/5 text-admin-secondary dark:text-slate-300 hover:bg-primary/10") transition-all">@Localizer["admin_orders_pending"]</a>
+            <a href="@Url.Action("CustomOrders", new { filterStatus = CustomOrderStatus.Approved })" class="px-lg py-sm rounded-full font-bold text-sm @(Model.FilterStatus == CustomOrderStatus.Approved ? "bg-primary text-on-primary" : "bg-admin-card dark:bg-white/5 text-admin-secondary dark:text-slate-300 hover:bg-primary/10") transition-all">@Localizer["admin_custom_order.approve"]</a>
+            <a href="@Url.Action("CustomOrders", new { filterStatus = CustomOrderStatus.Rejected })" class="px-lg py-sm rounded-full font-bold text-sm @(Model.FilterStatus == CustomOrderStatus.Rejected ? "bg-primary text-on-primary" : "bg-admin-card dark:bg-white/5 text-admin-secondary dark:text-slate-300 hover:bg-primary/10") transition-all">@Localizer["admin_custom_order.reject"]</a>
+        </div>
+    </div>
+
+    @if (Model.Orders.Count == 0)
+    {
+        <div class="p-xl text-center text-admin-secondary dark:text-slate-400">
+            <span class="material-symbols-outlined text-4xl mb-md block">shopping_cart</span>
+            <p>@Localizer["admin_custom_order.empty"]</p>
+        </div>
+    }
+    else
+    {
+        <div class="overflow-x-auto custom-scrollbar">
+            <table class="w-full text-left rtl:text-right border-collapse">
+                <thead class="bg-admin-page dark:bg-white/5 text-caption text-admin-secondary dark:text-slate-400 border-b border-admin-border dark:border-white/5">
+                    <tr>
+                        <th class="p-md">@Localizer["admin_customer"]</th>
+                        <th class="p-md">@Localizer["checkout_phone"]</th>
+                        <th class="p-md">@Localizer["admin_order_qty"]</th>
+                        <th class="p-md">@Localizer["admin_order_total"]</th>
+                        <th class="p-md">@Localizer["admin_custom_order.status"]</th>
+                        <th class="p-md">@Localizer["admin_order_date"]</th>
+                        <th class="p-md"></th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-admin-border dark:divide-white/5">
+                    @foreach (var order in Model.Orders)
+                    {
+                        var statusClass = order.Status switch
+                        {
+                            CustomOrderStatus.Approved => "bg-primary-container/20 text-primary",
+                            CustomOrderStatus.Rejected => "bg-error-container/20 text-error",
+                            _ => "bg-admin-card text-admin-secondary"
+                        };
+                        <tr class="hover:bg-admin-page/50 dark:hover:bg-white/[0.02] transition-colors">
+                            <td class="p-md">
+                                <span class="font-bold text-admin-primary dark:text-white">@order.CustomerName</span>
+                            </td>
+                            <td class="p-md text-admin-secondary dark:text-slate-400">@order.CustomerPhone</td>
+                            <td class="p-md text-admin-secondary dark:text-slate-400">@order.Quantity</td>
+                            <td class="p-md font-bold text-admin-primary dark:text-white">@order.TotalAmount.ToString("N0") @Localizer["egp"]</td>
+                            <td class="p-md">
+                                <span class="@statusClass px-sm py-xs rounded-full text-caption font-bold">@Localizer[$"custom_order_status_{order.Status.ToString()}"]</span>
+                            </td>
+                            <td class="p-md text-admin-secondary dark:text-slate-400">@order.CreatedAt.ToLocalTime().ToString("dd MMM yyyy")</td>
+                            <td class="p-md">
+                                <a asp-action="CustomOrderDetails" asp-route-id="@order.Id" class="text-primary hover:underline font-bold text-sm">@Localizer["admin_view"]</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>

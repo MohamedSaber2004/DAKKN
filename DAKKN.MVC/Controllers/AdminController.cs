@@ -2,6 +2,10 @@ using DAKKN.Appearence.Filters;
 using DAKKN.Appearence.Services;
 using DAKKN.Application.Common.Exceptions;
 using DAKKN.Application.Common.Interfaces;
+using DAKKN.Application.Features.CustomOrders.Queries.GetCustomOrders;
+using DAKKN.Application.Features.CustomOrders.Queries.GetCustomOrderById;
+using DAKKN.Application.Features.CustomOrders.Commands.ApproveCustomOrder;
+using DAKKN.Application.Features.CustomOrders.Commands.RejectCustomOrder;
 using DAKKN.Application.Features.Categories.Commands.CreateCategory;
 using DAKKN.Application.Features.Categories.Commands.DeleteCategory;
 using DAKKN.Application.Features.Categories.Commands.UpdateCategory;
@@ -584,6 +588,115 @@ namespace DAKKN.MVC.Controllers
             {
                 return new T();
             }
+        }
+
+        [HttpGet("custom-orders")]
+        public async Task<IActionResult> CustomOrders(CustomOrderStatus? filterStatus, int page = 1)
+        {
+            ViewData["Title"] = _localizer["admin_custom_order.title"];
+
+            try
+            {
+                var result = await _mediator.Send(new GetCustomOrdersQuery(filterStatus, page));
+
+                var viewModel = new AdminCustomOrderListViewModel
+                {
+                    Orders = result.Orders.Select(o => new AdminCustomOrderItemViewModel
+                    {
+                        Id = o.Id,
+                        CustomerName = o.CustomerName,
+                        CustomerPhone = o.CustomerPhone,
+                        ImageUrl = o.ImageUrl,
+                        Quantity = o.Quantity,
+                        TotalAmount = o.TotalAmount,
+                        Status = o.Status,
+                        CreatedAt = o.CreatedAt
+                    }).ToList(),
+                    TotalCount = result.TotalCount,
+                    PendingCount = result.PendingCount,
+                    ApprovedCount = result.ApprovedCount,
+                    RejectedCount = result.RejectedCount,
+                    FilterStatus = filterStatus,
+                    Page = page
+                };
+
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading custom orders page");
+                return Content($"Error: {ex.GetType().Name} - {ex.Message}\n{ex.StackTrace}", "text/plain");
+            }
+        }
+
+        [HttpGet("custom-order-details/{id}")]
+        public async Task<IActionResult> CustomOrderDetails(Guid id)
+        {
+            ViewData["Title"] = _localizer["admin_custom_order.details"];
+
+            try
+            {
+                var order = await _mediator.Send(new GetCustomOrderByIdQuery(id));
+                if (order == null)
+                    return NotFound();
+
+                var viewModel = new AdminCustomOrderDetailsViewModel
+                {
+                    Id = order.Id,
+                    CustomerName = order.CustomerName,
+                    CustomerPhone = order.CustomerPhone,
+                    ShippingAddress = order.ShippingAddress,
+                    Notes = order.Notes,
+                    ImageUrl = order.ImageUrl,
+                    Shape = order.Shape,
+                    Size = order.Size,
+                    Quantity = order.Quantity,
+                    TotalAmount = order.TotalAmount,
+                    Status = order.Status,
+                    CreatedAt = order.CreatedAt,
+                    UpdatedAt = order.UpdatedAt
+                };
+
+                return View(viewModel);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPost("custom-orders/{id}/approve")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ApproveCustomOrder(Guid id)
+        {
+            try
+            {
+                await _mediator.Send(new ApproveCustomOrderCommand(id));
+                TempData["Success"] = _localizer["admin_custom_order.approved"];
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+
+            return RedirectToAction(nameof(CustomOrderDetails), new { id });
+        }
+
+        [HttpPost("custom-orders/{id}/reject")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RejectCustomOrder(Guid id)
+        {
+            try
+            {
+                await _mediator.Send(new RejectCustomOrderCommand(id));
+                TempData["Success"] = _localizer["admin_custom_order.rejected"];
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+
+            return RedirectToAction(nameof(CustomOrderDetails), new { id });
         }
 
         [HttpGet("settings")]

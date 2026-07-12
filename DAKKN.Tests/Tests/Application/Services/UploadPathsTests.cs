@@ -18,7 +18,8 @@ namespace DAKKN.Tests.Tests.Application.Services
                 { "UploadPaths:Invoices", "uploads/invoices" },
                 { "UploadPaths:Reviews", "uploads/reviews" },
                 { "UploadPaths:Suggestions", "uploads/suggestions" },
-                { "UploadPaths:Support", "uploads/support" }
+                { "UploadPaths:Support", "uploads/support" },
+                { "UploadPaths:CustomOrders", "uploads/custom-orders" }
             };
 
             var config = new ConfigurationBuilder()
