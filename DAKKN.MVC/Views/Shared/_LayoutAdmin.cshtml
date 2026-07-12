@@ -543,6 +543,7 @@
                 </div>
                 <div class="flex items-center gap-sm">
                     @await Html.PartialAsync("Partials/_LanguageToggle")
+                    @await Html.PartialAsync("Partials/_ThemeToggle")
                 </div>
                 <div class="w-10 h-10 rounded-full bg-primary-container overflow-hidden cursor-pointer shadow-small border border-border dark:border-white/10">
                     <img alt='@Localizer["admin_avatar_alt"]' class="w-full h-full object-cover" src="https://ui-avatars.com/api/?name=@(fullName)&background=69d2cf&color=005957">
