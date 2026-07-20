@@ -21,7 +21,6 @@
 
     // Separate admin cookies — never shared with customer
     var themeCookie = Context.Request.Cookies["dakkn_admin_theme"];
-    var langCookie = Context.Request.Cookies["dakkn_admin_lang"];
     if (!string.IsNullOrEmpty(themeCookie))
     {
         isDarkMode = themeCookie == "dark";
@@ -347,7 +346,13 @@
             localStorage.setItem('dakkn_admin_lang', adminLang || culture);
             // If admin lang cookie exists and differs from server culture, reload
             if (adminLang && adminLang !== culture) {
-                window.location.href = '/Translation/SetLanguage?culture=' + adminLang + '&returnUrl=' + encodeURIComponent(window.location.pathname + window.location.search);
+                var isSyncing = sessionStorage.getItem('dakkn_lang_syncing');
+                if (!isSyncing) {
+                    sessionStorage.setItem('dakkn_lang_syncing', 'true');
+                    window.location.href = '/Translation/SetLanguage?culture=' + adminLang + '&returnUrl=' + encodeURIComponent(window.location.pathname + window.location.search);
+                } else {
+                    sessionStorage.removeItem('dakkn_lang_syncing');
+                }
             }
 
             // Initialize Sidebar State

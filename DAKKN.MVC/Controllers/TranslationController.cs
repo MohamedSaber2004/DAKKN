@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using MediatR;
 using DAKKN.Application.Features.Users.Commands.UpdateUserSettings;
+using Microsoft.Extensions.Logging;
 
 namespace DAKKN.MVC.Controllers
 {
@@ -11,10 +12,12 @@ namespace DAKKN.MVC.Controllers
     public class TranslationController : Controller
     {
         private readonly IMediator _mediator;
+        private readonly ILogger<TranslationController> _logger;
 
-        public TranslationController(IMediator mediator)
+        public TranslationController(IMediator mediator, ILogger<TranslationController> logger)
         {
             _mediator = mediator;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -42,9 +45,9 @@ namespace DAKKN.MVC.Controllers
                 {
                     await _mediator.Send(new UpdateUserSettingsCommand(null, culture, null, null, null, null));
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // Ignore background sync errors to not block the UI
+                    _logger.LogWarning(ex, "Failed to sync language preference '{Culture}' to DB for user {UserId}", culture, User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value);
                 }
             }
 

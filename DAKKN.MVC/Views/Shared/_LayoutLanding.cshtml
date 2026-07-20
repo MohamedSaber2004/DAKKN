@@ -11,14 +11,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="google-site-verification" content="KExNmmPDKOUIfyg_MDdUD5w0J3o8K2lRmYdiS2M9Pts" />
     <meta name="robots" content="index, follow" />
-    <title>@(ViewData["Title"] != null ? ViewData["Title"] + " | DAKKN" : "DAKKN — ملصقات فينيل عالية الجودة")</title>
+    <title>@(ViewData["Title"] != null ? ViewData["Title"] + " | DAKKN" : Localizer["brand"])</title>
     <link rel="icon" type="image/x-icon" href="~/favicon.ico" asp-append-version="true" />
     <link rel="icon" type="image/png" sizes="192x192" href="~/favicon.png" />
     <link rel="apple-touch-icon" href="~/favicon.png" />
     <meta name="description" content="@(ViewData["Description"] ?? Localizer["seo_description"])" />
 
     @{
-        var ogTitle = ViewData["Title"]?.ToString() ?? "DAKKN — ملصقات فينيل عالية الجودة";
+        var ogTitle = ViewData["Title"]?.ToString() ?? Localizer["brand"];
         var ogDesc  = ViewData["Description"]?.ToString() ?? Localizer["seo_description"].ToString();
         var ogImage = ViewData["OgImage"]?.ToString() ?? $"{baseUrl}/images/logo.png";
         var ogUrl   = $"{baseUrl}{Context.Request.Path}";

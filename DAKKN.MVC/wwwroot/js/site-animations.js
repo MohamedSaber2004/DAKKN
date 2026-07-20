@@ -66,12 +66,14 @@
       // - JS void/empty links
       // - File downloads or target="_blank"
       // - Custom data-no-transition attribute
+      // - Language switch (must navigate immediately)
       if (!href || 
           href.startsWith('#') || 
           href.startsWith('javascript:') || 
           link.getAttribute('target') === '_blank' || 
           link.hasAttribute('download') ||
           link.hasAttribute('data-no-transition') ||
+          href.startsWith('/Translation/SetLanguage') ||
           (!href.startsWith('/') && !href.startsWith(window.location.origin))) {
         return;
       }
@@ -413,94 +415,7 @@
     update();
   }
 
-  /* ── 15. Custom Animated Cursor ────────────────────────────────────── */
-  function initCustomCursor() {
-    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return;
 
-    const cursorDot = document.createElement('div');
-    cursorDot.className = 'custom-cursor-dot';
-    cursorDot.style.cssText = 'position:fixed;top:0;left:0;z-index:99999;pointer-events:none;width:8px;height:8px;background:var(--primary-color,#0E908C);border-radius:50%;will-change:transform;transition:opacity 0.15s ease;visibility:visible;';
-    
-    const cursorRing = document.createElement('div');
-    cursorRing.className = 'custom-cursor-ring';
-    cursorRing.style.cssText = 'position:fixed;top:0;left:0;z-index:99998;pointer-events:none;width:32px;height:32px;border:2px solid var(--primary-color,#0E908C);border-radius:50%;will-change:transform;transition:opacity 0.15s ease,transform 0.15s ease;visibility:visible;';
-    
-    document.body.appendChild(cursorDot);
-    document.body.appendChild(cursorRing);
-
-    let mouseX = window.innerWidth / 2;
-    let mouseY = window.innerHeight / 2;
-    let ringX = mouseX;
-    let ringY = mouseY;
-    let isHovering = false;
-    let isVisible = false;
-
-    document.addEventListener('mousemove', (e) => {
-      if (!isVisible) {
-        document.body.classList.add('custom-cursor-active');
-        cursorDot.style.opacity = isHovering ? 0 : 1;
-        cursorRing.style.opacity = 1;
-        isVisible = true;
-      }
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      cursorDot.style.transform = `translate3d(${mouseX - 4}px, ${mouseY - 4}px, 0)`;
-    });
-
-    document.addEventListener('mouseleave', () => {
-      cursorDot.style.opacity = 0;
-      cursorRing.style.opacity = 0;
-      isVisible = false;
-    });
-    
-    document.addEventListener('mouseenter', () => {
-      cursorDot.style.opacity = isHovering ? 0 : 1;
-      cursorRing.style.opacity = 1;
-      isVisible = true;
-    });
-
-    function renderCursor() {
-      ringX += (mouseX - ringX) * 0.2;
-      ringY += (mouseY - ringY) * 0.2;
-      
-      const scale = isHovering ? 'scale(1.5)' : 'scale(1)';
-      cursorRing.style.transform = `translate3d(${ringX - 16}px, ${ringY - 16}px, 0) ${scale}`;
-      
-      requestAnimationFrame(renderCursor);
-    }
-    requestAnimationFrame(renderCursor);
-
-    const bindHover = (el) => {
-      el.addEventListener('mouseenter', () => {
-        isHovering = true;
-        if (isVisible) cursorDot.style.opacity = 0;
-        cursorRing.classList.add('hovering');
-      });
-      el.addEventListener('mouseleave', () => {
-        isHovering = false;
-        if (isVisible) cursorDot.style.opacity = 1;
-        cursorRing.classList.remove('hovering');
-      });
-    };
-
-    const interactives = document.querySelectorAll('a, button, input, select, textarea, [role="button"], .interactive, .product-card, .stats-card, .btn');
-    interactives.forEach(bindHover);
-    
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.addedNodes.length) {
-          mutation.addedNodes.forEach((node) => {
-            if (node.nodeType === 1) {
-              const newInteractives = node.querySelectorAll ? node.querySelectorAll('a, button, input, select, textarea, [role="button"], .interactive, .product-card, .stats-card, .btn') : [];
-              const elementsToCheck = node.matches && node.matches('a, button, input, select, textarea, [role="button"], .interactive, .product-card, .stats-card, .btn') ? [node, ...newInteractives] : newInteractives;
-              elementsToCheck.forEach(bindHover);
-            }
-          });
-        }
-      });
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-  }
 
   /* ── Boot ──────────────────────────────────────────────────────────── */
   function boot() {
@@ -542,7 +457,6 @@
       safe(initSkeletons);
       safe(initFloatingElements);
       safe(initNavbarScroll);
-      safe(initCustomCursor);
     };
 
     if (document.readyState === 'loading') {

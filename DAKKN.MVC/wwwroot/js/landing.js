@@ -65,9 +65,12 @@ function toggleLang() {
     const target = current.startsWith('en') ? 'ar' : 'en';
     const prefix = window.dakknCookiePrefix || '';
     
-    // Persist language choice in role-specific cookie (admin vs customer)
-    localStorage.setItem(prefix + 'dakkn_lang', target);
-    setCookie(prefix + 'dakkn_lang', target, 365);
+    // Persist language choice in role-specific storage (admin vs customer)
+    const key = prefix ? prefix + 'lang' : 'dakkn_lang';
+    localStorage.setItem(key, target);
+    if (prefix) setCookie(key, target, 365);
+    
+    // Global cookie for server-side culture resolution
     setCookie(".AspNetCore.Culture", `c=${target}|uic=${target}`, 365);
     
     // Reload to let server-side @Localizer take over for all static text
@@ -162,7 +165,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         let saved = null;
         
         if (cookieValue) {
-            const match = cookieValue.match(/c=([a-z]{2})/);
+            const decoded = decodeURIComponent(cookieValue);
+            const match = decoded.match(/c=([a-z]{2})/);
             if (match) saved = match[1];
         }
         

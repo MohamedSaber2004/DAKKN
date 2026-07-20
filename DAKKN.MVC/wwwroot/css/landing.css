@@ -823,35 +823,3 @@ input[type="range"]::-moz-range-track {
     100% { transform: translateX(-50%); }
 }
 
-/* ── Custom Cursor (Desktop) ──────────────────── */
-body.custom-cursor-active,
-body.custom-cursor-active * {
-    cursor: none !important;
-}
-.custom-cursor-dot {
-    position: fixed;
-    z-index: 99999;
-    pointer-events: none;
-    width: 8px;
-    height: 8px;
-    background: var(--primary-color, #0E908C);
-    border-radius: 50%;
-    will-change: transform;
-    transition: opacity 0.15s ease;
-    visibility: visible !important;
-}
-.custom-cursor-ring {
-    position: fixed;
-    z-index: 99998;
-    pointer-events: none;
-    width: 32px;
-    height: 32px;
-    border: 2px solid var(--primary-color, #0E908C);
-    border-radius: 50%;
-    will-change: transform;
-    transition: opacity 0.15s ease, transform 0.15s ease;
-    visibility: visible !important;
-}
-.custom-cursor-ring.hovering {
-    transform: scale(1.5);
-}

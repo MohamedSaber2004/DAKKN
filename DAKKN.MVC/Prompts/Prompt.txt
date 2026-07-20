@@ -1,1 +1,1 @@
-﻿I want to add an "order customization" feature here, similar to a standard order, but allowing the customer to upload their desired stickers. We would also collect their name, phone number, address, and any order notes. Once the customer submits the request, it would be sent to the admin.
+﻿I need you to check all the localization keys across every page of the project to ensure there are no unregistered keys.

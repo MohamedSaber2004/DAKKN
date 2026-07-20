@@ -1,0 +1,11 @@
+alert.confirm_required
+alert.email_invalid
+alert.email_required
+alert.name_required
+alert.password_min_length
+alert.password_required
+alert.passwords_mismatch
+alert.phone_invalid
+alert.phone_required
+alert.validation.required
+validation.required

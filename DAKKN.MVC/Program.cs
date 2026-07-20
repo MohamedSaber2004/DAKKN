@@ -464,13 +464,14 @@ namespace DAKKN.MVC
                 .AddSupportedUICultures(supportedCultures);
 
 
-            // Priority: 1. QueryString (one-off override), 2. DB User Preference (for authenticated users),
-            // 3. Legacy Cookie (for guest/landing), 4. Browser Accept-Language header.
-            // This ensures changing language on landing page doesn't affect authenticated admin/customer pages.
+            // Priority: 1. QueryString (one-off override), 2. Legacy Cookie (explicit toggle),
+            // 3. DB User Preference (fallback for authenticated users), 4. Browser Accept-Language header.
+            // Cookie takes priority over DB so that toggling language works immediately
+            // even when the DB update in SetLanguage hasn't propagated yet.
             localizationOptions.RequestCultureProviders.Clear();
             localizationOptions.RequestCultureProviders.Add(new QueryStringRequestCultureProvider());
-            localizationOptions.RequestCultureProviders.Add(new DAKKN.MVC.Localization.UserPreferenceRequestCultureProvider());
             localizationOptions.RequestCultureProviders.Add(new CookieRequestCultureProvider());
+            localizationOptions.RequestCultureProviders.Add(new DAKKN.MVC.Localization.UserPreferenceRequestCultureProvider());
 
             app.UseRouting();
 
