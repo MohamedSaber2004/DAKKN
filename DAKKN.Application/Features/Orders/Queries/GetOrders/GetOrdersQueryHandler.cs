@@ -59,6 +59,7 @@ namespace DAKKN.Application.Features.Orders.Queries.GetOrders
                     Status = o.Status,
                     CreatedAt = o.CreatedAt,
                     TotalAmount = o.TotalAmount,
+                    Subtotal = o.Subtotal,
                     ItemCount = o.Items.Count
                 })
                 .ToListAsync(cancellationToken);
@@ -75,7 +76,7 @@ namespace DAKKN.Application.Features.Orders.Queries.GetOrders
             var cancelledCount = await baseQuery.CountAsync(o => o.Status == OrderStatus.Cancelled, cancellationToken);
             var monthlyRevenue = await baseQuery
                 .Where(o => o.CreatedAt >= startOfMonth && o.Status == OrderStatus.Delivered)
-                .SumAsync(o => o.TotalAmount, cancellationToken);
+                .SumAsync(o => o.Subtotal, cancellationToken);
 
             return new AdminOrderListResultDto
             {

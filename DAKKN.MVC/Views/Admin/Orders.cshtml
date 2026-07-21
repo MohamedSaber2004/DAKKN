@@ -98,7 +98,7 @@
                         <th class="p-md text-left rtl:text-right font-bold">@Localizer["admin_order_customer"]</th>
                         <th class="p-md text-left rtl:text-right font-bold">@Localizer["admin_order_date"]</th>
                         <th class="p-md text-left rtl:text-right font-bold">@Localizer["admin_order_status"]</th>
-                        <th class="p-md text-left rtl:text-right font-bold">@Localizer["admin_order_total"]</th>
+                        <th class="p-md text-left rtl:text-right font-bold">@Localizer["admin_order_earned"]</th>
                     <th class="p-md text-center font-bold">@Localizer["admin_order_actions"]</th>
                 </tr>
             </thead>
@@ -123,7 +123,7 @@
                                 @Localizer[$"order_status_{order.Status.ToString()}"]
                             </span>
                         </td>
-                        <td class="p-md font-bold">@order.TotalAmount.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</td>
+                        <td class="p-md font-bold">@order.Subtotal.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</td>
                         <td class="p-md text-center">
                             <div class="flex items-center justify-center gap-1">
                                 <a asp-controller="Admin" asp-action="OrderDetails" asp-route-id="@order.Id" class="inline-flex items-center justify-center w-9 h-9 rounded-full text-admin-secondary hover:text-primary hover:bg-primary-container/20 dark:hover:bg-primary/20 transition-all" title="@Localizer["order_view_details"]">

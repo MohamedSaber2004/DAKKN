@@ -237,6 +237,7 @@ namespace DAKKN.MVC.Controllers
                     CreatedAt = o.CreatedAt,
                     Status = o.Status,
                     TotalAmount = o.TotalAmount,
+                    Subtotal = o.Subtotal,
                     TrackingNumber = o.TrackingNumber,
                     ItemCount = o.ItemCount
                 }).ToList(),

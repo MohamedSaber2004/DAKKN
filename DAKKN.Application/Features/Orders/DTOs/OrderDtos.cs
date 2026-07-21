@@ -11,6 +11,7 @@ namespace DAKKN.Application.Features.Orders.DTOs
         public OrderStatus Status { get; set; }
         public DateTime CreatedAt { get; set; }
         public decimal TotalAmount { get; set; }
+        public decimal Subtotal { get; set; }
         public int ItemCount { get; set; }
     }
 

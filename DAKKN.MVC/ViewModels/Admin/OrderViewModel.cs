@@ -10,6 +10,7 @@ namespace DAKKN.MVC.ViewModels.Admin
         public DateTime CreatedAt { get; set; }
         public OrderStatus Status { get; set; }
         public decimal TotalAmount { get; set; }
+        public decimal Subtotal { get; set; }
         public string TrackingNumber { get; set; } = string.Empty;
         public int ItemCount { get; set; }
     }
