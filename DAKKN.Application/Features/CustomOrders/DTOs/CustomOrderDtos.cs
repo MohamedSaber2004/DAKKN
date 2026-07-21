@@ -31,6 +31,15 @@ namespace DAKKN.Application.Features.CustomOrders.DTOs
         public DateTime? UpdatedAt { get; set; }
     }
 
+    public class ExportUndeliveredCustomOrderDto
+    {
+        public Guid Id { get; set; }
+        public string CustomerName { get; set; } = null!;
+        public string CustomerPhone { get; set; } = null!;
+        public string ShippingAddress { get; set; } = null!;
+        public DateTime CreatedAt { get; set; }
+    }
+
     public class CreateCustomOrderDto
     {
         public string CustomerName { get; set; } = null!;

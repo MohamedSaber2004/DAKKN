@@ -1,1 +1,0 @@
-﻿I need you to check all the localization keys across every page of the project to ensure there are no unregistered keys.

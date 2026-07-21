@@ -375,6 +375,10 @@
                 <span class="material-symbols-outlined @(currentAction == "Index" ? "filled-icon" : "")">grid_view</span>
                 <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["Dashboard_Welcome"]</span>
             </a>
+            <a asp-controller="Customer" asp-action="CustomOrder" class="nav-item flex items-center gap-md @(currentAction == "CustomOrder" ? "bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["nav_custom_order"]">
+                <span class="material-symbols-outlined @(currentAction == "CustomOrder" ? "filled-icon" : "")">auto_awesome</span>
+                <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["nav_custom_order"]</span>
+            </a>
             <a asp-controller="Customer" asp-action="Products" class="nav-item flex items-center gap-md @(currentAction == "Products" ? "bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["nav_shop"]">
                 <span class="material-symbols-outlined @(currentAction == "Products" ? "filled-icon" : "")">shopping_bag</span>
                 <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["nav_shop"]</span>
@@ -382,10 +386,6 @@
             <a asp-controller="Customer" asp-action="Favorites" class="nav-item flex items-center gap-md @(currentAction == "Favorites" ? "bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["nav_favorites"]">
                 <span class="material-symbols-outlined @(currentAction == "Favorites" ? "filled-icon" : "")">favorite</span>
                 <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["nav_favorites"]</span>
-            </a>
-            <a asp-controller="Customer" asp-action="CustomOrder" class="nav-item flex items-center gap-md @(currentAction == "CustomOrder" ? "bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["nav_custom_order"]">
-                <span class="material-symbols-outlined @(currentAction == "CustomOrder" ? "filled-icon" : "")">auto_awesome</span>
-                <span class="font-bold sidebar-text whitespace-nowrap">@Localizer["nav_custom_order"]</span>
             </a>
             <a asp-controller="StickerSuggestion" asp-action="Submit" class="nav-item flex items-center gap-md @(currentAction == "Submit" || currentAction == "MySuggestions" || currentAction == "Details" ? "bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-2xl px-4 py-3.5 transition-all duration-200" title="@Localizer["nav_sticker_suggestion"]">
                 <span class="material-symbols-outlined @(currentAction == "Submit" || currentAction == "MySuggestions" || currentAction == "Details" ? "filled-icon" : "")">lightbulb</span>

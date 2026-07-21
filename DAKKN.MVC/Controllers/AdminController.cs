@@ -211,6 +211,15 @@ namespace DAKKN.MVC.Controllers
             return File(pdfBytes, "application/pdf", $"undelivered_orders_{DateTime.Now:yyyyMMddHHmmss}.pdf");
         }
 
+        [HttpGet("custom-orders/export-undelivered-pdf")]
+        public async Task<IActionResult> ExportUndeliveredCustomOrdersPdf()
+        {
+            var orders = await _mediator.Send(new DAKKN.Application.Features.CustomOrders.Queries.ExportUndeliveredCustomOrders.ExportUndeliveredCustomOrdersQuery());
+            var pdfService = HttpContext.RequestServices.GetRequiredService<IPdfExportService>();
+            var pdfBytes = pdfService.GenerateUndeliveredCustomOrdersPdf(orders);
+            return File(pdfBytes, "application/pdf", $"pending_custom_orders_{DateTime.Now:yyyyMMddHHmmss}.pdf");
+        }
+
         [HttpGet("orders")]
         public async Task<IActionResult> Orders(string? searchTerm, OrderStatus? filterStatus, int page = 1)
         {

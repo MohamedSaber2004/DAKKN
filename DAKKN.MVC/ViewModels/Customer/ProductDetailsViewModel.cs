@@ -5,5 +5,6 @@ namespace DAKKN.MVC.ViewModels.Customer
     public class ProductDetailsViewModel
     {
         public ProductDto Product { get; set; } = null!;
+        public List<ProductDto> RelatedProducts { get; set; } = new();
     }
 }

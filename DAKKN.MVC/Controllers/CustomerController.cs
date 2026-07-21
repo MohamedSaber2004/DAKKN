@@ -24,6 +24,7 @@ using DAKKN.Application.Features.Cart.Queries.GetCart;
 using DAKKN.Application.Features.Products.Queries.GetProducts;
 using DAKKN.Application.Features.Products.Queries.GetMostOrderedProducts;
 using DAKKN.Application.Features.Products.Queries.GetProductById;
+using DAKKN.Application.Features.Products.Queries.GetRelatedProducts;
 using DAKKN.Application.Features.Categories.Queries.GetCategories;
 using DAKKN.Application.Features.Favorites.Queries.GetFavorites;
 using DAKKN.Application.Features.StickerSuggestions.Queries.GetMySuggestions;
@@ -34,6 +35,8 @@ using DAKKN.MVC.ViewModels.Landing;
 using DAKKN.Application.Features.BrandReviews.DTOs;
 using DAKKN.Application.Features.BrandReviews.Queries.GetCustomerBrandReviews;
 using DAKKN.Application.Features.BrandReviews.Commands.DeleteBrandReview;
+using DAKKN.Application.Features.CMS.Queries.GetLandingPageSettings;
+using DAKKN.MVC.Helpers;
 using System.Security.Claims;
 
 namespace DAKKN.MVC.Controllers
@@ -51,6 +54,11 @@ namespace DAKKN.MVC.Controllers
             {
                 Recommendations = products
             };
+
+            // Landing page hero banner
+            var cmsSettings = await mediator.Send(new GetLandingPageSettingsQuery());
+            ViewData["HeroSettings"] = HeroHelper.Deserialize(cmsSettings.Hero);
+            ViewData["HasCmsHeroData"] = cmsSettings.Hero != "{}" && !string.IsNullOrEmpty(cmsSettings.Hero);
 
             var userId = GetUserId();
             if (userId != Guid.Empty)
@@ -116,7 +124,9 @@ namespace DAKKN.MVC.Controllers
                 var favoriteIds = await mediator.Send(new GetFavoritesQuery());
                 ViewData["IsFavorited"] = favoriteIds.Any(f => f.Id == id);
 
-                return View(new ProductDetailsViewModel { Product = product });
+                var related = await mediator.Send(new GetRelatedProductsQuery(id, product.CategoryId));
+
+                return View(new ProductDetailsViewModel { Product = product, RelatedProducts = related });
             }
             catch (NotFoundException)
             {

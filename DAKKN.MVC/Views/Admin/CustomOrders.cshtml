@@ -12,6 +12,10 @@
         <h2 class="font-h2 text-h2 text-admin-primary dark:text-white mb-sm">@Localizer["admin_custom_order.title"]</h2>
         <p class="font-body text-body text-admin-secondary dark:text-slate-400">@Localizer["admin_stats_overview"]</p>
     </div>
+    <button type="button" onclick="exportUndeliveredPdf()" class="bg-success/10 text-success border border-success/30 px-4 py-2 rounded-full text-body font-bold hover:bg-success/20 transition-all flex items-center gap-1 cursor-pointer">
+        <span class="material-symbols-outlined text-sm">picture_as_pdf</span>
+        @Localizer["admin_custom_orders_export_pdf"]
+    </button>
 </div>
 
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-lg mb-lg">
@@ -107,3 +111,26 @@
         </div>
     }
 </div>
+
+@section Scripts {
+    <script>
+        function exportUndeliveredPdf() {
+            fetch('/admin/custom-orders/export-undelivered-pdf', { credentials: 'same-origin' })
+                .then(res => {
+                    if (!res.ok) throw new Error('Export failed');
+                    return res.blob();
+                })
+                .then(blob => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'pending_custom_orders.pdf';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                })
+                .catch(err => console.error('PDF export error:', err));
+        }
+    </script>
+}

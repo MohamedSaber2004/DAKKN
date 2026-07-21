@@ -1,0 +1,59 @@
+@model List<DAKKN.Application.DTOs.ProductDto>
+@inject IStringLocalizer<Messages> Localizer
+@{
+    var culture = System.Globalization.CultureInfo.CurrentCulture.Name;
+    var isArabic = culture.StartsWith("ar");
+}
+@if (Model.Count > 0)
+{
+    <section class="space-y-xl @(ViewData["ContainerClass"] ?? "")">
+        <div class="flex justify-between items-end mb-lg">
+            <div>
+                <h2 class="font-h2 text-h2 font-bold text-text-primary dark:text-white">@Localizer["related_products_you_may_like"]</h2>
+                <p class="text-sm text-text-secondary dark:text-outline-variant mt-1">@Localizer["related_products_sub"]</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-xl">
+            @foreach (var prod in Model)
+            {
+                <div class="group bg-surface dark:bg-[#1E293B] rounded-[32px] border border-border dark:border-white/5 overflow-hidden shadow-medium hover:shadow-xl transition-all duration-500 hover:-translate-y-1">
+                    <a href="@(ViewData["DetailsRoute"] ?? "/shop/product/")@prod.Id" class="block">
+                        <div class="aspect-square relative overflow-hidden bg-surface-container dark:bg-black/20">
+                            <img src="@(string.IsNullOrEmpty(prod.ImageFullUrl) ? prod.ImageUrl : prod.ImageFullUrl)" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" onerror="this.src='/images/placeholders/product-placeholder.svg'">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        </div>
+                    </a>
+                    <div class="p-lg space-y-md">
+                        <div class="min-w-0">
+                            <a href="@(ViewData["DetailsRoute"] ?? "/shop/product/")@prod.Id" class="no-underline">
+                                <h4 class="font-bold text-text-primary dark:text-white truncate group-hover:text-primary dark:group-hover:text-primary-light transition-colors text-sm">@(isArabic ? prod.ArName : prod.Name)</h4>
+                            </a>
+                            <p class="text-xs text-text-secondary dark:text-outline-variant">@(isArabic ? prod.CategoryArName : prod.CategoryName)</p>
+                        </div>
+
+                        @if (prod.AverageRating > 0)
+                        {
+                            <div class="flex items-center gap-1">
+                                <div class="flex gap-0.5">
+                                    @for (int s = 0; s < 5; s++)
+                                    {
+                                        <span class="material-symbols-outlined text-xs @(s < (int)prod.AverageRating ? "text-amber-400 fill-icon" : "text-border dark:text-outline-variant")">star</span>
+                                    }
+                                </div>
+                                <span class="text-[10px] font-medium text-text-secondary dark:text-outline-variant">@prod.AverageRating.ToString("0.0")</span>
+                            </div>
+                        }
+
+                        <div class="flex items-center justify-between pt-sm border-t border-border dark:border-white/5">
+                            <span class="text-base font-bold text-primary dark:text-primary-light">@prod.Price.ToString("N0") @Localizer["Currency_EGP"]</span>
+                            <a href="@(ViewData["DetailsRoute"] ?? "/shop/product/")@prod.Id" class="w-9 h-9 rounded-xl bg-primary/10 text-primary dark:text-primary-light flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all">
+                                <span class="material-symbols-outlined text-base">visibility</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+}

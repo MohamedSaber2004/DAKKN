@@ -6,6 +6,7 @@ using DAKKN.Application.Features.Orders.Commands.PlaceOrder;
 using DAKKN.Application.Features.Orders.Queries.GetOrderDetails;
 using DAKKN.Application.Features.Products.Queries.GetProductById;
 using DAKKN.Application.Features.Products.Queries.GetProducts;
+using DAKKN.Application.Features.Products.Queries.GetRelatedProducts;
 using DAKKN.Application.Features.ShippingGovernorates.Queries.GetActiveShippingGovernorates;
 using DAKKN.Application.Localization;
 using DAKKN.MVC.ViewModels.Customer;
@@ -55,8 +56,9 @@ namespace DAKKN.MVC.Controllers
             try
             {
                 var product = await _mediator.Send(new GetProductByIdQuery(id));
+                var related = await _mediator.Send(new GetRelatedProductsQuery(id, product.CategoryId));
                 ViewData["Title"] = product.Name;
-                return View("ProductDetails", new ProductDetailsViewModel { Product = product });
+                return View("ProductDetails", new ProductDetailsViewModel { Product = product, RelatedProducts = related });
             }
             catch (NotFoundException)
             {

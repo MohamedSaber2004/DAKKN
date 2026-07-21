@@ -447,6 +447,10 @@
                 <span class="material-symbols-outlined @(currentAction == "Dashboard" && currentController == "Admin" ? "filled-icon" : "") flex-shrink-0">dashboard</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_overview"]</span>
             </a>
+            <a asp-controller="Admin" asp-action="CustomOrders" class="nav-item flex items-center gap-md @(currentAction == "CustomOrders" || currentAction == "CustomOrderDetails" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_custom_order.title"]">
+                <span class="material-symbols-outlined @(currentAction == "CustomOrders" || currentAction == "CustomOrderDetails" ? "filled-icon" : "") flex-shrink-0">auto_awesome</span>
+                <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_custom_order.title"]</span>
+            </a>
             <a asp-controller="Admin" asp-action="Users" class="nav-item flex items-center gap-md @(currentAction == "Users" && currentController == "Admin" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_users"]">
                 <span class="material-symbols-outlined @(currentAction == "Users" && currentController == "Admin" ? "filled-icon" : "") flex-shrink-0">group</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_users"]</span>
@@ -454,10 +458,6 @@
             <a asp-controller="Admin" asp-action="Orders" class="nav-item flex items-center gap-md @(currentAction == "Orders" && currentController == "Admin" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_orders"]">
                 <span class="material-symbols-outlined @(currentAction == "Orders" && currentController == "Admin" ? "filled-icon" : "") flex-shrink-0">shopping_cart</span>
                 <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_orders"]</span>
-            </a>
-            <a asp-controller="Admin" asp-action="CustomOrders" class="nav-item flex items-center gap-md @(currentAction == "CustomOrders" || currentAction == "CustomOrderDetails" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_custom_order.title"]">
-                <span class="material-symbols-outlined @(currentAction == "CustomOrders" || currentAction == "CustomOrderDetails" ? "filled-icon" : "") flex-shrink-0">auto_awesome</span>
-                <span class="font-body-lg text-body-lg sidebar-text whitespace-nowrap">@Localizer["admin_custom_order.title"]</span>
             </a>
             <a asp-controller="Admin" asp-action="Inventory" class="nav-item flex items-center gap-md @(currentAction == "Inventory" && currentController == "Admin" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") px-4 py-3 rounded-xl transition-all duration-200" title="@Localizer["admin_inventory"]">
                 <span class="material-symbols-outlined @(currentAction == "Inventory" && currentController == "Admin" ? "filled-icon" : "") flex-shrink-0">inventory_2</span>

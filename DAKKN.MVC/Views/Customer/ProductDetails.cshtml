@@ -103,7 +103,7 @@
         </div>
     </div>
 
-    <!-- Features Grid (Trust builder) -->
+   @*  <!-- Features Grid (Trust builder) -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-lg mt-3xl pt-2xl border-t border-border dark:border-outline/10">
         <div class="flex items-center gap-lg">
             <div class="w-14 h-14 rounded-full bg-primary/10 text-primary flex items-center justify-center">
@@ -132,8 +132,14 @@
                 <p class="text-sm text-text-secondary">@Localizer["hero_badge"]</p>
             </div>
         </div>
-    </div>
+    </div> *@
 </div>
+
+<!-- Related Products -->
+@{
+    var relatedViewData = new ViewDataDictionary(ViewData) { { "ContainerClass", "max-w-7xl mx-auto px-lg pb-xl" }, { "DetailsRoute", "/customer/product/" } };
+}
+<partial name="Partials/_RelatedProducts" model="Model.RelatedProducts" view-data="@relatedViewData" />
 
 @section Scripts {
     <script>
