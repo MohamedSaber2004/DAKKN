@@ -5,6 +5,7 @@ using DAKKN.Application.Features.ProductRatings.Commands.RateProduct;
 using DAKKN.Application.Features.ProductRatings.Queries.GetProductRatingSummary;
 using DAKKN.Domain.Enums;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DAKKN.Appearence.Controllers.APIs.V1
@@ -15,6 +16,7 @@ namespace DAKKN.Appearence.Controllers.APIs.V1
         public ProductRatingsController(IMediator mediator) : base(mediator) { }
 
         [HttpGet]
+        [AllowAnonymous]
         [Route(ApiRoutes.ProductRatings.GetSummary)]
         public async Task<IActionResult> GetSummary(Guid productId)
         {
