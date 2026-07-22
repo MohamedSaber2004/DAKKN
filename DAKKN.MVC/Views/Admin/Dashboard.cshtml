@@ -37,6 +37,7 @@
             <div>
                 <p class="text-sm font-semibold text-admin-secondary">@Localizer["admin_dashboard_revenue_today"]</p>
                 <h3 class="text-2xl font-black text-admin-primary mt-1">@Model.RevenueToday.ToString("N0") @Localizer["egp"]</h3>
+                <p class="text-xs text-admin-secondary mt-1">@Localizer["admin_dashboard_delivery_fee_today"] @Model.DeliveryRevenueToday.ToString("N0") @Localizer["egp"]</p>
             </div>
         </div>
         <div class="premium-card p-6 flex flex-col gap-4">
@@ -159,6 +160,7 @@
         <div class="premium-card p-4 text-center">
             <p class="text-xs font-semibold text-admin-secondary">@Localizer["admin_dashboard_revenue_24h"]</p>
             <h4 class="text-xl font-black text-admin-primary mt-1">@Model.RevenueLast24Hours.ToString("N0")</h4>
+            <p class="text-[10px] text-admin-secondary mt-1">@Localizer["admin_dashboard_delivery_fee"] @Model.DeliveryRevenueLast24Hours.ToString("N0")</p>
         </div>
     </div>
 

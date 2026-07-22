@@ -101,6 +101,8 @@ namespace DAKKN.MVC.Controllers
                 OrdersLast24Hours = orderStats.OrdersLast24Hours,
                 RevenueToday = orderStats.RevenueToday,
                 RevenueLast24Hours = orderStats.RevenueLast24Hours,
+                DeliveryRevenueToday = orderStats.DeliveryRevenueToday,
+                DeliveryRevenueLast24Hours = orderStats.DeliveryRevenueLast24Hours,
                 PendingOrders = orderStats.PendingOrders,
                 DeliveredOrders = orderStats.DeliveredOrders,
                 CancelledOrders = orderStats.CancelledOrders,
@@ -248,6 +250,7 @@ namespace DAKKN.MVC.Controllers
                 DeliveredCount = result.DeliveredCount,
                 CancelledCount = result.CancelledCount,
                 MonthlyRevenue = result.MonthlyRevenue,
+                MonthlyDeliveryRevenue = result.MonthlyDeliveryRevenue,
                 SearchTerm = searchTerm,
                 FilterStatus = filterStatus
             };

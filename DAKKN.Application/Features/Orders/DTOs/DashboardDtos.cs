@@ -8,6 +8,8 @@ namespace DAKKN.Application.Features.Orders.DTOs
         public int OrdersLast24Hours { get; set; }
         public decimal RevenueToday { get; set; }
         public decimal RevenueLast24Hours { get; set; }
+        public decimal DeliveryRevenueToday { get; set; }
+        public decimal DeliveryRevenueLast24Hours { get; set; }
         public int PendingOrders { get; set; }
         public int ConfirmedOrders { get; set; }
         public int ProcessingOrders { get; set; }

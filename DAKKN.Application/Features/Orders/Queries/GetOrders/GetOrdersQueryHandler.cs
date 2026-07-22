@@ -78,6 +78,10 @@ namespace DAKKN.Application.Features.Orders.Queries.GetOrders
                 .Where(o => o.CreatedAt >= startOfMonth && o.Status == OrderStatus.Delivered)
                 .SumAsync(o => o.Subtotal, cancellationToken);
 
+            var monthlyDeliveryRevenue = await baseQuery
+                .Where(o => o.CreatedAt >= startOfMonth && o.Status == OrderStatus.Delivered)
+                .SumAsync(o => o.ShippingCost, cancellationToken);
+
             return new AdminOrderListResultDto
             {
                 Orders = orders,
@@ -89,7 +93,8 @@ namespace DAKKN.Application.Features.Orders.Queries.GetOrders
                 ShippedCount = shippedCount,
                 DeliveredCount = deliveredCount,
                 CancelledCount = cancelledCount,
-                MonthlyRevenue = monthlyRevenue
+                MonthlyRevenue = monthlyRevenue,
+                MonthlyDeliveryRevenue = monthlyDeliveryRevenue
             };
         }
     }

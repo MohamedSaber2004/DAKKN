@@ -47,6 +47,7 @@
         <div>
             <p class="font-body text-body text-admin-secondary dark:text-slate-400 mb-xs">@Localizer["admin_orders_revenue"]</p>
             <p class="font-h2 text-h2 text-admin-primary dark:text-white">@Model.MonthlyRevenue.ToString("N0") @Localizer["egp"]</p>
+            <p class="text-caption text-admin-secondary dark:text-slate-400 mt-xs">@Localizer["admin_orders_delivery_revenue"] @Model.MonthlyDeliveryRevenue.ToString("N0") @Localizer["egp"]</p>
         </div>
         <div class="w-12 h-12 rounded-full bg-primary-container/20 text-primary flex items-center justify-center">
             <span class="material-symbols-outlined filled-icon">payments</span>

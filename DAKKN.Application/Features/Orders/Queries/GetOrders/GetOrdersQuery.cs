@@ -25,5 +25,6 @@ namespace DAKKN.Application.Features.Orders.Queries.GetOrders
         public int DeliveredCount { get; set; }
         public int CancelledCount { get; set; }
         public decimal MonthlyRevenue { get; set; }
+        public decimal MonthlyDeliveryRevenue { get; set; }
     }
 }

@@ -25,6 +25,7 @@ namespace DAKKN.MVC.ViewModels.Admin
         public int DeliveredCount { get; set; }
         public int CancelledCount { get; set; }
         public decimal MonthlyRevenue { get; set; }
+        public decimal MonthlyDeliveryRevenue { get; set; }
         public string? SearchTerm { get; set; }
         public OrderStatus? FilterStatus { get; set; }
     }
@@ -75,6 +76,8 @@ namespace DAKKN.MVC.ViewModels.Admin
         public int OrdersLast24Hours { get; set; }
         public decimal RevenueToday { get; set; }
         public decimal RevenueLast24Hours { get; set; }
+        public decimal DeliveryRevenueToday { get; set; }
+        public decimal DeliveryRevenueLast24Hours { get; set; }
         public int PendingOrders { get; set; }
         public int DeliveredOrders { get; set; }
         public int CancelledOrders { get; set; }
