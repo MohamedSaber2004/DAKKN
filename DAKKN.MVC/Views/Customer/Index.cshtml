@@ -58,34 +58,7 @@
 
             </div>
         </div>
-        @{
-            var tickerItems = new (string Label, string Icon, string Style)[]
-            {
-                (Localizer["waterproof"].Value, "water_drop", "#0891B2"),
-                (Localizer["uv"].Value, "sunny", "#D97706"),
-                (Localizer["hero_ticker_scratch"].Value, "content_cut", "#E11D48"),
-                (Localizer["hero_ticker_made_in"].Value, "location_on", "#16A34A"),
-                (Localizer["hero_trust_support"].Value, "headset_mic", "#D97706"),
-            };
-        }
-        <div class="relative z-20">
-            <div class="marquee-wrapper bg-[rgba(5,5,5,0.85)] backdrop-blur-md border-t border-white/5 py-3 md:py-4">
-                <div class="marquee-track">
-                    @for (int t = 0; t < 2; t++)
-                    {
-                        @foreach (var (label, icon, accent) in tickerItems)
-                        {
-                            <div class="marquee-item">
-                                <div class="marquee-chip" style="--accent:@accent">
-                                    <span class="material-symbols-outlined text-lg">@icon</span>
-                                    <span>@label</span>
-                                </div>
-                            </div>
-                        }
-                    }
-                </div>
-            </div>
-        </div>
+
     </section>
 
     <!-- Customize Order Section -->
