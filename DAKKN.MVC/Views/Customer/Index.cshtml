@@ -61,6 +61,19 @@
 
     </section>
 
+    <!-- Header & Welcome -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-lg">
+        <div>
+            <h1 class="customer-page-title text-text-primary dark:text-white">@Localizer["Dashboard_Welcome"], @firstName! 👋</h1>
+            <p class="text-text-secondary dark:text-outline-variant mt-2">@Localizer["Dashboard_SubHeader"]</p>
+        </div>
+        <div class="flex gap-md">
+            <a asp-action="Products" class="bg-primary text-on-primary px-xl py-md rounded-full font-bold shadow-medium hover:scale-105 transition-all">
+                @Localizer["Dashboard_BrowseNew"]
+            </a>
+        </div>
+    </div>
+
     <!-- Customize Order Section -->
     <section class="bg-gradient-to-br from-primary to-primary-light rounded-[40px] p-0.5 shadow-large">
         <div class="bg-surface dark:bg-[#1E293B] rounded-[39px] p-xl flex flex-col md:flex-row items-center gap-xl relative overflow-hidden">
@@ -86,19 +99,6 @@
             </div>
         </div>
     </section>
-
-    <!-- Header & Welcome -->
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-lg">
-        <div>
-            <h1 class="customer-page-title text-text-primary dark:text-white">@Localizer["Dashboard_Welcome"], @firstName! 👋</h1>
-            <p class="text-text-secondary dark:text-outline-variant mt-2">@Localizer["Dashboard_SubHeader"]</p>
-        </div>
-        <div class="flex gap-md">
-            <a asp-action="Products" class="bg-primary text-on-primary px-xl py-md rounded-full font-bold shadow-medium hover:scale-105 transition-all">
-                @Localizer["Dashboard_BrowseNew"]
-            </a>
-        </div>
-    </div>
 
     <!-- Stats Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-xl">
