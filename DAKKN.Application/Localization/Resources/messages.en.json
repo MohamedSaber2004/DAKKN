@@ -1,4 +1,4 @@
-﻿{
+{
  "dir": "ltr",
  "lang": "en",
  "brand": "DAKKN",
@@ -2191,5 +2191,26 @@
  "custom_order_status_Approved": "Approved",
  "custom_order_status_Rejected": "Rejected",
  "related_products_you_may_like": "You May Also Like",
- "related_products_sub": "More products from the same category"
+ "related_products_sub": "More products from the same category",
+ "stepper_step1_title": "Governorate & Shipping",
+ "stepper_step1_desc": "Select governorate & calculate cost",
+ "stepper_step2_title": "Delivery Details",
+ "stepper_step2_desc": "Recipient name, phone and address",
+ "stepper_step3_title": "Review & Confirm",
+ "stepper_step3_desc": "Order summary & cash on delivery",
+ "stepper_search_gov_ph": "Search governorate name...",
+ "stepper_next": "Next",
+ "stepper_prev": "Previous",
+ "stepper_select_gov_err": "Please select a governorate first to continue",
+ "stepper_fill_required_err": "Please fill in all required fields correctly",
+ "stepper_phone_invalid_err": "Please enter a valid Egyptian phone number (e.g. 01012345678)",
+ "stepper_edit": "Edit",
+ "stepper_selected_gov_info": "Estimated delivery within 24 - 48 business hours",
+ "stepper_cod_badge": "Cash on Delivery",
+ "stepper_step1_heading": "Select Shipping Governorate",
+ "stepper_step1_subheading": "Select your governorate from the list to see real-time shipping fees",
+ "stepper_step2_heading": "Recipient & Delivery Details",
+ "stepper_step2_subheading": "Please provide accurate phone number and address for smooth delivery",
+ "stepper_step3_heading": "Review Order & Confirm",
+ "stepper_step3_subheading": "Review shipping details, address, and items before placing order"
 }

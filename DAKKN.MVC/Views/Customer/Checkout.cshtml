@@ -4,149 +4,856 @@
     Layout = "_LayoutCustomer";
     var isAr = System.Threading.Thread.CurrentThread.CurrentUICulture.Name.StartsWith("ar");
     var backIcon = isAr ? "arrow_forward" : "arrow_back";
+    var nextIcon = isAr ? "arrow_back" : "arrow_forward";
     var govName = isAr && !string.IsNullOrEmpty(Model.GovernorateArName) ? Model.GovernorateArName : Model.GovernorateName;
+    var cartSubtotal = Model.Items.Sum(i => i.Price * i.Quantity);
 }
 
-<div class="max-w-7xl mx-auto px-lg py-xl">
-    <div class="mb-xl flex items-center gap-md">
-        <a asp-action="Cart" class="w-10 h-10 rounded-full bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 flex items-center justify-center text-text-secondary hover:text-primary transition-all">
-            <span class="material-symbols-outlined">@backIcon</span>
-        </a>
-        <h1 class="customer-page-title text-text-primary dark:text-inverse-on-surface">@Localizer["checkout_h1"]</h1>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+    <!-- Top Header & Back Link -->
+    <div class="mb-8 flex items-center justify-between gap-4">
+        <div class="flex items-center gap-4">
+            <a asp-action="Cart" class="w-11 h-11 rounded-2xl bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 flex items-center justify-center text-text-secondary hover:text-primary hover:border-primary/40 shadow-sm transition-all" title="@Localizer["cart_continue_shopping"]">
+                <span class="material-symbols-outlined">@backIcon</span>
+            </a>
+            <div>
+                <h1 class="customer-page-title text-2xl md:text-3xl font-extrabold text-text-primary dark:text-inverse-on-surface">@Localizer["checkout_h1"]</h1>
+                <p class="text-xs md:text-sm text-text-secondary mt-1">@Localizer["checkout_shipping_p"]</p>
+            </div>
+        </div>
+        
+        <div class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-2xl bg-primary/10 text-primary text-xs font-bold border border-primary/20">
+            <span class="material-symbols-outlined text-base">verified_user</span>
+            <span>@Localizer["checkout_pay_cod"]</span>
+        </div>
     </div>
 
-    <form asp-action="PlaceOrder" method="post" class="grid grid-cols-1 lg:grid-cols-3 gap-2xl items-start">
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="ShippingGovernorateId" value="@Model.ShippingGovernorateId" />
+    @if (Model.IsEmpty)
+    {
+        <div class="empty-state bg-surface dark:bg-inverse-surface rounded-[32px] border border-border dark:border-outline/10 p-12 text-center max-w-xl mx-auto space-y-6">
+            <div class="w-20 h-20 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto text-4xl">
+                <span class="material-symbols-outlined text-4xl">shopping_cart</span>
+            </div>
+            <div class="space-y-2">
+                <h2 class="text-2xl font-bold">@Localizer["cart_empty_h"]</h2>
+                <p class="text-text-secondary text-sm">@Localizer["cart_empty_p"]</p>
+            </div>
+            <a asp-action="Products" class="inline-flex items-center gap-2 bg-primary text-on-primary px-8 py-4 rounded-2xl font-bold hover:shadow-large transition-all">
+                @Localizer[LocalizationKeys.CartMessages.BrowseProducts.Key]
+                <span class="material-symbols-outlined text-sm">@nextIcon</span>
+            </a>
+        </div>
+    }
+    else
+    {
+        <!-- Stepper Progress Tracker -->
+        <div class="mb-10 bg-surface dark:bg-inverse-surface rounded-[28px] border border-border dark:border-outline/10 p-4 md:p-6 shadow-small">
+            <div class="relative flex items-center justify-between max-w-3xl mx-auto">
+                <!-- Background Line -->
+                <div class="absolute top-1/2 -translate-y-1/2 start-8 end-8 h-1 bg-surface-container-high dark:bg-white/10 rounded-full -z-0"></div>
+                <!-- Active Progress Line -->
+                <div id="stepper-progress-bar" class="absolute top-1/2 -translate-y-1/2 start-8 h-1 bg-primary rounded-full transition-all duration-500 -z-0" style="width: 0%;"></div>
 
-        <div class="lg:col-span-2 space-y-lg">
-            <section class="section-card p-lg md:p-xl shadow-small space-y-xl">
-                <div class="section-card-header flex items-center gap-md">
-                    <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                        <span class="material-symbols-outlined">local_shipping</span>
+                <!-- Step 1 Button -->
+                <button type="button" onclick="goToStep(1)" id="step-nav-1" class="step-nav-btn relative z-10 flex flex-col items-center gap-2 group focus:outline-none">
+                    <div class="step-icon-circle w-12 h-12 md:w-14 md:h-14 rounded-2xl flex items-center justify-center text-lg md:text-xl font-bold transition-all duration-300 ring-4 ring-surface dark:ring-inverse-surface bg-primary text-on-primary shadow-md">
+                        <span class="material-symbols-outlined text-2xl">local_shipping</span>
                     </div>
-                    <div>
-                        <h2 class="text-2xl font-bold">@Localizer["checkout_shipping_h"]</h2>
-                        <p class="text-sm text-text-secondary">@Localizer["checkout_shipping_p"]</p>
+                    <div class="text-center">
+                        <span class="step-label block text-xs md:text-sm font-bold text-primary transition-colors">@Localizer["stepper_step1_title"]</span>
+                        <span class="hidden md:block text-[11px] text-text-secondary">@Localizer["stepper_step1_desc"]</span>
                     </div>
-                </div>
+                </button>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-xl pt-md">
-                    <div class="md:col-span-2 space-y-2">
-                        <label class="block font-bold text-sm text-outline uppercase tracking-wider px-1">@Localizer["checkout_name"]</label>
-                        <div class="relative">
-                            <input required type="text" name="CustomerName" class="w-full px-12 py-4 bg-surface-container dark:bg-white/5 rounded-2xl border border-border dark:border-outline/20 focus:ring-2 focus:ring-primary outline-none transition-all font-medium" placeholder="@Localizer["checkout_name_ph"]">
-                            <span class="material-symbols-outlined absolute start-4 top-1/2 -translate-y-1/2 text-outline">person</span>
-                        </div>
+                <!-- Step 2 Button -->
+                <button type="button" onclick="goToStep(2)" id="step-nav-2" class="step-nav-btn relative z-10 flex flex-col items-center gap-2 group focus:outline-none">
+                    <div class="step-icon-circle w-12 h-12 md:w-14 md:h-14 rounded-2xl flex items-center justify-center text-lg md:text-xl font-bold transition-all duration-300 ring-4 ring-surface dark:ring-inverse-surface bg-surface-container dark:bg-white/10 text-text-secondary border border-border dark:border-outline/20">
+                        <span class="material-symbols-outlined text-2xl">badge</span>
                     </div>
+                    <div class="text-center">
+                        <span class="step-label block text-xs md:text-sm font-medium text-text-secondary transition-colors">@Localizer["stepper_step2_title"]</span>
+                        <span class="hidden md:block text-[11px] text-text-secondary">@Localizer["stepper_step2_desc"]</span>
+                    </div>
+                </button>
 
-                    <div class="space-y-2">
-                        <label class="block font-bold text-sm text-outline uppercase tracking-wider px-1">@Localizer["checkout_phone"]</label>
-                        <div class="flex items-center bg-surface-container dark:bg-white/5 rounded-2xl border border-border dark:border-outline/20 focus-within:ring-2 focus-within:ring-primary transition-all overflow-hidden">
-                            <div class="px-4 py-4 border-e border-border dark:border-outline/20 bg-surface-container-high dark:bg-white/5 flex items-center gap-2">
-                                <img src="https://flagcdn.com/w20/eg.png" width="20" alt="@Localizer["flag_egypt_alt"]">
-                                <span class="text-sm font-bold">+20</span>
-                            </div>
-                            <input required type="tel" name="CustomerPhone" class="flex-1 px-4 py-4 bg-transparent border-none outline-none focus:ring-0 font-medium" placeholder="@Localizer["checkout_phone_ph"]">
-                        </div>
+                <!-- Step 3 Button -->
+                <button type="button" onclick="goToStep(3)" id="step-nav-3" class="step-nav-btn relative z-10 flex flex-col items-center gap-2 group focus:outline-none">
+                    <div class="step-icon-circle w-12 h-12 md:w-14 md:h-14 rounded-2xl flex items-center justify-center text-lg md:text-xl font-bold transition-all duration-300 ring-4 ring-surface dark:ring-inverse-surface bg-surface-container dark:bg-white/10 text-text-secondary border border-border dark:border-outline/20">
+                        <span class="material-symbols-outlined text-2xl">fact_check</span>
                     </div>
-
-                    <div class="md:col-span-2 space-y-2">
-                        <label class="block font-bold text-sm text-outline uppercase tracking-wider px-1">@Localizer["checkout_address"]</label>
-                        <textarea required name="ShippingAddress" rows="3" class="w-full px-4 py-4 bg-surface-container dark:bg-white/5 rounded-2xl border border-border dark:border-outline/20 focus:ring-2 focus:ring-primary outline-none transition-all font-medium" placeholder="@Localizer["checkout_address_ph"]"></textarea>
+                    <div class="text-center">
+                        <span class="step-label block text-xs md:text-sm font-medium text-text-secondary transition-colors">@Localizer["stepper_step3_title"]</span>
+                        <span class="hidden md:block text-[11px] text-text-secondary">@Localizer["stepper_step3_desc"]</span>
                     </div>
-
-                    <div class="md:col-span-2 space-y-2">
-                        <label class="block font-bold text-sm text-outline uppercase tracking-wider px-1">@Localizer["order_notes"]</label>
-                        <textarea name="Notes" rows="1" class="w-full px-4 py-4 bg-surface-container dark:bg-white/5 rounded-2xl border border-border dark:border-outline/20 focus:ring-2 focus:ring-primary outline-none transition-all font-medium" placeholder="@Localizer["checkout_notes_ph"]"></textarea>
-                    </div>
-                </div>
-            </section>
+                </button>
+            </div>
         </div>
 
-        <div class="space-y-lg">
-            @if (Model.ShippingGovernorateId.HasValue)
-            {
-                <section class="section-card p-lg md:p-xl shadow-small space-y-lg">
-                    <div class="section-card-header flex items-center gap-md">
-                        <div class="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                            <span class="material-symbols-outlined">local_shipping</span>
+        <form id="checkout-form" asp-action="PlaceOrder" method="post" class="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-10 items-start">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="ShippingGovernorateId" id="selected-gov-id" value="@Model.ShippingGovernorateId" />
+
+            <!-- Main Stepper Content Area (2 Columns) -->
+            <div class="lg:col-span-2 space-y-6">
+
+                <!-- STEP 1: اختيار المحافظة والشحن -->
+                <div id="step-pane-1" class="step-pane transition-all duration-300">
+                    <section class="bg-surface dark:bg-inverse-surface rounded-[32px] border border-border dark:border-outline/10 p-6 md:p-8 shadow-small space-y-6">
+                        <div class="flex items-start justify-between gap-4 border-b border-border dark:border-outline/10 pb-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+                                    <span class="material-symbols-outlined text-2xl">local_shipping</span>
+                                </div>
+                                <div>
+                                    <h2 class="text-xl md:text-2xl font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["stepper_step1_heading"]</h2>
+                                    <p class="text-sm text-text-secondary mt-1">@Localizer["stepper_step1_subheading"]</p>
+                                </div>
+                            </div>
+                            <span class="hidden sm:inline-flex px-3 py-1 rounded-full bg-primary/10 text-primary font-bold text-xs">
+                                1 / 3
+                            </span>
                         </div>
-                        <h3 class="text-lg font-bold">@Localizer[LocalizationKeys.CheckoutMessages.ShippingCardTitle.Key]</h3>
+
+                        <!-- Search Filter Input -->
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute start-4 top-1/2 -translate-y-1/2 text-text-secondary">search</span>
+                            <input type="text" id="gov-search-input" oninput="filterGovernorates()" placeholder="@Localizer["stepper_search_gov_ph"]" class="w-full ps-12 pe-4 py-3.5 bg-surface-container dark:bg-white/5 rounded-2xl border border-border dark:border-outline/20 focus:ring-2 focus:ring-primary outline-none transition-all text-sm font-medium text-text-primary dark:text-inverse-on-surface placeholder:text-text-secondary/70" autocomplete="off" />
+                        </div>
+
+                        <!-- Governorate Cards Grid -->
+                        <div id="gov-cards-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5 max-h-[460px] overflow-y-auto p-1 pe-2 custom-scroll">
+                            @foreach (var gov in Model.Governorates)
+                            {
+                                var isSelected = Model.ShippingGovernorateId == gov.Id;
+                                var currentGovName = isAr ? gov.ArName : gov.Name;
+                                var invariantPrice = gov.ShippingPrice.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+                                <div class="gov-card cursor-pointer rounded-2xl border p-4 transition-all duration-200 flex flex-col justify-between gap-3 relative select-none hover:shadow-md @(isSelected ? "border-primary bg-primary/10 ring-2 ring-primary/40 shadow-sm selected-gov" : "border-border dark:border-outline/20 bg-surface dark:bg-inverse-surface hover:border-primary/50")"
+                                     data-id="@gov.Id"
+                                     data-price="@invariantPrice"
+                                     data-name="@currentGovName">
+                                    <div class="flex items-start justify-between gap-2 pointer-events-none">
+                                        <div class="flex items-center gap-2.5">
+                                            <span class="material-symbols-outlined text-xl @(isSelected ? "text-primary" : "text-text-secondary") gov-pin-icon">location_on</span>
+                                            <span class="font-bold text-sm text-text-primary dark:text-inverse-on-surface">@currentGovName</span>
+                                        </div>
+                                        <div class="gov-check-circle w-5 h-5 rounded-full border flex items-center justify-center transition-all @(isSelected ? "border-primary bg-primary text-on-primary" : "border-border dark:border-outline/30 bg-transparent text-transparent")">
+                                            <span class="material-symbols-outlined text-xs">check</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center justify-between pt-2 border-t border-border/50 dark:border-outline/10 text-xs pointer-events-none">
+                                        <span class="text-text-secondary">@Localizer["cart_shipping"]</span>
+                                        <span class="font-bold @(gov.ShippingPrice == 0 ? "text-success" : "text-primary")">
+                                            @(gov.ShippingPrice > 0 ? $"{gov.ShippingPrice:N0} {Localizer["Currency_EGP"]}" : Localizer["shipping_free"])
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- No Results Message -->
+                        <div id="gov-empty-msg" class="hidden text-center py-8 text-text-secondary text-sm">
+                            <span class="material-symbols-outlined text-3xl mb-1 text-text-secondary/60">location_off</span>
+                            <p>لا توجد محافظة بهذا الاسم. يرجى تجربة بحث آخر.</p>
+                        </div>
+
+                        <!-- Selected Governorate Banner Preview -->
+                        <div id="gov-selected-banner" class="rounded-2xl p-4 bg-primary/5 dark:bg-primary/10 border border-primary/20 flex items-center justify-between gap-4 transition-all @(Model.ShippingGovernorateId.HasValue ? "" : "hidden")">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-primary text-on-primary flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-xl">check_circle</span>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-text-secondary font-medium">@Localizer["checkout_gov_label"]</p>
+                                    <p class="font-bold text-sm text-text-primary dark:text-inverse-on-surface" id="banner-gov-name">@govName</p>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <span class="text-xs text-text-secondary block">@Localizer["checkout_shipping_cost"]</span>
+                                <span class="font-extrabold text-base text-primary" id="banner-shipping-price">@Model.ShippingPrice.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</span>
+                            </div>
+                        </div>
+
+                        <!-- Step 1 Actions -->
+                        <div class="pt-4 flex items-center justify-end">
+                            <button type="button" onclick="validateStep1AndProceed()" class="btn-step-next inline-flex items-center gap-3 bg-primary text-on-primary px-8 py-4 rounded-2xl font-bold text-base shadow-medium hover:shadow-large hover:scale-[1.01] active:scale-95 transition-all">
+                                <span>@Localizer["stepper_next"]: @Localizer["stepper_step2_title"]</span>
+                                <span class="material-symbols-outlined text-lg">@nextIcon</span>
+                            </button>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- STEP 2: بيانات التوصيل والمستلم -->
+                <div id="step-pane-2" class="step-pane hidden transition-all duration-300">
+                    <section class="bg-surface dark:bg-inverse-surface rounded-[32px] border border-border dark:border-outline/10 p-6 md:p-8 shadow-small space-y-6">
+                        <div class="flex items-start justify-between gap-4 border-b border-border dark:border-outline/10 pb-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+                                    <span class="material-symbols-outlined text-2xl">badge</span>
+                                </div>
+                                <div>
+                                    <h2 class="text-xl md:text-2xl font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["stepper_step2_heading"]</h2>
+                                    <p class="text-sm text-text-secondary mt-1">@Localizer["stepper_step2_subheading"]</p>
+                                </div>
+                            </div>
+                            <span class="hidden sm:inline-flex px-3 py-1 rounded-full bg-primary/10 text-primary font-bold text-xs">
+                                2 / 3
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
+                            <!-- Full Name -->
+                            <div class="md:col-span-2 space-y-2">
+                                <label for="CustomerName" class="block font-bold text-xs uppercase tracking-wider text-text-secondary px-1">
+                                    @Localizer["checkout_name"] <span class="text-error">*</span>
+                                </label>
+                                <div class="relative">
+                                    <input required type="text" id="CustomerName" name="CustomerName" class="w-full ps-12 pe-4 py-4 bg-surface-container dark:bg-white/5 rounded-2xl border border-border dark:border-outline/20 focus:ring-2 focus:ring-primary outline-none transition-all font-medium text-text-primary dark:text-inverse-on-surface" placeholder="@Localizer["checkout_name_ph"]">
+                                    <span class="material-symbols-outlined absolute start-4 top-1/2 -translate-y-1/2 text-text-secondary">person</span>
+                                </div>
+                                <p class="text-xs text-error hidden" id="err-customer-name">@Localizer["validation_required"]</p>
+                            </div>
+
+                            <!-- Phone Number -->
+                            <div class="md:col-span-2 space-y-2">
+                                <label for="CustomerPhone" class="block font-bold text-xs uppercase tracking-wider text-text-secondary px-1">
+                                    @Localizer["checkout_phone"] <span class="text-error">*</span>
+                                </label>
+                                <div class="flex items-center bg-surface-container dark:bg-white/5 rounded-2xl border border-border dark:border-outline/20 focus-within:ring-2 focus-within:ring-primary transition-all overflow-hidden">
+                                    <div class="px-4 py-4 border-e border-border dark:border-outline/20 bg-surface-container-high dark:bg-white/5 flex items-center gap-2 select-none flex-shrink-0">
+                                        <img src="https://flagcdn.com/w20/eg.png" width="20" alt="@Localizer["flag_egypt_alt"]">
+                                        <span class="text-sm font-bold text-text-primary dark:text-inverse-on-surface" dir="ltr">+20</span>
+                                    </div>
+                                    <input required type="tel" id="CustomerPhone" name="CustomerPhone" class="flex-1 px-4 py-4 bg-transparent border-none outline-none focus:ring-0 font-medium text-text-primary dark:text-inverse-on-surface" placeholder="@Localizer["checkout_phone_ph"]" dir="ltr">
+                                </div>
+                                <p class="text-xs text-error hidden" id="err-customer-phone">@Localizer["stepper_phone_invalid_err"]</p>
+                            </div>
+
+                            <!-- Detailed Address -->
+                            <div class="md:col-span-2 space-y-2">
+                                <label for="ShippingAddress" class="block font-bold text-xs uppercase tracking-wider text-text-secondary px-1">
+                                    @Localizer["checkout_address"] <span class="text-error">*</span>
+                                </label>
+                                <div class="relative">
+                                    <textarea required id="ShippingAddress" name="ShippingAddress" rows="3" class="w-full ps-12 pe-4 py-3 bg-surface-container dark:bg-white/5 rounded-2xl border border-border dark:border-outline/20 focus:ring-2 focus:ring-primary outline-none transition-all font-medium text-text-primary dark:text-inverse-on-surface" placeholder="@Localizer["checkout_address_ph"]"></textarea>
+                                    <span class="material-symbols-outlined absolute start-4 top-4 text-text-secondary">home_pin</span>
+                                </div>
+                                <p class="text-xs text-error hidden" id="err-customer-address">@Localizer["validation_required"]</p>
+                            </div>
+
+                            <!-- Order Notes (Optional) -->
+                            <div class="md:col-span-2 space-y-2">
+                                <label for="Notes" class="block font-bold text-xs uppercase tracking-wider text-text-secondary px-1">
+                                    @Localizer["checkout_notes"]
+                                </label>
+                                <div class="relative">
+                                    <textarea id="Notes" name="Notes" rows="2" class="w-full ps-12 pe-4 py-3 bg-surface-container dark:bg-white/5 rounded-2xl border border-border dark:border-outline/20 focus:ring-2 focus:ring-primary outline-none transition-all font-medium text-text-primary dark:text-inverse-on-surface" placeholder="@Localizer["checkout_notes_ph"]"></textarea>
+                                    <span class="material-symbols-outlined absolute start-4 top-4 text-text-secondary">edit_note</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2 Actions -->
+                        <div class="pt-6 border-t border-border dark:border-outline/10 flex flex-col-reverse sm:flex-row items-center justify-between gap-4">
+                            <button type="button" onclick="goToStep(1)" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl border border-border dark:border-outline/20 text-text-secondary hover:text-text-primary hover:bg-surface-container dark:hover:bg-white/5 font-bold transition-all">
+                                <span class="material-symbols-outlined text-sm">@backIcon</span>
+                                <span>@Localizer["stepper_prev"]: @Localizer["stepper_step1_title"]</span>
+                            </button>
+
+                            <button type="button" onclick="validateStep2AndProceed()" class="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-primary text-on-primary px-8 py-4 rounded-2xl font-bold text-base shadow-medium hover:shadow-large hover:scale-[1.01] active:scale-95 transition-all">
+                                <span>@Localizer["stepper_next"]: @Localizer["stepper_step3_title"]</span>
+                                <span class="material-symbols-outlined text-lg">@nextIcon</span>
+                            </button>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- STEP 3: مراجعة وتأكيد الطلب -->
+                <div id="step-pane-3" class="step-pane hidden transition-all duration-300">
+                    <section class="bg-surface dark:bg-inverse-surface rounded-[32px] border border-border dark:border-outline/10 p-6 md:p-8 shadow-small space-y-6">
+                        <div class="flex items-start justify-between gap-4 border-b border-border dark:border-outline/10 pb-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+                                    <span class="material-symbols-outlined text-2xl">fact_check</span>
+                                </div>
+                                <div>
+                                    <h2 class="text-xl md:text-2xl font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["stepper_step3_heading"]</h2>
+                                    <p class="text-sm text-text-secondary mt-1">@Localizer["stepper_step3_subheading"]</p>
+                                </div>
+                            </div>
+                            <span class="hidden sm:inline-flex px-3 py-1 rounded-full bg-primary/10 text-primary font-bold text-xs">
+                                3 / 3
+                            </span>
+                        </div>
+
+                        <!-- Review Cards -->
+                        <div class="space-y-4">
+                            <!-- Card 1: الشحن والمحافظة -->
+                            <div class="p-5 rounded-2xl bg-surface-container/60 dark:bg-white/5 border border-border dark:border-outline/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                <div class="flex items-center gap-3.5">
+                                    <div class="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+                                        <span class="material-symbols-outlined text-xl">local_shipping</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-text-secondary font-medium">@Localizer["stepper_step1_title"]</p>
+                                        <p class="font-bold text-base text-text-primary dark:text-inverse-on-surface" id="review-gov-name">@govName</p>
+                                        <p class="text-xs text-text-secondary mt-0.5">@Localizer["stepper_selected_gov_info"]</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-3 self-end sm:self-center">
+                                    <span class="font-extrabold text-sm text-primary px-3 py-1.5 rounded-xl bg-primary/10" id="review-shipping-cost">@Model.ShippingPrice.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</span>
+                                    <button type="button" onclick="goToStep(1)" class="text-xs font-bold text-primary hover:underline px-2 py-1">
+                                        @Localizer["stepper_edit"]
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Card 2: بيانات المستلم والعنوان -->
+                            <div class="p-5 rounded-2xl bg-surface-container/60 dark:bg-white/5 border border-border dark:border-outline/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                <div class="flex items-start gap-3.5">
+                                    <div class="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <span class="material-symbols-outlined text-xl">person_pin</span>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <p class="text-xs text-text-secondary font-medium">@Localizer["stepper_step2_title"]</p>
+                                        <p class="font-bold text-sm text-text-primary dark:text-inverse-on-surface" id="review-customer-name">--</p>
+                                        <p class="text-xs text-text-secondary" id="review-customer-phone" dir="ltr">--</p>
+                                        <p class="text-xs text-text-secondary pt-1" id="review-customer-address">--</p>
+                                        <p class="text-xs text-text-secondary italic hidden" id="review-customer-notes"></p>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="goToStep(2)" class="self-end sm:self-center text-xs font-bold text-primary hover:underline px-2 py-1">
+                                    @Localizer["stepper_edit"]
+                                </button>
+                            </div>
+
+                            <!-- Card 3: طريقة الدفع والتأكيد -->
+                            <div class="p-5 rounded-2xl bg-surface-container/60 dark:bg-white/5 border border-border dark:border-outline/10 flex items-center justify-between gap-4">
+                                <div class="flex items-center gap-3.5">
+                                    <div class="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+                                        <span class="material-symbols-outlined text-xl">payments</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-text-secondary font-medium">@Localizer["checkout_payment_h"]</p>
+                                        <p class="font-bold text-sm text-text-primary dark:text-inverse-on-surface">@Localizer["checkout_pay_cod"]</p>
+                                        <p class="text-xs text-text-secondary mt-0.5">@Localizer["checkout_pay_cod_p"]</p>
+                                    </div>
+                                </div>
+                                <span class="material-symbols-outlined text-primary text-2xl">verified</span>
+                            </div>
+                        </div>
+
+                        <!-- Step 3 Actions -->
+                        <div class="pt-6 border-t border-border dark:border-outline/10 flex flex-col-reverse sm:flex-row items-center justify-between gap-4">
+                            <button type="button" onclick="goToStep(2)" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl border border-border dark:border-outline/20 text-text-secondary hover:text-text-primary hover:bg-surface-container dark:hover:bg-white/5 font-bold transition-all">
+                                <span class="material-symbols-outlined text-sm">@backIcon</span>
+                                <span>@Localizer["stepper_prev"]: @Localizer["stepper_step2_title"]</span>
+                            </button>
+
+                            <button type="submit" id="btn-submit-order" class="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-primary text-on-primary px-10 py-4 rounded-2xl font-bold text-lg shadow-large hover:scale-[1.02] active:scale-95 transition-all">
+                                <span class="material-symbols-outlined text-xl">lock</span>
+                                <span id="submit-btn-text">@Localizer["checkout_submit"]</span>
+                                <span id="submit-spinner" class="hidden material-symbols-outlined animate-spin text-xl">progress_activity</span>
+                            </button>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <!-- Sticky Order Summary Sidebar (1 Column) -->
+            <aside class="space-y-6 sticky top-24" id="checkout-sidebar">
+                <section class="bg-surface dark:bg-inverse-surface rounded-[32px] border border-border dark:border-outline/10 p-6 md:p-8 shadow-large space-y-6">
+                    <div class="flex items-center justify-between border-b border-border dark:border-outline/10 pb-4">
+                        <h2 class="text-xl font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["checkout_summary_h"]</h2>
+                        <span class="text-xs font-bold text-text-secondary bg-surface-container dark:bg-white/5 px-2.5 py-1 rounded-xl">@Model.TotalQuantity @Localizer["checkout_qty"]</span>
                     </div>
-                    <div class="space-y-3">
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-text-secondary">@Localizer[LocalizationKeys.CheckoutMessages.GovLabel.Key]</span>
-                            <span class="font-bold">@govName</span>
+
+                    <!-- Items List -->
+                    <div class="space-y-3.5 max-h-[300px] overflow-y-auto pe-1 custom-scroll divide-y divide-border/60 dark:divide-outline/10">
+                        @foreach (var item in Model.Items)
+                        {
+                            var itemTotal = item.Price * item.Quantity;
+                            <div class="flex items-center gap-3.5 pt-3.5 first:pt-0">
+                                <div class="w-14 h-14 rounded-2xl bg-surface-container dark:bg-white/5 overflow-hidden flex-shrink-0 border border-border dark:border-outline/10 p-1">
+                                    <img src="@(item.ImageUrl ?? "/images/placeholders/product-placeholder.svg")" alt="@item.Name" class="w-full h-full object-cover rounded-xl" onerror="this.src='/images/placeholders/product-placeholder.svg'">
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="font-bold text-sm text-text-primary dark:text-inverse-on-surface truncate">@(isAr && !string.IsNullOrEmpty(item.ArName) ? item.ArName : item.Name)</p>
+                                    <p class="text-xs text-text-secondary mt-0.5">@item.Quantity × @item.Price.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</p>
+                                </div>
+                                <p class="font-bold text-sm text-text-primary dark:text-inverse-on-surface whitespace-nowrap">@itemTotal.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</p>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Price Calculations -->
+                    <div class="border-t border-border dark:border-outline/10 pt-5 space-y-3 text-sm">
+                        <div class="flex justify-between text-text-secondary">
+                            <span>@Localizer["order_subtotal"]</span>
+                            <span class="font-bold text-text-primary dark:text-inverse-on-surface" id="summary-subtotal">@cartSubtotal.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</span>
                         </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-sm text-text-secondary">@Localizer[LocalizationKeys.CheckoutMessages.ShippingCost.Key]</span>
-                            <span class="font-bold">@Model.ShippingPrice.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</span>
+                        <div class="flex justify-between text-text-secondary items-center">
+                            <span>@Localizer["order_shipping"]</span>
+                            <span class="font-bold text-text-primary dark:text-inverse-on-surface" id="summary-shipping">
+                                @if (Model.ShippingGovernorateId.HasValue)
+                                {
+                                    @($"{Model.ShippingPrice:N0} {Localizer["Currency_EGP"]}")
+                                }
+                                else
+                                {
+                                    <span class="text-text-secondary/50 font-normal">--</span>
+                                }
+                            </span>
+                        </div>
+                        <div class="border-t border-border/80 dark:border-outline/10 pt-3 flex justify-between items-end">
+                            <div>
+                                <span class="font-extrabold text-base text-text-primary dark:text-inverse-on-surface block">@Localizer["order_total"]</span>
+                                <span class="text-[10px] text-text-secondary uppercase tracking-wider">@Localizer["cart_vat_inc"]</span>
+                            </div>
+                            <span class="font-extrabold text-2xl md:text-3xl text-primary" id="summary-total">
+                                @((cartSubtotal + Model.ShippingPrice).ToString("N0")) @Html.Raw(Localizer["Currency_EGP"])
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Trust Signals -->
+                    <div class="pt-4 border-t border-border dark:border-outline/10 space-y-3">
+                        <div class="flex items-center gap-3 text-xs text-text-secondary">
+                            <span class="material-symbols-outlined text-primary text-lg">local_shipping</span>
+                            <span>@Localizer["stepper_selected_gov_info"]</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-xs text-text-secondary">
+                            <span class="material-symbols-outlined text-primary text-lg">shield</span>
+                            <span>@Localizer["cart_secure_p"]</span>
                         </div>
                     </div>
                 </section>
-            }
-
-            <section class="section-card p-lg md:p-xl shadow-small space-y-xl">
-                <h2 class="text-2xl font-bold">@Localizer["checkout_summary_h"]</h2>
-
-                <div class="space-y-md divide-y divide-border dark:divide-outline/10">
-                    @{
-                        var cartSubtotal = Model.Items.Sum(i => i.Price * i.Quantity);
-                    }
-                    @foreach (var item in Model.Items)
-                    {
-                        var itemTotal = item.Price * item.Quantity;
-                        <div class="flex items-center gap-md pt-md first:pt-0">
-                            <div class="w-14 h-14 rounded-2xl bg-surface-container dark:bg-white/5 overflow-hidden flex-shrink-0 border border-border dark:border-outline/10">
-                                @if (!string.IsNullOrEmpty(item.ImageUrl))
-                                {
-                                    <img src="@item.ImageUrl" alt="@item.Name" class="w-full h-full object-cover">
-                                }
-                            </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="font-bold text-text-primary dark:text-inverse-on-surface truncate">@(isAr && !string.IsNullOrEmpty(item.ArName) ? item.ArName : item.Name)</p>
-                                <p class="text-sm text-text-secondary">@Localizer["checkout_qty"]: @item.Quantity</p>
-                            </div>
-                            <p class="font-bold whitespace-nowrap">@itemTotal.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</p>
-                        </div>
-                    }
-                </div>
-
-                <div class="border-t border-border dark:border-outline/10 pt-xl space-y-2">
-                    <div class="flex justify-between">
-                        <span class="text-text-secondary">@Localizer["order_subtotal"]</span>
-                        <span class="font-bold">@cartSubtotal.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-text-secondary">@Localizer["order_shipping"]</span>
-                        <span class="font-bold">@Model.ShippingPrice.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</span>
-                    </div>
-                    <div class="flex justify-between text-lg pt-2">
-                        <span class="font-bold text-text-primary dark:text-inverse-on-surface">@Localizer["order_total"]</span>
-                        <span class="font-bold text-primary">@((cartSubtotal + Model.ShippingPrice).ToString("N0")) @Html.Raw(Localizer["Currency_EGP"])</span>
-                    </div>
-                </div>
-
-                <button type="submit" class="w-full bg-primary text-on-primary py-5 rounded-2xl font-bold text-lg shadow-large hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2">
-                    <span class="material-symbols-outlined">lock</span>
-                    @Localizer["checkout_submit"]
-                </button>
-            </section>
-        </div>
-    </form>
+            </aside>
+        </form>
+    }
 </div>
 
 <style>
-    select,
-    input,
-    textarea {
-        direction: inherit;
-        text-align: inherit;
+    .custom-scroll::-webkit-scrollbar {
+        width: 6px;
     }
-    [dir="rtl"] select {
-        background-position: left 0.75rem center !important;
-        padding-left: 2.5rem !important;
-        padding-right: 1rem !important;
+    .custom-scroll::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+        background-color: rgba(156, 163, 175, 0.4);
+        border-radius: 9999px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+        background-color: rgba(156, 163, 175, 0.7);
+    }
+    .step-pane.active {
+        display: block !important;
+        animation: fadeInStep 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @@keyframes fadeInStep {
+        from {
+            opacity: 0;
+            transform: translateY(6px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 </style>
+
+@section Scripts {
+    <script>
+        const decodeHtmlEntities = (function() {
+            const el = document.createElement('div');
+            return function(str) {
+                if (str && typeof str === 'string') {
+                    el.innerHTML = str;
+                    str = el.textContent;
+                    el.textContent = '';
+                }
+                return str;
+            };
+        })();
+
+        const currencySymbol = decodeHtmlEntities('@Html.Raw(Localizer["Currency_EGP"])');
+        const cartSubtotal = @cartSubtotal.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+        let selectedGovId = '@(Model.ShippingGovernorateId?.ToString() ?? "")';
+        let currentShippingPrice = @Model.ShippingPrice.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
+        let currentStep = 1;
+
+        // Initialize state
+        document.addEventListener('DOMContentLoaded', function () {
+            // Event delegation for governorate cards selection
+            const cardsContainer = document.getElementById('gov-cards-container');
+            if (cardsContainer) {
+                cardsContainer.addEventListener('click', function (e) {
+                    const card = e.target.closest('.gov-card');
+                    if (!card) return;
+                    const id = card.getAttribute('data-id');
+                    const price = parseFloat(card.getAttribute('data-price')) || 0;
+                    const name = card.getAttribute('data-name') || '';
+                    selectGovernorate(id, price, name);
+                });
+            }
+
+            // Pre-select if governorate already exists in backend model
+            if (selectedGovId) {
+                const card = document.querySelector(`.gov-card[data-id="${selectedGovId}"]`);
+                if (card) {
+                    const price = parseFloat(card.getAttribute('data-price')) || currentShippingPrice;
+                    const name = card.getAttribute('data-name') || '';
+                    applyGovernorateUi(selectedGovId, price, name);
+                }
+            }
+
+            goToStep(1, false);
+
+            // Setup form submission prevention on double click
+            const form = document.getElementById('checkout-form');
+            if (form) {
+                form.addEventListener('submit', function () {
+                    const submitBtn = document.getElementById('btn-submit-order');
+                    const text = document.getElementById('submit-btn-text');
+                    const spinner = document.getElementById('submit-spinner');
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
+                    }
+                    if (text && spinner) {
+                        text.classList.add('hidden');
+                        spinner.classList.remove('hidden');
+                    }
+                });
+            }
+        });
+
+        // Step navigation logic
+        function goToStep(stepNumber, shouldScroll = true) {
+            if (stepNumber === 2 && !selectedGovId) {
+                shakeStep(1);
+                alert('@Html.Raw(Localizer["stepper_select_gov_err"])');
+                return;
+            }
+            if (stepNumber === 3) {
+                if (!selectedGovId) {
+                    goToStep(1);
+                    return;
+                }
+                if (!validateStep2(false)) {
+                    goToStep(2);
+                    return;
+                }
+                updateReviewCard();
+            }
+
+            currentStep = stepNumber;
+
+            // Toggle Panes
+            for (let i = 1; i <= 3; i++) {
+                const pane = document.getElementById(`step-pane-${i}`);
+                if (pane) {
+                    if (i === stepNumber) {
+                        pane.classList.remove('hidden');
+                        pane.classList.add('active');
+                    } else {
+                        pane.classList.add('hidden');
+                        pane.classList.remove('active');
+                    }
+                }
+            }
+
+            // Update Stepper Navigation visuals
+            updateStepperNav(stepNumber);
+
+            if (shouldScroll) {
+                window.scrollTo({ top: 100, behavior: 'smooth' });
+            }
+        }
+
+        function updateStepperNav(activeStep) {
+            const progressBar = document.getElementById('stepper-progress-bar');
+            if (progressBar) {
+                const pct = activeStep === 1 ? 0 : activeStep === 2 ? 50 : 100;
+                progressBar.style.width = `${pct}%`;
+            }
+
+            for (let i = 1; i <= 3; i++) {
+                const btn = document.getElementById(`step-nav-${i}`);
+                if (!btn) continue;
+
+                const circle = btn.querySelector('.step-icon-circle');
+                const label = btn.querySelector('.step-label');
+
+                if (i < activeStep) {
+                    // Completed Step
+                    circle.className = 'step-icon-circle w-12 h-12 md:w-14 md:h-14 rounded-2xl flex items-center justify-center text-lg md:text-xl font-bold ring-4 ring-surface dark:ring-inverse-surface bg-success/15 text-success border border-success/30 shadow-sm';
+                    circle.innerHTML = '<span class="material-symbols-outlined text-2xl font-bold">check</span>';
+                    label.className = 'step-label block text-xs md:text-sm font-bold text-success';
+                } else if (i === activeStep) {
+                    // Active Step
+                    circle.className = 'step-icon-circle w-12 h-12 md:w-14 md:h-14 rounded-2xl flex items-center justify-center text-lg md:text-xl font-bold ring-4 ring-primary/20 bg-primary text-on-primary shadow-md scale-105';
+                    const icon = i === 1 ? 'local_shipping' : i === 2 ? 'badge' : 'fact_check';
+                    circle.innerHTML = `<span class="material-symbols-outlined text-2xl">${icon}</span>`;
+                    label.className = 'step-label block text-xs md:text-sm font-bold text-primary';
+                } else {
+                    // Upcoming Step
+                    circle.className = 'step-icon-circle w-12 h-12 md:w-14 md:h-14 rounded-2xl flex items-center justify-center text-lg md:text-xl font-bold ring-4 ring-surface dark:ring-inverse-surface bg-surface-container dark:bg-white/10 text-text-secondary border border-border dark:border-outline/20';
+                    const icon = i === 1 ? 'local_shipping' : i === 2 ? 'badge' : 'fact_check';
+                    circle.innerHTML = `<span class="material-symbols-outlined text-2xl">${icon}</span>`;
+                    label.className = 'step-label block text-xs md:text-sm font-medium text-text-secondary';
+                }
+            }
+        }
+
+        // Governorate Selection (Dynamic Backend Sync)
+        async function selectGovernorate(govId, price, name) {
+            if (!govId) return;
+            selectedGovId = govId;
+            currentShippingPrice = parseFloat(price) || 0;
+
+            const hiddenInput = document.getElementById('selected-gov-id');
+            if (hiddenInput) hiddenInput.value = govId;
+
+            applyGovernorateUi(govId, currentShippingPrice, name);
+
+            // Dynamic Backend Integration: Sync with Cart API
+            try {
+                const response = await fetch('/api/v1/cart/shipping', {
+                    method: 'PUT',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ shippingGovernorateId: govId })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result && result.success && result.data) {
+                        currentShippingPrice = parseFloat(result.data.shippingPrice) || currentShippingPrice;
+                        updateSidebarTotals();
+                    }
+                }
+            } catch (err) {
+                console.warn('Backend shipping API sync warning:', err);
+                updateSidebarTotals();
+            }
+        }
+
+        function applyGovernorateUi(govId, price, name) {
+            if (!govId) return;
+            const targetId = govId.toLowerCase();
+
+            document.querySelectorAll('.gov-card').forEach(card => {
+                const cardId = (card.getAttribute('data-id') || '').toLowerCase();
+                const isSelected = (cardId === targetId);
+                const checkCircle = card.querySelector('.gov-check-circle');
+                const pinIcon = card.querySelector('.gov-pin-icon');
+
+                if (isSelected) {
+                    card.classList.add('border-primary', 'bg-primary/10', 'ring-2', 'ring-primary/40', 'shadow-md', 'selected-gov');
+                    card.classList.remove('border-border', 'border-outline-variant/20', 'bg-surface', 'dark:bg-inverse-surface');
+                    if (checkCircle) {
+                        checkCircle.classList.add('border-primary', 'bg-primary', 'text-on-primary');
+                        checkCircle.classList.remove('border-border', 'dark:border-outline/30', 'bg-transparent', 'text-transparent');
+                    }
+                    if (pinIcon) {
+                        pinIcon.classList.add('text-primary');
+                        pinIcon.classList.remove('text-text-secondary', 'text-on-surface-variant');
+                    }
+                } else {
+                    card.classList.remove('border-primary', 'bg-primary/10', 'ring-2', 'ring-primary/40', 'shadow-md', 'selected-gov');
+                    card.classList.add('border-border');
+                    if (checkCircle) {
+                        checkCircle.classList.remove('border-primary', 'bg-primary', 'text-on-primary');
+                        checkCircle.classList.add('border-border', 'dark:border-outline/30', 'bg-transparent', 'text-transparent');
+                    }
+                    if (pinIcon) {
+                        pinIcon.classList.remove('text-primary');
+                        pinIcon.classList.add('text-text-secondary');
+                    }
+                }
+            });
+
+            // Update banner preview
+            const banner = document.getElementById('gov-selected-banner');
+            const bannerName = document.getElementById('banner-gov-name');
+            const bannerPrice = document.getElementById('banner-shipping-price');
+            if (banner) {
+                banner.classList.remove('hidden');
+            }
+            if (bannerName) {
+                bannerName.textContent = name;
+            }
+            if (bannerPrice) {
+                bannerPrice.innerHTML = `${price.toFixed(0)} ${currencySymbol}`;
+            }
+
+            // Update review step (Step 3)
+            const reviewGovName = document.getElementById('review-gov-name');
+            const reviewShippingCost = document.getElementById('review-shipping-cost');
+            if (reviewGovName) reviewGovName.textContent = name;
+            if (reviewShippingCost) reviewShippingCost.innerHTML = `${price.toFixed(0)} ${currencySymbol}`;
+
+            updateSidebarTotals();
+        }
+
+        function updateSidebarTotals() {
+            const shippingEl = document.getElementById('summary-shipping');
+            const totalEl = document.getElementById('summary-total');
+
+            if (shippingEl) {
+                shippingEl.innerHTML = `${currentShippingPrice.toFixed(0)} ${currencySymbol}`;
+            }
+            if (totalEl) {
+                const grandTotal = cartSubtotal + currentShippingPrice;
+                totalEl.innerHTML = `${grandTotal.toFixed(0)} ${currencySymbol}`;
+            }
+        }
+
+        // Live search filtering with Arabic normalization
+        function normalizeArabic(text) {
+            if (!text) return '';
+            return text.toString()
+                .toLowerCase()
+                .replace(/[إأآا]/g, 'ا')
+                .replace(/ة/g, 'ه')
+                .replace(/ى/g, 'ي')
+                .trim();
+        }
+
+        function filterGovernorates() {
+            const rawQuery = (document.getElementById('gov-search-input')?.value || '').trim();
+            const normalizedQuery = normalizeArabic(rawQuery);
+            const cards = document.querySelectorAll('.gov-card');
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const cardName = card.getAttribute('data-name') || '';
+                const normalizedCardName = normalizeArabic(cardName);
+
+                if (!normalizedQuery || normalizedCardName.includes(normalizedQuery)) {
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+
+            const emptyMsg = document.getElementById('gov-empty-msg');
+            if (emptyMsg) {
+                if (visibleCount === 0) {
+                    emptyMsg.classList.remove('hidden');
+                } else {
+                    emptyMsg.classList.add('hidden');
+                }
+            }
+        }
+
+        // Step 1 Validation
+        function validateStep1AndProceed() {
+            if (!selectedGovId) {
+                shakeStep(1);
+                alert('@Html.Raw(Localizer["stepper_select_gov_err"])');
+                return;
+            }
+            goToStep(2);
+        }
+
+        // Step 2 Validation
+        function validateStep2AndProceed() {
+            if (validateStep2(true)) {
+                goToStep(3);
+            }
+        }
+
+        function validateStep2(showErrors = true) {
+            const name = document.getElementById('CustomerName')?.value.trim();
+            const phone = document.getElementById('CustomerPhone')?.value.trim();
+            const address = document.getElementById('ShippingAddress')?.value.trim();
+
+            const errName = document.getElementById('err-customer-name');
+            const errPhone = document.getElementById('err-customer-phone');
+            const errAddress = document.getElementById('err-customer-address');
+
+            let isValid = true;
+
+            // Name validation
+            if (!name) {
+                if (showErrors && errName) errName.classList.remove('hidden');
+                isValid = false;
+            } else if (errName) {
+                errName.classList.add('hidden');
+            }
+
+            // Egyptian Phone validation: 10 or 11 digits, starts with 01 or 1
+            const phoneRegex = /^(010|011|012|015)[0-9]{8}$/;
+            const cleanPhone = phone ? phone.replace(/[\s-+]/g, '') : '';
+            const normalizedPhone = cleanPhone.startsWith('20') ? cleanPhone.substring(2) : cleanPhone;
+
+            if (!phone || (!phoneRegex.test(phone) && !phoneRegex.test('0' + normalizedPhone) && cleanPhone.length < 10)) {
+                if (showErrors && errPhone) errPhone.classList.remove('hidden');
+                isValid = false;
+            } else if (errPhone) {
+                errPhone.classList.add('hidden');
+            }
+
+            // Address validation
+            if (!address || address.length < 5) {
+                if (showErrors && errAddress) errAddress.classList.remove('hidden');
+                isValid = false;
+            } else if (errAddress) {
+                errAddress.classList.add('hidden');
+            }
+
+            if (!isValid && showErrors) {
+                shakeStep(2);
+            }
+
+            return isValid;
+        }
+
+        // Update Step 3 Review Card
+        function updateReviewCard() {
+            const card = document.querySelector(`.gov-card[data-id="${selectedGovId}"]`);
+            const govName = card ? card.getAttribute('data-name') : '';
+            const name = document.getElementById('CustomerName')?.value.trim() || '';
+            const phone = document.getElementById('CustomerPhone')?.value.trim() || '';
+            const address = document.getElementById('ShippingAddress')?.value.trim() || '';
+            const notes = document.getElementById('Notes')?.value.trim() || '';
+
+            const reviewGovName = document.getElementById('review-gov-name');
+            const reviewShippingCost = document.getElementById('review-shipping-cost');
+            const reviewCustomerName = document.getElementById('review-customer-name');
+            const reviewCustomerPhone = document.getElementById('review-customer-phone');
+            const reviewCustomerAddress = document.getElementById('review-customer-address');
+            const reviewCustomerNotes = document.getElementById('review-customer-notes');
+
+            if (reviewGovName) reviewGovName.textContent = govName;
+            if (reviewShippingCost) reviewShippingCost.innerHTML = `${currentShippingPrice.toFixed(0)} ${currencySymbol}`;
+            if (reviewCustomerName) reviewCustomerName.textContent = name;
+            if (reviewCustomerPhone) reviewCustomerPhone.textContent = phone;
+            if (reviewCustomerAddress) reviewCustomerAddress.textContent = address;
+
+            if (reviewCustomerNotes) {
+                if (notes) {
+                    reviewCustomerNotes.textContent = `ملاحظات: ${notes}`;
+                    reviewCustomerNotes.classList.remove('hidden');
+                } else {
+                    reviewCustomerNotes.classList.add('hidden');
+                }
+            }
+        }
+
+        function shakeStep(stepNum) {
+            const pane = document.getElementById(`step-pane-${stepNum}`);
+            if (pane) {
+                pane.classList.add('animate-shake');
+                setTimeout(() => pane.classList.remove('animate-shake'), 600);
+            }
+        }
+    </script>
+}

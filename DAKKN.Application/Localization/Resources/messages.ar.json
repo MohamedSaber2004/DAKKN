@@ -1,4 +1,4 @@
-﻿{
+{
   "dir": "rtl",
   "lang": "ar",
   "brand": "دَكن",
@@ -1996,5 +1996,26 @@
   "custom_order_status_Approved": "تمت الموافقة",
   "custom_order_status_Rejected": "مرفوض",
   "related_products_you_may_like": "قد يعجبك أيضًا",
-  "related_products_sub": "المزيد من المنتجات من نفس الفئة"
+  "related_products_sub": "المزيد من المنتجات من نفس الفئة",
+  "stepper_step1_title": "المحافظة والشحن",
+  "stepper_step1_desc": "تحديد المحافظة وحساب التكلفة",
+  "stepper_step2_title": "بيانات التوصيل",
+  "stepper_step2_desc": "اسم المستلم ورقم الهاتف والعنوان",
+  "stepper_step3_title": "مراجعة وتأكيد",
+  "stepper_step3_desc": "ملخص الطلب والدفع عند الاستلام",
+  "stepper_search_gov_ph": "ابحث عن اسم المحافظة...",
+  "stepper_next": "التالي",
+  "stepper_prev": "السابق",
+  "stepper_select_gov_err": "يرجى اختيار المحافظة أولاً للمتابعة",
+  "stepper_fill_required_err": "يرجى ملء جميع الحقول المطلوبة بشكل صحيح",
+  "stepper_phone_invalid_err": "يرجى إدخال رقم هاتف مصري صحيح يبدأ بـ 01 (11 رقماً)",
+  "stepper_edit": "تعديل",
+  "stepper_selected_gov_info": "التوصيل المتوقع خلال 24 - 48 ساعة عمل",
+  "stepper_cod_badge": "الدفع نقداً عند الاستلام",
+  "stepper_step1_heading": "اختر محافظة الشحن والتوصيل",
+  "stepper_step1_subheading": "اختر محافظتك من القائمة لعرض تكلفة الشحن بدقة وبشكل فوري",
+  "stepper_step2_heading": "بيانات المستلم وعنوان التوصيل",
+  "stepper_step2_subheading": "يرجى التأكد من كتابة العنوان ورقم الهاتف بدقة لسهولة الوصول إليك",
+  "stepper_step3_heading": "مراجعة تفاصيل الطلب والتأكيد",
+  "stepper_step3_subheading": "راجع بيانات الشحن والتوصيل والمنتجات قبل تأكيد الطلب النهائي"
 }
