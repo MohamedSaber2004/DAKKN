@@ -1,4 +1,4 @@
-﻿using DAKKN.Application.Common.Options;
+using DAKKN.Application.Common.Options;
 using Microsoft.Extensions.Configuration;
 
 namespace DAKKN.Application.Common.Services
@@ -42,15 +42,15 @@ namespace DAKKN.Application.Common.Services
         public static IEnumerable<string> GetAllPaths()
         {
             if (Options is null) yield break;
-            yield return Options.Root;
-            yield return Options.Products;
-            yield return Options.Categories;
-            yield return Options.Users;
-            yield return Options.Invoices;
-            yield return Options.Reviews;
-            yield return Options.Suggestions;
-            yield return Options.Support;
-            yield return Options.CustomOrders;
+            if (!string.IsNullOrWhiteSpace(Options.Root)) yield return Options.Root;
+            if (!string.IsNullOrWhiteSpace(Options.Products)) yield return Options.Products;
+            if (!string.IsNullOrWhiteSpace(Options.Categories)) yield return Options.Categories;
+            if (!string.IsNullOrWhiteSpace(Options.Users)) yield return Options.Users;
+            if (!string.IsNullOrWhiteSpace(Options.Invoices)) yield return Options.Invoices;
+            if (!string.IsNullOrWhiteSpace(Options.Reviews)) yield return Options.Reviews;
+            if (!string.IsNullOrWhiteSpace(Options.Suggestions)) yield return Options.Suggestions;
+            if (!string.IsNullOrWhiteSpace(Options.Support)) yield return Options.Support;
+            if (!string.IsNullOrWhiteSpace(Options.CustomOrders)) yield return Options.CustomOrders;
         }
     }
 }
