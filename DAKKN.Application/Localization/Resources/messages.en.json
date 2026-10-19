@@ -991,6 +991,7 @@
  "cart_summary_h": "Order Summary",
  "cart_subtotal": "Subtotal",
  "cart_shipping": "Shipping",
+ "cart_shipping_calculated_at_checkout": "Calculated at checkout",
  "cart_total": "Total",
  "cart_checkout": "Proceed to Checkout",
  "cart_remove": "Remove",

@@ -30,6 +30,7 @@
 
         <!-- Product Info -->
         <div class="flex flex-col">
+            <div class="mb-xl pb-xl border-b border-border dark:border-outline/10">
                 <div class="flex flex-wrap items-center gap-2 mb-md">
                     <span class="bg-primary/10 text-primary px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest inline-block">@(isArabic ? product.CategoryArName : product.CategoryName)</span>
                     @if (product.IsFeatured)
@@ -104,37 +105,6 @@
             </div>
         </div>
     </div>
-
-   @*  <!-- Features Grid (Trust builder) -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-lg mt-3xl pt-2xl border-t border-border dark:border-outline/10">
-        <div class="flex items-center gap-lg">
-            <div class="w-14 h-14 rounded-full bg-primary/10 text-primary flex items-center justify-center">
-                <span class="material-symbols-outlined">water_drop</span>
-            </div>
-            <div>
-                <h4 class="font-bold">@Localizer["waterproof"]</h4>
-                <p class="text-sm text-text-secondary">@Localizer["feat3_p"]</p>
-            </div>
-        </div>
-        <div class="flex items-center gap-lg">
-            <div class="w-14 h-14 rounded-full bg-primary/10 text-primary flex items-center justify-center">
-                <span class="material-symbols-outlined">wb_sunny</span>
-            </div>
-            <div>
-                <h4 class="font-bold">@Localizer["uv"]</h4>
-                <p class="text-sm text-text-secondary">@Localizer["feat3_p"]</p>
-            </div>
-        </div>
-        <div class="flex items-center gap-lg">
-            <div class="w-14 h-14 rounded-full bg-primary/10 text-primary flex items-center justify-center">
-                <span class="material-symbols-outlined">verified</span>
-            </div>
-            <div>
-                <h4 class="font-bold">@Localizer["Product_BestSeller"]</h4>
-                <p class="text-sm text-text-secondary">@Localizer["hero_badge"]</p>
-            </div>
-        </div>
-    </div> *@
 </div>
 
 <!-- Related Products -->

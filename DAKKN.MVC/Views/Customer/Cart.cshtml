@@ -86,33 +86,10 @@
                             <span id="summary-subtotal" class="font-bold text-text-primary">@Model.Subtotal.ToString("N2") @Html.Raw(Localizer["Currency_EGP"])</span>
                         </div>
 
-                        <div class="bg-surface-container dark:bg-white/5 rounded-2xl p-4 space-y-3">
-                            <label class="text-xs font-bold text-text-secondary uppercase tracking-wider flex items-center gap-2">
-                                <span class="material-symbols-outlined text-sm">local_shipping</span>
-                                @Localizer[LocalizationKeys.ShippingMessages.ShippingInfo.Key]
-                            </label>
-                            <select id="shipping-gov-select" class="w-full bg-surface dark:bg-inverse-surface border border-border dark:border-outline/20 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-primary text-text-primary transition-all" onchange="updateShipping()">
-                                <option value="">@Localizer[LocalizationKeys.ShippingMessages.SelectGov.Key]</option>
-                                @foreach (var gov in Model.Governorates)
-                                {
-                                    <option value="@gov.Id" data-price="@gov.ShippingPrice" selected="@(Model.ShippingGovernorateId == gov.Id ? true : null)">
-                                        @(isAr ? gov.ArName : gov.Name) (@gov.ShippingPrice.ToString("N0") @Html.Raw(Localizer["Currency_EGP"]))
-                                    </option>
-                                }
-                            </select>
-                        </div>
-
-                        <div class="flex justify-between text-text-secondary">
+                        <div class="flex justify-between items-center text-text-secondary text-sm">
                             <span>@Localizer["cart_shipping"]</span>
-                            <span id="summary-shipping" class="font-bold text-text-primary">
-                                @if (Model.ShippingGovernorateId.HasValue)
-                                {
-                                    @(Model.ShippingPrice.ToString("N2")) @Html.Raw(Localizer["Currency_EGP"])
-                                }
-                                else
-                                {
-                                    <span class="text-text-secondary/50">--</span>
-                                }
+                            <span id="summary-shipping" class="text-xs text-text-secondary/70 font-medium">
+                                @Localizer[LocalizationKeys.CartMessages.ShippingCalculatedAtCheckout.Key]
                             </span>
                         </div>
 
@@ -120,7 +97,7 @@
                         <div class="flex justify-between items-end">
                             <span class="font-bold text-lg">@Localizer["cart_total"]</span>
                             <div class="text-end">
-                                <div id="summary-total" class="text-4xl font-bold text-primary">@Model.Total.ToString("N2") @Html.Raw(Localizer["Currency_EGP"])</div>
+                                <div id="summary-total" class="text-4xl font-bold text-primary">@Model.Subtotal.ToString("N2") @Html.Raw(Localizer["Currency_EGP"])</div>
                                 <div class="text-[10px] text-text-secondary uppercase tracking-widest mt-1">@Localizer["cart_vat_inc"]</div>
                             </div>
                         </div>
@@ -210,8 +187,6 @@
         })();
 
         const currencyEgp = decodeEntities('@Html.Raw(Localizer["Currency_EGP"])');
-        let selectedGovId = '@Model.ShippingGovernorateId';
-        let currentShipping = @Model.ShippingPrice.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
 
         async function updateQty(productId, delta) {
             const qtyEl = document.querySelector(`.item-qty[data-product-id="${productId}"]`);
@@ -263,29 +238,6 @@
             }, 300);
         }
 
-        async function updateShipping() {
-            const select = document.getElementById('shipping-gov-select');
-            const govId = select.value;
-            if (!govId) return;
-
-            try {
-                const response = await fetch('/api/v1/cart/shipping', {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ shippingGovernorateId: govId })
-                });
-                const data = await response.json();
-                if (data.success) {
-                    selectedGovId = govId;
-                    currentShipping = parseFloat(data.data.shippingPrice) || 0;
-                    recalculateTotals();
-                }
-            } catch (e) {
-                console.error('Failed to update shipping:', e);
-                window.location.reload();
-            }
-        }
-
         function recalculateTotals() {
             let subtotal = 0;
             let itemCount = 0;
@@ -301,25 +253,12 @@
                 if (totalEl) totalEl.innerHTML = total.toFixed(2) + ' ' + currencyEgp;
             });
 
-            const shipping = currentShipping || 0;
-            const total = subtotal + shipping;
-
             const subtotalEl = document.getElementById('summary-subtotal');
-            const shippingEl = document.getElementById('summary-shipping');
             const totalEl = document.getElementById('summary-total');
             const itemsCountEl = document.getElementById('summary-items-count');
 
             if (subtotalEl) subtotalEl.innerHTML = subtotal.toFixed(2) + ' ' + currencyEgp;
-            if (shippingEl) {
-                if (shipping > 0) {
-                    shippingEl.innerHTML = shipping.toFixed(2) + ' ' + currencyEgp;
-                } else if (selectedGovId) {
-                    shippingEl.innerHTML = '0.00 ' + currencyEgp;
-                } else {
-                    shippingEl.innerHTML = '<span class="text-text-secondary/50">--</span>';
-                }
-            }
-            if (totalEl) totalEl.innerHTML = total.toFixed(2) + ' ' + currencyEgp;
+            if (totalEl) totalEl.innerHTML = subtotal.toFixed(2) + ' ' + currencyEgp;
             if (itemsCountEl) itemsCountEl.textContent = itemCount;
         }
 
@@ -333,12 +272,5 @@
         function updateCartBadge(count) {
             document.querySelectorAll('[id^="cart-badge"]').forEach(el => el.textContent = count || 0);
         }
-
-        window.addEventListener('DOMContentLoaded', function() {
-            const select = document.getElementById('shipping-gov-select');
-            if (select && selectedGovId) {
-                select.value = selectedGovId;
-            }
-        });
     </script>
 }

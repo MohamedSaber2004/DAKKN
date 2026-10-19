@@ -994,6 +994,7 @@
   "cart_summary_h": "ملخص الطلب",
   "cart_subtotal": "المجموع الفرعي",
   "cart_shipping": "الشحن",
+  "cart_shipping_calculated_at_checkout": "يُحسب عند إتمام الطلب",
   "cart_total": "الإجمالي",
   "cart_checkout": "إتمام الشراء",
   "cart_remove": "إزالة",

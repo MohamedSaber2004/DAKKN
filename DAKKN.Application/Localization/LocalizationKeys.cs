@@ -166,6 +166,7 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString ShippingUpdated = new("cart.shipping_updated");
             public static readonly KeyString BrowseProducts = new("cart.browse_products");
             public static readonly KeyString ContinueShopping = new("cart.continue_shopping");
+            public static readonly KeyString ShippingCalculatedAtCheckout = new("cart_shipping_calculated_at_checkout");
         }
 
         public static class CheckoutMessages
