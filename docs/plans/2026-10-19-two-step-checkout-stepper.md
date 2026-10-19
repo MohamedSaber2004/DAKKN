@@ -16,7 +16,7 @@
 - Modify: `DAKKN.Application/Localization/Resources/messages.ar.json:2020-2048`
 - Modify: `DAKKN.Application/Localization/Resources/messages.en.json:2220-2245`
 
-- [ ] **Step 1: Update Arabic messages file (`messages.ar.json`)**
+- [x] **Step 1: Update Arabic messages file (`messages.ar.json`)**
 Replace existing 4-step stepper messages with 2-step keys:
 ```json
   "stepper_step1_cart_title": "سلة المشتريات",
@@ -40,7 +40,7 @@ Replace existing 4-step stepper messages with 2-step keys:
   "stepper_cod_badge": "الدفع نقداً عند الاستلام",
 ```
 
-- [ ] **Step 2: Update English messages file (`messages.en.json`)**
+- [x] **Step 2: Update English messages file (`messages.en.json`)**
 Mirror the updated keys in English:
 ```json
   "stepper_step1_cart_title": "Cart Items",
@@ -64,7 +64,7 @@ Mirror the updated keys in English:
   "stepper_cod_badge": "Cash on Delivery",
 ```
 
-- [ ] **Step 3: Commit localization changes**
+- [x] **Step 3: Commit localization changes**
 ```bash
 git add DAKKN.Application/Localization/Resources/messages.*.json
 git commit -m "feat(i18n): update checkout stepper localization keys for 2-step flow"
@@ -77,14 +77,14 @@ git commit -m "feat(i18n): update checkout stepper localization keys for 2-step 
 **Files:**
 - Modify: `DAKKN.MVC/Views/Shop/Checkout.cshtml`
 
-- [ ] **Step 1: Update Stepper Progress Bar to 2 steps (0% and 100%)**
+- [x] **Step 1: Update Stepper Progress Bar to 2 steps (0% and 100%)**
 Change the stepper header to render only 2 nodes (`step-nav-1` and `step-nav-2`).
 `updateStepperNav(activeStep)` sets progress width to `0%` for Step 1 and `100%` for Step 2.
 
-- [ ] **Step 2: Keep Step 1 (Cart Items) and adjust navigation button**
+- [x] **Step 2: Keep Step 1 (Cart Items) and adjust navigation button**
 Adjust the next button in `step-pane-1` to say `@Localizer["stepper_next_delivery"]` and call `validateStep1AndProceed()`, which smoothly moves to Step 2.
 
-- [ ] **Step 3: Update Step 2 to integrate Governorate `<select>` with delivery details**
+- [x] **Step 3: Update Step 2 to integrate Governorate `<select>` with delivery details**
 In `step-pane-2`:
 - Header: `@Localizer["stepper_step2_heading"]`
 - Add governorate `<select id="shipping-gov-select" name="ShippingGovernorateId" required>` styled with custom Tailwind select arrow, displaying `@govName - @(gov.ShippingPrice > 0 ? $"{gov.ShippingPrice:N0} {Localizer[\"Currency_EGP\"]}" : Localizer["shipping_free"])`.
@@ -93,13 +93,13 @@ In `step-pane-2`:
 - Action buttons: "Previous: Cart Items" (`goToStep(1)`) and "Submit Order" (`btn-submit-order`).
 - Remove obsolete `step-pane-3` and `step-pane-4`.
 
-- [ ] **Step 4: Update JavaScript logic in `Shop/Checkout.cshtml`**
+- [x] **Step 4: Update JavaScript logic in `Shop/Checkout.cshtml`**
 - Adjust `goToStep(stepNumber)` for 2 steps (1 and 2).
 - Add `shipping-gov-select` change listener to update `selectedGovId`, set `currentShippingPrice`, call `/api/v1/cart/shipping` PUT, and recalculate totals.
 - Adjust `validateStep2(showErrors)` to validate both governorate selection and customer form inputs (Name, Phone, Address).
 - Update form submit listener to ensure validation passes before showing spinner and disabling submit button.
 
-- [ ] **Step 5: Commit Shop Checkout View changes**
+- [x] **Step 5: Commit Shop Checkout View changes**
 ```bash
 git add DAKKN.MVC/Views/Shop/Checkout.cshtml
 git commit -m "feat(shop): refactor checkout to 2-step stepper with integrated governorate dropdown"
@@ -112,13 +112,13 @@ git commit -m "feat(shop): refactor checkout to 2-step stepper with integrated g
 **Files:**
 - Modify: `DAKKN.MVC/Views/Customer/Checkout.cshtml`
 
-- [ ] **Step 1: Mirror 2-step stepper markup in `Customer/Checkout.cshtml`**
+- [x] **Step 1: Mirror 2-step stepper markup in `Customer/Checkout.cshtml`**
 Apply identical 2-step stepper progress bar, Step 1 cart review pane, and Step 2 integrated governorate dropdown + delivery form pane using Customer theme classes (`Layout = "_LayoutCustomer"`).
 
-- [ ] **Step 2: Mirror JavaScript logic in `Customer/Checkout.cshtml`**
+- [x] **Step 2: Mirror JavaScript logic in `Customer/Checkout.cshtml`**
 Ensure identical client-side validation, governorate change handler, AJAX sync, and submit spinner behavior.
 
-- [ ] **Step 3: Commit Customer Checkout View changes**
+- [x] **Step 3: Commit Customer Checkout View changes**
 ```bash
 git add DAKKN.MVC/Views/Customer/Checkout.cshtml
 git commit -m "feat(customer): refactor checkout to 2-step stepper with integrated governorate dropdown"
@@ -131,15 +131,15 @@ git commit -m "feat(customer): refactor checkout to 2-step stepper with integrat
 **Files:**
 - Test: Run .NET build and execute existing tests to ensure no regressions.
 
-- [ ] **Step 1: Build the solution**
+- [x] **Step 1: Build the solution**
 Run: `dotnet build DAKKN.slnx`
 Expected: Build succeeded with 0 errors.
 
-- [ ] **Step 2: Run tests**
+- [x] **Step 2: Run tests**
 Run: `dotnet test DAKKN.Tests/DAKKN.Tests.csproj --filter "FullyQualifiedName!~Performance"`
 Expected: All tests pass.
 
-- [ ] **Step 3: Commit any final adjustments**
+- [x] **Step 3: Commit any final adjustments**
 ```bash
 git commit -m "chore: verify build and tests pass for 2-step checkout"
 ```
