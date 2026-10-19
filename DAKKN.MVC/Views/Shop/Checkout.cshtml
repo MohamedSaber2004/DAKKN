@@ -10,36 +10,36 @@
     var cartSubtotal = Model.Items.Sum(i => i.Price * i.Quantity);
 }
 
-<div class="bg-surface dark:bg-[#080e1a] min-h-screen pt-28 pb-16 px-4 md:px-16">
+<div class="bg-surface dark:bg-[#080e1a] min-h-screen pt-20 sm:pt-28 pb-12 sm:pb-16 px-3 sm:px-6 lg:px-16">
     <div class="max-w-7xl mx-auto">
         <!-- Top Header & Back Link -->
-        <div class="mb-8 flex items-center justify-between gap-4">
-            <div class="flex items-center gap-4">
-                <a asp-action="Cart" class="w-11 h-11 rounded-2xl bg-surface dark:bg-[#0d1a2a] border border-outline-variant/20 dark:border-white/5 flex items-center justify-center text-on-surface-variant dark:text-slate-400 hover:text-primary transition-all" title="@Localizer["cart_continue_shopping"]">
-                    <span class="material-symbols-outlined">@backIcon</span>
+        <div class="mb-6 sm:mb-8 flex items-center justify-between gap-3 sm:gap-4">
+            <div class="flex items-center gap-3 sm:gap-4 min-w-0">
+                <a asp-action="Cart" class="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-surface dark:bg-[#0d1a2a] border border-outline-variant/20 dark:border-white/5 flex items-center justify-center text-on-surface-variant dark:text-slate-400 hover:text-primary transition-all flex-shrink-0" title="@Localizer["cart_continue_shopping"]">
+                    <span class="material-symbols-outlined text-lg sm:text-xl">@backIcon</span>
                 </a>
-                <div>
-                    <h1 class="text-2xl md:text-3xl font-extrabold text-on-surface dark:text-white">@Localizer["checkout_h1"]</h1>
-                    <p class="text-xs md:text-sm text-on-surface-variant dark:text-slate-400 mt-1">@Localizer["checkout_shipping_p"]</p>
+                <div class="min-w-0">
+                    <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold text-on-surface dark:text-white truncate">@Localizer["checkout_h1"]</h1>
+                    <p class="text-xs md:text-sm text-on-surface-variant dark:text-slate-400 mt-0.5 truncate">@Localizer["checkout_shipping_p"]</p>
                 </div>
             </div>
 
-            <div class="hidden sm:flex items-center gap-2 px-4 py-2 rounded-2xl bg-primary/10 text-primary text-xs font-bold border border-primary/20">
+            <div class="hidden sm:flex items-center gap-2 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-2xl bg-primary/10 text-primary text-xs font-bold border border-primary/20 flex-shrink-0">
                 <span class="material-symbols-outlined text-base">verified_user</span>
                 <span>@Localizer["checkout_pay_cod"]</span>
             </div>
         </div>
 
         <!-- Empty State View -->
-        <div id="checkout-empty-state" class="@(Model.IsEmpty ? "" : "hidden") bg-surface-container-low dark:bg-[#0d1a2a] rounded-[32px] border border-outline-variant/10 p-12 text-center max-w-xl mx-auto space-y-6">
-            <div class="w-20 h-20 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto text-4xl">
-                <span class="material-symbols-outlined text-4xl">shopping_cart</span>
+        <div id="checkout-empty-state" class="@(Model.IsEmpty ? "" : "hidden") bg-surface-container-low dark:bg-[#0d1a2a] rounded-2xl sm:rounded-[32px] border border-outline-variant/10 p-8 sm:p-12 text-center max-w-xl mx-auto space-y-6">
+            <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto text-3xl sm:text-4xl">
+                <span class="material-symbols-outlined text-3xl sm:text-4xl">shopping_cart</span>
             </div>
             <div class="space-y-2">
-                <h2 class="text-2xl font-bold text-on-surface dark:text-white">@Localizer["cart_empty_h"]</h2>
-                <p class="text-on-surface-variant dark:text-slate-400 text-sm">@Localizer["cart_empty_p"]</p>
+                <h2 class="text-xl sm:text-2xl font-bold text-on-surface dark:text-white">@Localizer["cart_empty_h"]</h2>
+                <p class="text-on-surface-variant dark:text-slate-400 text-xs sm:text-sm">@Localizer["cart_empty_p"]</p>
             </div>
-            <a asp-action="Products" class="inline-flex items-center gap-2 bg-primary text-on-primary px-8 py-4 rounded-2xl font-bold hover:shadow-large transition-all">
+            <a asp-action="Products" class="inline-flex items-center gap-2 bg-primary text-on-primary px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-bold hover:shadow-large transition-all text-sm sm:text-base">
                 @Localizer[LocalizationKeys.CartMessages.BrowseProducts.Key]
                 <span class="material-symbols-outlined text-sm">@nextIcon</span>
             </a>
@@ -49,38 +49,105 @@
         {
             <div id="checkout-main-content">
                 <!-- Stepper Progress Tracker (2 Steps) -->
-                <div class="mb-10 bg-surface-container-low dark:bg-[#0d1a2a] rounded-[28px] border border-outline-variant/10 p-4 md:p-6 shadow-sm">
-                    <div class="relative flex items-center justify-between max-w-2xl mx-auto">
-                        <!-- Background Line -->
-                        <div class="absolute top-1/2 -translate-y-1/2 start-10 end-10 h-1 bg-surface-container-high dark:bg-white/10 rounded-full -z-0"></div>
+                <div class="mb-6 sm:mb-10 bg-surface-container-low dark:bg-[#0d1a2a] rounded-2xl sm:rounded-[28px] border border-outline-variant/10 p-3.5 sm:p-5 md:p-6 shadow-sm">
+                    <div class="relative flex items-center justify-between max-w-2xl mx-auto px-4 sm:px-10">
+                        <!-- Background Line passing cleanly through center of circles -->
+                        <div class="absolute top-[22px] sm:top-[24px] -translate-y-1/2 start-12 end-12 sm:start-20 sm:end-20 h-1 bg-surface-container-high dark:bg-white/10 rounded-full -z-0"></div>
                         <!-- Active Progress Line -->
-                        <div id="stepper-progress-bar" class="absolute top-1/2 -translate-y-1/2 start-10 h-1 bg-primary rounded-full transition-all duration-500 -z-0" style="width: 0%;"></div>
+                        <div id="stepper-progress-bar" class="absolute top-[22px] sm:top-[24px] -translate-y-1/2 start-12 sm:start-20 h-1 bg-primary rounded-full transition-all duration-500 -z-0" style="width: 0%;"></div>
 
                         <!-- Step 1 Button: سلة المشتريات والمنتجات -->
-                        <button type="button" onclick="goToStep(1)" id="step-nav-1" class="step-nav-btn relative z-10 flex flex-col items-center gap-2 group focus:outline-none">
-                            <div class="step-icon-circle w-11 h-11 md:w-13 md:h-13 rounded-2xl flex items-center justify-center text-lg md:text-xl font-bold transition-all duration-300 ring-4 ring-primary/20 bg-primary text-on-primary shadow-md scale-105">
-                                <span class="material-symbols-outlined text-2xl">shopping_bag</span>
+                        <button type="button" onclick="goToStep(1)" id="step-nav-1" class="step-nav-btn relative z-10 flex flex-col items-center gap-1.5 sm:gap-2 group focus:outline-none">
+                            <div class="step-icon-circle w-11 h-11 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center text-lg sm:text-xl font-bold transition-all duration-300 ring-4 ring-primary/20 bg-primary text-on-primary shadow-md scale-105">
+                                <span class="material-symbols-outlined text-xl sm:text-2xl">shopping_bag</span>
                             </div>
                             <div class="text-center">
-                                <span class="step-label block text-xs md:text-sm font-bold text-primary transition-colors">@Localizer["stepper_step1_cart_title"]</span>
+                                <span class="step-label block text-xs sm:text-sm font-bold text-primary transition-colors">@Localizer["stepper_step1_cart_title"]</span>
                                 <span class="hidden md:block text-[11px] text-on-surface-variant dark:text-slate-400">@Localizer["stepper_step1_cart_desc"]</span>
                             </div>
                         </button>
 
                         <!-- Step 2 Button: بيانات التوصيل والشحن -->
-                        <button type="button" onclick="goToStep(2)" id="step-nav-2" class="step-nav-btn relative z-10 flex flex-col items-center gap-2 group focus:outline-none">
-                            <div class="step-icon-circle w-11 h-11 md:w-13 md:h-13 rounded-2xl flex items-center justify-center text-lg md:text-xl font-bold transition-all duration-300 ring-4 ring-surface dark:ring-[#0d1a2a] bg-surface-container dark:bg-white/10 text-on-surface-variant dark:text-slate-400 border border-outline-variant/20 dark:border-white/5">
-                                <span class="material-symbols-outlined text-2xl">local_shipping</span>
+                        <button type="button" onclick="goToStep(2)" id="step-nav-2" class="step-nav-btn relative z-10 flex flex-col items-center gap-1.5 sm:gap-2 group focus:outline-none">
+                            <div class="step-icon-circle w-11 h-11 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center text-lg sm:text-xl font-bold transition-all duration-300 ring-4 ring-surface dark:ring-[#0d1a2a] bg-surface-container dark:bg-white/10 text-on-surface-variant dark:text-slate-400 border border-outline-variant/20 dark:border-white/5">
+                                <span class="material-symbols-outlined text-xl sm:text-2xl">local_shipping</span>
                             </div>
                             <div class="text-center">
-                                <span class="step-label block text-xs md:text-sm font-medium text-on-surface-variant dark:text-slate-400 transition-colors">@Localizer["stepper_step2_title"]</span>
+                                <span class="step-label block text-xs sm:text-sm font-medium text-on-surface-variant dark:text-slate-400 transition-colors">@Localizer["stepper_step2_title"]</span>
                                 <span class="hidden md:block text-[11px] text-on-surface-variant dark:text-slate-400">@Localizer["stepper_step2_desc"]</span>
                             </div>
                         </button>
                     </div>
                 </div>
 
-                <form id="checkout-form" asp-action="PlaceOrder" method="post" class="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-10 items-start">
+                <!-- Mobile Collapsible Order Summary Drawer (Visible on < lg screens) -->
+                <div class="block lg:hidden mb-6 bg-surface-container-low dark:bg-[#0d1a2a] rounded-2xl border border-outline-variant/10 overflow-hidden shadow-sm">
+                    <button type="button" onclick="toggleMobileSummary()" class="w-full p-4 flex items-center justify-between text-start focus:outline-none select-none hover:bg-surface-container/50 transition-colors">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+                                <span class="material-symbols-outlined text-xl">receipt_long</span>
+                            </div>
+                            <div>
+                                <div class="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-on-surface dark:text-white">
+                                    <span>@Localizer["checkout_summary_h"]</span>
+                                    <span class="text-primary font-medium">(<span class="mobile-summary-items-count">@Model.TotalQuantity</span>)</span>
+                                    <span id="mobile-summary-chevron" class="material-symbols-outlined text-base transition-transform duration-300">expand_more</span>
+                                </div>
+                                <span class="text-[11px] text-on-surface-variant dark:text-slate-400">@Localizer["checkout_pay_cod"]</span>
+                            </div>
+                        </div>
+                        <div class="text-end">
+                            <span class="text-[10px] text-on-surface-variant dark:text-slate-400 block uppercase">@Localizer["order_total"]</span>
+                            <span class="mobile-summary-total font-extrabold text-base sm:text-lg text-primary">@((cartSubtotal + Model.ShippingPrice).ToString("N0")) @Html.Raw(Localizer["Currency_EGP"])</span>
+                        </div>
+                    </button>
+
+                    <div id="mobile-summary-drawer" class="hidden px-4 pb-4 border-t border-outline-variant/10 dark:border-white/5 pt-3 space-y-3">
+                        <!-- Mini Items List -->
+                        <div id="mobile-summary-items-list" class="space-y-2.5 max-h-[220px] overflow-y-auto pe-1 custom-scroll divide-y divide-outline-variant/10 dark:divide-white/5">
+                            @foreach (var item in Model.Items)
+                            {
+                                var itemTotal = item.Price * item.Quantity;
+                                var currentItemName = isAr && !string.IsNullOrEmpty(item.ArName) ? item.ArName : item.Name;
+                                <div class="mobile-summary-item flex items-center justify-between gap-3 pt-2.5 first:pt-0" id="mobile-summary-item-@item.ProductId" data-product-id="@item.ProductId" data-price="@item.Price.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)">
+                                    <div class="flex items-center gap-2.5 min-w-0">
+                                        <img src="@(item.ImageUrl ?? "/images/placeholders/product-placeholder.svg")" alt="@currentItemName" class="w-10 h-10 rounded-lg object-cover flex-shrink-0 border border-outline-variant/10" onerror="this.src='/images/placeholders/product-placeholder.svg'">
+                                        <div class="min-w-0">
+                                            <p class="font-bold text-xs text-on-surface dark:text-white truncate">@currentItemName</p>
+                                            <p class="text-[10px] text-on-surface-variant dark:text-slate-400">
+                                                <span class="mobile-item-qty">@item.Quantity</span> × @item.Price.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <span class="mobile-item-total text-xs font-bold text-on-surface dark:text-white whitespace-nowrap">@itemTotal.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</span>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Calculation Breakdown -->
+                        <div class="border-t border-outline-variant/10 dark:border-white/5 pt-3 space-y-2 text-xs">
+                            <div class="flex justify-between text-on-surface-variant dark:text-slate-400">
+                                <span>@Localizer["order_subtotal"]</span>
+                                <span class="font-bold text-on-surface dark:text-white mobile-summary-subtotal">@cartSubtotal.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</span>
+                            </div>
+                            <div class="flex justify-between text-on-surface-variant dark:text-slate-400">
+                                <span>@Localizer["order_shipping"]</span>
+                                <span class="font-bold text-on-surface dark:text-white mobile-summary-shipping">
+                                    @if (Model.ShippingGovernorateId.HasValue)
+                                    {
+                                        @($"{Model.ShippingPrice:N0} {Localizer["Currency_EGP"]}")
+                                    }
+                                    else
+                                    {
+                                        <span class="text-on-surface-variant/50 font-normal">--</span>
+                                    }
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="checkout-form" asp-action="PlaceOrder" method="post" class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 md:gap-10 items-start">
                     @Html.AntiForgeryToken()
 
                     <!-- Main Stepper Content Area (2 Columns) -->
@@ -88,15 +155,15 @@
 
                         <!-- STEP 1: مراجعة وتعديل سلة المشتريات والمنتجات -->
                         <div id="step-pane-1" class="step-pane transition-all duration-300">
-                            <section class="bg-surface-container-low dark:bg-[#0d1a2a] rounded-[32px] border border-outline-variant/10 p-6 md:p-8 shadow-sm space-y-6">
-                                <div class="flex items-start justify-between gap-4 border-b border-outline-variant/10 dark:border-white/5 pb-6">
-                                    <div class="flex items-center gap-4">
-                                        <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
-                                            <span class="material-symbols-outlined text-2xl">shopping_bag</span>
+                            <section class="bg-surface-container-low dark:bg-[#0d1a2a] rounded-2xl sm:rounded-[32px] border border-outline-variant/10 p-4 sm:p-6 md:p-8 shadow-sm space-y-6">
+                                <div class="flex items-start justify-between gap-4 border-b border-outline-variant/10 dark:border-white/5 pb-4 sm:pb-6">
+                                    <div class="flex items-center gap-3 sm:gap-4">
+                                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+                                            <span class="material-symbols-outlined text-xl sm:text-2xl">shopping_bag</span>
                                         </div>
                                         <div>
-                                            <h2 class="text-xl md:text-2xl font-bold text-on-surface dark:text-white">@Localizer["stepper_step1_cart_heading"]</h2>
-                                            <p class="text-sm text-on-surface-variant dark:text-slate-400 mt-1">@Localizer["stepper_step1_cart_subheading"]</p>
+                                            <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-on-surface dark:text-white">@Localizer["stepper_step1_cart_heading"]</h2>
+                                            <p class="text-xs sm:text-sm text-on-surface-variant dark:text-slate-400 mt-0.5 sm:mt-1">@Localizer["stepper_step1_cart_subheading"]</p>
                                         </div>
                                     </div>
                                     <span class="hidden sm:inline-flex px-3 py-1 rounded-full bg-primary/10 text-primary font-bold text-xs">
@@ -110,33 +177,33 @@
                                     {
                                         var itemTotal = item.Price * item.Quantity;
                                         var currentItemName = isAr && !string.IsNullOrEmpty(item.ArName) ? item.ArName : item.Name;
-                                        <div class="checkout-cart-item pt-4 first:pt-0 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 transition-all duration-300" data-product-id="@item.ProductId" data-price="@item.Price.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)">
-                                            <div class="flex items-center gap-4 min-w-0">
-                                                <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-surface dark:bg-[#080e1a] overflow-hidden flex-shrink-0 border border-outline-variant/20 dark:border-white/5 p-1">
+                                        <div class="checkout-cart-item pt-4 first:pt-0 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 transition-all duration-300" data-product-id="@item.ProductId" data-price="@item.Price.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)">
+                                            <div class="flex items-center gap-3 sm:gap-4 min-w-0 w-full sm:w-auto">
+                                                <div class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl bg-surface dark:bg-[#080e1a] overflow-hidden flex-shrink-0 border border-outline-variant/20 dark:border-white/5 p-1">
                                                     <img src="@(item.ImageUrl ?? "/images/placeholders/product-placeholder.svg")" alt="@currentItemName" class="w-full h-full object-cover rounded-xl" onerror="this.src='/images/placeholders/product-placeholder.svg'">
                                                 </div>
-                                                <div class="min-w-0">
-                                                    <h3 class="font-bold text-base text-on-surface dark:text-white truncate">@currentItemName</h3>
-                                                    <p class="text-xs text-on-surface-variant dark:text-slate-400 mt-1">@Localizer["cart_unit"]: @item.Price.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</p>
+                                                <div class="min-w-0 flex-1">
+                                                    <h3 class="font-bold text-sm sm:text-base text-on-surface dark:text-white truncate">@currentItemName</h3>
+                                                    <p class="text-xs text-on-surface-variant dark:text-slate-400 mt-0.5">@Localizer["cart_unit"]: @item.Price.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</p>
                                                 </div>
                                             </div>
 
-                                            <div class="flex items-center justify-between sm:justify-end gap-5 w-full sm:w-auto self-stretch sm:self-center pt-2 sm:pt-0 border-t sm:border-t-0 border-outline-variant/10">
+                                            <div class="flex items-center justify-between sm:justify-end gap-2.5 sm:gap-4 md:gap-5 w-full sm:w-auto self-stretch sm:self-center pt-2 sm:pt-0 border-t sm:border-t-0 border-outline-variant/10">
                                                 <!-- Quantity Stepper Controls -->
-                                                <div class="flex items-center gap-2 bg-surface dark:bg-[#080e1a] p-1 rounded-2xl border border-outline-variant/20 dark:border-white/5">
-                                                    <button type="button" onclick="updateCheckoutQty('@item.ProductId', -1)" class="w-8 h-8 rounded-xl bg-surface-container-low dark:bg-[#0d1a2a] shadow-sm flex items-center justify-center text-on-surface-variant dark:text-slate-400 hover:text-primary hover:bg-primary/10 transition-all font-bold select-none">−</button>
-                                                    <span class="checkout-item-qty font-bold text-sm w-8 text-center text-on-surface dark:text-white" data-product-id="@item.ProductId">@item.Quantity</span>
-                                                    <button type="button" onclick="updateCheckoutQty('@item.ProductId', 1)" class="w-8 h-8 rounded-xl bg-surface-container-low dark:bg-[#0d1a2a] shadow-sm flex items-center justify-center text-on-surface-variant dark:text-slate-400 hover:text-primary hover:bg-primary/10 transition-all font-bold select-none">+</button>
+                                                <div class="flex items-center gap-1 sm:gap-2 bg-surface dark:bg-[#080e1a] p-1 rounded-xl sm:rounded-2xl border border-outline-variant/20 dark:border-white/5">
+                                                    <button type="button" onclick="updateCheckoutQty('@item.ProductId', -1)" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-surface-container-low dark:bg-[#0d1a2a] shadow-sm flex items-center justify-center text-on-surface-variant dark:text-slate-400 hover:text-primary hover:bg-primary/10 transition-all font-bold select-none text-base sm:text-lg">−</button>
+                                                    <span class="checkout-item-qty font-bold text-xs sm:text-sm w-7 sm:w-8 text-center text-on-surface dark:text-white" data-product-id="@item.ProductId">@item.Quantity</span>
+                                                    <button type="button" onclick="updateCheckoutQty('@item.ProductId', 1)" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-surface-container-low dark:bg-[#0d1a2a] shadow-sm flex items-center justify-center text-on-surface-variant dark:text-slate-400 hover:text-primary hover:bg-primary/10 transition-all font-bold select-none text-base sm:text-lg">+</button>
                                                 </div>
 
                                                 <!-- Item Total -->
-                                                <div class="text-end min-w-[90px]">
-                                                    <span class="checkout-item-total font-extrabold text-base text-primary block" data-product-id="@item.ProductId">@itemTotal.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</span>
+                                                <div class="text-end min-w-[70px] sm:min-w-[90px]">
+                                                    <span class="checkout-item-total font-extrabold text-sm sm:text-base text-primary block" data-product-id="@item.ProductId">@itemTotal.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</span>
                                                 </div>
 
                                                 <!-- Delete Button -->
-                                                <button type="button" onclick="removeCheckoutItem('@item.ProductId')" class="w-9 h-9 rounded-xl flex items-center justify-center text-on-surface-variant dark:text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-all" title="@Localizer["supp_delete"]">
-                                                    <span class="material-symbols-outlined text-lg">delete</span>
+                                                <button type="button" onclick="removeCheckoutItem('@item.ProductId')" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-on-surface-variant dark:text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-all flex-shrink-0" title="@Localizer["supp_delete"]">
+                                                    <span class="material-symbols-outlined text-base sm:text-lg">delete</span>
                                                 </button>
                                             </div>
                                         </div>
@@ -144,31 +211,31 @@
                                 </div>
 
                                 <!-- Step 1 Actions: Continue Shopping vs Next to Delivery -->
-                                <div class="pt-6 border-t border-outline-variant/10 dark:border-white/5 flex flex-col-reverse sm:flex-row items-center justify-between gap-4">
-                                    <a asp-action="Products" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl border border-outline-variant/20 dark:border-white/5 text-on-surface-variant dark:text-slate-400 hover:text-on-surface dark:hover:text-white hover:bg-surface-container dark:hover:bg-white/5 font-bold transition-all">
+                                <div class="pt-6 border-t border-outline-variant/10 dark:border-white/5 flex flex-col-reverse sm:flex-row items-center justify-between gap-3 sm:gap-4">
+                                    <a asp-action="Products" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 rounded-2xl border border-outline-variant/20 dark:border-white/5 text-on-surface-variant dark:text-slate-400 hover:text-on-surface dark:hover:text-white hover:bg-surface-container dark:hover:bg-white/5 font-bold transition-all text-sm">
                                         <span class="material-symbols-outlined text-sm">@backIcon</span>
                                         <span>@Localizer[LocalizationKeys.CartMessages.ContinueShopping.Key]</span>
                                     </a>
 
-                                    <button type="button" onclick="validateStep1AndProceed()" class="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-primary text-on-primary px-8 py-4 rounded-2xl font-bold text-base shadow-medium hover:shadow-large hover:scale-[1.01] active:scale-95 transition-all">
+                                    <button type="button" onclick="validateStep1AndProceed()" class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 sm:gap-3 bg-primary text-on-primary px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-bold text-sm sm:text-base shadow-medium hover:shadow-large hover:scale-[1.01] active:scale-95 transition-all">
                                         <span>@Localizer["stepper_next_delivery"]</span>
-                                        <span class="material-symbols-outlined text-lg">@nextIcon</span>
+                                        <span class="material-symbols-outlined text-base sm:text-lg">@nextIcon</span>
                                     </button>
                                 </div>
                             </section>
                         </div>
 
-                        <!-- STEP 2: بيانات التوصيل والشحن وتأكيد الطلب -->
+                        <!-- STEP 2: بيانات التوصيل والشحن وطلب المنتج -->
                         <div id="step-pane-2" class="step-pane hidden transition-all duration-300">
-                            <section class="bg-surface-container-low dark:bg-[#0d1a2a] rounded-[32px] border border-outline-variant/10 p-6 md:p-8 shadow-sm space-y-6">
-                                <div class="flex items-start justify-between gap-4 border-b border-outline-variant/10 dark:border-white/5 pb-6">
-                                    <div class="flex items-center gap-4">
-                                        <div class="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
-                                            <span class="material-symbols-outlined text-2xl">local_shipping</span>
+                            <section class="bg-surface-container-low dark:bg-[#0d1a2a] rounded-2xl sm:rounded-[32px] border border-outline-variant/10 p-4 sm:p-6 md:p-8 shadow-sm space-y-6">
+                                <div class="flex items-start justify-between gap-4 border-b border-outline-variant/10 dark:border-white/5 pb-4 sm:pb-6">
+                                    <div class="flex items-center gap-3 sm:gap-4">
+                                        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary flex-shrink-0">
+                                            <span class="material-symbols-outlined text-xl sm:text-2xl">local_shipping</span>
                                         </div>
                                         <div>
-                                            <h2 class="text-xl md:text-2xl font-bold text-on-surface dark:text-white">@Localizer["stepper_step2_heading"]</h2>
-                                            <p class="text-sm text-on-surface-variant dark:text-slate-400 mt-1">@Localizer["stepper_step2_subheading"]</p>
+                                            <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-on-surface dark:text-white">@Localizer["stepper_step2_heading"]</h2>
+                                            <p class="text-xs sm:text-sm text-on-surface-variant dark:text-slate-400 mt-0.5 sm:mt-1">@Localizer["stepper_step2_subheading"]</p>
                                         </div>
                                     </div>
                                     <span class="hidden sm:inline-flex px-3 py-1 rounded-full bg-primary/10 text-primary font-bold text-xs">
@@ -176,14 +243,14 @@
                                     </span>
                                 </div>
 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 pt-2">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5 pt-2">
                                     <!-- Governorate Dropdown Select -->
-                                    <div class="md:col-span-2 space-y-2">
+                                    <div class="md:col-span-2 space-y-1.5 sm:space-y-2">
                                         <label for="shipping-gov-select" class="block font-bold text-xs uppercase tracking-wider text-on-surface-variant dark:text-slate-400 px-1">
                                             @Localizer["checkout_gov"] <span class="text-error">*</span>
                                         </label>
                                         <div class="relative">
-                                            <select id="shipping-gov-select" name="ShippingGovernorateId" required class="w-full ps-12 pe-10 py-4 bg-surface dark:bg-[#080e1a] rounded-2xl border border-outline-variant/20 dark:border-white/5 focus:ring-2 focus:ring-primary outline-none transition-all font-medium text-on-surface dark:text-white appearance-none cursor-pointer">
+                                            <select id="shipping-gov-select" name="ShippingGovernorateId" required class="w-full ps-12 pe-10 py-3.5 sm:py-4 bg-surface dark:bg-[#080e1a] rounded-2xl border border-outline-variant/20 dark:border-white/5 focus:ring-2 focus:ring-primary outline-none transition-all font-medium text-sm sm:text-base text-on-surface dark:text-white appearance-none cursor-pointer">
                                                 @if (!Model.ShippingGovernorateId.HasValue)
                                                 {
                                                     <option value="" disabled selected>@Localizer["stepper_select_gov_ph"]</option>
@@ -212,88 +279,88 @@
                                                     }
                                                 }
                                             </select>
-                                            <span class="material-symbols-outlined absolute start-4 top-1/2 -translate-y-1/2 text-on-surface-variant dark:text-slate-400 pointer-events-none">location_on</span>
-                                            <span class="material-symbols-outlined absolute end-4 top-1/2 -translate-y-1/2 text-on-surface-variant dark:text-slate-400 pointer-events-none">expand_more</span>
+                                            <span class="material-symbols-outlined absolute start-4 top-1/2 -translate-y-1/2 text-on-surface-variant dark:text-slate-400 pointer-events-none text-xl">location_on</span>
+                                            <span class="material-symbols-outlined absolute end-4 top-1/2 -translate-y-1/2 text-on-surface-variant dark:text-slate-400 pointer-events-none text-xl">expand_more</span>
                                         </div>
                                         <p class="text-xs text-rose-500 hidden" id="err-shipping-gov">@Localizer["stepper_select_gov_err"]</p>
                                     </div>
 
-                                    <!-- Full Name -->
-                                    <div class="md:col-span-2 space-y-2">
+                                    <!-- Full Name (Half-width on desktop, full-width on mobile) -->
+                                    <div class="md:col-span-1 space-y-1.5 sm:space-y-2">
                                         <label for="CustomerName" class="block font-bold text-xs uppercase tracking-wider text-on-surface-variant dark:text-slate-400 px-1">
                                             @Localizer["checkout_name"] <span class="text-error">*</span>
                                         </label>
                                         <div class="relative">
-                                            <input required type="text" id="CustomerName" name="CustomerName" class="w-full ps-12 pe-4 py-4 bg-surface dark:bg-[#080e1a] rounded-2xl border border-outline-variant/20 dark:border-white/5 focus:ring-2 focus:ring-primary outline-none transition-all font-medium text-on-surface dark:text-white" placeholder="@Localizer["checkout_name_ph"]">
-                                            <span class="material-symbols-outlined absolute start-4 top-1/2 -translate-y-1/2 text-on-surface-variant dark:text-slate-400">person</span>
+                                            <input required type="text" id="CustomerName" name="CustomerName" class="w-full ps-12 pe-4 py-3.5 sm:py-4 bg-surface dark:bg-[#080e1a] rounded-2xl border border-outline-variant/20 dark:border-white/5 focus:ring-2 focus:ring-primary outline-none transition-all font-medium text-sm sm:text-base text-on-surface dark:text-white" placeholder="@Localizer["checkout_name_ph"]">
+                                            <span class="material-symbols-outlined absolute start-4 top-1/2 -translate-y-1/2 text-on-surface-variant dark:text-slate-400 text-xl">person</span>
                                         </div>
                                         <p class="text-xs text-rose-500 hidden" id="err-customer-name">@Localizer["validation_required"]</p>
                                     </div>
 
-                                    <!-- Phone Number -->
-                                    <div class="md:col-span-2 space-y-2">
+                                    <!-- Phone Number (Half-width on desktop, full-width on mobile) -->
+                                    <div class="md:col-span-1 space-y-1.5 sm:space-y-2">
                                         <label for="CustomerPhone" class="block font-bold text-xs uppercase tracking-wider text-on-surface-variant dark:text-slate-400 px-1">
                                             @Localizer["checkout_phone"] <span class="text-error">*</span>
                                         </label>
                                         <div class="flex items-center bg-surface dark:bg-[#080e1a] rounded-2xl border border-outline-variant/20 dark:border-white/5 focus-within:ring-2 focus-within:ring-primary transition-all overflow-hidden">
-                                            <div class="px-4 py-4 border-e border-outline-variant/20 dark:border-white/5 bg-surface-container-high dark:bg-white/5 flex items-center gap-2 select-none flex-shrink-0">
+                                            <div class="px-3.5 sm:px-4 py-3.5 sm:py-4 border-e border-outline-variant/20 dark:border-white/5 bg-surface-container-high dark:bg-white/5 flex items-center gap-2 select-none flex-shrink-0">
                                                 <img src="https://flagcdn.com/w20/eg.png" width="20" alt="@Localizer["flag_egypt_alt"]">
-                                                <span class="text-sm font-bold text-on-surface dark:text-white" dir="ltr">+20</span>
+                                                <span class="text-xs sm:text-sm font-bold text-on-surface dark:text-white" dir="ltr">+20</span>
                                             </div>
-                                            <input required type="tel" id="CustomerPhone" name="CustomerPhone" class="flex-1 px-4 py-4 bg-transparent border-none outline-none focus:ring-0 font-medium text-on-surface dark:text-white" placeholder="@Localizer["checkout_phone_ph"]" dir="ltr">
+                                            <input required type="tel" id="CustomerPhone" name="CustomerPhone" class="flex-1 px-3.5 sm:px-4 py-3.5 sm:py-4 bg-transparent border-none outline-none focus:ring-0 font-medium text-sm sm:text-base text-on-surface dark:text-white" placeholder="@Localizer["checkout_phone_ph"]" dir="ltr">
                                         </div>
                                         <p class="text-xs text-rose-500 hidden" id="err-customer-phone">@Localizer["stepper_phone_invalid_err"]</p>
                                     </div>
 
                                     <!-- Detailed Address -->
-                                    <div class="md:col-span-2 space-y-2">
+                                    <div class="md:col-span-2 space-y-1.5 sm:space-y-2">
                                         <label for="ShippingAddress" class="block font-bold text-xs uppercase tracking-wider text-on-surface-variant dark:text-slate-400 px-1">
                                             @Localizer["checkout_address"] <span class="text-error">*</span>
                                         </label>
                                         <div class="relative">
-                                            <textarea required id="ShippingAddress" name="ShippingAddress" rows="3" class="w-full ps-12 pe-4 py-3 bg-surface dark:bg-[#080e1a] rounded-2xl border border-outline-variant/20 dark:border-white/5 focus:ring-2 focus:ring-primary outline-none transition-all font-medium text-on-surface dark:text-white" placeholder="@Localizer["checkout_address_ph"]"></textarea>
-                                            <span class="material-symbols-outlined absolute start-4 top-4 text-on-surface-variant dark:text-slate-400">home_pin</span>
+                                            <textarea required id="ShippingAddress" name="ShippingAddress" rows="3" class="w-full ps-12 pe-4 py-3 sm:py-3.5 bg-surface dark:bg-[#080e1a] rounded-2xl border border-outline-variant/20 dark:border-white/5 focus:ring-2 focus:ring-primary outline-none transition-all font-medium text-sm sm:text-base text-on-surface dark:text-white" placeholder="@Localizer["checkout_address_ph"]"></textarea>
+                                            <span class="material-symbols-outlined absolute start-4 top-4 text-on-surface-variant dark:text-slate-400 text-xl">home_pin</span>
                                         </div>
                                         <p class="text-xs text-rose-500 hidden" id="err-customer-address">@Localizer["validation_required"]</p>
                                     </div>
 
                                     <!-- Order Notes (Optional) -->
-                                    <div class="md:col-span-2 space-y-2">
+                                    <div class="md:col-span-2 space-y-1.5 sm:space-y-2">
                                         <label for="Notes" class="block font-bold text-xs uppercase tracking-wider text-on-surface-variant dark:text-slate-400 px-1">
                                             @Localizer["checkout_notes"]
                                         </label>
                                         <div class="relative">
-                                            <textarea id="Notes" name="Notes" rows="2" class="w-full ps-12 pe-4 py-3 bg-surface dark:bg-[#080e1a] rounded-2xl border border-outline-variant/20 dark:border-white/5 focus:ring-2 focus:ring-primary outline-none transition-all font-medium text-on-surface dark:text-white" placeholder="@Localizer["checkout_notes_ph"]"></textarea>
-                                            <span class="material-symbols-outlined absolute start-4 top-4 text-on-surface-variant dark:text-slate-400">edit_note</span>
+                                            <textarea id="Notes" name="Notes" rows="2" class="w-full ps-12 pe-4 py-3 bg-surface dark:bg-[#080e1a] rounded-2xl border border-outline-variant/20 dark:border-white/5 focus:ring-2 focus:ring-primary outline-none transition-all font-medium text-sm sm:text-base text-on-surface dark:text-white" placeholder="@Localizer["checkout_notes_ph"]"></textarea>
+                                            <span class="material-symbols-outlined absolute start-4 top-4 text-on-surface-variant dark:text-slate-400 text-xl">edit_note</span>
                                         </div>
                                     </div>
 
                                     <!-- Payment Info Card -->
-                                    <div class="md:col-span-2 p-5 rounded-2xl bg-surface dark:bg-[#080e1a] border border-outline-variant/20 dark:border-white/5 flex items-center justify-between gap-4">
-                                        <div class="flex items-center gap-3.5">
-                                            <div class="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+                                    <div class="md:col-span-2 p-4 sm:p-5 rounded-2xl bg-surface dark:bg-[#080e1a] border border-outline-variant/20 dark:border-white/5 flex items-center justify-between gap-4">
+                                        <div class="flex items-center gap-3 sm:gap-3.5">
+                                            <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
                                                 <span class="material-symbols-outlined text-xl">payments</span>
                                             </div>
                                             <div>
-                                                <p class="font-bold text-sm text-on-surface dark:text-white">@Localizer["checkout_pay_cod"]</p>
-                                                <p class="text-xs text-on-surface-variant dark:text-slate-400 mt-0.5">@Localizer["checkout_pay_cod_p"]</p>
+                                                <p class="font-bold text-xs sm:text-sm text-on-surface dark:text-white">@Localizer["checkout_pay_cod"]</p>
+                                                <p class="text-[11px] sm:text-xs text-on-surface-variant dark:text-slate-400 mt-0.5">@Localizer["checkout_pay_cod_p"]</p>
                                             </div>
                                         </div>
-                                        <span class="material-symbols-outlined text-primary text-2xl">verified</span>
+                                        <span class="material-symbols-outlined text-primary text-2xl flex-shrink-0">verified</span>
                                     </div>
                                 </div>
 
-                                <!-- Step 2 Actions: Step Back to Cart vs Submit Order -->
-                                <div class="pt-6 border-t border-outline-variant/10 dark:border-white/5 flex flex-col-reverse sm:flex-row items-center justify-between gap-4">
-                                    <button type="button" onclick="goToStep(1)" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl border border-outline-variant/20 dark:border-white/5 text-on-surface-variant dark:text-slate-400 hover:text-on-surface dark:hover:text-white hover:bg-surface-container dark:hover:bg-white/5 font-bold transition-all">
+                                <!-- Step 2 Actions: Back to Cart vs Submit (طلب المنتج حالا) -->
+                                <div class="pt-6 border-t border-outline-variant/10 dark:border-white/5 flex flex-col-reverse sm:flex-row items-center justify-between gap-3 sm:gap-4">
+                                    <button type="button" onclick="goToStep(1)" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 rounded-2xl border border-outline-variant/20 dark:border-white/5 text-on-surface-variant dark:text-slate-400 hover:text-on-surface dark:hover:text-white hover:bg-surface-container dark:hover:bg-white/5 font-bold transition-all text-sm">
                                         <span class="material-symbols-outlined text-sm">@backIcon</span>
                                         <span>@Localizer["stepper_prev_cart"]</span>
                                     </button>
 
-                                    <button type="submit" id="btn-submit-order" class="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-primary text-on-primary px-10 py-4 rounded-2xl font-bold text-lg shadow-large hover:scale-[1.02] active:scale-95 transition-all">
-                                        <span class="material-symbols-outlined text-xl">lock</span>
-                                        <span id="submit-btn-text">@Localizer["checkout_submit"]</span>
-                                        <span id="submit-spinner" class="hidden material-symbols-outlined animate-spin text-xl">progress_activity</span>
+                                    <button type="submit" class="submit-order-btn w-full sm:w-auto inline-flex items-center justify-center gap-2.5 sm:gap-3 bg-primary text-on-primary px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-bold text-sm sm:text-base shadow-medium hover:shadow-large hover:scale-[1.01] active:scale-95 transition-all">
+                                        <span class="material-symbols-outlined text-lg sm:text-xl">lock</span>
+                                        <span class="submit-btn-text">@Localizer["checkout_submit"]</span>
+                                        <span class="submit-spinner hidden material-symbols-outlined animate-spin text-lg sm:text-xl">progress_activity</span>
                                     </button>
                                 </div>
                             </section>
@@ -301,10 +368,10 @@
                     </div>
 
                     <!-- Sticky Order Summary Sidebar (1 Column) -->
-                    <aside class="space-y-6 sticky top-24" id="checkout-sidebar">
-                        <section class="bg-surface-container-low dark:bg-[#0d1a2a] rounded-[32px] border border-outline-variant/10 p-6 md:p-8 shadow-sm space-y-6">
+                    <aside class="space-y-6 lg:sticky lg:top-24" id="checkout-sidebar">
+                        <section class="bg-surface-container-low dark:bg-[#0d1a2a] rounded-2xl sm:rounded-[32px] border border-outline-variant/10 p-4 sm:p-6 md:p-8 shadow-sm space-y-6">
                             <div class="flex items-center justify-between border-b border-outline-variant/10 dark:border-white/5 pb-4">
-                                <h2 class="text-xl font-bold text-on-surface dark:text-white">@Localizer["checkout_summary_h"]</h2>
+                                <h2 class="text-lg sm:text-xl font-bold text-on-surface dark:text-white">@Localizer["checkout_summary_h"]</h2>
                                 <div class="flex items-center gap-2">
                                     <button type="button" onclick="goToStep(1)" class="text-xs font-bold text-primary hover:underline flex items-center gap-1" title="@Localizer["stepper_step1_cart_title"]">
                                         <span class="material-symbols-outlined text-sm">edit</span>
@@ -323,22 +390,22 @@
                                     var itemTotal = item.Price * item.Quantity;
                                     var currentItemName = isAr && !string.IsNullOrEmpty(item.ArName) ? item.ArName : item.Name;
                                     <div class="sidebar-item flex items-center gap-3.5 pt-3.5 first:pt-0" id="sidebar-item-@item.ProductId" data-product-id="@item.ProductId" data-price="@item.Price.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)">
-                                        <div class="w-14 h-14 rounded-2xl bg-surface dark:bg-[#080e1a] overflow-hidden flex-shrink-0 border border-outline-variant/20 dark:border-white/5 p-1">
+                                        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-surface dark:bg-[#080e1a] overflow-hidden flex-shrink-0 border border-outline-variant/20 dark:border-white/5 p-1">
                                             <img src="@(item.ImageUrl ?? "/images/placeholders/product-placeholder.svg")" alt="@currentItemName" class="w-full h-full object-cover rounded-xl" onerror="this.src='/images/placeholders/product-placeholder.svg'">
                                         </div>
                                         <div class="flex-1 min-w-0">
-                                            <p class="font-bold text-sm text-on-surface dark:text-white truncate">@currentItemName</p>
-                                            <p class="text-xs text-on-surface-variant dark:text-slate-400 mt-0.5">
+                                            <p class="font-bold text-xs sm:text-sm text-on-surface dark:text-white truncate">@currentItemName</p>
+                                            <p class="text-[11px] sm:text-xs text-on-surface-variant dark:text-slate-400 mt-0.5">
                                                 <span class="sidebar-item-qty">@item.Quantity</span> × @item.Price.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])
                                             </p>
                                         </div>
-                                        <p class="sidebar-item-total font-bold text-sm text-on-surface dark:text-white whitespace-nowrap">@itemTotal.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</p>
+                                        <p class="sidebar-item-total font-bold text-xs sm:text-sm text-on-surface dark:text-white whitespace-nowrap">@itemTotal.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</p>
                                     </div>
                                 }
                             </div>
 
                             <!-- Price Calculations -->
-                            <div class="border-t border-outline-variant/10 dark:border-white/5 pt-5 space-y-3 text-sm">
+                            <div class="border-t border-outline-variant/10 dark:border-white/5 pt-5 space-y-3 text-xs sm:text-sm">
                                 <div class="flex justify-between text-on-surface-variant dark:text-slate-400">
                                     <span>@Localizer["order_subtotal"]</span>
                                     <span class="font-bold text-on-surface dark:text-white" id="summary-subtotal">@cartSubtotal.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</span>
@@ -358,13 +425,35 @@
                                 </div>
                                 <div class="border-t border-outline-variant/10 dark:border-white/5 pt-3 flex justify-between items-end">
                                     <div>
-                                        <span class="font-extrabold text-base text-on-surface dark:text-white block">@Localizer["order_total"]</span>
+                                        <span class="font-extrabold text-sm sm:text-base text-on-surface dark:text-white block">@Localizer["order_total"]</span>
                                         <span class="text-[10px] text-on-surface-variant dark:text-slate-400 uppercase tracking-wider">@Localizer["cart_vat_inc"]</span>
                                     </div>
-                                    <span class="font-extrabold text-2xl md:text-3xl text-primary" id="summary-total">
+                                    <span class="font-extrabold text-xl sm:text-2xl md:text-3xl text-primary" id="summary-total">
                                         @((cartSubtotal + Model.ShippingPrice).ToString("N0")) @Html.Raw(Localizer["Currency_EGP"])
                                     </span>
                                 </div>
+                            </div>
+
+                            <!-- Primary Actions Inside Order Summary Card (Desktop Only: prevents duplicate button confusion on mobile) -->
+                            <div id="checkout-sidebar-actions" class="hidden lg:block space-y-3 pt-1">
+                                <!-- In Step 1: Proceed to Delivery button -->
+                                <button type="button" id="sidebar-btn-next-step" onclick="validateStep1AndProceed()" class="w-full inline-flex items-center justify-center gap-3 bg-primary text-on-primary px-8 py-4 rounded-2xl font-bold text-base shadow-medium hover:shadow-large hover:scale-[1.01] active:scale-95 transition-all">
+                                    <span>@Localizer["stepper_next_delivery"]</span>
+                                    <span class="material-symbols-outlined text-lg">@nextIcon</span>
+                                </button>
+
+                                <!-- In Step 2: Submit Order button (Inside Order Summary) -->
+                                <button type="submit" id="btn-submit-order" class="submit-order-btn hidden w-full inline-flex items-center justify-center gap-3 bg-primary text-on-primary px-8 py-4 rounded-2xl font-bold text-base shadow-large hover:scale-[1.01] active:scale-95 transition-all">
+                                    <span class="material-symbols-outlined text-xl">lock</span>
+                                    <span class="submit-btn-text" id="submit-btn-text">@Localizer["checkout_submit"]</span>
+                                    <span class="submit-spinner hidden material-symbols-outlined animate-spin text-xl" id="submit-spinner">progress_activity</span>
+                                </button>
+
+                                <!-- Back to Step 1 Button (Visible on Step 2 in sidebar) -->
+                                <button type="button" id="sidebar-btn-prev-step" onclick="goToStep(1)" class="hidden w-full inline-flex items-center justify-center gap-2 py-3 rounded-2xl border border-outline-variant/20 dark:border-white/5 text-on-surface-variant dark:text-slate-400 hover:text-on-surface dark:hover:text-white hover:bg-surface-container dark:hover:bg-white/5 font-bold text-sm transition-all">
+                                    <span class="material-symbols-outlined text-sm">@backIcon</span>
+                                    <span>@Localizer["stepper_prev_cart"]</span>
+                                </button>
                             </div>
 
                             <!-- Trust Signals -->
@@ -491,17 +580,15 @@
                         return;
                     }
 
-                    const submitBtn = document.getElementById('btn-submit-order');
-                    const text = document.getElementById('submit-btn-text');
-                    const spinner = document.getElementById('submit-spinner');
-                    if (submitBtn) {
-                        submitBtn.disabled = true;
-                        submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
-                    }
-                    if (text && spinner) {
-                        text.classList.add('hidden');
-                        spinner.classList.remove('hidden');
-                    }
+                    const submitButtons = document.querySelectorAll('.submit-order-btn, #btn-submit-order');
+                    submitButtons.forEach(btn => {
+                        btn.disabled = true;
+                        btn.classList.add('opacity-75', 'cursor-not-allowed');
+                        const text = btn.querySelector('.submit-btn-text') || btn.querySelector('#submit-btn-text');
+                        const spinner = btn.querySelector('.submit-spinner') || btn.querySelector('#submit-spinner');
+                        if (text) text.classList.add('hidden');
+                        if (spinner) spinner.classList.remove('hidden');
+                    });
                 });
             }
         });
@@ -529,6 +616,21 @@
                         pane.classList.remove('active');
                     }
                 }
+            }
+
+            // Toggle Sidebar Action Buttons
+            const btnNext = document.getElementById('sidebar-btn-next-step');
+            const btnSubmit = document.getElementById('btn-submit-order');
+            const btnPrev = document.getElementById('sidebar-btn-prev-step');
+
+            if (stepNumber === 1) {
+                if (btnNext) btnNext.classList.remove('hidden');
+                if (btnSubmit) btnSubmit.classList.add('hidden');
+                if (btnPrev) btnPrev.classList.add('hidden');
+            } else {
+                if (btnNext) btnNext.classList.add('hidden');
+                if (btnSubmit) btnSubmit.classList.remove('hidden');
+                if (btnPrev) btnPrev.classList.remove('hidden');
             }
 
             // Update Stepper Navigation Visuals
@@ -564,20 +666,34 @@
 
                 if (i < activeStep) {
                     // Completed Step
-                    circle.className = 'step-icon-circle w-11 h-11 md:w-13 md:h-13 rounded-2xl flex items-center justify-center text-lg md:text-xl font-bold ring-4 ring-surface dark:ring-[#0d1a2a] bg-emerald-500/15 text-emerald-500 border border-emerald-500/30 shadow-sm';
-                    circle.innerHTML = '<span class="material-symbols-outlined text-2xl font-bold">check</span>';
-                    label.className = 'step-label block text-xs md:text-sm font-bold text-emerald-500';
+                    circle.className = 'step-icon-circle w-11 h-11 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center text-lg sm:text-xl font-bold ring-4 ring-surface dark:ring-[#0d1a2a] bg-emerald-500/15 text-emerald-500 border border-emerald-500/30 shadow-sm';
+                    circle.innerHTML = '<span class="material-symbols-outlined text-xl sm:text-2xl font-bold">check</span>';
+                    label.className = 'step-label block text-xs sm:text-sm font-bold text-emerald-500';
                 } else if (i === activeStep) {
                     // Active Step
-                    circle.className = 'step-icon-circle w-11 h-11 md:w-13 md:h-13 rounded-2xl flex items-center justify-center text-lg md:text-xl font-bold ring-4 ring-primary/20 bg-primary text-on-primary shadow-md scale-105';
-                    circle.innerHTML = `<span class="material-symbols-outlined text-2xl">${stepIcons[i]}</span>`;
-                    label.className = 'step-label block text-xs md:text-sm font-bold text-primary';
+                    circle.className = 'step-icon-circle w-11 h-11 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center text-lg sm:text-xl font-bold ring-4 ring-primary/20 bg-primary text-on-primary shadow-md scale-105';
+                    circle.innerHTML = `<span class="material-symbols-outlined text-xl sm:text-2xl">${stepIcons[i]}</span>`;
+                    label.className = 'step-label block text-xs sm:text-sm font-bold text-primary';
                 } else {
                     // Upcoming Step
-                    circle.className = 'step-icon-circle w-11 h-11 md:w-13 md:h-13 rounded-2xl flex items-center justify-center text-lg md:text-xl font-bold ring-4 ring-surface dark:ring-[#0d1a2a] bg-surface-container dark:bg-white/10 text-on-surface-variant dark:text-slate-400 border border-outline-variant/20 dark:border-white/5';
-                    circle.innerHTML = `<span class="material-symbols-outlined text-2xl">${stepIcons[i]}</span>`;
-                    label.className = 'step-label block text-xs md:text-sm font-medium text-on-surface-variant dark:text-slate-400';
+                    circle.className = 'step-icon-circle w-11 h-11 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center text-lg sm:text-xl font-bold ring-4 ring-surface dark:ring-[#0d1a2a] bg-surface-container dark:bg-white/10 text-on-surface-variant dark:text-slate-400 border border-outline-variant/20 dark:border-white/5';
+                    circle.innerHTML = `<span class="material-symbols-outlined text-xl sm:text-2xl">${stepIcons[i]}</span>`;
+                    label.className = 'step-label block text-xs sm:text-sm font-medium text-on-surface-variant dark:text-slate-400';
                 }
+            }
+        }
+
+        function toggleMobileSummary() {
+            const drawer = document.getElementById('mobile-summary-drawer');
+            const chevron = document.getElementById('mobile-summary-chevron');
+            if (!drawer) return;
+            const isHidden = drawer.classList.contains('hidden');
+            if (isHidden) {
+                drawer.classList.remove('hidden');
+                if (chevron) chevron.style.transform = 'rotate(180deg)';
+            } else {
+                drawer.classList.add('hidden');
+                if (chevron) chevron.style.transform = 'rotate(0deg)';
             }
         }
 
@@ -605,6 +721,10 @@
                         const sidebarQtyEl = document.querySelector(`#sidebar-item-${productId} .sidebar-item-qty`);
                         if (sidebarQtyEl) sidebarQtyEl.textContent = newQty;
 
+                        // Update in mobile summary drawer as well
+                        const mobileQtyEl = document.querySelector(`#mobile-summary-item-${productId} .mobile-item-qty`);
+                        if (mobileQtyEl) mobileQtyEl.textContent = newQty;
+
                         updateCartBadges(result.data);
                         recalculateAllTotals();
                     }
@@ -617,9 +737,11 @@
         async function removeCheckoutItem(productId) {
             const itemRow = document.querySelector(`.checkout-cart-item[data-product-id="${productId}"]`);
             const sidebarRow = document.getElementById(`sidebar-item-${productId}`);
+            const mobileRow = document.getElementById(`mobile-summary-item-${productId}`);
 
             if (itemRow) itemRow.classList.add('item-removed');
             if (sidebarRow) sidebarRow.classList.add('item-removed');
+            if (mobileRow) mobileRow.classList.add('item-removed');
 
             setTimeout(async () => {
                 try {
@@ -633,6 +755,7 @@
                         if (result && result.success) {
                             if (itemRow) itemRow.remove();
                             if (sidebarRow) sidebarRow.remove();
+                            if (mobileRow) mobileRow.remove();
                             updateCartBadges(result.data);
                             recalculateAllTotals();
                             checkIfEmptyCart();
@@ -673,6 +796,15 @@
                     if (sidebarTotalEl) sidebarTotalEl.innerHTML = `${itemTotal.toFixed(0)} ${currencySymbol}`;
                     if (sidebarQtyEl) sidebarQtyEl.textContent = qty;
                 }
+
+                // Update Mobile Summary Item Total
+                const mobileItem = document.getElementById(`mobile-summary-item-${productId}`);
+                if (mobileItem) {
+                    const mobileTotalEl = mobileItem.querySelector('.mobile-item-total');
+                    const mobileQtyEl = mobileItem.querySelector('.mobile-item-qty');
+                    if (mobileTotalEl) mobileTotalEl.innerHTML = `${itemTotal.toFixed(0)} ${currencySymbol}`;
+                    if (mobileQtyEl) mobileQtyEl.textContent = qty;
+                }
             });
 
             cartSubtotal = subtotal;
@@ -680,10 +812,16 @@
             // Update Subtotal Displays
             const subtotalEl = document.getElementById('summary-subtotal');
             if (subtotalEl) subtotalEl.innerHTML = `${subtotal.toFixed(0)} ${currencySymbol}`;
+            document.querySelectorAll('.mobile-summary-subtotal').forEach(el => {
+                el.innerHTML = `${subtotal.toFixed(0)} ${currencySymbol}`;
+            });
 
             // Update Total Quantities
             const summaryQtyEl = document.getElementById('summary-items-count');
             if (summaryQtyEl) summaryQtyEl.textContent = totalQty;
+            document.querySelectorAll('.mobile-summary-items-count').forEach(el => {
+                el.textContent = totalQty;
+            });
 
             // Update Grand Total
             updateSidebarTotals();
@@ -745,10 +883,18 @@
             if (shippingEl) {
                 shippingEl.innerHTML = `${currentShippingPrice.toFixed(0)} ${currencySymbol}`;
             }
+            const grandTotal = cartSubtotal + currentShippingPrice;
             if (totalEl) {
-                const grandTotal = cartSubtotal + currentShippingPrice;
                 totalEl.innerHTML = `${grandTotal.toFixed(0)} ${currencySymbol}`;
             }
+
+            // Sync Mobile Order Summary
+            document.querySelectorAll('.mobile-summary-total').forEach(el => {
+                el.innerHTML = `${grandTotal.toFixed(0)} ${currencySymbol}`;
+            });
+            document.querySelectorAll('.mobile-summary-shipping').forEach(el => {
+                el.innerHTML = currentShippingPrice > 0 ? `${currentShippingPrice.toFixed(0)} ${currencySymbol}` : '--';
+            });
         }
 
         // Step 1 Validation (Cart has items)

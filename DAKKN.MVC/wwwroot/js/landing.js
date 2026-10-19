@@ -452,6 +452,7 @@ window.slideGoTo = slideGoTo;
 window.updateSlider = updateSlider;
 window.toggleLang = toggleLang;
 window.guestAddToCart = guestAddToCart;
+window.guestBuyNow = guestBuyNow;
 
 let landingResizeTimer;
 window.addEventListener('resize', () => {
@@ -532,6 +533,45 @@ async function guestAddToCart(btnOrId, nameOrId, priceOrName, imageOrPrice, mayb
     } catch (e) {
         console.error('Failed to add to cart:', e);
         showCartErrorToast('');
+    }
+}
+
+async function guestBuyNow(btnOrId, nameOrId, priceOrName, imageOrPrice, checkoutUrl) {
+    let id, name, btn;
+    if (typeof btnOrId === 'object' && btnOrId.tagName) {
+        btn = btnOrId;
+        id = nameOrId;
+        name = priceOrName;
+    } else {
+        id = btnOrId;
+        name = nameOrId;
+    }
+    const targetUrl = checkoutUrl || '/shop/checkout';
+    if (btn) {
+        btn.disabled = true;
+        btn.classList.add('opacity-80', 'cursor-not-allowed');
+        btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-xl">progress_activity</span>';
+    }
+    try {
+        const response = await fetch('/api/v1/cart/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ productId: id, quantity: 1 })
+        });
+        const data = await response.json();
+        if (data && data.success) {
+            window.location.href = targetUrl;
+            return;
+        } else {
+            showCartErrorToast(data.message || '');
+            if (btn) {
+                btn.disabled = false;
+                btn.classList.remove('opacity-80', 'cursor-not-allowed');
+            }
+        }
+    } catch (e) {
+        console.error('Failed to buy now:', e);
+        window.location.href = targetUrl;
     }
 }
 
