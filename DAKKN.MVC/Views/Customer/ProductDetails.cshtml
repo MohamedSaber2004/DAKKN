@@ -21,23 +21,25 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-2xl">
         <!-- Image Gallery -->
         <div class="space-y-lg">
-            <div class="aspect-square rounded-[48px] bg-surface dark:bg-inverse-surface border border-border dark:border-outline/10 overflow-hidden shadow-large group relative">
-                <img src="@product.ImageUrl" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="@(isArabic ? product.ArName : product.Name)">
-                <div class="absolute top-8 right-8 flex flex-col gap-sm">
-                    <button type="button" id="fav-top-btn" onclick="toggleFav('@product.Id', this)" class="w-12 h-12 rounded-full bg-surface/90 backdrop-blur-md shadow-medium flex items-center justify-center transition-all @(isFavorited ? "text-error" : "text-text-secondary hover:text-error")">
-                        <span class="material-symbols-outlined @(isFavorited ? "filled-icon" : "")">favorite</span>
-                    </button>
-                    <button class="w-12 h-12 rounded-full bg-surface/90 backdrop-blur-md shadow-medium flex items-center justify-center text-text-secondary hover:text-primary transition-all">
-                        <span class="material-symbols-outlined">share</span>
-                    </button>
-                </div>
-            </div>
+            @{
+                // This page layers its favourite/share controls over the product image.
+                ViewData["galleryShowActions"] = true;
+            }
+            <partial name="Partials/_ProductGallery" model="product" />
         </div>
 
         <!-- Product Info -->
         <div class="flex flex-col">
-            <div class="mb-xl pb-xl border-b border-border dark:border-outline/10">
-                <span class="bg-primary/10 text-primary px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-md inline-block">@(isArabic ? product.CategoryArName : product.CategoryName)</span>
+                <div class="flex flex-wrap items-center gap-2 mb-md">
+                    <span class="bg-primary/10 text-primary px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest inline-block">@(isArabic ? product.CategoryArName : product.CategoryName)</span>
+                    @if (product.IsFeatured)
+                    {
+                        <span class="bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 px-3 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1">
+                            <span class="material-symbols-outlined text-xs">star</span>
+                            @Localizer["admin_product_featured_badge"]
+                        </span>
+                    }
+                </div>
                 <h1 class="customer-page-title mb-sm">@(isArabic ? product.ArName : product.Name)</h1>
                 <div class="flex items-center gap-xl">
                     <span class="text-3xl font-bold text-primary">@product.Price @Localizer["Currency_EGP"]</span>

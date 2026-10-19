@@ -9,7 +9,6 @@ namespace DAKKN.Domain.Entities
         public string? Description { get; set; }
         public string? Icon { get; set; }
         public int DisplayOrder { get; set; }
-        public bool IsActive { get; set; } = true;
 
         public ICollection<SupportTicket> Tickets { get; set; } = new List<SupportTicket>();
         public ICollection<SupportFAQ> FAQs { get; set; } = new List<SupportFAQ>();

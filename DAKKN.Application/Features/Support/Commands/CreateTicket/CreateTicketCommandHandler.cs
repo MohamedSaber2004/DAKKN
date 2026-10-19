@@ -47,7 +47,7 @@ namespace DAKKN.Application.Features.Support.Commands.CreateTicket
             }
             else
             {
-                var user = await _userManager.FindByIdAsync(userId.Value.ToString());
+                var user = userId.HasValue ? await _userManager.FindByIdAsync(userId.Value.ToString()) : null;
                 customerName = user?.FullName ?? _currentUserService.UserName;
                 customerEmail = user?.Email ?? string.Empty;
             }

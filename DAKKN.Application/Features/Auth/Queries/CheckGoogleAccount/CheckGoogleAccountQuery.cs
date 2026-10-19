@@ -43,7 +43,7 @@ namespace DAKKN.Application.Features.Auth.Queries.CheckGoogleAccount
             }
 
             bool isNewUser = user == null;
-            bool needsPhoneNumber = isNewUser || string.IsNullOrEmpty(user.PhoneNumber);
+            bool needsPhoneNumber = isNewUser || string.IsNullOrEmpty(user?.PhoneNumber);
 
             return new CheckGoogleAccountResponseDto(needsPhoneNumber, isNewUser, payload.Email, payload.Name);
         }

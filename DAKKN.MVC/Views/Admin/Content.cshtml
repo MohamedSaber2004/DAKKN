@@ -21,6 +21,10 @@
                     <span class="material-symbols-outlined">branding_watermark</span>
                     <span class="font-body-lg">@Localizer["admin_hero_settings"]</span>
                 </button>
+                <button onclick="switchTab('featured-products')" id="tab-featured-products" class="content-tab-btn flex items-center gap-md p-3 rounded-xl transition-all duration-200 text-left rtl:text-right w-full">
+                    <span class="material-symbols-outlined">star</span>
+                    <span class="font-body-lg">@Localizer["admin_featured_products"]</span>
+                </button>
                 <button onclick="switchTab('customer-stories')" id="tab-customer-stories" class="content-tab-btn flex items-center gap-md p-3 rounded-xl transition-all duration-200 text-left rtl:text-right w-full">
                     <span class="material-symbols-outlined">forum</span>
                     <span class="font-body-lg">@Localizer["section_testimonials"]</span>
@@ -331,6 +335,56 @@
             <button onclick="saveContactSection()" class="mt-xl bg-primary text-on-primary px-xl py-md rounded-full font-bold">@Localizer["admin_save_changes"]</button>
         </div>
 
+        <!-- Section: Featured Products -->
+        <div id="panel-featured-products" class="content-panel hidden bg-surface dark:bg-[#1E293B] rounded-[32px] shadow-medium border border-admin-border dark:border-white/5 p-xl">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-xl">
+                <div>
+                    <h2 class="font-h2 text-h2 font-bold text-admin-primary dark:text-white flex items-center gap-2">
+                        <span class="material-symbols-outlined text-amber-500">star</span>
+                        @Localizer["admin_featured_products"]
+                    </h2>
+                    <p class="text-admin-secondary dark:text-admin-muted-variant mt-xs text-sm">@Localizer["admin_featured_prod_desc"]</p>
+                </div>
+                <button onclick="saveFeaturedProductsSection()" class="bg-primary text-on-primary px-xl py-md rounded-full font-bold shadow-medium hover:scale-105 transition-all whitespace-nowrap">
+                    @Localizer["admin_save_changes"]
+                </button>
+            </div>
+
+            <!-- Options bar & search -->
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-admin-page border border-admin-border mb-lg">
+                <label class="relative inline-flex items-center gap-3 cursor-pointer select-none">
+                    <input id="featured-auto-select" type="checkbox" class="sr-only peer" @(Model.Products.AutoSelectBestSellers ? "checked" : "") />
+                    <div class="w-11 h-6 bg-outline/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:ltr:left-[2px] after:rtl:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                    <span class="text-xs sm:text-sm font-semibold text-admin-primary">@Localizer["admin_featured_auto_bestsellers"]</span>
+                </label>
+                <div class="relative w-full sm:w-72">
+                    <input id="featured-search-input" type="text" oninput="filterFeaturedProductsList(this.value)" placeholder="@Localizer["admin_featured_search_ph"]"
+                           class="w-full bg-admin-card border border-admin-border rounded-xl px-4 py-2 ltr:pl-9 rtl:pr-9 text-xs sm:text-sm outline-none focus:ring-1 focus:ring-primary text-admin-primary transition-all" />
+                    <span class="material-symbols-outlined absolute ltr:left-2.5 rtl:right-2.5 top-1/2 -translate-y-1/2 text-admin-secondary text-base pointer-events-none">search</span>
+                </div>
+            </div>
+
+            <!-- Product Cards Grid -->
+            <div id="featured-products-catalog-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[600px] overflow-y-auto pr-1 custom-scrollbar">
+                @foreach (var prod in Model.Products.AllProducts)
+                {
+                    <div class="cms-product-card p-3 rounded-2xl border border-admin-border dark:border-white/5 bg-admin-card flex items-center gap-3 hover:border-primary/50 transition-all select-none" data-search="@(prod.Name.ToLower()) @(prod.Category.ToLower())">
+                        <div class="w-14 h-14 rounded-xl overflow-hidden bg-surface-container shrink-0">
+                            <img src="@prod.ImageUrl" alt="@prod.Name" class="w-full h-full object-cover" onerror="this.src='/images/placeholders/product-placeholder.svg'" />
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <span class="text-[10px] font-bold text-primary block truncate">@prod.Category</span>
+                            <h4 class="text-xs font-bold text-admin-primary truncate">@prod.Name</h4>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                            <input type="checkbox" class="sr-only peer cms-featured-toggle" data-product-id="@prod.Id" @(prod.IsFeatured ? "checked" : "") />
+                            <div class="w-10 h-5 bg-outline/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:ltr:left-[2px] after:rtl:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-amber-500"></div>
+                        </label>
+                    </div>
+                }
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -426,7 +480,7 @@
         const sectionToTabMap = {
             'hero': 'hero-banner',
             'categories': 'section-order',
-            'shop': 'section-order',
+            'shop': 'featured-products',
             'all-products': 'section-order',
             'testimonials': 'customer-stories',
             'faq': 'faq',
@@ -626,6 +680,32 @@
             postCmsData(data);
         }
 
+        function filterFeaturedProductsList(query) {
+            const term = (query || '').toLowerCase().trim();
+            document.querySelectorAll('#featured-products-catalog-grid .cms-product-card').forEach(card => {
+                const searchData = card.getAttribute('data-search') || '';
+                if (!term || searchData.includes(term)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function collectFeaturedProductsData() {
+            const checkedIds = Array.from(document.querySelectorAll('.cms-featured-toggle:checked'))
+                .map(cb => cb.dataset.productId)
+                .join(',');
+            return {
+                autoSelectBestSellers: document.getElementById('featured-auto-select')?.checked ?? true,
+                selectedProductIds: checkedIds
+            };
+        }
+
+        function saveFeaturedProductsSection() {
+            postCmsData({ products: collectFeaturedProductsData() });
+        }
+
         function saveAllChanges() {
             // Collect section order
             const el = document.getElementById('sortable-sections');
@@ -651,6 +731,7 @@
             const payload = {};
             if (sectionOrder) payload.sectionOrder = sectionOrder;
             payload.hero = hero;
+            payload.products = collectFeaturedProductsData();
             payload.testimonials = { title: document.getElementById('testi-title')?.value || '', description: document.getElementById('testi-desc')?.value || '', reviews: [] };
             payload.contact = contact;
 

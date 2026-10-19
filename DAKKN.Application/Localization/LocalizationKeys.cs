@@ -134,6 +134,7 @@ namespace DAKKN.Application.Localization
             public static readonly KeyString Updated = new("products.updated");
             public static readonly KeyString Deleted = new("products.deleted");
             public static readonly KeyString CategoryNotFound = new("products.category_not_found");
+            public static readonly KeyString ImagesMax = new("products.images_max");
             public static readonly KeyString FeaturedEmptyTitle = new("products.featured_empty_title");
             public static readonly KeyString FeaturedEmptyMsg = new("products.featured_empty_msg");
         }

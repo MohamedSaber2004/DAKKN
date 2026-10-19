@@ -14,6 +14,15 @@
     {
         productImage = baseUrl + productImage;
     }
+
+    // schema.org accepts an array here. Emitting every gallery image lets search engines index the
+    // full set instead of only the cover. Serialized by the JSON encoder so quotes and slashes
+    // in a filename cannot break out of the script block.
+    var galleryImages = (product.Images is { Count: > 0 })
+        ? product.Images.Where(i => !string.IsNullOrWhiteSpace(i)).ToList()
+        : new List<string> { productImage };
+    var jsonLdImages = System.Text.Json.JsonSerializer.Serialize(
+        galleryImages.Select(i => i.StartsWith("http") ? i : baseUrl + i).ToList());
     var price = product.Price.ToString("F2");
     var availability = product.QuantityInStock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock";
 }
@@ -26,7 +35,7 @@
     "@@id": "@productUrl#product",
     "name": "@(isArabic ? product.ArName : product.Name)",
     "description": "@(isArabic ? product.ArDescription : product.Description)",
-    "image": "@productImage",
+    "image": @Html.Raw(jsonLdImages),
     "url": "@productUrl",
     "brand": {
         "@@type": "Brand",
@@ -82,14 +91,21 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
             <div class="space-y-4">
-                <div class="aspect-square rounded-[32px] bg-surface-container-low dark:bg-[#0d1a2a] border border-outline-variant/10 overflow-hidden shadow-lg group relative">
-                    <img src="@(string.IsNullOrEmpty(product.ImageFullUrl) ? product.ImageUrl : product.ImageFullUrl)" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="@(isArabic ? product.ArName : product.Name)" onerror="this.src='/images/placeholders/product-placeholder.svg'" />
-                </div>
+                <partial name="Partials/_ProductGallery" model="product" />
             </div>
 
             <div class="flex flex-col">
                 <div class="mb-8 pb-8 border-b border-outline-variant/10">
-                    <span class="bg-primary/10 text-primary px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-4 inline-block">@(isArabic ? product.CategoryArName : product.CategoryName)</span>
+                    <div class="flex items-center gap-2 mb-4 flex-wrap">
+                        <span class="bg-primary/10 text-primary px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest inline-block">@(isArabic ? product.CategoryArName : product.CategoryName)</span>
+                        @if (product.IsFeatured)
+                        {
+                            <span class="bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 px-3 py-1 rounded-full text-xs font-bold inline-flex items-center gap-1">
+                                <span class="material-symbols-outlined text-xs">star</span>
+                                @Localizer["admin_product_featured_badge"]
+                            </span>
+                        }
+                    </div>
                     <h1 class="text-3xl md:text-4xl font-extrabold text-on-surface dark:text-white mb-3">@(isArabic ? product.ArName : product.Name)</h1>
                     <div class="flex items-center gap-4">
                         <span class="text-3xl font-bold text-primary">@product.Price.ToString("N0") @Localizer["Currency_EGP"]</span>

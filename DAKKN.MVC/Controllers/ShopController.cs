@@ -33,10 +33,11 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpGet("products")]
-        public async Task<IActionResult> Products(Guid? categoryId, int pageNumber = 1, int pageSize = 10)
+        [OutputCache(NoStore = true)]
+        public async Task<IActionResult> Products(Guid? categoryId, int pageNumber = 1, int pageSize = 10, bool? featured = null)
         {
             ViewData["Title"] = _localizer["nav_shop"];
-            var productsResult = await _mediator.Send(new GetProductsQuery(null, categoryId, pageNumber, pageSize));
+            var productsResult = await _mediator.Send(new GetProductsQuery(null, categoryId, pageNumber, pageSize, null, null, null, featured == true ? true : null));
             var categories = await _mediator.Send(new GetCategoriesQuery());
             var viewModel = new ProductsViewModel
             {
@@ -45,12 +46,15 @@ namespace DAKKN.MVC.Controllers
                 PageNumber = productsResult.PageNumber,
                 TotalPages = productsResult.TotalPages,
                 HasPreviousPage = productsResult.HasPreviousPage,
-                HasNextPage = productsResult.HasNextPage
+                HasNextPage = productsResult.HasNextPage,
+                SelectedCategoryId = categoryId,
+                IsFeatured = featured
             };
             return View("~/Views/Shop/Products.cshtml", viewModel);
         }
 
         [HttpGet("product/{id}")]
+        [OutputCache(NoStore = true)]
         public async Task<IActionResult> ProductDetails(Guid id)
         {
             try

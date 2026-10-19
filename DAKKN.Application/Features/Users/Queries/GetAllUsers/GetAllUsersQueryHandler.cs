@@ -28,8 +28,8 @@ namespace DAKKN.Application.Features.Users.Queries.GetAllUsers
             if (!string.IsNullOrWhiteSpace(request.SearchTerm))
             {
                 query = query.Where(u => u.FullName.Contains(request.SearchTerm) || 
-                                         u.Email.Contains(request.SearchTerm) || 
-                                         u.PhoneNumber.Contains(request.SearchTerm));
+                                         (u.Email != null && u.Email.Contains(request.SearchTerm)) || 
+                                         (u.PhoneNumber != null && u.PhoneNumber.Contains(request.SearchTerm)));
             }
 
             // Status logic: Inactive is Deleted in this business
@@ -61,7 +61,7 @@ namespace DAKKN.Application.Features.Users.Queries.GetAllUsers
                 {
                     Id = u.Id,
                     FullName = u.FullName,
-                    Email = u.Email,
+                    Email = u.Email ?? string.Empty,
                     PhoneNumber = u.PhoneNumber,
                     ProfilePictureUrl = u.ProfilePictureUrl,
                     JoinDate = u.CreatedAt,

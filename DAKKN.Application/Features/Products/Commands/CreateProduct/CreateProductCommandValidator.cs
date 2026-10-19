@@ -1,3 +1,4 @@
+using DAKKN.Application.DTOs;
 using DAKKN.Application.Localization;
 using DAKKN.Domain.Entities;
 using DAKKN.Domain.Repositories.Interfaces.Base;
@@ -33,6 +34,10 @@ namespace DAKKN.Application.Features.Products.Commands.CreateProduct
 
             RuleFor(v => v.ImageUrl)
                 .MaximumLength(500).WithMessage(localizer[LocalizationKeys.ValidationMessages.MaxLength.Value, 500]);
+
+            RuleFor(v => v.Images)
+                .Must(images => images == null || images.Count <= ProductDto.MaxImages)
+                .WithMessage(localizer[LocalizationKeys.Products.ImagesMax.Value, ProductDto.MaxImages]);
 
             RuleFor(v => v.CategoryId)
                 .NotEmpty().WithMessage(localizer[LocalizationKeys.ValidationMessages.Required.Value])

@@ -1,5 +1,6 @@
 using DAKKN.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Text.Json;
 
@@ -11,6 +12,11 @@ namespace DAKKN.Persistence.Configuration
         {
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
+
+        private static readonly ValueComparer<List<string>> _stringListComparer = new(
+            (c1, c2) => (c1 == null && c2 == null) || (c1 != null && c2 != null && c1.SequenceEqual(c2)),
+            c => c.Aggregate(0, (a, v) => HashCode.Combine(a, v.GetHashCode())),
+            c => c.ToList());
 
         public void Configure(EntityTypeBuilder<Product> builder)
         {
@@ -56,13 +62,28 @@ namespace DAKKN.Persistence.Configuration
                 .HasConversion(
                     v => JsonSerializer.Serialize(v, _jsonOptions),
                     v => JsonSerializer.Deserialize<List<string>>(v, _jsonOptions) ?? new())
-                .HasColumnType("nvarchar(max)");
+                .HasColumnType("nvarchar(max)")
+                .Metadata.SetValueComparer(_stringListComparer);
 
             builder.Property(x => x.SizeOptions)
                 .HasConversion(
                     v => JsonSerializer.Serialize(v, _jsonOptions),
                     v => JsonSerializer.Deserialize<List<string>>(v, _jsonOptions) ?? new())
-                .HasColumnType("nvarchar(max)");
+                .HasColumnType("nvarchar(max)")
+                .Metadata.SetValueComparer(_stringListComparer);
+
+            // Multi-image support. Order matters: Images[0] is the cover and must equal ImageUrl.
+            // Left nullable so the migration is a pure ADD COLUMN; rows written before this feature
+            // deserialize to null and are read through Product.EffectiveImages / ?? new() in handlers.
+            builder.Property(x => x.Images)
+                .HasConversion(
+                    v => JsonSerializer.Serialize(v, _jsonOptions),
+                    v => JsonSerializer.Deserialize<List<string>>(v, _jsonOptions) ?? new())
+                .HasColumnType("nvarchar(max)")
+                .IsRequired(false)
+                .Metadata.SetValueComparer(_stringListComparer);
+
+            builder.Ignore(x => x.EffectiveImages);
 
             builder.Property(x => x.CategoryId)
                 .IsRequired();
@@ -85,6 +106,12 @@ namespace DAKKN.Persistence.Configuration
 
             builder.Property(x => x.RowVersion)
                 .IsRowVersion();
+
+            builder.Property(x => x.IsFeatured)
+                .IsRequired()
+                .HasDefaultValue(false);
+
+            builder.HasIndex(x => x.IsFeatured);
 
             builder.Ignore(x => x.IsInStock);
             builder.Ignore(x => x.StockStatus);

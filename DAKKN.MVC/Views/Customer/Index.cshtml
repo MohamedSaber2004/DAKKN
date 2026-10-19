@@ -207,6 +207,13 @@
                         <a asp-action="ProductDetails" asp-route-id="@prod.Id" class="block">
                             <div class="aspect-square relative overflow-hidden bg-surface-container dark:bg-black/20">
                                 <img src="@prod.ImageUrl" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy">
+                                @if (prod.IsFeatured)
+                                {
+                                    <span class="absolute top-3 start-3 z-10 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-amber-500 text-white shadow-md">
+                                        <span class="material-symbols-outlined text-xs">star</span>
+                                        @Localizer["admin_product_featured_badge"]
+                                    </span>
+                                }
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                             </div>
                         </a>

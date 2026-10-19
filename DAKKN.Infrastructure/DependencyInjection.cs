@@ -80,8 +80,8 @@ namespace DAKKN.Infrastructure
             services.AddAuthentication()
             .AddGoogle(options =>
             {
-                options.ClientId = googleSection["WebClientId"];
-                options.ClientSecret = googleSection["WebClientSecret"];
+                options.ClientId = googleSection["WebClientId"] ?? string.Empty;
+                options.ClientSecret = googleSection["WebClientSecret"] ?? string.Empty;
                 options.CallbackPath = "/signin-google";
                 options.SaveTokens = true;
                 options.AccessType = "offline";

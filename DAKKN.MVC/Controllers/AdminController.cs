@@ -11,8 +11,11 @@ using DAKKN.Application.Features.Categories.Commands.DeleteCategory;
 using DAKKN.Application.Features.Categories.Commands.UpdateCategory;
 using DAKKN.Application.Features.Categories.Queries.GetCategories;
 using DAKKN.Application.Features.Attachments.Commands.UpdateImage;
+using DAKKN.Application.Features.Attachments.Commands.UploadImage;
 using DAKKN.Application.Features.Products.Commands.CreateProduct;
 using DAKKN.Application.Features.Products.Commands.DeleteProduct;
+using DAKKN.Application.Features.Products.Commands.DeleteProductImage;
+using DAKKN.Application.Features.Products.Commands.ToggleProductFeatured;
 using DAKKN.Application.Features.Products.Commands.UpdateProduct;
 using DAKKN.Application.Features.Products.Queries.GetProductById;
 using DAKKN.Application.Features.Products.Queries.GetProducts;
@@ -344,11 +347,11 @@ namespace DAKKN.MVC.Controllers
         }
 
         [HttpGet("inventory")]
-        public async Task<IActionResult> Inventory(string? searchTerm, Guid? categoryId, string? stockFilter, string? sortBy, int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> Inventory(string? searchTerm, Guid? categoryId, string? stockFilter, string? sortBy, int pageNumber = 1, int pageSize = 10, bool? featuredOnly = null)
         {
             ViewData["Title"] = _localizer["admin_inventory"];
 
-            var result = await _mediator.Send(new GetProductsQuery(searchTerm, categoryId, pageNumber, pageSize, null, stockFilter, sortBy));
+            var result = await _mediator.Send(new GetProductsQuery(searchTerm, categoryId, pageNumber, pageSize, null, stockFilter, sortBy, featuredOnly == true ? true : null));
             var categories = await _mediator.Send(new GetCategoriesQuery());
 
             var viewModel = new InventoryViewModel
@@ -361,14 +364,45 @@ namespace DAKKN.MVC.Controllers
                 PageNumber = result.PageNumber,
                 TotalPages = result.TotalPages,
                 StockFilter = stockFilter,
-                SortBy = sortBy
+                SortBy = sortBy,
+                FeaturedOnly = featuredOnly
             };
 
             var allProducts = await _mediator.Send(new GetProductsQuery(null, null, 1, 10000));
             viewModel.LowStockCount = allProducts.Items.Count(p => p.QuantityInStock > 0 && p.QuantityInStock <= p.DangerQuantity);
             viewModel.OutOfStockCount = allProducts.Items.Count(p => p.QuantityInStock == 0);
+            viewModel.FeaturedCount = allProducts.Items.Count(p => p.IsFeatured);
 
             return View(viewModel);
+        }
+
+        [HttpPost("toggle-product-featured/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleProductFeatured(Guid id)
+        {
+            try
+            {
+                var isFeatured = await _mediator.Send(new ToggleProductFeaturedCommand(id));
+                await SyncFeaturedProductToCms(id, isFeatured);
+
+                return Json(new
+                {
+                    success = true,
+                    isFeatured = isFeatured,
+                    message = isFeatured
+                        ? _localizer["admin_product_featured_enabled"].Value
+                        : _localizer["admin_product_featured_disabled"].Value
+                });
+            }
+            catch (NotFoundException)
+            {
+                return Json(new { success = false, message = _localizer["admin_product_not_found"].Value });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error toggling featured status for product {ProductId}", id);
+                return Json(new { success = false, message = _localizer["admin_error_occurred"].Value });
+            }
         }
 
         [HttpGet("support")]
@@ -402,18 +436,16 @@ namespace DAKKN.MVC.Controllers
             var allProducts = await _mediator.Send(new GetProductsQuery(null, null, 1, 200));
             var allCategories = await _mediator.Send(new GetCategoriesQuery(IncludeInactive: true));
 
-            var storedFeaturedIds = new HashSet<string>(
-                (model.Products.SelectedProductIds ?? string.Empty)
-                .Split(',', StringSplitOptions.RemoveEmptyEntries));
-
             model.Products.AllProducts = allProducts.Items.Select(p => new ProductManagementItem
             {
                 Id = p.Id.ToString(),
                 Name = p.Name,
                 Category = p.CategoryName,
                 ImageUrl = p.ImageFullUrl ?? p.ImageUrl ?? string.Empty,
-                IsFeatured = storedFeaturedIds.Contains(p.Id.ToString())
+                IsFeatured = p.IsFeatured
             }).ToList();
+
+            model.Products.SelectedProductIds = string.Join(",", allProducts.Items.Where(p => p.IsFeatured).Select(p => p.Id));
 
             model.Categories.AllCategories = allCategories.Select(c => new CategoryManagementItem
             {
@@ -450,7 +482,27 @@ namespace DAKKN.MVC.Controllers
             if (incoming.TryGetProperty("categories", out var categories))
                 existingVm.Categories = System.Text.Json.JsonSerializer.Deserialize<FeaturedCategoriesViewModel>(categories.GetRawText(), options) ?? new();
             if (incoming.TryGetProperty("products", out var products))
+            {
                 existingVm.Products = System.Text.Json.JsonSerializer.Deserialize<FeaturedProductsViewModel>(products.GetRawText(), options) ?? new();
+                if (existingVm.Products != null && existingVm.Products.SelectedProductIds != null)
+                {
+                    var selectedIds = new HashSet<Guid>(
+                        existingVm.Products.SelectedProductIds
+                            .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                            .Select(s => Guid.TryParse(s.Trim(), out var g) ? g : Guid.Empty)
+                            .Where(g => g != Guid.Empty));
+
+                    var allDbProducts = await _mediator.Send(new GetProductsQuery(null, null, 1, 10000));
+                    foreach (var p in allDbProducts.Items)
+                    {
+                        var shouldBeFeatured = selectedIds.Contains(p.Id);
+                        if (p.IsFeatured != shouldBeFeatured)
+                        {
+                            await _mediator.Send(new ToggleProductFeaturedCommand(p.Id));
+                        }
+                    }
+                }
+            }
             if (incoming.TryGetProperty("testimonials", out var testimonials))
                 existingVm.Testimonials = System.Text.Json.JsonSerializer.Deserialize<TestimonialsSettingsViewModel>(testimonials.GetRawText(), options) ?? new();
             if (incoming.TryGetProperty("contact", out var contact))
@@ -587,6 +639,30 @@ namespace DAKKN.MVC.Controllers
                 Contact =      System.Text.Json.JsonSerializer.Serialize(model.Contact),
                 Faq =          System.Text.Json.JsonSerializer.Serialize(model.Faq),
             };
+        }
+
+        private async Task SyncFeaturedProductToCms(Guid productId, bool isFeatured)
+        {
+            try
+            {
+                var existingDto = await _mediator.Send(new GetLandingPageSettingsQuery());
+                var existingVm = MapToViewModel(existingDto);
+                var featuredIds = new HashSet<string>(
+                    (existingVm.Products.SelectedProductIds ?? string.Empty)
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries));
+
+                if (isFeatured)
+                    featuredIds.Add(productId.ToString());
+                else
+                    featuredIds.Remove(productId.ToString());
+
+                existingVm.Products.SelectedProductIds = string.Join(",", featuredIds);
+                await _mediator.Send(MapToDto(existingVm));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Could not sync LandingPageSettings for product {ProductId}", productId);
+            }
         }
 
         private static T DeserializeOrDefault<T>(string json) where T : new()
@@ -1096,31 +1172,39 @@ namespace DAKKN.MVC.Controllers
                 return View(model);
             }
 
-            var rawUrl = model.ExistingImageUrl;
-            var imageUrl = string.IsNullOrEmpty(rawUrl)
-                ? string.Empty
-                : rawUrl.StartsWith("http")
-                    ? rawUrl
-                    : Path.GetFileName(rawUrl.TrimEnd('/'));
+            var files = (model.ImageFiles is { Count: > 0 })
+                ? model.ImageFiles
+                : Request.Form.Files.GetFiles("ImageFiles").ToList();
 
-            if (model.ImageFile != null)
+            if (files.Count == 0 && Request.Form.Files.Count > 0)
+            {
+                files = Request.Form.Files.ToList();
+            }
+
+            var uploadedNames = new List<string>();
+
+            if (files is { Count: > 0 })
             {
                 try
                 {
-                    var result = await _mediator.Send(new UpdateImageCommand
+                    uploadedNames = await _mediator.Send(new UploadMultipleImageCommand
                     {
-                        File = model.ImageFile,
+                        Files = files,
                         UploadPlace = 1
                     });
-                    imageUrl = result;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    _logger.LogWarning(ex, "Failed to upload product images during AddProduct");
                     TempData["Error"] = _localizer[LocalizationKeys.UploadFileMessages.FileUploadFailed.Value].ToString();
                     model.AvailableCategories = await _mediator.Send(new GetCategoriesQuery());
                     return View(model);
                 }
             }
+
+            // Nothing exists on the product yet, so the order comes entirely from this upload batch.
+            // The admin can still reorder the picks and choose which one is the cover.
+            var finalImages = ResolveFinalImageOrder(model.ImageOrder, new List<string>(), uploadedNames);
 
             var command = new CreateProductCommand(
                 model.Name,
@@ -1128,17 +1212,23 @@ namespace DAKKN.MVC.Controllers
                 model.Description,
                 model.ArDescription,
                 model.Price,
-                imageUrl,
+                finalImages.FirstOrDefault() ?? string.Empty,
+                finalImages,
                 new List<string>(),
                 model.SizeOptions,
                 model.CategoryId,
                 model.QuantityInStock,
-                model.DangerQuantity
+                model.DangerQuantity,
+                model.IsFeatured
             );
 
             try
             {
-                await _mediator.Send(command);
+                var createdProduct = await _mediator.Send(command);
+                if (model.IsFeatured)
+                {
+                    await SyncFeaturedProductToCms(createdProduct.Id, true);
+                }
                 TempData["SuccessMessage"] = _localizer[LocalizationKeys.Products.Created.Value].ToString();
                 return RedirectToAction(nameof(Inventory));
             }
@@ -1157,6 +1247,10 @@ namespace DAKKN.MVC.Controllers
                 }
             }
 
+            // The product row was never written, so these files are referenced by nothing.
+            // The delete-after-commit rule runs in the other direction here: roll back.
+            await RollbackUploadsAsync(uploadedNames);
+
             ViewData["Title"] = _localizer["admin_add_product"];
             model.AvailableCategories = await _mediator.Send(new GetCategoriesQuery());
             return View(model);
@@ -1168,7 +1262,28 @@ namespace DAKKN.MVC.Controllers
         {
             try
             {
+                // Read the images before the soft delete hides the row behind the query filter.
+                // Files are cleared only once the delete has committed, matching the same
+                // delete-after-commit discipline the edit path uses.
+                var product = await _mediator.Send(new GetProductByIdQuery(id));
+
+                // GetProductById hands back '/files/<name>' URLs, so the bare filename has to be
+                // extracted before IsSafeProductImageName will accept it — it rejects any '/'.
+                var images = (product.Images ?? new List<string>())
+                    .Concat(string.IsNullOrWhiteSpace(product.ImageUrl)
+                        ? Array.Empty<string>()
+                        : new[] { product.ImageUrl })
+                    .Select(i => Path.GetFileName(i) ?? string.Empty)
+                    .Where(IsSafeProductImageName)
+                    .Distinct(StringComparer.Ordinal)
+                    .ToList();
+
                 await _mediator.Send(new DeleteProductCommand(id));
+                await SyncFeaturedProductToCms(id, false);
+
+                if (images.Count > 0)
+                    await _mediator.Send(new DeleteProductImagesCommand(images));
+
                 TempData["SuccessMessage"] = _localizer[LocalizationKeys.Products.Deleted.Value].ToString();
             }
             catch (NotFoundException)
@@ -1205,6 +1320,22 @@ namespace DAKKN.MVC.Controllers
                 var product = await _mediator.Send(new GetProductByIdQuery(id));
                 var categories = await _mediator.Send(new GetCategoriesQuery());
 
+                // GetProductById resolves Images to /files/... URLs. The hidden field needs bare
+                // filenames so the POST can pass them to the command and to DeleteImage.
+                // Legacy rows have no Images but do have ImageUrl, so fall back to that as a
+                // one-item gallery.
+                var existingImages = (product.Images ?? new List<string>())
+                    .Select(i => Path.GetFileName(i))
+                    .Where(i => !string.IsNullOrEmpty(i))
+                    .ToList();
+
+                if (existingImages.Count == 0 && !string.IsNullOrEmpty(product.ImageUrl))
+                {
+                    var cover = Path.GetFileName(product.ImageUrl);
+                    if (!string.IsNullOrEmpty(cover))
+                        existingImages.Add(cover);
+                }
+
                 var viewModel = new AddProductViewModel
                 {
                     Id = product.Id,
@@ -1214,10 +1345,11 @@ namespace DAKKN.MVC.Controllers
                     ArDescription = product.ArDescription,
                     Price = product.Price,
                     CategoryId = product.CategoryId,
-                    ExistingImageUrl = product.ImageUrl ?? string.Empty,
+                    ExistingImages = existingImages,
                     SizeOptions = product.SizeOptions,
                     QuantityInStock = product.QuantityInStock,
                     DangerQuantity = product.DangerQuantity,
+                    IsFeatured = product.IsFeatured,
                     AvailableCategories = categories
                 };
 
@@ -1240,33 +1372,48 @@ namespace DAKKN.MVC.Controllers
                 return View("AddProduct", model);
             }
 
-            var rawUrl = model.ExistingImageUrl;
-            var imageUrl = string.IsNullOrEmpty(rawUrl)
-                ? string.Empty
-                : rawUrl.StartsWith("http")
-                    ? rawUrl
-                    : Path.GetFileName(rawUrl.TrimEnd('/'));
+            // ExistingImages arrives as bare filenames from the hidden field, in the admin's
+            // order. Sanitize before anything else: the field is browser-controlled and
+            // DeleteImage combines its argument with the uploads path unsanitized.
+            var keptExisting = (model.ExistingImages ?? new List<string>())
+                .Select(i => Path.GetFileName(i)?.Trim() ?? string.Empty)
+                .Where(IsSafeProductImageName)
+                .ToList();
 
-            if (model.ImageFile != null)
+            var files = (model.ImageFiles is { Count: > 0 })
+                ? model.ImageFiles
+                : Request.Form.Files.GetFiles("ImageFiles").ToList();
+
+            if (files.Count == 0 && Request.Form.Files.Count > 0)
+            {
+                files = Request.Form.Files.ToList();
+            }
+
+            var uploadedNames = new List<string>();
+
+            if (files is { Count: > 0 })
             {
                 try
                 {
-                    var result = await _mediator.Send(new UpdateImageCommand
+                    uploadedNames = await _mediator.Send(new UploadMultipleImageCommand
                     {
-                        File = model.ImageFile,
-                        UploadPlace = 1,
-                        ImageName = string.IsNullOrEmpty(imageUrl) || imageUrl.StartsWith("http") || !Path.HasExtension(imageUrl) ? null : imageUrl
+                        Files = files,
+                        UploadPlace = 1
                     });
-                    imageUrl = result;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    _logger.LogWarning(ex, "Failed to upload product images during EditProduct");
                     TempData["Error"] = _localizer[LocalizationKeys.UploadFileMessages.FileUploadFailed.Value].ToString();
                     ViewData["Title"] = _localizer["admin_product_edit_title"];
                     model.AvailableCategories = await _mediator.Send(new GetCategoriesQuery());
                     return View("AddProduct", model);
                 }
             }
+
+            // Replays the order the admin left the gallery in, so reordering and choosing a cover work for
+            // brand-new uploads too — not just for images that were already on the product.
+            var finalImages = ResolveFinalImageOrder(model.ImageOrder, keptExisting, uploadedNames);
 
             var command = new UpdateProductCommand(
                 id,
@@ -1275,23 +1422,28 @@ namespace DAKKN.MVC.Controllers
                 model.Description,
                 model.ArDescription,
                 model.Price,
-                imageUrl,
+                finalImages.FirstOrDefault() ?? string.Empty,
+                finalImages,
                 new List<string>(),
                 model.SizeOptions,
                 model.CategoryId,
                 model.QuantityInStock,
-                model.DangerQuantity
+                model.DangerQuantity,
+                model.IsFeatured
             );
 
             try
             {
                 await _mediator.Send(command);
-                TempData["SuccessMessage"] = _localizer[LocalizationKeys.Products.Updated.Value].ToString();
-                return RedirectToAction(nameof(Inventory));
+                await SyncFeaturedProductToCms(id, model.IsFeatured);
             }
             catch (BadRequestException ex)
             {
                 ModelState.AddModelError(string.Empty, ex.Message);
+                await RollbackUploadsAsync(uploadedNames);
+                ViewData["Title"] = _localizer["admin_product_edit_title"];
+                model.AvailableCategories = await _mediator.Send(new GetCategoriesQuery());
+                return View("AddProduct", model);
             }
             catch (ValidationException ex)
             {
@@ -1302,11 +1454,127 @@ namespace DAKKN.MVC.Controllers
                         ModelState.AddModelError(kvp.Key, error);
                     }
                 }
+                await RollbackUploadsAsync(uploadedNames);
+                ViewData["Title"] = _localizer["admin_product_edit_title"];
+                model.AvailableCategories = await _mediator.Send(new GetCategoriesQuery());
+                return View("AddProduct", model);
             }
 
-            ViewData["Title"] = _localizer["admin_product_edit_title"];
-            model.AvailableCategories = await _mediator.Send(new GetCategoriesQuery());
-            return View("AddProduct", model);
+            // The row is committed, so removing the now-unused files cannot strand the product
+            // pointing at images that no longer exist. Only delete what was on the product at
+            // load and is no longer in the final list.
+            var removed = (model.RemovedImages ?? new List<string>())
+                .Where(IsSafeProductImageName)
+                // IsSafeProductImageName already guarantees no directory component, so
+                // GetFileName can only pass the name through — asserted here to keep the
+                // nullability of Path.GetFileName's return from leaking downstream.
+                .Select(i => Path.GetFileName(i)!)
+                .Where(f => !finalImages.Contains(f, StringComparer.Ordinal))
+                .Distinct(StringComparer.Ordinal)
+                .ToList();
+
+            if (removed.Count > 0)
+            {
+                await _mediator.Send(new DeleteProductImagesCommand(removed));
+            }
+
+            TempData["SuccessMessage"] = _localizer[LocalizationKeys.Products.Updated.Value].ToString();
+            return RedirectToAction(nameof(Inventory));
+        }
+
+        /// <summary>
+        /// True when <paramref name="name"/> is a bare image filename with no directory
+        /// component, so it is safe to hand to <c>ImageValidator.DeleteImage</c>.
+        /// </summary>
+        private static bool IsSafeProductImageName(string? name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return false;
+            if (Path.IsPathRooted(name))
+                return false;
+            if (name.Contains('/') || name.Contains('\\') || name.Contains('\0'))
+                return false;
+            if (!string.Equals(Path.GetFileName(name), name, StringComparison.Ordinal))
+                return false;
+
+            var ext = Path.GetExtension(name).ToLowerInvariant();
+            return ext is ".jpg" or ".jpeg" or ".webp" or ".bmp" or ".png" or ".gif" or ".jfif";
+        }
+
+        /// <summary>
+        /// Removes files uploaded by a request whose product row never got written, so a rejected
+        /// save does not leave images on disk that nothing references. Best effort by design: the
+        /// caller is already handling a save failure and must not have that replaced by a cleanup
+        /// failure, which would hide the real validation message from the admin.
+        /// </summary>
+        private async Task RollbackUploadsAsync(List<string> uploadedNames)
+        {
+            if (uploadedNames.Count == 0)
+                return;
+
+            try
+            {
+                await _mediator.Send(new DeleteProductImagesCommand(uploadedNames));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex,
+                    "Could not roll back {Count} uploaded product image(s) after a failed save; "
+                    + "they will need clearing from the uploads folder by hand.",
+                    uploadedNames.Count);
+            }
+        }
+
+        /// <summary>
+        /// Rebuilds the gallery in the order the admin left it. Each entry of
+        /// <paramref name="imageOrder"/> is <c>e:filename</c> for an image that already exists on
+        /// the product, or <c>n:index</c> for the index-th file of the just-uploaded batch. This is
+        /// what lets the admin reorder and pick a cover among brand-new uploads, whose filenames
+        /// do not exist until this request finishes uploading them.
+        /// </summary>
+        /// <remarks>
+        /// Unknown entries are dropped and anything the field forgot to mention is appended, so a
+        /// tampered form can never inject a path into the product row nor silently drop an image
+        /// the admin left in place. An absent or empty field falls back to the old
+        /// keep-then-append order, which is what a no-JavaScript submit produces.
+        /// </remarks>
+        private static List<string> ResolveFinalImageOrder(
+            List<string>? imageOrder, List<string> keptExisting, List<string> uploadedNames)
+        {
+            if (imageOrder is not { Count: > 0 })
+                return keptExisting.Concat(uploadedNames).ToList();
+
+            var ordered = new List<string>(imageOrder.Count);
+
+            foreach (var raw in imageOrder)
+            {
+                if (string.IsNullOrEmpty(raw) || raw.Length < 3)
+                    continue;
+
+                string? resolved = null;
+
+                if (raw.StartsWith("e:", StringComparison.Ordinal))
+                {
+                    var name = Path.GetFileName(raw[2..]);
+                    if (IsSafeProductImageName(name))
+                        resolved = name;
+                }
+                else if (raw.StartsWith("n:", StringComparison.Ordinal)
+                         && int.TryParse(raw.AsSpan(2), out var newIndex)
+                         && newIndex >= 0 && newIndex < uploadedNames.Count)
+                {
+                    resolved = uploadedNames[newIndex];
+                }
+
+                if (resolved is not null && !ordered.Contains(resolved, StringComparer.Ordinal))
+                    ordered.Add(resolved);
+            }
+
+            foreach (var leftover in keptExisting.Concat(uploadedNames))
+                if (!ordered.Contains(leftover, StringComparer.Ordinal))
+                    ordered.Add(leftover);
+
+            return ordered;
         }
 
         [HttpGet("inventory-settings")]

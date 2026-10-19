@@ -27,7 +27,7 @@ namespace DAKKN.Application.Features.Products.Queries.GetProducts
             if (!string.IsNullOrWhiteSpace(request.SearchTerm))
             {
                 var term = request.SearchTerm.ToLower();
-                query = query.Where(p => p.Name.ToLower().Contains(term) || p.Description.ToLower().Contains(term));
+                query = query.Where(p => p.Name.ToLower().Contains(term) || (p.Description != null && p.Description.ToLower().Contains(term)));
             }
 
             if (request.CategoryId.HasValue)
@@ -48,6 +48,11 @@ namespace DAKKN.Application.Features.Products.Queries.GetProducts
                     query = query.Where(p => p.QuantityInStock > 0 && p.QuantityInStock <= p.DangerQuantity);
                 else if (request.StockFilter == "outOfStock")
                     query = query.Where(p => p.QuantityInStock == 0);
+            }
+
+            if (request.IsFeatured.HasValue)
+            {
+                query = query.Where(p => p.IsFeatured == request.IsFeatured.Value);
             }
 
             if (!string.IsNullOrWhiteSpace(request.SortBy))
@@ -85,7 +90,8 @@ namespace DAKKN.Application.Features.Products.Queries.GetProducts
                 QuantityInStock = p.QuantityInStock,
                 DangerQuantity = p.DangerQuantity,
                 StockStatus = p.StockStatus.ToString(),
-                IsInStock = p.IsInStock
+                IsInStock = p.IsInStock,
+                IsFeatured = p.IsFeatured
             });
 
             var result = await projected.AsPagginatedListAsync(request.PageNumber, request.PageSize);

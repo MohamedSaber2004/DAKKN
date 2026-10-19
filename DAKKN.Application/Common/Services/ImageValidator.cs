@@ -221,6 +221,11 @@ namespace DAKKN.Application.Common.Services
 
             StringBuilder stringResult = new StringBuilder();
 
+            // Files already written in this batch. If a later file is rejected the whole call
+            // fails, so these have to be rolled back — otherwise every rejected batch leaves
+            // unreferenced files in the upload folder with nothing pointing at them.
+            var written = new List<string>();
+
             foreach (var item in file)
             {
                 if (item == null)
@@ -228,8 +233,14 @@ namespace DAKKN.Application.Common.Services
 
                 var result = await UploadImage(item, Place);
                 if (!result.Uploaded)
-                    return (false, result.Result);
+                {
+                    foreach (var orphan in written)
+                        await DeleteImage(orphan, Place);
 
+                    return (false, result.Result);
+                }
+
+                written.Add(result.Result);
                 stringResult.Append(result.Result + ";");
             }
 

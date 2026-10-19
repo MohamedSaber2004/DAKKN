@@ -9,12 +9,12 @@ namespace DAKKN.Application.Features.Categories.Commands.CreateCategory
         public CreateCategoryCommandValidator(IStringLocalizer<Messages> localizer)
         {
             RuleFor(v => v.CategoryName)
-                .NotEmpty().WithMessage(localizer[LocalizationKeys.ValidationMessages.Required.Value])
-                .MaximumLength(150).WithMessage(localizer[LocalizationKeys.ValidationMessages.MaxLength.Value, 150]);
+                .NotEmpty().WithMessage(localizer[LocalizationKeys.ValidationMessages.Required.Key])
+                .MaximumLength(150).WithMessage(localizer[LocalizationKeys.ValidationMessages.MaxLength.Key, 150]);
 
             RuleFor(v => v.ArName)
-                .NotEmpty().WithMessage(localizer[LocalizationKeys.ValidationMessages.Required.Value])
-                .MaximumLength(150).WithMessage(localizer[LocalizationKeys.ValidationMessages.MaxLength.Value, 150]);
+                .NotEmpty().WithMessage(localizer[LocalizationKeys.ValidationMessages.Required.Key])
+                .MaximumLength(150).WithMessage(localizer[LocalizationKeys.ValidationMessages.MaxLength.Key, 150]);
         }
     }
 }

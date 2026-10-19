@@ -1,4 +1,4 @@
-﻿using DAKKN.Application.Common.Exceptions;
+using DAKKN.Application.Common.Exceptions;
 using DAKKN.Application.Common.Interfaces;
 using MediatR;
 
@@ -37,7 +37,10 @@ namespace DAKKN.Application.Features.Attachments.Commands.UploadImage
             {
                 throw new BadRequestException(result.Result);
             }
-            var finalResult = result.Result.Split(';').ToList();
+            var finalResult = result.Result.Split(';', StringSplitOptions.RemoveEmptyEntries)
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .Select(x => x.Trim())
+                .ToList();
             return finalResult;
         }
     }

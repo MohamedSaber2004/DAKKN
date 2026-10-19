@@ -29,6 +29,15 @@ namespace DAKKN.Application.Features.Products.Queries.GetProductById
                     ? product.ImageUrl
                     : $"/files/{Path.GetFileName(product.ImageUrl)}";
 
+            // Rows written before multi-image support have a null Images column.
+            var rawImages = product.Images ?? new List<string>();
+            var resolvedImages = rawImages
+                .Where(i => !string.IsNullOrEmpty(i))
+                .Select(i => i.StartsWith("http") || i.StartsWith("/") ? i : $"/files/{Path.GetFileName(i)}")
+                .Distinct()
+                .ToList();
+
+
             return new ProductDto
             {
                 Id = product.Id,
@@ -41,6 +50,7 @@ namespace DAKKN.Application.Features.Products.Queries.GetProductById
                 ReviewCount = product.ReviewCount,
                 ImageUrl = resolvedUrl,
                 ImageFullUrl = resolvedUrl,
+                Images = resolvedImages,
                 FinishOptions = product.FinishOptions,
                 SizeOptions = product.SizeOptions,
                 CategoryId = product.CategoryId,
@@ -53,7 +63,8 @@ namespace DAKKN.Application.Features.Products.Queries.GetProductById
                 QuantityInStock = product.QuantityInStock,
                 DangerQuantity = product.DangerQuantity,
                 StockStatus = product.StockStatus.ToString(),
-                IsInStock = product.IsInStock
+                IsInStock = product.IsInStock,
+                IsFeatured = product.IsFeatured
             };
         }
     }

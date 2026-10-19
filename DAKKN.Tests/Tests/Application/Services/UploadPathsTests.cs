@@ -43,7 +43,7 @@ namespace DAKKN.Tests.Tests.Application.Services
         [Fact]
         public void GetPath_ShouldReturnEmpty_ForUnknownPlace()
         {
-            UploadPaths.Configure(new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string>()).Build());
+            UploadPaths.Configure(new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>()).Build());
             UploadPaths.GetPath(99).Should().Be(string.Empty);
         }
 

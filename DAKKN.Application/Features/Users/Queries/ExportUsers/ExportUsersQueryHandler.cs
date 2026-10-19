@@ -27,8 +27,8 @@ namespace DAKKN.Application.Features.Users.Queries.ExportUsers
             if (!string.IsNullOrWhiteSpace(request.SearchTerm))
             {
                 query = query.Where(u => u.FullName.Contains(request.SearchTerm) || 
-                                         u.Email.Contains(request.SearchTerm) || 
-                                         u.PhoneNumber.Contains(request.SearchTerm));
+                                         (u.Email != null && u.Email.Contains(request.SearchTerm)) || 
+                                         (u.PhoneNumber != null && u.PhoneNumber.Contains(request.SearchTerm)));
             }
 
             if (!string.IsNullOrWhiteSpace(request.Status))
@@ -58,7 +58,7 @@ namespace DAKKN.Application.Features.Users.Queries.ExportUsers
             {
                 Id = u.Id,
                 FullName = u.FullName,
-                Email = u.Email,
+                Email = u.Email ?? string.Empty,
                 PhoneNumber = u.PhoneNumber,
                 ProfilePictureUrl = u.ProfilePictureUrl,
                 JoinDate = u.CreatedAt,

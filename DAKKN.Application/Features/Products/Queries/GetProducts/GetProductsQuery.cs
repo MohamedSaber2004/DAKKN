@@ -11,6 +11,7 @@ namespace DAKKN.Application.Features.Products.Queries.GetProducts
         int PageSize = PagginatedResult<ProductDto>.DefaultPageSize,
         decimal? MaxPrice = null,
         string? StockFilter = null,
-        string? SortBy = null
+        string? SortBy = null,
+        bool? IsFeatured = null
     ) : IRequest<PagginatedResult<ProductDto>>;
 }

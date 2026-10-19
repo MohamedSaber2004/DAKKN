@@ -72,38 +72,80 @@
                                 <span class="material-symbols-outlined absolute ltr:right-3 rtl:left-3 top-1/2 -translate-y-1/2 pointer-events-none text-admin-secondary">arrow_drop_down</span>
                             </div>
                         </div>
+
+                        <div class="pt-4 border-t border-admin-border">
+                            <label class="relative inline-flex items-center gap-3 cursor-pointer select-none">
+                                <input asp-for="IsFeatured" type="checkbox" class="sr-only peer" />
+                                <div class="w-11 h-6 bg-outline/20 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:ltr:left-[2px] after:rtl:right-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                <div class="flex items-center gap-1.5">
+                                    <span class="material-symbols-outlined text-amber-500 text-lg">star</span>
+                                    <span class="text-sm font-bold text-admin-primary">@Localizer["admin_product_is_featured"]</span>
+                                </div>
+                            </label>
+                        </div>
                     </div>
                 </div>
 
                 <!-- 2. Media Upload -->
                 <div class="premium-card p-8 space-y-6">
-                    <h4 class="text-lg font-bold text-admin-primary flex items-center gap-2">
-                        <span class="material-symbols-outlined text-primary">image</span>
-                        @Localizer["admin_product_sec_media"]
-                    </h4>
-
-                    @if (Model.IsEdit && !string.IsNullOrEmpty(Model.ExistingImageUrl))
-                    {
-                        <div class="relative w-40 h-40 rounded-2xl overflow-hidden border border-admin-border group">
-                            <img src="@Model.ExistingImageUrl" alt='@Localizer["admin_content_ph_product_image_alt"]' class="w-full h-full object-cover" onerror="this.onerror=null; this.src='/images/placeholders/product-placeholder.svg'" />
-                            <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <span class="text-white text-xs font-bold">@Localizer["admin_product_image_current"]</span>
-                            </div>
-                        </div>
-                    }
+                    <div class="flex items-center justify-between">
+                        <h4 class="text-lg font-bold text-admin-primary flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">image</span>
+                            @Localizer["admin_product_sec_media"]
+                        </h4>
+                        <span id="img-counter" class="text-xs font-bold text-admin-secondary tabular-nums"></span>
+                    </div>
 
                     <div class="space-y-1.5">
                         <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider">@Localizer["admin_product_media_title"]</label>
-                        <div class="flex items-center gap-4">
-                            <label class="flex-1 flex items-center gap-3 bg-admin-page border border-dashed border-admin-border rounded-xl px-4 py-6 cursor-pointer hover:border-primary transition-all">
-                                <span class="material-symbols-outlined text-admin-secondary">upload</span>
-                                <span class="text-sm text-admin-secondary">@Localizer["admin_product_media_subtitle"]</span>
-                                <input asp-for="ImageFile" type="file" accept="image/*" class="hidden" onchange="this.closest('.flex-1').querySelector('.file-name').textContent = this.files[0]?.name || ''" />
-                                <span class="file-name text-xs text-primary font-medium ml-auto"></span>
-                            </label>
+                        <div id="img-dropzone" class="flex items-center gap-3 bg-admin-page border border-dashed border-admin-border rounded-xl px-4 py-6 cursor-pointer hover:border-primary transition-all">
+                            <span class="material-symbols-outlined text-admin-secondary">upload</span>
+                            <span class="text-sm text-admin-secondary">@Localizer["admin_product_media_subtitle"]</span>
+                            <input id="ImagePicker" type="file" accept="image/*" multiple class="hidden" />
+                            <span id="img-max-hint" class="text-xs text-admin-secondary ml-auto"></span>
                         </div>
+                        <input id="ImageFiles" name="ImageFiles" type="file" multiple class="hidden" />
                     </div>
-                    <input type="hidden" asp-for="ExistingImageUrl" />
+
+                    <!-- Thumbnails are rendered server-side so the form still round-trips the
+                         existing set without JS. The script below adds drag/reorder/cover/remove. -->
+                    <div id="img-grid" class="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                        @for (var i = 0; i < Model.ExistingImages.Count; i++)
+                        {
+                            var img = Model.ExistingImages[i];
+                            <div class="img-thumb relative rounded-xl overflow-hidden border border-admin-border group aspect-square"
+                                 draggable="true"
+                                 data-name="@img"
+                                 data-existing="true">
+                                <img src="/files/@img" alt='@Localizer["admin_content_ph_product_image_alt"]'
+                                     class="w-full h-full object-cover pointer-events-none"
+                                     onerror="this.onerror=null; this.src='/images/placeholders/product-placeholder.svg'" />
+
+                                @if (i == 0)
+                                {
+                                    <span class="img-cover-badge absolute bottom-1.5 ltr:left-1.5 rtl:right-1.5 bg-primary text-on-primary text-[10px] font-black px-2 py-0.5 rounded-full">
+                                        @Localizer["admin_product_image_cover"]
+                                    </span>
+                                }
+
+                                <button type="button" class="img-set-cover absolute top-1.5 ltr:left-1.5 rtl:right-1.5 w-7 h-7 rounded-full bg-black/50 text-white opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center hover:bg-primary"
+                                        title="@Localizer["admin_product_image_set_cover"]" aria-label="@Localizer["admin_product_image_set_cover"]">
+                                    <span class="material-symbols-outlined text-sm">star</span>
+                                </button>
+                                <button type="button" class="img-remove absolute top-1.5 ltr:right-1.5 rtl:left-1.5 w-7 h-7 rounded-full bg-black/50 text-white opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center hover:bg-red-500"
+                                        title="@Localizer["admin_product_image_remove"]" aria-label="@Localizer["admin_product_image_remove"]">
+                                    <span class="material-symbols-outlined text-sm">close</span>
+                                </button>
+                                <span class="absolute bottom-1.5 ltr:right-1.5 rtl:left-1.5 bg-black/50 text-white text-[10px] font-bold px-1.5 py-0.5 rounded cursor-grab opacity-0 group-hover:opacity-100 transition-opacity select-none">
+                                    <span class="material-symbols-outlined text-sm">drag_indicator</span>
+                                </span>
+                            </div>
+                        }
+                    </div>
+
+                    <input type="hidden" name="ExistingImages" id="ExistingImages" value="" />
+                    <input type="hidden" name="RemovedImages" id="RemovedImages" value="" />
+                    <input type="hidden" name="ImageOrder" id="ImageOrder" value="" />
                 </div>
 
                 <!-- 3. Pricing -->
@@ -201,4 +243,298 @@
         input.value = '';
         input.focus();
     }
+</script>
+
+<script>
+(function () {
+    const MAX_IMAGES = @DAKKN.Application.DTOs.ProductDto.MaxImages;
+    // Labels the script needs after the fact, rendered server-side so the two languages and
+    // the RTL flip stay in one place.
+    const coverLabel = @Html.Raw(Json.Serialize(Localizer["admin_product_image_cover"].Value));
+    const setCoverLabel = @Html.Raw(Json.Serialize(Localizer["admin_product_image_set_cover"].Value));
+    const removeLabel = @Html.Raw(Json.Serialize(Localizer["admin_product_image_remove"].Value));
+    const remainingTpl = @Html.Raw(Json.Serialize(Localizer["admin_product_image_remaining"].Value));
+
+    const grid = document.getElementById('img-grid');
+    if (!grid) return;
+
+    const fileInput = document.getElementById('ImageFiles');
+    const imagePicker = document.getElementById('ImagePicker');
+    const dropzone = document.getElementById('img-dropzone');
+    const counter = document.getElementById('img-counter');
+    const maxHint = document.getElementById('img-max-hint');
+    const existingField = document.getElementById('ExistingImages');
+    const removedField = document.getElementById('RemovedImages');
+    const orderField = document.getElementById('ImageOrder');
+    const form = grid.closest('form');
+
+    // These three hidden inputs exist only as anchors to insert the real repeated inputs in
+    // front of. Strip their names up front so an untouched one can never bind an empty string
+    // as the first element of a List<string>.
+    [existingField, removedField, orderField].forEach(el => el.removeAttribute('name'));
+
+    // Everything on the page when it loaded, so we can tell an untouched image from a
+    // removed one when building the RemovedImages field.
+    const initiallyExisting = new Set(
+        Array.from(grid.querySelectorAll('.img-thumb[data-existing="true"]')).map(t => t.dataset.name)
+    );
+    // New files still held in memory, in grid order.
+    const newFiles = [];
+    // Newly-added files the admin then removed before saving; never reached the server.
+    const droppedNew = new Set();
+
+    function refreshUi() {
+        const thumbs = Array.from(grid.querySelectorAll('.img-thumb'));
+        counter.textContent = thumbs.length + ' / ' + MAX_IMAGES;
+        maxHint.textContent = remainingTpl.replace('{0}', Math.max(0, MAX_IMAGES - thumbs.length));
+
+        const full = thumbs.length >= MAX_IMAGES;
+        if (imagePicker) imagePicker.disabled = full;
+        if (fileInput) fileInput.disabled = false; // NEVER disable the form carrier!
+        dropzone.classList.toggle('opacity-40', full);
+        dropzone.classList.toggle('pointer-events-none', full);
+        dropzone.classList.toggle('cursor-not-allowed', full);
+
+        // Cover is whatever sits at index 0.
+        thumbs.forEach((t, i) => {
+            const badge = t.querySelector('.img-cover-badge');
+            if (i === 0 && !badge) {
+                const s = document.createElement('span');
+                s.className = 'img-cover-badge absolute bottom-1.5 ltr:left-1.5 rtl:right-1.5 bg-primary text-on-primary text-[10px] font-black px-2 py-0.5 rounded-full';
+                s.textContent = coverLabel;
+                t.appendChild(s);
+            } else if (i !== 0 && badge) {
+                badge.remove();
+            }
+        });
+    }
+
+    // --- hidden fields ------------------------------------------------------
+
+    // List<string> binds from repeated inputs; | is awkward, so write them out as siblings.
+    function syncFieldsIndexed() {
+        existingField.parentNode.querySelectorAll('.img-keep-alive').forEach(n => n.remove());
+        removedField.parentNode.querySelectorAll('.img-keep-alive').forEach(n => n.remove());
+        orderField.parentNode.querySelectorAll('.img-keep-alive').forEach(n => n.remove());
+
+        const thumbs = Array.from(grid.querySelectorAll('.img-thumb'));
+        const kept = thumbs.filter(t => t.dataset.existing === 'true').map(t => t.dataset.name);
+        const removed = Array.from(initiallyExisting).filter(n => !kept.includes(n));
+
+        kept.forEach(name => existingField.insertAdjacentHTML('beforebegin',
+            '<input class="img-keep-alive" type="hidden" name="ExistingImages" value="' + escapeAttr(name) + '">'));
+        removed.forEach(name => removedField.insertAdjacentHTML('beforebegin',
+            '<input class="img-keep-alive" type="hidden" name="RemovedImages" value="' + escapeAttr(name) + '">'));
+
+        // The file input gets rebuilt from survivors below, so an index into it must be
+        // computed against that same survivor list or every later n: slot shifts.
+        const survivors = survivingNewFiles();
+        const survivorIndex = new Map(survivors.map((nf, i) => [nf.key, i]));
+
+        const order = [];
+        thumbs.forEach(t => {
+            if (t.dataset.existing === 'true') {
+                order.push('e:' + t.dataset.name);
+            } else {
+                const idx = survivorIndex.get(t.dataset.name);
+                if (idx !== undefined) order.push('n:' + idx);
+            }
+        });
+
+        order.forEach(entry => orderField.insertAdjacentHTML('beforebegin',
+            '<input class="img-keep-alive" type="hidden" name="ImageOrder" value="' + escapeAttr(entry) + '">'));
+    }
+
+    function escapeAttr(v) {
+        return v.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+    }
+
+    // --- building thumbnails ------------------------------------------------
+
+    function addThumb(name, src, isNew, file) {
+        const el = document.createElement('div');
+        el.className = 'img-thumb relative rounded-xl overflow-hidden border border-admin-border group aspect-square';
+        el.draggable = true;
+        el.dataset.name = name;
+        el.dataset.existing = isNew ? 'false' : 'true';
+        if (isNew && file) el.__file = file;
+
+        el.innerHTML =
+            '<img src="' + escapeAttr(src) + '" alt="" class="w-full h-full object-cover pointer-events-none" />' +
+            '<button type="button" class="img-set-cover absolute top-1.5 ltr:left-1.5 rtl:right-1.5 w-7 h-7 rounded-full bg-black/50 text-white opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center hover:bg-primary" title="' +
+                escapeAttr(setCoverLabel) + '" aria-label="' + escapeAttr(setCoverLabel) + '">' +
+            '<span class="material-symbols-outlined text-sm">star</span></button>' +
+            '<button type="button" class="img-remove absolute top-1.5 ltr:right-1.5 rtl:left-1.5 w-7 h-7 rounded-full bg-black/50 text-white opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center hover:bg-red-500" title="' +
+                escapeAttr(removeLabel) + '" aria-label="' + escapeAttr(removeLabel) + '">' +
+            '<span class="material-symbols-outlined text-sm">close</span></button>';
+
+        grid.appendChild(el);
+    }
+
+    // The new files that will actually reach the server, in the order they will be uploaded.
+    function survivingNewFiles() {
+        return newFiles.filter(nf => !droppedNew.has(nf.key));
+    }
+
+    function syncFileInput() {
+        if (!fileInput || typeof DataTransfer === 'undefined') return;
+        try {
+            const dt = new DataTransfer();
+            survivingNewFiles().forEach(nf => dt.items.add(nf.file));
+            fileInput.files = dt.files;
+            fileInput.disabled = false;
+        } catch (err) {
+            console.error('Failed to sync fileInput.files:', err);
+        }
+    }
+
+    function syncAll() {
+        syncFieldsIndexed();
+        syncFileInput();
+    }
+
+    function handleFiles(filesList) {
+        if (!filesList || filesList.length === 0) return;
+        const currentCount = grid.querySelectorAll('.img-thumb').length;
+        const remaining = MAX_IMAGES - currentCount;
+        if (remaining <= 0) return;
+
+        const picked = Array.from(filesList).slice(0, remaining);
+
+        picked.forEach((f, i) => {
+            const name = 'new_' + Date.now() + '_' + i + '_' + f.name;
+            newFiles.push({ key: name, file: f });
+            addThumb(name, URL.createObjectURL(f), true, f);
+        });
+
+        syncAll();
+        refreshUi();
+    }
+
+    // --- file input & picker ------------------------------------------------
+
+    if (dropzone && imagePicker) {
+        dropzone.addEventListener('click', function (e) {
+            if (e.target === imagePicker) return;
+            const currentCount = grid.querySelectorAll('.img-thumb').length;
+            if (currentCount >= MAX_IMAGES) return;
+            imagePicker.click();
+        });
+    }
+
+    if (imagePicker) {
+        imagePicker.addEventListener('change', function () {
+            if (this.files && this.files.length > 0) {
+                handleFiles(this.files);
+                this.value = '';
+            }
+        });
+    }
+
+    // --- delegate clicks ----------------------------------------------------
+
+    grid.addEventListener('click', function (e) {
+        const removeBtn = e.target.closest('.img-remove');
+        const coverBtn = e.target.closest('.img-set-cover');
+        if (!removeBtn && !coverBtn) return;
+
+        const thumb = e.target.closest('.img-thumb');
+        if (!thumb) return;
+
+        if (coverBtn) {
+            // Set-as-cover is just a move to index 0.
+            grid.insertBefore(thumb, grid.firstElementChild);
+        } else {
+            if (thumb.dataset.existing !== 'true') {
+                droppedNew.add(thumb.dataset.name);
+            }
+            thumb.remove();
+        }
+        syncAll();
+        refreshUi();
+    });
+
+    // --- drag to reorder ----------------------------------------------------
+
+    let dragEl = null;
+
+    grid.addEventListener('dragstart', function (e) {
+        dragEl = e.target.closest('.img-thumb');
+        if (!dragEl) return;
+        e.dataTransfer.effectAllowed = 'move';
+        // Firefox refuses to start a drag without data set on the payload.
+        e.dataTransfer.setData('text/plain', dragEl.dataset.name);
+        requestAnimationFrame(() => dragEl.classList.add('opacity-40'));
+    });
+
+    grid.addEventListener('dragover', function (e) {
+        if (!dragEl) return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+
+        const over = e.target.closest('.img-thumb');
+        if (!over || over === dragEl) return;
+
+        const rect = over.getBoundingClientRect();
+        const after = (e.clientX - rect.left) > rect.width / 2;
+        grid.insertBefore(dragEl, after ? over.nextSibling : over);
+    });
+
+    grid.addEventListener('drop', function (e) {
+        if (dragEl) e.preventDefault();
+    });
+
+    grid.addEventListener('dragend', function () {
+        if (dragEl) dragEl.classList.remove('opacity-40');
+        dragEl = null;
+        syncAll();
+        refreshUi();
+    });
+
+    // Drag-and-drop on dropzone
+    if (dropzone) {
+        ['dragenter', 'dragover'].forEach(ev =>
+            dropzone.addEventListener(ev, e => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.add('border-primary');
+            }));
+
+        ['dragleave'].forEach(ev =>
+            dropzone.addEventListener(ev, e => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropzone.classList.remove('border-primary');
+            }));
+
+        dropzone.addEventListener('drop', e => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropzone.classList.remove('border-primary');
+            if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                handleFiles(e.dataTransfer.files);
+            }
+        });
+    }
+
+    // --- submit -------------------------------------------------------------
+
+    // Ensure fields and files are synced on submit button click and form submit
+    document.querySelectorAll('button[type="submit"]').forEach(btn => {
+        btn.addEventListener('click', function () {
+            if (fileInput) fileInput.disabled = false;
+            syncAll();
+        });
+    });
+
+    if (form) {
+        form.addEventListener('submit', function () {
+            if (fileInput) fileInput.disabled = false;
+            syncAll();
+        });
+    }
+
+    syncAll();
+    refreshUi();
+})();
 </script>

@@ -231,6 +231,13 @@
                         <a href="/shop/product/@product.Id" class="no-underline">
                             <div class="aspect-square rounded-xl overflow-hidden relative">
                                 <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="@ResolveImage(product.ImageFullUrl)" onerror="this.src='@placeholder'" alt="@(isAr ? product.ArName : product.Name)" loading="lazy" />
+                                @if (product.IsFeatured)
+                                {
+                                    <span class="absolute top-2.5 ltr:left-2.5 rtl:right-2.5 z-10 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-amber-500 text-white shadow-md">
+                                        <span class="material-symbols-outlined text-xs">star</span>
+                                        @Localizer["admin_product_featured_badge"]
+                                    </span>
+                                }
                             </div>
                             <div>
                                 <h3 class="text-lg font-bold text-on-surface dark:text-white">@(isAr ? product.ArName : product.Name)</h3>

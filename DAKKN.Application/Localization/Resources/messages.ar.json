@@ -815,6 +815,10 @@
   "admin_product_edit_subtitle": "قم بتحديث تفاصيل المنتج أدناه.",
   "admin_product_update_btn": "تحديث المنتج",
   "admin_product_image_current": "الصورة الحالية",
+  "admin_product_image_cover": "الرئيسية",
+  "admin_product_image_set_cover": "تعيين كصورة رئيسية",
+  "admin_product_image_remove": "حذف هذه الصورة",
+  "admin_product_image_remaining": "متبقي {0}",
   "admin_product_details_title": "تفاصيل المنتج",
   "admin_product_details_subtitle": "عرض معلومات المنتج وإجراءات الإدارة.",
   "admin_product_details_edit": "تعديل المنتج",
@@ -851,6 +855,15 @@
   "admin_hero_settings": "بانر البداية (Hero)",
   "admin_featured_categories": "الفئات المميزة",
   "admin_featured_products": "المنتجات المميزة",
+  "admin_product_is_featured": "منتج مميز (يظهر في الصفحة الرئيسية)",
+  "admin_product_featured_badge": "مميز",
+  "admin_regular_product": "منتج عادي",
+  "admin_product_featured_enabled": "تم تمييز المنتج بنجاح ويظهر الآن في الصفحة الرئيسية",
+  "admin_product_featured_disabled": "تم إلغاء تمييز المنتج بنجاح",
+  "admin_filter_featured": "المميزة فقط",
+  "admin_featured_search_ph": "ابحث عن منتج بالاسم أو الفئة...",
+  "admin_featured_auto_bestsellers": "تفعيل التحديد التلقائي للمنتجات الأكثر مبيعاً",
+  "admin_featured_selected_count": "منتجات مميزة",
   "admin_reviews_mgmt": "تقييمات العملاء",
   "admin_global_pricing": "التسعير العالمي",
   "admin_visibility_toggle": "عرض في الصفحة الرئيسية",
@@ -1137,7 +1150,10 @@
     "created": "تم إنشاء المنتج بنجاح",
     "updated": "تم تحديث المنتج بنجاح",
     "deleted": "تم حذف المنتج بنجاح",
-    "category_not_found": "الفئة غير موجودة"
+    "category_not_found": "الفئة غير موجودة",
+    "images_max": "يمكنك إرفاق عدد أقصاه {0} صور للمنتج",
+  "gallery_thumb_label": "صورة {0} من {1}",
+  "gallery_counter": "{0} / {1}"
   },
   "categories": {
     "not_found": "الفئة غير موجودة",
@@ -2028,5 +2044,11 @@
   "stepper_step3_heading": "مراجعة تفاصيل الطلب والتأكيد",
   "stepper_step3_subheading": "راجع بيانات الشحن والتوصيل والمنتجات قبل تأكيد الطلب النهائي",
   "stepper_step4_heading": "مراجعة تفاصيل الطلب والتأكيد",
-  "stepper_step4_subheading": "راجع بيانات الشحن والتوصيل والمنتجات قبل تأكيد الطلب النهائي"
+  "stepper_step4_subheading": "راجع بيانات الشحن والتوصيل والمنتجات قبل تأكيد الطلب النهائي",
+  "product_gallery_counter": "{0} من {1}",
+  "product_gallery_thumb_label": "صورة {0} من {1}",
+  "product_gallery_prev": "الصورة السابقة",
+  "product_gallery_next": "الصورة التالية",
+  "product_gallery_scroll_left": "تمرير لليسار",
+  "product_gallery_scroll_right": "تمرير لليمين"
 }

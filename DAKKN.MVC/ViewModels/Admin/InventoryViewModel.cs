@@ -19,5 +19,7 @@ namespace DAKKN.MVC.ViewModels.Admin
         public int OutOfStockCount { get; set; }
         public string? StockFilter { get; set; }
         public string? SortBy { get; set; }
+        public int FeaturedCount { get; set; }
+        public bool? FeaturedOnly { get; set; }
     }
 }

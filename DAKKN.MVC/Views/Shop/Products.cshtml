@@ -1,4 +1,4 @@
-﻿@model DAKKN.MVC.ViewModels.Customer.ProductsViewModel
+@model DAKKN.MVC.ViewModels.Customer.ProductsViewModel
 @inject IStringLocalizer<Messages> Localizer
 @{
     Layout = "_LayoutLanding";
@@ -35,10 +35,14 @@
 
         <!-- Category Pills -->
         <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-8 no-scrollbar">
-            <a href="@Url.Action("Products")" class="px-5 py-2.5 rounded-full bg-primary text-on-primary font-bold whitespace-nowrap shadow-medium transition-all text-sm">@Localizer["shop_cat_all"]</a>
+            <a href="@Url.Action("Products")" class="px-5 py-2.5 rounded-full @(Model.SelectedCategoryId == null && Model.IsFeatured != true ? "bg-primary text-on-primary font-bold shadow-medium" : "bg-surface-container dark:bg-[#0d1a2a] border border-outline-variant/10 text-on-surface-variant dark:text-slate-300 hover:border-primary/50") whitespace-nowrap transition-all text-sm">@Localizer["shop_cat_all"]</a>
+            <a href="@Url.Action("Products", new { featured = Model.IsFeatured == true ? null : (bool?)true })" class="px-5 py-2.5 rounded-full flex items-center gap-1.5 whitespace-nowrap transition-all text-sm @(Model.IsFeatured == true ? "bg-amber-500 text-white font-bold shadow-medium" : "bg-surface-container dark:bg-[#0d1a2a] border border-outline-variant/10 text-on-surface-variant dark:text-slate-300 hover:border-amber-500/50")">
+                <span class="material-symbols-outlined text-sm">star</span>
+                @Localizer["admin_product_featured_badge"]
+            </a>
             @foreach (var cat in Model.Categories)
             {
-                <a href="@Url.Action("Products", new { categoryId = cat.Id })" class="px-5 py-2.5 rounded-full bg-surface-container dark:bg-[#0d1a2a] border border-outline-variant/10 text-on-surface-variant dark:text-slate-300 hover:border-primary/50 whitespace-nowrap transition-all text-sm">
+                <a href="@Url.Action("Products", new { categoryId = cat.Id })" class="px-5 py-2.5 rounded-full bg-surface-container dark:bg-[#0d1a2a] border border-outline-variant/10 text-on-surface-variant dark:text-slate-300 hover:border-primary/50 whitespace-nowrap transition-all text-sm @(Model.SelectedCategoryId == cat.Id ? "border-primary text-primary font-bold" : "")">
                     @(isArabic ? cat.ArName : cat.CategoryName)
                 </a>
             }
@@ -51,6 +55,13 @@
                 <div class="group bg-surface dark:bg-[#0d1a2a] rounded-[32px] border border-outline-variant/10 overflow-hidden shadow-small hover:shadow-large transition-all duration-500 hover:-translate-y-2">
                     <a href="/shop/product/@product.Id" class="block">
                         <div class="aspect-square relative overflow-hidden bg-white/5">
+                            @if (product.IsFeatured)
+                            {
+                                <span class="absolute top-3 ltr:left-3 rtl:right-3 z-10 inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-500 text-white text-xs font-black shadow-md">
+                                    <span class="material-symbols-outlined text-xs">star</span>
+                                    @Localizer["admin_product_featured_badge"]
+                                </span>
+                            }
                             <img src="@(product.ImageFullUrl ?? product.ImageUrl)" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="@(isArabic ? product.ArName : product.Name)" onerror="this.src='@placeholder'" />
                         </div>
                     </a>
@@ -115,17 +126,17 @@
                 <nav class="flex items-center gap-2 bg-surface dark:bg-[#0d1a2a] p-2 rounded-full border border-outline-variant/10 shadow-medium">
                     @if (Model.HasPreviousPage)
                     {
-                        <a href="@Url.Action("Products", new { pageNumber = Model.PageNumber - 1, categoryId = Context.Request.Query["categoryId"] })" class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant dark:text-slate-300 hover:bg-primary/5">
+                        <a href="@Url.Action("Products", new { pageNumber = Model.PageNumber - 1, categoryId = Context.Request.Query["categoryId"], featured = Model.IsFeatured })" class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant dark:text-slate-300 hover:bg-primary/5">
                             <span class="material-symbols-outlined">@(isArabic ? "chevron_right" : "chevron_left")</span>
                         </a>
                     }
                     @for (int i = 1; i <= Model.TotalPages; i++)
                     {
-                        <a href="@Url.Action("Products", new { pageNumber = i, categoryId = Context.Request.Query["categoryId"] })" class="w-10 h-10 rounded-full flex items-center justify-center text-sm @(i == Model.PageNumber ? "bg-primary text-on-primary font-bold" : "text-on-surface-variant dark:text-slate-300 hover:bg-primary/5 font-bold")">@i</a>
+                        <a href="@Url.Action("Products", new { pageNumber = i, categoryId = Context.Request.Query["categoryId"], featured = Model.IsFeatured })" class="w-10 h-10 rounded-full flex items-center justify-center text-sm @(i == Model.PageNumber ? "bg-primary text-on-primary font-bold" : "text-on-surface-variant dark:text-slate-300 hover:bg-primary/5 font-bold")">@i</a>
                     }
                     @if (Model.HasNextPage)
                     {
-                        <a href="@Url.Action("Products", new { pageNumber = Model.PageNumber + 1, categoryId = Context.Request.Query["categoryId"] })" class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant dark:text-slate-300 hover:bg-primary/5">
+                        <a href="@Url.Action("Products", new { pageNumber = Model.PageNumber + 1, categoryId = Context.Request.Query["categoryId"], featured = Model.IsFeatured })" class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant dark:text-slate-300 hover:bg-primary/5">
                             <span class="material-symbols-outlined">@(isArabic ? "chevron_left" : "chevron_right")</span>
                         </a>
                     }

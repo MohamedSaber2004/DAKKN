@@ -57,7 +57,7 @@ namespace DAKKN.Tests.Tests.Application.Models
         [Fact]
         public void Error_Default_ShouldReturnStatusCode400()
         {
-            var result = ApiResponse<object>.Error((IDictionary<string, string[]>)null);
+            var result = ApiResponse<object>.Error((IDictionary<string, string[]>?)null!);
             result.StatusCode.Should().Be(400);
             result.Success.Should().BeFalse();
         }

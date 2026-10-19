@@ -13,5 +13,6 @@ namespace DAKKN.MVC.ViewModels.Customer
         public string? SearchTerm { get; set; }
         public Guid? SelectedCategoryId { get; set; }
         public HashSet<Guid> FavoriteProductIds { get; set; } = new();
+        public bool? IsFeatured { get; set; }
     }
 }

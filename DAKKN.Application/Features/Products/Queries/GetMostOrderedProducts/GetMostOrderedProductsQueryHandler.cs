@@ -66,7 +66,8 @@ namespace DAKKN.Application.Features.Products.Queries.GetMostOrderedProducts
                     QuantityInStock = p.QuantityInStock,
                     DangerQuantity = p.DangerQuantity,
                     StockStatus = p.StockStatus.ToString(),
-                    IsInStock = p.IsInStock
+                    IsInStock = p.IsInStock,
+                    IsFeatured = p.IsFeatured
                 })
                 .ToList();
 

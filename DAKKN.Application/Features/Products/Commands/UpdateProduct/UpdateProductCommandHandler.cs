@@ -36,12 +36,23 @@ namespace DAKKN.Application.Features.Products.Commands.UpdateProduct
             product.Description = request.Description;
             product.ArDescription = request.ArDescription;
             product.Price = request.Price;
-            product.ImageUrl = request.ImageUrl;
+            var images = (request.Images ?? new List<string>())
+                .Where(i => !string.IsNullOrWhiteSpace(i))
+                .Distinct()
+                .ToList();
+
+            product.Images = images;
+            // Cover invariant: mirrors CreateProductCommandHandler — derived, never trusted.
+            product.ImageUrl = images.FirstOrDefault() ?? request.ImageUrl;
             product.FinishOptions = request.FinishOptions;
             product.SizeOptions = request.SizeOptions;
             product.CategoryId = request.CategoryId;
             product.QuantityInStock = request.QuantityInStock;
             product.DangerQuantity = request.DangerQuantity;
+            if (request.IsFeatured.HasValue)
+            {
+                product.IsFeatured = request.IsFeatured.Value;
+            }
             product.LastStockUpdateDate = DateTime.UtcNow;
 
             productRepo.Update(product);
@@ -58,6 +69,7 @@ namespace DAKKN.Application.Features.Products.Commands.UpdateProduct
                 AverageRating = product.AverageRating,
                 ReviewCount = product.ReviewCount,
                 ImageUrl = product.ImageUrl,
+                Images = images,
                 FinishOptions = product.FinishOptions,
                 SizeOptions = product.SizeOptions,
                 CategoryId = product.CategoryId,
@@ -66,7 +78,8 @@ namespace DAKKN.Application.Features.Products.Commands.UpdateProduct
                 QuantityInStock = product.QuantityInStock,
                 DangerQuantity = product.DangerQuantity,
                 StockStatus = product.StockStatus.ToString(),
-                IsInStock = product.IsInStock
+                IsInStock = product.IsInStock,
+                IsFeatured = product.IsFeatured
             };
         }
     }

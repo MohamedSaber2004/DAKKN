@@ -55,6 +55,13 @@
                 <a asp-action="ProductDetails" asp-route-id="@product.Id" class="block">
                     <div class="aspect-square relative overflow-hidden bg-white/5">
                         <img src="@product.ImageUrl" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="@(isArabic ? product.ArName : product.Name)">
+                        @if (product.IsFeatured)
+                        {
+                            <span class="absolute top-4 start-4 z-10 inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-amber-500 text-white shadow-md">
+                                <span class="material-symbols-outlined text-xs">star</span>
+                                @Localizer["admin_product_featured_badge"]
+                            </span>
+                        }
                         
                         <!-- Favorite (Heart) Button -->
                         <button type="button" onclick="toggleFavorite('@product.Id', this); event.preventDefault(); event.stopPropagation();" 

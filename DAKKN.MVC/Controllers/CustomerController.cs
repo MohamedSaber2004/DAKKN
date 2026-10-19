@@ -22,6 +22,7 @@ using DAKKN.Application.Features.Users.Queries.GetUserSettings;
 using DAKKN.Application.Features.Users.Commands.UpdateUserSettings;
 using DAKKN.Application.Features.Cart.Queries.GetCart;
 using DAKKN.Application.Features.Products.Queries.GetProducts;
+using DAKKN.Application.Features.Products.Queries.GetFeaturedProducts;
 using DAKKN.Application.Features.Products.Queries.GetProductById;
 using DAKKN.Application.Features.Products.Queries.GetRelatedProducts;
 using DAKKN.Application.Features.Categories.Queries.GetCategories;
@@ -48,10 +49,14 @@ namespace DAKKN.MVC.Controllers
         {
             ViewData["Title"] = localizer["Dashboard_Welcome"];
 
-            var productsResult = await mediator.Send(new GetProductsQuery(null, null, 1, 8));
+            var featured = await mediator.Send(new GetFeaturedProductsQuery());
+            var recommendations = featured.Count > 0
+                ? featured
+                : (await mediator.Send(new GetProductsQuery(null, null, 1, 8))).Items.ToList();
+
             var dashboard = new DashboardDto
             {
-                Recommendations = productsResult.Items.ToList()
+                Recommendations = recommendations
             };
 
             // Landing page hero banner

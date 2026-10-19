@@ -50,7 +50,8 @@ namespace DAKKN.Application.Features.Favorites.Queries.GetFavorites
                 QuantityInStock = f.Product.QuantityInStock,
                 DangerQuantity = f.Product.DangerQuantity,
                 StockStatus = f.Product.StockStatus.ToString(),
-                IsInStock = f.Product.IsInStock
+                IsInStock = f.Product.IsInStock,
+                IsFeatured = f.Product.IsFeatured
             }).ToList();
 
             foreach (var item in result)

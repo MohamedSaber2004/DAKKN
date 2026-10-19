@@ -14,7 +14,12 @@
             <h3 class="text-2xl font-black text-admin-primary">@(isArabic ? Model.ArName : Model.Name)</h3>
             <p class="text-sm text-admin-secondary">@Localizer["admin_product_details_subtitle"]</p>
         </div>
-        <div class="flex gap-3 w-full md:w-auto">
+        <div class="flex flex-wrap gap-3 w-full md:w-auto">
+            <button type="button" id="btn-toggle-featured-details" onclick="toggleFeaturedDetails('@Model.Id')"
+                    class="flex-1 md:flex-none px-6 py-2.5 rounded-xl text-sm font-bold shadow-small transition-all inline-flex items-center justify-center gap-2 @(Model.IsFeatured ? "bg-amber-500 text-white hover:bg-amber-600" : "bg-admin-page border border-admin-border text-admin-primary hover:text-amber-500")">
+                <span class="material-symbols-outlined text-lg">star</span>
+                <span id="featured-btn-text">@(Model.IsFeatured ? Localizer["admin_product_featured_badge"] : Localizer["admin_product_is_featured"])</span>
+            </button>
             <a asp-action="EditProduct" asp-route-id="@Model.Id"
                class="flex-1 md:flex-none px-6 py-2.5 bg-primary text-on-primary rounded-xl text-sm font-bold shadow-small hover:scale-103 active:scale-95 transition-all inline-flex items-center justify-center gap-2">
                 <span class="material-symbols-outlined text-lg">edit</span>
@@ -35,14 +40,13 @@
 
     <!-- Main Content -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Left: Product Image -->
+        <!-- Left: Product Image & Gallery -->
         <div class="lg:col-span-1">
             <div class="premium-card p-6">
-                <div class="aspect-square rounded-2xl overflow-hidden bg-surface-container">
-                    <img src="@Model.ImageUrl" alt="@(isArabic ? Model.ArName : Model.Name)"
-                         class="w-full h-full object-cover"
-                         onerror="this.src='https://placehold.co/600x600/e2e8f0/64748b?text=@Localizer["admin_content_ph_no_image"]'" />
-                </div>
+                @{
+                    ViewData["galleryFrameClass"] = "aspect-square rounded-2xl overflow-hidden bg-surface-container border border-admin-border";
+                }
+                <partial name="Partials/_ProductGallery" model="Model" />
             </div>
         </div>
 
@@ -97,6 +101,13 @@
                             {
                                 <span class="status-badge status-pending">@Localizer["admin_product_details_status_inactive"]</span>
                             }
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider block mb-1">@Localizer["admin_featured_products"]</label>
+                            <span id="featured-status-badge" class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold @(Model.IsFeatured ? "bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30" : "bg-admin-page text-admin-secondary border border-admin-border")">
+                                <span class="material-symbols-outlined text-xs">@(Model.IsFeatured ? "star" : "star_border")</span>
+                                <span id="featured-badge-text">@(Model.IsFeatured ? Localizer["admin_product_featured_badge"] : Localizer["admin_regular_product"])</span>
+                            </span>
                         </div>
                         <div>
                             <label class="text-xs font-bold text-admin-secondary uppercase tracking-wider block mb-1">@Localizer["Stock Status"]</label>
@@ -230,4 +241,40 @@
             closeDeleteProductModal();
         }
     });
+
+    function toggleFeaturedDetails(productId) {
+        const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value || '';
+        fetch('/admin/toggle-product-featured/' + productId, {
+            method: 'POST',
+            headers: {
+                'RequestVerificationToken': token,
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(res => res.json())
+        .then(res => {
+            if (res.success) {
+                const isFeat = res.isFeatured;
+                const btn = document.getElementById('btn-toggle-featured-details');
+                const btnText = document.getElementById('featured-btn-text');
+                const badge = document.getElementById('featured-status-badge');
+                const badgeText = document.getElementById('featured-badge-text');
+
+                if (isFeat) {
+                    btn.className = "flex-1 md:flex-none px-6 py-2.5 rounded-xl text-sm font-bold shadow-small transition-all inline-flex items-center justify-center gap-2 bg-amber-500 text-white hover:bg-amber-600";
+                    btnText.textContent = "@Localizer["admin_product_featured_badge"]";
+                    badge.className = "inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30";
+                    badge.querySelector('.material-symbols-outlined').textContent = "star";
+                    badgeText.textContent = "@Localizer["admin_product_featured_badge"]";
+                } else {
+                    btn.className = "flex-1 md:flex-none px-6 py-2.5 rounded-xl text-sm font-bold shadow-small transition-all inline-flex items-center justify-center gap-2 bg-admin-page border border-admin-border text-admin-primary hover:text-amber-500";
+                    btnText.textContent = "@Localizer["admin_product_is_featured"]";
+                    badge.className = "inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-admin-page text-admin-secondary border border-admin-border";
+                    badge.querySelector('.material-symbols-outlined').textContent = "star_border";
+                    badgeText.textContent = "@Localizer["admin_regular_product"]";
+                }
+            }
+        })
+        .catch(err => console.error(err));
+    }
 </script>

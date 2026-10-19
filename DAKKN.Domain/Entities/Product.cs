@@ -19,6 +19,18 @@ namespace DAKKN.Domain.Entities
         public List<string> FinishOptions { get; set; } = new();
         public List<string> SizeOptions { get; set; } = new();
 
+        /// <summary>
+        /// Ordered list of image filenames. The first entry is the cover image.
+        /// Kept in sync with <see cref="ImageUrl"/> by the create/update handlers.
+        /// May be null for rows created before multi-image support; read defensively.
+        /// </summary>
+        public List<string>? Images { get; set; }
+
+        /// <summary>
+        /// Effective image list — never null, even on rows predating multi-image support.
+        /// </summary>
+        public List<string> EffectiveImages => Images ?? new List<string>();
+
         public Guid CategoryId { get; set; }
         public virtual Category Category { get; set; } = null!;
 
@@ -30,6 +42,18 @@ namespace DAKKN.Domain.Entities
 
         [Timestamp]
         public byte[] RowVersion { get; set; } = Array.Empty<byte>();
+
+        public bool IsFeatured { get; set; } = false;
+
+        public void ToggleFeatured()
+        {
+            IsFeatured = !IsFeatured;
+        }
+
+        public void SetFeatured(bool isFeatured)
+        {
+            IsFeatured = isFeatured;
+        }
 
         public bool IsInStock => QuantityInStock > 0;
 

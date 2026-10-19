@@ -19,6 +19,15 @@
                 <h3 class="text-lg sm:text-2xl font-black text-admin-primary">@Model.TotalProducts</h3>
             </div>
         </div>
+        <div class="premium-card p-4 sm:p-6 flex items-center gap-4">
+            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 shrink-0">
+                <span class="material-symbols-outlined text-xl sm:text-2xl">star</span>
+            </div>
+            <div class="min-w-0">
+                <p class="text-xs sm:text-sm font-semibold text-admin-secondary truncate">@Localizer["admin_featured_products"]</p>
+                <h3 class="text-lg sm:text-2xl font-black text-admin-primary">@Model.FeaturedCount</h3>
+            </div>
+        </div>
     </div>
 
     <!-- Search + Add -->
@@ -70,10 +79,15 @@
             <span class="material-symbols-outlined text-sm align-text-bottom">warning</span>
             @Localizer["admin_low_stock"]
         </a>
-        <a href="@Url.Action("Inventory", new { stockFilter = "outOfStock", searchTerm = Model.SearchTerm, categoryId = Model.SelectedCategoryId })" 
+        <a href="@Url.Action("Inventory", new { stockFilter = "outOfStock", searchTerm = Model.SearchTerm, categoryId = Model.SelectedCategoryId, featuredOnly = Model.FeaturedOnly })" 
            class="px-4 py-2 rounded-full text-xs sm:text-sm font-bold whitespace-nowrap transition-all @(Model.StockFilter == "outOfStock" ? "bg-red-500 text-white" : "bg-admin-card border border-admin-border text-admin-secondary hover:border-primary/50")">
             <span class="material-symbols-outlined text-sm align-text-bottom">block</span>
             @Localizer["inventory_out_of_stock"]
+        </a>
+        <a href="@Url.Action("Inventory", new { featuredOnly = Model.FeaturedOnly == true ? null : (bool?)true, searchTerm = Model.SearchTerm, categoryId = Model.SelectedCategoryId, stockFilter = Model.StockFilter })" 
+           class="px-4 py-2 rounded-full text-xs sm:text-sm font-bold whitespace-nowrap transition-all flex items-center gap-1.5 @(Model.FeaturedOnly == true ? "bg-amber-500 text-white shadow-sm" : "bg-admin-card border border-admin-border text-admin-secondary hover:border-amber-500/50")">
+            <span class="material-symbols-outlined text-sm">star</span>
+            @Localizer["admin_filter_featured"]
         </a>
     </div>
 
@@ -118,7 +132,19 @@
                         <img src="@product.ImageUrl" alt="@(isArabic ? product.ArName : product.Name)" loading="lazy"
                              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                              onerror="this.src='https://placehold.co/400x400/e2e8f0/64748b?text=No+Image'" />
+                        @if (product.IsFeatured)
+                        {
+                            <span class="featured-badge absolute top-2.5 ltr:left-2.5 rtl:right-2.5 z-10 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500 text-white text-[10px] font-black shadow-md">
+                                <span class="material-symbols-outlined text-xs">star</span>
+                                @Localizer["admin_product_featured_badge"]
+                            </span>
+                        }
                         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-center pb-4 gap-2">
+                            <button type="button" onclick="toggleFeatured('@product.Id', this)"
+                                    class="btn-toggle-featured w-9 h-9 rounded-full @(product.IsFeatured ? "bg-amber-500 text-white" : "bg-white/90 text-admin-primary hover:text-amber-500") flex items-center justify-center hover:scale-110 transition-transform shadow-lg"
+                                    title="@Localizer["admin_product_is_featured"]">
+                                <span class="material-symbols-outlined text-lg">star</span>
+                            </button>
                             <a asp-action="EditProduct" asp-route-id="@product.Id"
                                class="w-9 h-9 rounded-full bg-white/90 text-admin-primary flex items-center justify-center hover:scale-110 transition-transform shadow-lg">
                                 <span class="material-symbols-outlined text-lg">edit</span>
@@ -249,4 +275,42 @@
             closeDeleteProductModal();
         }
     });
+
+    function toggleFeatured(id, btn) {
+        btn.disabled = true;
+        const csrfToken = document.querySelector('input[name="__RequestVerificationToken"]')?.value || window.csrfToken || '';
+        fetch('/admin/toggle-product-featured/' + id, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'RequestVerificationToken': csrfToken
+            }
+        })
+        .then(r => r.json())
+        .then(res => {
+            btn.disabled = false;
+            if (res.success) {
+                const card = btn.closest('.premium-card');
+                let badge = card ? card.querySelector('.featured-badge') : null;
+                if (res.isFeatured) {
+                    btn.classList.remove('bg-white/90', 'text-admin-primary');
+                    btn.classList.add('bg-amber-500', 'text-white');
+                    if (!badge && card) {
+                        const imgContainer = card.querySelector('.aspect-square');
+                        badge = document.createElement('span');
+                        badge.className = 'featured-badge absolute top-2.5 ltr:left-2.5 rtl:right-2.5 z-10 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500 text-white text-[10px] font-black shadow-md';
+                        badge.innerHTML = '<span class="material-symbols-outlined text-xs">star</span> @Localizer["admin_product_featured_badge"]';
+                        imgContainer.appendChild(badge);
+                    }
+                } else {
+                    btn.classList.remove('bg-amber-500', 'text-white');
+                    btn.classList.add('bg-white/90', 'text-admin-primary');
+                    if (badge) badge.remove();
+                }
+            }
+        })
+        .catch(() => {
+            btn.disabled = false;
+        });
+    }
 </script>

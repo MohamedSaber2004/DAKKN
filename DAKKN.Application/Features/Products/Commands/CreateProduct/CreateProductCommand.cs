@@ -10,10 +10,12 @@ namespace DAKKN.Application.Features.Products.Commands.CreateProduct
         string? ArDescription,
         decimal Price,
         string ImageUrl,
+        List<string> Images,
         List<string> FinishOptions,
         List<string> SizeOptions,
         Guid CategoryId,
         int QuantityInStock = 0,
-        int DangerQuantity = 0
+        int DangerQuantity = 0,
+        bool IsFeatured = false
     ) : IRequest<ProductDto>;
 }

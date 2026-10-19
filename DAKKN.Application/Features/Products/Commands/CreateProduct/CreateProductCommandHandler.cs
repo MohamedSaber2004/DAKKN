@@ -26,6 +26,11 @@ namespace DAKKN.Application.Features.Products.Commands.CreateProduct
             if (category == null)
                 throw new NotFoundException(_localizer[LocalizationKeys.Products.CategoryNotFound.Value]);
 
+            var images = (request.Images ?? new List<string>())
+                .Where(i => !string.IsNullOrWhiteSpace(i))
+                .Distinct()
+                .ToList();
+
             var product = new Product
             {
                 Name = request.Name,
@@ -33,12 +38,16 @@ namespace DAKKN.Application.Features.Products.Commands.CreateProduct
                 Description = request.Description,
                 ArDescription = request.ArDescription,
                 Price = request.Price,
-                ImageUrl = request.ImageUrl,
+                // Cover invariant: ImageUrl always mirrors the first gallery image. Derived here
+                // rather than trusted from the request so no caller can desync the two.
+                ImageUrl = images.FirstOrDefault() ?? request.ImageUrl,
+                Images = images,
                 FinishOptions = request.FinishOptions,
                 SizeOptions = request.SizeOptions,
                 CategoryId = request.CategoryId,
                 QuantityInStock = request.QuantityInStock,
                 DangerQuantity = request.DangerQuantity,
+                IsFeatured = request.IsFeatured,
                 LastStockUpdateDate = DateTime.UtcNow
             };
 
@@ -57,6 +66,7 @@ namespace DAKKN.Application.Features.Products.Commands.CreateProduct
                 AverageRating = product.AverageRating,
                 ReviewCount = product.ReviewCount,
                 ImageUrl = product.ImageUrl,
+                Images = images,
                 FinishOptions = product.FinishOptions,
                 SizeOptions = product.SizeOptions,
                 CategoryId = product.CategoryId,
@@ -65,7 +75,8 @@ namespace DAKKN.Application.Features.Products.Commands.CreateProduct
                 QuantityInStock = product.QuantityInStock,
                 DangerQuantity = product.DangerQuantity,
                 StockStatus = product.StockStatus.ToString(),
-                IsInStock = product.IsInStock
+                IsInStock = product.IsInStock,
+                IsFeatured = product.IsFeatured
             };
         }
     }
