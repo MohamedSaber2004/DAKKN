@@ -184,16 +184,32 @@
                                         </label>
                                         <div class="relative">
                                             <select id="shipping-gov-select" name="ShippingGovernorateId" required class="w-full ps-12 pe-10 py-4 bg-surface dark:bg-[#080e1a] rounded-2xl border border-outline-variant/20 dark:border-white/5 focus:ring-2 focus:ring-primary outline-none transition-all font-medium text-on-surface dark:text-white appearance-none cursor-pointer">
-                                                <option value="" disabled @(Model.ShippingGovernorateId.HasValue ? "" : "selected")>@Localizer["stepper_select_gov_ph"]</option>
+                                                @if (!Model.ShippingGovernorateId.HasValue)
+                                                {
+                                                    <option value="" disabled selected>@Localizer["stepper_select_gov_ph"]</option>
+                                                }
+                                                else
+                                                {
+                                                    <option value="" disabled>@Localizer["stepper_select_gov_ph"]</option>
+                                                }
                                                 @foreach (var gov in Model.Governorates)
                                                 {
                                                     var isSelected = Model.ShippingGovernorateId == gov.Id;
                                                     var currentGovName = isAr ? gov.ArName : gov.Name;
                                                     var invariantPrice = gov.ShippingPrice.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
                                                     var priceText = gov.ShippingPrice > 0 ? $"{gov.ShippingPrice:N0} {Localizer["Currency_EGP"]}" : Localizer["shipping_free"].Value;
-                                                    <option value="@gov.Id" data-price="@invariantPrice" data-name="@currentGovName" selected="@(isSelected ? "selected" : null)">
-                                                        @currentGovName — @priceText
-                                                    </option>
+                                                    if (isSelected)
+                                                    {
+                                                        <option value="@gov.Id" data-price="@invariantPrice" data-name="@currentGovName" selected>
+                                                            @currentGovName — @priceText
+                                                        </option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@gov.Id" data-price="@invariantPrice" data-name="@currentGovName">
+                                                            @currentGovName — @priceText
+                                                        </option>
+                                                    }
                                                 }
                                             </select>
                                             <span class="material-symbols-outlined absolute start-4 top-1/2 -translate-y-1/2 text-on-surface-variant dark:text-slate-400 pointer-events-none">location_on</span>
