@@ -9,7 +9,7 @@
     var cartSubtotal = Model.Items.Sum(i => i.Price * i.Quantity);
 }
 
-<div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12 pb-28 lg:pb-12">
+<div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12 pb-8 sm:pb-12">
     <!-- Top Header & Back Link -->
     <div class="mb-6 sm:mb-8 flex items-center justify-between gap-3 sm:gap-4">
         <div class="flex items-center gap-3 sm:gap-4 min-w-0">
@@ -47,12 +47,13 @@
     {
         <div id="checkout-main-content">
             <!-- Stepper Progress Tracker (2 Steps) -->
-            <div class="mb-6 sm:mb-10 bg-surface dark:bg-inverse-surface rounded-2xl sm:rounded-[28px] border border-border dark:border-outline/10 p-3.5 sm:p-5 md:p-6 shadow-small">
+            <div class="mb-6 sm:mb-10 bg-surface dark:bg-inverse-surface rounded-2xl sm:rounded-[28px] border border-border dark:border-outline/10 p-3.5 sm:p-5 md:p-6 shadow-small overflow-hidden">
                 <div class="relative flex items-center justify-between max-w-2xl mx-auto px-4 sm:px-10">
-                    <!-- Background Line passing cleanly through center of circles -->
-                    <div class="absolute top-[22px] sm:top-[24px] -translate-y-1/2 start-12 end-12 sm:start-20 sm:end-20 h-1 bg-surface-container-high dark:bg-white/10 rounded-full -z-0"></div>
-                    <!-- Active Progress Line -->
-                    <div id="stepper-progress-bar" class="absolute top-[22px] sm:top-[24px] -translate-y-1/2 start-12 sm:start-20 h-1 bg-primary rounded-full transition-all duration-500 -z-0" style="width: 0%;"></div>
+                    <!-- Background Line Track passing cleanly between center of circles -->
+                    <div class="absolute top-[22px] sm:top-[24px] -translate-y-1/2 start-12 end-12 sm:start-20 sm:end-20 h-1 bg-surface-container-high dark:bg-white/10 rounded-full overflow-hidden pointer-events-none -z-0">
+                        <!-- Active Progress Line strictly contained within track -->
+                        <div id="stepper-progress-bar" class="h-full bg-primary rounded-full transition-all duration-500" style="width: 0%;"></div>
+                    </div>
 
                     <!-- Step 1 Button: سلة المشتريات والمنتجات -->
                     <button type="button" onclick="goToStep(1)" id="step-nav-1" class="step-nav-btn relative z-10 flex flex-col items-center gap-1.5 sm:gap-2 group focus:outline-none">
@@ -469,31 +470,6 @@
     }
 </div>
 
-<!-- Mobile Sticky Bottom Action Bar (Visible on mobile/tablet < lg) -->
-@if (!Model.IsEmpty)
-{
-    <div id="checkout-mobile-sticky-bar" class="block lg:hidden fixed bottom-0 inset-x-0 z-40 bg-surface/95 dark:bg-inverse-surface/95 backdrop-blur-md border-t border-border dark:border-outline/20 px-4 py-3 shadow-2xl transition-all duration-300">
-        <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
-            <div>
-                <span class="text-[11px] text-text-secondary block font-medium">@Localizer["order_total"]</span>
-                <div class="mobile-sticky-checkout-total font-extrabold text-base sm:text-lg text-primary leading-tight">
-                    @((cartSubtotal + Model.ShippingPrice).ToString("N0")) @Html.Raw(Localizer["Currency_EGP"])
-                </div>
-            </div>
-            <!-- Step 1 Mobile Sticky Button: متابعة لبيانات التوصيل -->
-            <button type="button" id="sticky-btn-next-step" onclick="validateStep1AndProceed()" class="flex-1 max-w-[220px] bg-primary text-on-primary py-3 px-5 rounded-2xl font-bold text-sm sm:text-base shadow-medium hover:shadow-large active:scale-95 transition-all flex items-center justify-center gap-2">
-                <span>@Localizer["stepper_next_delivery"]</span>
-                <span class="material-symbols-outlined text-base">@nextIcon</span>
-            </button>
-            <!-- Step 2 Mobile Sticky Button: إتمام الطلب (في الأسفل دائماً) -->
-            <button type="button" id="sticky-btn-submit-order" onclick="submitCheckoutForm()" class="submit-order-btn hidden flex-1 max-w-[220px] bg-primary text-on-primary py-3 px-5 rounded-2xl font-bold text-sm sm:text-base shadow-large hover:shadow-2xl active:scale-95 transition-all flex items-center justify-center gap-2">
-                <span class="material-symbols-outlined text-lg">lock</span>
-                <span class="submit-btn-text">@Localizer["checkout_submit"]</span>
-                <span class="submit-spinner hidden material-symbols-outlined animate-spin text-lg">progress_activity</span>
-            </button>
-        </div>
-    </div>
-}
 
 <style>
     .custom-scroll::-webkit-scrollbar {
@@ -643,22 +619,14 @@
             const btnSubmit = document.getElementById('btn-submit-order');
             const btnPrev = document.getElementById('sidebar-btn-prev-step');
 
-            // Toggle Mobile Sticky Action Buttons
-            const stickyNext = document.getElementById('sticky-btn-next-step');
-            const stickySubmit = document.getElementById('sticky-btn-submit-order');
-
             if (stepNumber === 1) {
                 if (btnNext) btnNext.classList.remove('hidden');
                 if (btnSubmit) btnSubmit.classList.add('hidden');
                 if (btnPrev) btnPrev.classList.add('hidden');
-                if (stickyNext) stickyNext.classList.remove('hidden');
-                if (stickySubmit) stickySubmit.classList.add('hidden');
             } else {
                 if (btnNext) btnNext.classList.add('hidden');
                 if (btnSubmit) btnSubmit.classList.remove('hidden');
                 if (btnPrev) btnPrev.classList.remove('hidden');
-                if (stickyNext) stickyNext.classList.add('hidden');
-                if (stickySubmit) stickySubmit.classList.remove('hidden');
             }
 
             // Update Stepper Navigation Visuals
@@ -860,10 +828,8 @@
             if (items.length === 0) {
                 const mainContent = document.getElementById('checkout-main-content');
                 const emptyState = document.getElementById('checkout-empty-state');
-                const stickyBar = document.getElementById('checkout-mobile-sticky-bar');
                 if (mainContent) mainContent.classList.add('hidden');
                 if (emptyState) emptyState.classList.remove('hidden');
-                if (stickyBar) stickyBar.classList.add('hidden');
             }
         }
 
@@ -918,24 +884,13 @@
                 totalEl.innerHTML = `${grandTotal.toFixed(0)} ${currencySymbol}`;
             }
 
-            // Sync Mobile Order Summary & Mobile Sticky Total
-            document.querySelectorAll('.mobile-summary-total, .mobile-sticky-checkout-total').forEach(el => {
+            // Sync Mobile Order Summary
+            document.querySelectorAll('.mobile-summary-total').forEach(el => {
                 el.innerHTML = `${grandTotal.toFixed(0)} ${currencySymbol}`;
             });
             document.querySelectorAll('.mobile-summary-shipping').forEach(el => {
                 el.innerHTML = currentShippingPrice > 0 ? `${currentShippingPrice.toFixed(0)} ${currencySymbol}` : '--';
             });
-        }
-
-        function submitCheckoutForm() {
-            const form = document.getElementById('checkout-form');
-            if (form) {
-                if (typeof form.requestSubmit === 'function') {
-                    form.requestSubmit();
-                } else {
-                    form.submit();
-                }
-            }
         }
 
         // Step 1 Validation (Cart has items)
