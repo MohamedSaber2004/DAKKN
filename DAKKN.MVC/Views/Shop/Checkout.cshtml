@@ -10,7 +10,7 @@
     var cartSubtotal = Model.Items.Sum(i => i.Price * i.Quantity);
 }
 
-<div class="bg-surface dark:bg-[#080e1a] min-h-screen pt-20 sm:pt-28 pb-12 sm:pb-16 px-3 sm:px-6 lg:px-16">
+<div class="bg-surface dark:bg-[#080e1a] min-h-screen pt-20 sm:pt-28 pb-28 lg:pb-16 px-3 sm:px-6 lg:px-16">
     <div class="max-w-7xl mx-auto">
         <!-- Top Header & Back Link -->
         <div class="mb-6 sm:mb-8 flex items-center justify-between gap-3 sm:gap-4">
@@ -77,73 +77,6 @@
                                 <span class="hidden md:block text-[11px] text-on-surface-variant dark:text-slate-400">@Localizer["stepper_step2_desc"]</span>
                             </div>
                         </button>
-                    </div>
-                </div>
-
-                <!-- Mobile Collapsible Order Summary Drawer (Visible on < lg screens) -->
-                <div class="block lg:hidden mb-6 bg-surface-container-low dark:bg-[#0d1a2a] rounded-2xl border border-outline-variant/10 overflow-hidden shadow-sm">
-                    <button type="button" onclick="toggleMobileSummary()" class="w-full p-4 flex items-center justify-between text-start focus:outline-none select-none hover:bg-surface-container/50 transition-colors">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
-                                <span class="material-symbols-outlined text-xl">receipt_long</span>
-                            </div>
-                            <div>
-                                <div class="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-on-surface dark:text-white">
-                                    <span>@Localizer["checkout_summary_h"]</span>
-                                    <span class="text-primary font-medium">(<span class="mobile-summary-items-count">@Model.TotalQuantity</span>)</span>
-                                    <span id="mobile-summary-chevron" class="material-symbols-outlined text-base transition-transform duration-300">expand_more</span>
-                                </div>
-                                <span class="text-[11px] text-on-surface-variant dark:text-slate-400">@Localizer["checkout_pay_cod"]</span>
-                            </div>
-                        </div>
-                        <div class="text-end">
-                            <span class="text-[10px] text-on-surface-variant dark:text-slate-400 block uppercase">@Localizer["order_total"]</span>
-                            <span class="mobile-summary-total font-extrabold text-base sm:text-lg text-primary">@((cartSubtotal + Model.ShippingPrice).ToString("N0")) @Html.Raw(Localizer["Currency_EGP"])</span>
-                        </div>
-                    </button>
-
-                    <div id="mobile-summary-drawer" class="hidden px-4 pb-4 border-t border-outline-variant/10 dark:border-white/5 pt-3 space-y-3">
-                        <!-- Mini Items List -->
-                        <div id="mobile-summary-items-list" class="space-y-2.5 max-h-[220px] overflow-y-auto pe-1 custom-scroll divide-y divide-outline-variant/10 dark:divide-white/5">
-                            @foreach (var item in Model.Items)
-                            {
-                                var itemTotal = item.Price * item.Quantity;
-                                var currentItemName = isAr && !string.IsNullOrEmpty(item.ArName) ? item.ArName : item.Name;
-                                <div class="mobile-summary-item flex items-center justify-between gap-3 pt-2.5 first:pt-0" id="mobile-summary-item-@item.ProductId" data-product-id="@item.ProductId" data-price="@item.Price.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)">
-                                    <div class="flex items-center gap-2.5 min-w-0">
-                                        <img src="@(item.ImageUrl ?? "/images/placeholders/product-placeholder.svg")" alt="@currentItemName" class="w-10 h-10 rounded-lg object-cover flex-shrink-0 border border-outline-variant/10" onerror="this.src='/images/placeholders/product-placeholder.svg'">
-                                        <div class="min-w-0">
-                                            <p class="font-bold text-xs text-on-surface dark:text-white truncate">@currentItemName</p>
-                                            <p class="text-[10px] text-on-surface-variant dark:text-slate-400">
-                                                <span class="mobile-item-qty">@item.Quantity</span> × @item.Price.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <span class="mobile-item-total text-xs font-bold text-on-surface dark:text-white whitespace-nowrap">@itemTotal.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</span>
-                                </div>
-                            }
-                        </div>
-
-                        <!-- Calculation Breakdown -->
-                        <div class="border-t border-outline-variant/10 dark:border-white/5 pt-3 space-y-2 text-xs">
-                            <div class="flex justify-between text-on-surface-variant dark:text-slate-400">
-                                <span>@Localizer["order_subtotal"]</span>
-                                <span class="font-bold text-on-surface dark:text-white mobile-summary-subtotal">@cartSubtotal.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</span>
-                            </div>
-                            <div class="flex justify-between text-on-surface-variant dark:text-slate-400">
-                                <span>@Localizer["order_shipping"]</span>
-                                <span class="font-bold text-on-surface dark:text-white mobile-summary-shipping">
-                                    @if (Model.ShippingGovernorateId.HasValue)
-                                    {
-                                        @($"{Model.ShippingPrice:N0} {Localizer["Currency_EGP"]}")
-                                    }
-                                    else
-                                    {
-                                        <span class="text-on-surface-variant/50 font-normal">--</span>
-                                    }
-                                </span>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -348,9 +281,73 @@
                                         </div>
                                         <span class="material-symbols-outlined text-primary text-2xl flex-shrink-0">verified</span>
                                     </div>
+
+                                    <!-- Mobile Order Summary Breakdown (Appears right before final submit on mobile) -->
+                                    <div class="md:col-span-2 block lg:hidden p-4 sm:p-5 rounded-2xl bg-surface dark:bg-[#080e1a] border border-outline-variant/20 dark:border-white/5 space-y-4">
+                                        <div class="flex items-center justify-between border-b border-outline-variant/10 dark:border-white/5 pb-3">
+                                            <div class="flex items-center gap-2">
+                                                <span class="material-symbols-outlined text-primary text-xl">receipt_long</span>
+                                                <h3 class="font-bold text-sm sm:text-base text-on-surface dark:text-white">@Localizer["checkout_summary_h"]</h3>
+                                            </div>
+                                            <span class="text-xs font-bold text-on-surface-variant dark:text-slate-400 bg-surface-container dark:bg-white/5 px-2.5 py-1 rounded-xl">
+                                                <span class="mobile-summary-items-count">@Model.TotalQuantity</span> @Localizer["checkout_qty"]
+                                            </span>
+                                        </div>
+
+                                        <!-- Mobile Mini Items List -->
+                                        <div class="space-y-3 max-h-[220px] overflow-y-auto pe-1 custom-scroll divide-y divide-outline-variant/10 dark:divide-white/5">
+                                            @foreach (var item in Model.Items)
+                                            {
+                                                var itemTotal = item.Price * item.Quantity;
+                                                var currentItemName = isAr && !string.IsNullOrEmpty(item.ArName) ? item.ArName : item.Name;
+                                                <div class="mobile-summary-item flex items-center gap-3 pt-3 first:pt-0" id="mobile-summary-item-@item.ProductId" data-product-id="@item.ProductId" data-price="@item.Price.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)">
+                                                    <div class="w-12 h-12 rounded-xl bg-surface-container dark:bg-white/5 overflow-hidden flex-shrink-0 border border-outline-variant/10 p-0.5">
+                                                        <img src="@(item.ImageUrl ?? "/images/placeholders/product-placeholder.svg")" alt="@currentItemName" class="w-full h-full object-cover rounded-lg" onerror="this.src='/images/placeholders/product-placeholder.svg'">
+                                                    </div>
+                                                    <div class="flex-1 min-w-0">
+                                                        <p class="font-bold text-xs text-on-surface dark:text-white truncate">@currentItemName</p>
+                                                        <p class="text-[11px] text-on-surface-variant dark:text-slate-400 mt-0.5">
+                                                            <span class="mobile-item-qty">@item.Quantity</span> × @item.Price.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])
+                                                        </p>
+                                                    </div>
+                                                    <p class="mobile-item-total font-bold text-xs text-on-surface dark:text-white whitespace-nowrap">@itemTotal.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</p>
+                                                </div>
+                                            }
+                                        </div>
+
+                                        <!-- Mobile Price Calculations -->
+                                        <div class="border-t border-outline-variant/10 dark:border-white/5 pt-3 space-y-2 text-xs">
+                                            <div class="flex justify-between text-on-surface-variant dark:text-slate-400">
+                                                <span>@Localizer["order_subtotal"]</span>
+                                                <span class="font-bold text-on-surface dark:text-white mobile-summary-subtotal">@cartSubtotal.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</span>
+                                            </div>
+                                            <div class="flex justify-between text-on-surface-variant dark:text-slate-400">
+                                                <span>@Localizer["order_shipping"]</span>
+                                                <span class="font-bold text-on-surface dark:text-white mobile-summary-shipping">
+                                                    @if (Model.ShippingGovernorateId.HasValue)
+                                                    {
+                                                        @($"{Model.ShippingPrice:N0} {Localizer["Currency_EGP"]}")
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="text-on-surface-variant/50 font-normal">--</span>
+                                                    }
+                                                </span>
+                                            </div>
+                                            <div class="border-t border-outline-variant/10 dark:border-white/5 pt-2.5 flex justify-between items-end">
+                                                <div>
+                                                    <span class="font-extrabold text-sm text-on-surface dark:text-white block">@Localizer["order_total"]</span>
+                                                    <span class="text-[10px] text-on-surface-variant dark:text-slate-400 uppercase tracking-wider">@Localizer["cart_vat_inc"]</span>
+                                                </div>
+                                                <span class="mobile-summary-total font-extrabold text-lg sm:text-xl text-primary">
+                                                    @((cartSubtotal + Model.ShippingPrice).ToString("N0")) @Html.Raw(Localizer["Currency_EGP"])
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <!-- Step 2 Actions: Back to Cart vs Submit (طلب المنتج حالا) -->
+                                <!-- Step 2 Actions: Back to Cart vs Submit (زرار إتمام الطلب في الأسفل دائماً) -->
                                 <div class="pt-6 border-t border-outline-variant/10 dark:border-white/5 flex flex-col-reverse sm:flex-row items-center justify-between gap-3 sm:gap-4">
                                     <button type="button" onclick="goToStep(1)" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 rounded-2xl border border-outline-variant/20 dark:border-white/5 text-on-surface-variant dark:text-slate-400 hover:text-on-surface dark:hover:text-white hover:bg-surface-container dark:hover:bg-white/5 font-bold transition-all text-sm">
                                         <span class="material-symbols-outlined text-sm">@backIcon</span>
@@ -367,8 +364,8 @@
                         </div>
                     </div>
 
-                    <!-- Sticky Order Summary Sidebar (1 Column) -->
-                    <aside class="space-y-6 lg:sticky lg:top-24" id="checkout-sidebar">
+                    <!-- Sticky Order Summary Sidebar (Desktop Only: on mobile it appears above the submit button cleanly) -->
+                    <aside class="hidden lg:block space-y-6 lg:sticky lg:top-24" id="checkout-sidebar">
                         <section class="bg-surface-container-low dark:bg-[#0d1a2a] rounded-2xl sm:rounded-[32px] border border-outline-variant/10 p-4 sm:p-6 md:p-8 shadow-sm space-y-6">
                             <div class="flex items-center justify-between border-b border-outline-variant/10 dark:border-white/5 pb-4">
                                 <h2 class="text-lg sm:text-xl font-bold text-on-surface dark:text-white">@Localizer["checkout_summary_h"]</h2>
@@ -474,6 +471,32 @@
         }
     </div>
 </div>
+
+<!-- Mobile Sticky Bottom Action Bar (Visible on mobile/tablet < lg) -->
+@if (!Model.IsEmpty)
+{
+    <div id="checkout-mobile-sticky-bar" class="block lg:hidden fixed bottom-0 inset-x-0 z-40 bg-surface/95 dark:bg-[#080e1a]/95 backdrop-blur-md border-t border-outline-variant/15 dark:border-white/10 px-4 py-3 shadow-2xl transition-all duration-300">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
+            <div>
+                <span class="text-[11px] text-on-surface-variant dark:text-slate-400 block font-medium">@Localizer["order_total"]</span>
+                <div class="mobile-sticky-checkout-total font-extrabold text-base sm:text-lg text-primary leading-tight">
+                    @((cartSubtotal + Model.ShippingPrice).ToString("N0")) @Html.Raw(Localizer["Currency_EGP"])
+                </div>
+            </div>
+            <!-- Step 1 Mobile Sticky Button: متابعة لبيانات التوصيل -->
+            <button type="button" id="sticky-btn-next-step" onclick="validateStep1AndProceed()" class="flex-1 max-w-[220px] bg-primary text-on-primary py-3 px-5 rounded-2xl font-bold text-sm sm:text-base shadow-medium hover:shadow-large active:scale-95 transition-all flex items-center justify-center gap-2">
+                <span>@Localizer["stepper_next_delivery"]</span>
+                <span class="material-symbols-outlined text-base">@nextIcon</span>
+            </button>
+            <!-- Step 2 Mobile Sticky Button: إتمام الطلب (في الأسفل دائماً) -->
+            <button type="button" id="sticky-btn-submit-order" onclick="submitCheckoutForm()" class="submit-order-btn hidden flex-1 max-w-[220px] bg-primary text-on-primary py-3 px-5 rounded-2xl font-bold text-sm sm:text-base shadow-large hover:shadow-2xl active:scale-95 transition-all flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-lg">lock</span>
+                <span class="submit-btn-text">@Localizer["checkout_submit"]</span>
+                <span class="submit-spinner hidden material-symbols-outlined animate-spin text-lg">progress_activity</span>
+            </button>
+        </div>
+    </div>
+}
 
 <style>
     .custom-scroll::-webkit-scrollbar {
@@ -623,14 +646,22 @@
             const btnSubmit = document.getElementById('btn-submit-order');
             const btnPrev = document.getElementById('sidebar-btn-prev-step');
 
+            // Toggle Mobile Sticky Action Buttons
+            const stickyNext = document.getElementById('sticky-btn-next-step');
+            const stickySubmit = document.getElementById('sticky-btn-submit-order');
+
             if (stepNumber === 1) {
                 if (btnNext) btnNext.classList.remove('hidden');
                 if (btnSubmit) btnSubmit.classList.add('hidden');
                 if (btnPrev) btnPrev.classList.add('hidden');
+                if (stickyNext) stickyNext.classList.remove('hidden');
+                if (stickySubmit) stickySubmit.classList.add('hidden');
             } else {
                 if (btnNext) btnNext.classList.add('hidden');
                 if (btnSubmit) btnSubmit.classList.remove('hidden');
                 if (btnPrev) btnPrev.classList.remove('hidden');
+                if (stickyNext) stickyNext.classList.add('hidden');
+                if (stickySubmit) stickySubmit.classList.remove('hidden');
             }
 
             // Update Stepper Navigation Visuals
@@ -832,8 +863,10 @@
             if (items.length === 0) {
                 const mainContent = document.getElementById('checkout-main-content');
                 const emptyState = document.getElementById('checkout-empty-state');
+                const stickyBar = document.getElementById('checkout-mobile-sticky-bar');
                 if (mainContent) mainContent.classList.add('hidden');
                 if (emptyState) emptyState.classList.remove('hidden');
+                if (stickyBar) stickyBar.classList.add('hidden');
             }
         }
 
@@ -888,13 +921,24 @@
                 totalEl.innerHTML = `${grandTotal.toFixed(0)} ${currencySymbol}`;
             }
 
-            // Sync Mobile Order Summary
-            document.querySelectorAll('.mobile-summary-total').forEach(el => {
+            // Sync Mobile Order Summary & Mobile Sticky Total
+            document.querySelectorAll('.mobile-summary-total, .mobile-sticky-checkout-total').forEach(el => {
                 el.innerHTML = `${grandTotal.toFixed(0)} ${currencySymbol}`;
             });
             document.querySelectorAll('.mobile-summary-shipping').forEach(el => {
                 el.innerHTML = currentShippingPrice > 0 ? `${currentShippingPrice.toFixed(0)} ${currencySymbol}` : '--';
             });
+        }
+
+        function submitCheckoutForm() {
+            const form = document.getElementById('checkout-form');
+            if (form) {
+                if (typeof form.requestSubmit === 'function') {
+                    form.requestSubmit();
+                } else {
+                    form.submit();
+                }
+            }
         }
 
         // Step 1 Validation (Cart has items)

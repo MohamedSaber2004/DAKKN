@@ -4,34 +4,39 @@
     var isAr = System.Threading.Thread.CurrentThread.CurrentUICulture.Name.StartsWith("ar");
 }
 
-<div class="max-w-7xl mx-auto px-lg py-xl">
-    <div class="mb-xl">
-        <h1 class="customer-page-title text-text-primary dark:text-inverse-on-surface">@Localizer["cart_h1"]</h1>
+@{
+    var nextIcon = isAr ? "arrow_back" : "arrow_forward";
+    var backIcon = isAr ? "arrow_forward" : "arrow_back";
+}
+
+<div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8 md:py-12 pb-24 lg:pb-12">
+    <div class="mb-6 sm:mb-8">
+        <h1 class="customer-page-title text-2xl sm:text-3xl md:text-4xl font-extrabold text-text-primary dark:text-inverse-on-surface">@Localizer["cart_h1"]</h1>
         <div class="flex items-center gap-2 mt-2">
             <span class="w-2 h-2 rounded-full" id="shipping-status-dot"></span>
-            <p id="free-shipping-info" class="text-sm text-text-secondary"></p>
+            <p id="free-shipping-info" class="text-xs sm:text-sm text-text-secondary"></p>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-2xl items-start">
-        <div class="lg:col-span-2 space-y-lg">
-            <div id="cart-items-container" class="space-y-md">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-start">
+        <div class="lg:col-span-2 space-y-3.5 sm:space-y-4">
+            <div id="cart-items-container" class="space-y-3.5 sm:space-y-4">
                 @if (Model.IsEmpty)
                 {
-                    <div id="cart-empty-state" class="empty-state space-y-xl">
-                        <div class="empty-state-icon">
-                            <span class="material-symbols-outlined text-5xl">shopping_cart</span>
+                    <div id="cart-empty-state" class="empty-state py-16 sm:py-20 text-center bg-surface dark:bg-inverse-surface rounded-2xl sm:rounded-[32px] border border-border dark:border-outline/10 p-6 sm:p-12 space-y-6">
+                        <div class="empty-state-icon w-20 h-20 sm:w-24 sm:h-24 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto text-4xl sm:text-5xl">
+                            <span class="material-symbols-outlined text-4xl sm:text-5xl">shopping_cart</span>
                         </div>
-                        <div class="space-y-md">
-                            <h2 class="text-2xl font-bold">@Localizer["cart_empty_h"]</h2>
-                            <p class="text-text-secondary max-w-sm mx-auto">@Localizer["cart_empty_p"]</p>
+                        <div class="space-y-2">
+                            <h2 class="text-xl sm:text-2xl font-bold">@Localizer["cart_empty_h"]</h2>
+                            <p class="text-text-secondary text-xs sm:text-sm max-w-sm mx-auto">@Localizer["cart_empty_p"]</p>
                         </div>
-                        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                            <a asp-action="Products" class="inline-flex items-center gap-2 bg-primary text-on-primary px-xl py-4 rounded-2xl font-bold hover:shadow-large hover:-translate-y-1 transition-all">
-                                @Localizer[LocalizationKeys.CartMessages.BrowseProducts.Key] <span class="material-symbols-outlined">arrow_forward</span>
+                        <div class="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+                            <a asp-action="Products" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-primary text-on-primary px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl font-bold hover:shadow-large hover:-translate-y-0.5 transition-all text-sm sm:text-base">
+                                @Localizer[LocalizationKeys.CartMessages.BrowseProducts.Key] <span class="material-symbols-outlined text-base">@nextIcon</span>
                             </a>
-                            <a asp-action="Products" class="inline-flex items-center gap-2 text-text-secondary hover:text-primary font-bold transition-colors px-xl py-4">
-                                <span class="material-symbols-outlined text-sm">arrow_back</span>
+                            <a asp-action="Products" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-text-secondary hover:text-primary font-bold transition-colors px-6 sm:px-8 py-3.5 sm:py-4 text-sm">
+                                <span class="material-symbols-outlined text-sm">@backIcon</span>
                                 @Localizer[LocalizationKeys.CartMessages.ContinueShopping.Key]
                             </a>
                         </div>
@@ -41,29 +46,30 @@
                 {
                     foreach (var item in Model.Items)
                     {
-                        <div class="cart-item group bg-surface dark:bg-inverse-surface rounded-[32px] border border-border dark:border-outline/10 p-lg shadow-small hover:shadow-medium transition-all" data-product-id="@item.ProductId" data-price="@item.Price">
-                            <div class="flex flex-col sm:flex-row gap-lg">
-                                <div class="w-full sm:w-32 h-32 rounded-2xl overflow-hidden bg-white/5 flex-shrink-0">
-                                    <img src="@(item.ImageUrl ?? "/images/placeholders/product-placeholder.svg")" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="@(isAr ? item.ArName : item.Name)" loading="lazy" onerror="this.src='/images/placeholders/product-placeholder.svg'" />
+                        var currentItemName = isAr && !string.IsNullOrEmpty(item.ArName) ? item.ArName : item.Name;
+                        <div class="cart-item group bg-surface dark:bg-inverse-surface rounded-2xl sm:rounded-[28px] md:rounded-[32px] border border-border dark:border-outline/10 p-3.5 sm:p-5 md:p-6 shadow-small hover:shadow-medium transition-all" data-product-id="@item.ProductId" data-price="@item.Price.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture)">
+                            <div class="flex items-start gap-3 sm:gap-4 md:gap-5">
+                                <div class="w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-2xl overflow-hidden bg-surface-container dark:bg-white/5 border border-border dark:border-outline/10 flex-shrink-0 p-1">
+                                    <img src="@(item.ImageUrl ?? "/images/placeholders/product-placeholder.svg")" class="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-300" alt="@currentItemName" loading="lazy" onerror="this.src='/images/placeholders/product-placeholder.svg'" />
                                 </div>
-                                <div class="flex-1 min-w-0 flex flex-col justify-between">
-                                    <div class="flex justify-between items-start">
-                                        <div>
-                                            <h3 class="font-bold text-xl truncate group-hover:text-primary transition-colors">@(isAr && !string.IsNullOrEmpty(item.ArName) ? item.ArName : item.Name)</h3>
+                                <div class="flex-1 min-w-0 flex flex-col justify-between self-stretch">
+                                    <div class="flex justify-between items-start gap-2">
+                                        <div class="min-w-0 flex-1">
+                                            <h3 class="font-bold text-sm sm:text-base md:text-lg truncate group-hover:text-primary transition-colors leading-snug">@currentItemName</h3>
+                                            <p class="text-[11px] sm:text-xs text-text-secondary mt-1">@Localizer["cart_unit"]: @item.Price.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</p>
                                         </div>
-                                        <button onclick="removeItem('@item.ProductId')" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-error hover:bg-error/5 transition-all">
-                                            <span class="material-symbols-outlined">delete</span>
+                                        <button type="button" onclick="removeItem('@item.ProductId')" class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center text-text-secondary hover:text-error hover:bg-error/5 transition-all flex-shrink-0" title="@Localizer["supp_delete"]">
+                                            <span class="material-symbols-outlined text-lg sm:text-xl">delete</span>
                                         </button>
                                     </div>
-                                    <div class="flex justify-between items-end mt-lg">
-                                        <div class="flex items-center gap-md bg-surface-container dark:bg-white/5 p-1.5 rounded-2xl border border-border dark:border-outline/10">
-                                            <button onclick="updateQty('@item.ProductId', -1)" class="w-8 h-8 rounded-xl bg-surface dark:bg-inverse-surface shadow-small flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all">-</button>
-                                            <span class="item-qty font-bold w-8 text-center" data-product-id="@item.ProductId">@item.Quantity</span>
-                                            <button onclick="updateQty('@item.ProductId', 1)" class="w-8 h-8 rounded-xl bg-surface dark:bg-inverse-surface shadow-small flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all">+</button>
+                                    <div class="flex items-center justify-between gap-3 mt-3 sm:mt-4 pt-2.5 border-t border-border/60 dark:border-outline/10">
+                                        <div class="flex items-center gap-1 sm:gap-2 bg-surface-container dark:bg-white/5 p-1 rounded-xl sm:rounded-2xl border border-border dark:border-outline/10">
+                                            <button type="button" onclick="updateQty('@item.ProductId', -1)" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-surface dark:bg-inverse-surface shadow-small flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all font-bold select-none text-base sm:text-lg">−</button>
+                                            <span class="item-qty font-bold text-xs sm:text-sm w-7 sm:w-8 text-center" data-product-id="@item.ProductId">@item.Quantity</span>
+                                            <button type="button" onclick="updateQty('@item.ProductId', 1)" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg sm:rounded-xl bg-surface dark:bg-inverse-surface shadow-small flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all font-bold select-none text-base sm:text-lg">+</button>
                                         </div>
                                         <div class="text-end">
-                                            <p class="text-xs text-text-secondary">@Localizer["cart_unit"]: @item.Price.ToString("N2") @Html.Raw(Localizer["Currency_EGP"])</p>
-                                            <p class="font-bold text-xl text-primary item-total">@((item.Price * item.Quantity).ToString("N2")) @Html.Raw(Localizer["Currency_EGP"])</p>
+                                            <p class="font-extrabold text-base sm:text-lg md:text-xl text-primary item-total">@((item.Price * item.Quantity).ToString("N0")) @Html.Raw(Localizer["Currency_EGP"])</p>
                                         </div>
                                     </div>
                                 </div>
@@ -74,19 +80,19 @@
             </div>
         </div>
 
-        <aside class="space-y-lg sticky top-24" id="cart-sidebar">
-            <div class="bg-surface dark:bg-inverse-surface rounded-[40px] border border-border dark:border-outline/10 p-xl shadow-large space-y-xl">
-                <h2 class="text-2xl font-bold">@Localizer["cart_summary_h"]</h2>
+        <aside class="space-y-4 sm:space-y-6 lg:sticky lg:top-24" id="cart-sidebar">
+            <div class="bg-surface dark:bg-inverse-surface rounded-2xl sm:rounded-[32px] border border-border dark:border-outline/10 p-5 sm:p-7 md:p-8 shadow-large space-y-5 sm:space-y-6">
+                <h2 class="text-xl sm:text-2xl font-bold">@Localizer["cart_summary_h"]</h2>
 
                 @if (!Model.IsEmpty)
                 {
-                    <div class="space-y-md">
+                    <div class="space-y-3 sm:space-y-4 text-xs sm:text-sm">
                         <div class="flex justify-between text-text-secondary">
                             <span>@Localizer["cart_subtotal"] (<span id="summary-items-count">@Model.TotalQuantity</span>)</span>
-                            <span id="summary-subtotal" class="font-bold text-text-primary">@Model.Subtotal.ToString("N2") @Html.Raw(Localizer["Currency_EGP"])</span>
+                            <span id="summary-subtotal" class="font-bold text-text-primary dark:text-inverse-on-surface">@Model.Subtotal.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</span>
                         </div>
 
-                        <div class="flex justify-between items-center text-text-secondary text-sm">
+                        <div class="flex justify-between items-center text-text-secondary">
                             <span>@Localizer["cart_shipping"]</span>
                             <span id="summary-shipping" class="text-xs text-text-secondary/70 font-medium">
                                 @Localizer[LocalizationKeys.CartMessages.ShippingCalculatedAtCheckout.Key]
@@ -95,45 +101,66 @@
 
                         <div class="h-px bg-border dark:bg-outline/10"></div>
                         <div class="flex justify-between items-end">
-                            <span class="font-bold text-lg">@Localizer["cart_total"]</span>
+                            <div>
+                                <span class="font-extrabold text-sm sm:text-base block">@Localizer["cart_total"]</span>
+                                <div class="text-[10px] text-text-secondary uppercase tracking-widest mt-0.5">@Localizer["cart_vat_inc"]</div>
+                            </div>
                             <div class="text-end">
-                                <div id="summary-total" class="text-4xl font-bold text-primary">@Model.Subtotal.ToString("N2") @Html.Raw(Localizer["Currency_EGP"])</div>
-                                <div class="text-[10px] text-text-secondary uppercase tracking-widest mt-1">@Localizer["cart_vat_inc"]</div>
+                                <div id="summary-total" class="text-2xl sm:text-3xl font-extrabold text-primary">@Model.Subtotal.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])</div>
                             </div>
                         </div>
                     </div>
 
-                    <a asp-action="Checkout" class="w-full bg-primary text-on-primary py-5 rounded-3xl font-bold text-xl shadow-large hover:scale-[1.02] hover:shadow-2xl transition-all flex items-center justify-center gap-3">
-                        @Localizer["cart_checkout"]
-                        <span class="material-symbols-outlined">chevron_right</span>
+                    <a asp-action="Checkout" class="w-full bg-primary text-on-primary py-4 sm:py-5 rounded-2xl sm:rounded-3xl font-bold text-base sm:text-lg md:text-xl shadow-large hover:scale-[1.01] hover:shadow-2xl active:scale-95 transition-all flex items-center justify-center gap-2.5 sm:gap-3">
+                        <span>@Localizer["cart_checkout"]</span>
+                        <span class="material-symbols-outlined text-lg sm:text-xl">@nextIcon</span>
                     </a>
                 }
 
-                <div class="flex flex-col gap-4">
-                    <div class="flex items-center gap-3 p-4 bg-surface-container dark:bg-white/5 rounded-2xl">
-                        <span class="material-symbols-outlined text-primary">verified_user</span>
+                <div class="flex flex-col gap-2.5 sm:gap-3 pt-2">
+                    <div class="flex items-center gap-3 p-3.5 sm:p-4 bg-surface-container dark:bg-white/5 rounded-2xl border border-border dark:border-outline/10">
+                        <span class="material-symbols-outlined text-primary text-xl flex-shrink-0">verified_user</span>
                         <div class="text-xs text-start">
                             <p class="font-bold">@Localizer["cart_secure_h"]</p>
-                            <p class="text-text-secondary">@Localizer["cart_secure_p"]</p>
+                            <p class="text-text-secondary text-[11px] mt-0.5">@Localizer["cart_secure_p"]</p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-3 p-4 bg-surface-container dark:bg-white/5 rounded-2xl">
-                        <span class="material-symbols-outlined text-primary">local_shipping</span>
+                    <div class="flex items-center gap-3 p-3.5 sm:p-4 bg-surface-container dark:bg-white/5 rounded-2xl border border-border dark:border-outline/10">
+                        <span class="material-symbols-outlined text-primary text-xl flex-shrink-0">local_shipping</span>
                         <div class="text-xs text-start">
                             <p class="font-bold">@Localizer["cart_fast_h"]</p>
-                            <p class="text-text-secondary">@Localizer["cart_fast_p"]</p>
+                            <p class="text-text-secondary text-[11px] mt-0.5">@Localizer["cart_fast_p"]</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <a asp-action="Products" class="flex items-center justify-center gap-2 text-text-secondary hover:text-primary font-bold transition-colors">
-                <span class="material-symbols-outlined text-sm">arrow_back</span>
-                @Localizer[LocalizationKeys.CartMessages.ContinueShopping.Key]
+            <a asp-action="Products" class="flex items-center justify-center gap-2 text-text-secondary hover:text-primary font-bold transition-colors py-2 text-sm sm:text-base">
+                <span class="material-symbols-outlined text-sm">@backIcon</span>
+                <span>@Localizer[LocalizationKeys.CartMessages.ContinueShopping.Key]</span>
             </a>
         </aside>
     </div>
 </div>
+
+<!-- Mobile Sticky Bottom Checkout Bar (Visible on mobile/tablet screens < lg when cart is not empty) -->
+@if (!Model.IsEmpty)
+{
+    <div id="cart-mobile-sticky-bar" class="block lg:hidden fixed bottom-0 inset-x-0 z-40 bg-surface/95 dark:bg-inverse-surface/95 backdrop-blur-md border-t border-border dark:border-outline/15 px-4 py-3 shadow-2xl transition-all duration-300">
+        <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
+            <div>
+                <span class="text-[11px] text-text-secondary block font-medium">@Localizer["order_total"]</span>
+                <div id="mobile-sticky-total" class="font-extrabold text-base sm:text-lg text-primary leading-tight">
+                    @Model.Subtotal.ToString("N0") @Html.Raw(Localizer["Currency_EGP"])
+                </div>
+            </div>
+            <a asp-action="Checkout" class="flex-1 max-w-[220px] bg-primary text-on-primary py-3 px-5 rounded-2xl font-bold text-sm sm:text-base shadow-medium hover:shadow-large active:scale-95 transition-all flex items-center justify-center gap-2">
+                <span>@Localizer["cart_checkout"]</span>
+                <span class="material-symbols-outlined text-base">@nextIcon</span>
+            </a>
+        </div>
+    </div>
+}
 
 <style>
     [dir="ltr"] .cart-item {
@@ -256,15 +283,20 @@
             const subtotalEl = document.getElementById('summary-subtotal');
             const totalEl = document.getElementById('summary-total');
             const itemsCountEl = document.getElementById('summary-items-count');
+            const mobileStickyTotalEl = document.getElementById('mobile-sticky-total');
 
-            if (subtotalEl) subtotalEl.innerHTML = subtotal.toFixed(2) + ' ' + currencyEgp;
-            if (totalEl) totalEl.innerHTML = subtotal.toFixed(2) + ' ' + currencyEgp;
+            const formattedTotal = Math.round(subtotal).toLocaleString('en-US') + ' ' + currencyEgp;
+            if (subtotalEl) subtotalEl.innerHTML = formattedTotal;
+            if (totalEl) totalEl.innerHTML = formattedTotal;
             if (itemsCountEl) itemsCountEl.textContent = itemCount;
+            if (mobileStickyTotalEl) mobileStickyTotalEl.innerHTML = formattedTotal;
         }
 
         function checkIfEmpty() {
             const items = document.querySelectorAll('.cart-item');
             if (items.length === 0) {
+                const stickyBar = document.getElementById('cart-mobile-sticky-bar');
+                if (stickyBar) stickyBar.remove();
                 window.location.reload();
             }
         }
