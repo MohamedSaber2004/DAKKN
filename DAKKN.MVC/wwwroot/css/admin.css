@@ -224,51 +224,40 @@ body {
   }
 }
 
-/* Bottom nav icons */
-#admin-bottom-nav a .material-symbols-outlined {
-  color: #64748b;
-  transition: color 0.2s ease;
-}
-.dark #admin-bottom-nav a .material-symbols-outlined {
-  color: #94a3b8;
-}
-#admin-bottom-nav a.text-primary .material-symbols-outlined {
-  color: var(--primary-color, #0E908C) !important;
-  font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
-}
-
-/* Bottom nav labels */
-#admin-bottom-nav a span:not(.material-symbols-outlined) {
-  font-family: 'Inter', 'Cairo', sans-serif;
-  color: #64748b;
-  font-size: 10px;
-  font-weight: 600;
-  line-height: 1.2;
-}
-.dark #admin-bottom-nav a span:not(.material-symbols-outlined) {
-  color: #94a3b8;
-}
-#admin-bottom-nav a.text-primary span:not(.material-symbols-outlined) {
-  color: var(--primary-color, #0E908C) !important;
-}
-
-/* ── Mobile Bottom Nav: BEM Classes ───────────────────────────────────────── */
+/* ── Mobile Bottom Nav ─────────────────────────────────────────────── */
 .admin-bnav-item {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
-  padding: 6px 12px;
+  gap: 2px;
+  padding: 6px 2px;
   border-radius: 12px;
   text-decoration: none;
-  transition: all 0.2s ease;
-  min-width: 52px;
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 78px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.admin-bnav-item:hover,
+.admin-bnav-item:active {
+  background: rgba(14, 144, 140, 0.08);
+}
+.dark .admin-bnav-item:hover,
+.dark .admin-bnav-item:active {
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .admin-bnav-item .material-symbols-outlined {
-  color: #475569 !important;
+  color: #64748b !important;
   font-size: 22px !important;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.2s ease;
 }
 .dark .admin-bnav-item .material-symbols-outlined {
   color: #94a3b8 !important;
@@ -276,26 +265,46 @@ body {
 
 .admin-bnav-item > span:last-child {
   font-family: 'Inter', 'Cairo', sans-serif;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
-  color: #475569;
+  color: #64748b;
   line-height: 1.2;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  text-align: center;
+  transition: color 0.2s ease, font-weight 0.2s ease;
 }
 .dark .admin-bnav-item > span:last-child {
   color: #94a3b8;
 }
 
 /* Active state */
+.admin-bnav-active {
+  background: rgba(14, 144, 140, 0.08);
+}
+.dark .admin-bnav-active {
+  background: rgba(14, 144, 140, 0.16);
+}
 .admin-bnav-active .material-symbols-outlined {
   color: var(--primary-color, #0E908C) !important;
-  font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+  font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+  transform: translateY(-1px) scale(1.08);
 }
 .admin-bnav-active > span:last-child {
   color: var(--primary-color, #0E908C) !important;
+  font-weight: 700;
 }
 
-/* FAB (Add button) */
+/* FAB Wrapper & Elevated Button */
+.admin-bnav-fab-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  padding: 0 4px;
+}
 .admin-bnav-fab {
   display: flex;
   align-items: center;
@@ -304,17 +313,26 @@ body {
   height: 48px;
   border-radius: 16px;
   background: var(--primary-color, #0E908C);
-  box-shadow: 0 4px 14px rgba(14, 144, 140, 0.4);
+  box-shadow: 0 6px 16px rgba(14, 144, 140, 0.4);
   text-decoration: none;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+  margin-top: -14px;
+  border: 3px solid #ffffff;
+  flex-shrink: 0;
 }
-.admin-bnav-fab:hover {
-  transform: scale(1.08);
-  box-shadow: 0 6px 20px rgba(14, 144, 140, 0.5);
+.dark .admin-bnav-fab {
+  border-color: #1E293B;
+  box-shadow: 0 6px 18px rgba(14, 144, 140, 0.55);
+}
+.admin-bnav-fab:hover,
+.admin-bnav-fab:active {
+  transform: translateY(-2px) scale(1.08);
+  box-shadow: 0 8px 22px rgba(14, 144, 140, 0.55);
 }
 .admin-bnav-fab .material-symbols-outlined {
   color: #ffffff !important;
-  font-size: 22px !important;
+  font-size: 24px !important;
+  font-weight: 600;
 }
 
 
@@ -702,9 +720,9 @@ body {
     margin-right: 0 !important;
   }
   .mobile-sidebar-open .admin-sidebar .admin-brand-info {
-    justify-content: flex-start !important;
-    padding-left: 24px !important;
-    padding-right: 24px !important;
+    justify-content: space-between !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
   }
   .mobile-sidebar-open .admin-sidebar .add-product-btn {
     width: 100% !important;

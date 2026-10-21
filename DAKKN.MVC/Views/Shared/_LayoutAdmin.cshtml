@@ -36,6 +36,9 @@
         }
         catch { /* Fallback to default */ }
     }
+
+    var isMainBottomNavAction = (currentController == "Admin" && (currentAction == "Dashboard" || currentAction == "Orders" || currentAction == "Inventory" || currentAction == "AddProduct"));
+    var isOtherAdminPage = !isMainBottomNavAction;
 }
 <!DOCTYPE html>
 <html lang="@culture" dir="@dir" id="html-root" class="@(isDarkMode ? "dark" : "")" data-dakkn-loading="true" style="--primary-color: @primaryColor; --primary-rgb: @primaryRgb;">
@@ -250,18 +253,23 @@
             bottom: 0; left: 0; right: 0;
             z-index: 100;
             display: none;
-            background: var(--surface, #fff);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border-top: 1px solid var(--border-color, rgba(0,0,0,.08));
-            box-shadow: 0 -4px 24px rgba(0,0,0,.10);
-            padding-bottom: env(safe-area-inset-bottom, 0);
+            box-shadow: 0 -4px 20px rgba(0,0,0,.08);
+            padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px)) 6px;
+            align-items: center;
+            justify-content: space-around;
         }
         @@media (max-width: 767px) {
             #admin-bottom-nav { display: flex !important; }
-            #admin-canvas { padding-bottom: 80px !important; }
+            #admin-canvas { padding-bottom: 84px !important; }
         }
         .dark #admin-bottom-nav {
-            background: #1E293B;
-            border-top-color: rgba(255,255,255,.06);
+            background: rgba(30, 41, 59, 0.95);
+            border-top-color: rgba(255,255,255,.08);
+            box-shadow: 0 -4px 24px rgba(0,0,0,.35);
         }
 
         /* Admin support sub-list */
@@ -399,7 +407,7 @@
     <div id="sidebar-overlay" class="sidebar-overlay md:hidden" onclick="toggleSidebar()"></div>
 
     <!-- Mobile Bottom Nav (visible only on < 768px) -->
-    <nav id="admin-bottom-nav" class="items-center justify-around px-2 py-2 gap-1">
+    <nav id="admin-bottom-nav" aria-label="@Localizer["admin_dashboard"]">
         <a asp-controller="Admin" asp-action="Dashboard" class="admin-bnav-item @(currentAction == "Dashboard" && currentController == "Admin" ? "admin-bnav-active" : "")" title="@Localizer["admin_overview"]">
             <span class="material-symbols-outlined @(currentAction == "Dashboard" && currentController == "Admin" ? "filled-icon" : "")">dashboard</span>
             <span>@Localizer["admin_overview"]</span>
@@ -408,28 +416,18 @@
             <span class="material-symbols-outlined @(currentAction == "Orders" && currentController == "Admin" ? "filled-icon" : "")">shopping_cart</span>
             <span>@Localizer["admin_orders"]</span>
         </a>
-        <a asp-controller="Admin" asp-action="AddProduct" class="admin-bnav-fab" title="@Localizer["admin_add_product"]">
-            <span class="material-symbols-outlined">add</span>
-        </a>
+        <div class="admin-bnav-fab-wrap">
+            <a asp-controller="Admin" asp-action="AddProduct" class="admin-bnav-fab" title="@Localizer["admin_add_product"]" aria-label="@Localizer["admin_add_product"]">
+                <span class="material-symbols-outlined">add</span>
+            </a>
+        </div>
         <a asp-controller="Admin" asp-action="Inventory" class="admin-bnav-item @(currentAction == "Inventory" && currentController == "Admin" ? "admin-bnav-active" : "")" title="@Localizer["admin_inventory"]">
             <span class="material-symbols-outlined @(currentAction == "Inventory" && currentController == "Admin" ? "filled-icon" : "")">inventory_2</span>
             <span>@Localizer["admin_inventory"]</span>
         </a>
-        <a asp-controller="Admin" asp-action="CustomOrders" class="admin-bnav-item @(currentAction == "CustomOrders" ? "admin-bnav-active" : "")" title="@Localizer["admin_custom_order.title"]">
-            <span class="material-symbols-outlined @(currentAction == "CustomOrders" ? "filled-icon" : "")">auto_awesome</span>
-            <span>@Localizer["admin_custom_order.title"]</span>
-        </a>
-        <a asp-controller="AdminStickerSuggestion" asp-action="Index" class="admin-bnav-item" title="@Localizer["admin_sticker_suggestions"]">
-            <span class="material-symbols-outlined">lightbulb</span>
-            <span>@Localizer["admin_sticker_suggestions"]</span>
-        </a>
-        <a asp-controller="Admin" asp-action="Shipping" class="admin-bnav-item @(currentAction == "Shipping" && currentController == "Admin" ? "admin-bnav-active" : "")" title="@Localizer["admin_shipping.title"]">
-            <span class="material-symbols-outlined @(currentAction == "Shipping" && currentController == "Admin" ? "filled-icon" : "")">map</span>
-            <span>@Localizer["admin_shipping.title"]</span>
-        </a>
-        <button type="button" onclick="submitLogout()" class="admin-bnav-item admin-bnav-logout" title="@Localizer["auth.logout"]">
-            <span class="material-symbols-outlined">logout</span>
-            <span>@Localizer["auth.logout"]</span>
+        <button type="button" onclick="toggleSidebar()" class="admin-bnav-item @(isOtherAdminPage ? "admin-bnav-active" : "")" title="@Localizer["admin_more"]" id="admin-bnav-more-btn" aria-label="@Localizer["admin_more"]">
+            <span class="material-symbols-outlined @(isOtherAdminPage ? "filled-icon" : "")">widgets</span>
+            <span>@Localizer["admin_more"]</span>
         </button>
     </nav>
     <!-- Tablet Sidebar Overlay (visible only on tablet when sidebar is expanded) -->
@@ -438,9 +436,14 @@
     <!-- SideNavBar (desktop/tablet) -->
 
     <aside id="admin-sidebar" class="hidden md:flex flex-col admin-sidebar ltr:left-0 ltr:border-r rtl:right-0 rtl:border-l h-screen w-64 shadow-medium z-40 relative flex-shrink-0 transition-all duration-300 bg-surface dark:bg-[#1E293B] border-border dark:border-white/5">
-        <div class="px-6 py-5 flex items-center gap-3 border-b border-border dark:border-white/5 admin-brand-info">
-            <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-lg flex-shrink-0 shadow-sm">D</div>
-            <span class="font-bold text-lg text-admin-primary tracking-wide sidebar-text">DAKKN</span>
+        <div class="px-6 py-5 flex items-center justify-between border-b border-border dark:border-white/5 admin-brand-info">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white font-bold text-lg flex-shrink-0 shadow-sm">D</div>
+                <span class="font-bold text-lg text-admin-primary tracking-wide sidebar-text">DAKKN</span>
+            </div>
+            <button type="button" onclick="toggleSidebar()" class="md:hidden w-8 h-8 rounded-lg flex items-center justify-center text-text-secondary hover:text-primary hover:bg-slate-100 dark:hover:bg-white/5 transition-colors" title="@Localizer["close_aria"]">
+                <span class="material-symbols-outlined text-xl">close</span>
+            </button>
         </div>
         <nav class="flex-1 overflow-y-auto custom-scrollbar py-md px-sm flex flex-col gap-sm">
             <a asp-controller="Admin" asp-action="Dashboard" class="nav-item flex items-center gap-md @(currentAction == "Dashboard" && currentController == "Admin" ? "active bg-primary text-on-primary shadow-lg" : "text-text-secondary dark:text-outline-variant hover:text-primary dark:hover:text-primary-light hover:bg-primary/5") rounded-xl px-4 py-3 transition-all duration-200" title="@Localizer["admin_overview"]">
@@ -536,29 +539,29 @@
     <!-- Main Content Area -->
     <main data-page-entrance class="flex-1 flex flex-col h-screen overflow-hidden bg-background dark:bg-[#0F172A] transition-colors duration-300">
         <!-- TopNavBar -->
-        <header class="flex justify-between items-center w-full px-lg py-md z-30 bg-surface/80 dark:bg-[#1E293B]/80 backdrop-blur-md flex-shrink-0 border-b border-border dark:border-white/5 transition-colors duration-300">
-            <div class="flex items-center gap-md">
+        <header class="flex justify-between items-center w-full px-3 sm:px-lg py-2.5 sm:py-md z-30 bg-surface/80 dark:bg-[#1E293B]/80 backdrop-blur-md flex-shrink-0 border-b border-border dark:border-white/5 transition-colors duration-300">
+            <div class="flex items-center gap-2 sm:gap-md min-w-0">
                 <!-- Sidebar Toggle -->
-                <button onclick="toggleSidebar()" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary dark:text-outline-variant dark:hover:text-primary-light transition-colors hover:bg-primary/5 dark:hover:bg-white/5">
+                <button onclick="toggleSidebar()" class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-primary dark:text-outline-variant dark:hover:text-primary-light transition-colors hover:bg-primary/5 dark:hover:bg-white/5 flex-shrink-0" aria-label="@Localizer["admin_more"]">
                     <span class="material-symbols-outlined" id="sidebar-toggle-icon">menu_open</span>
                 </button>
-                <div class="md:hidden">
-                    <h2 class="text-base font-bold text-text-primary dark:text-white truncate max-w-[160px]">@ViewData["Title"]</h2>
+                <div class="md:hidden min-w-0">
+                    <h2 class="text-base font-bold text-text-primary dark:text-white truncate max-w-[140px] sm:max-w-[200px]">@ViewData["Title"]</h2>
                 </div>
                 <div class="hidden md:block">
                     <h2 class="font-h3 text-h3 font-bold text-text-primary dark:text-white">@ViewData["Title"]</h2>
                 </div>
             </div>
-            <div class="flex items-center gap-lg">
+            <div class="flex items-center gap-1.5 sm:gap-lg flex-shrink-0">
                 <div class="relative hidden sm:block">
                     <input class="bg-surface-container dark:bg-white/5 rounded-full py-2 px-4 ltr:pl-10 ltr:pr-4 rtl:pr-10 rtl:pl-4 text-body font-body border border-transparent dark:border-white/5 focus:ring-2 focus:ring-primary dark:focus:ring-primary-light focus:bg-surface dark:focus:bg-white/10 outline-none w-64 text-text-primary dark:text-white placeholder:text-text-secondary dark:placeholder:text-outline transition-all" placeholder="@Localizer["admin_search"]" type="text">
                     <span class="material-symbols-outlined absolute ltr:left-3 rtl:right-3 top-1/2 -translate-y-1/2 text-text-secondary dark:text-outline">search</span>
                 </div>
-                <div class="flex items-center gap-sm">
+                <div class="flex items-center gap-1 sm:gap-sm">
                     @await Html.PartialAsync("Partials/_LanguageToggle")
                     @await Html.PartialAsync("Partials/_ThemeToggle")
                 </div>
-                <div class="w-10 h-10 rounded-full bg-primary-container overflow-hidden cursor-pointer shadow-small border border-border dark:border-white/10">
+                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-primary-container overflow-hidden cursor-pointer shadow-small border border-border dark:border-white/10 flex-shrink-0">
                     <img alt='@Localizer["admin_avatar_alt"]' class="w-full h-full object-cover" src="https://ui-avatars.com/api/?name=@(fullName)&background=69d2cf&color=005957">
                 </div>
             </div>
